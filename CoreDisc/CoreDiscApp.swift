@@ -11,7 +11,7 @@ import SwiftUI
 struct CoreDiscApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashView()
         }
     }
 }

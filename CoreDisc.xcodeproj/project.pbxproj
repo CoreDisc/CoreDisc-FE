@@ -6,13 +6,33 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		238BB8142E16CEA100E7C5B8 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 238BB8132E16CEA100E7C5B8 /* Alamofire */; };
+		238BB8172E16CEBE00E7C5B8 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 238BB8162E16CEBE00E7C5B8 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		238562CE2E0F0E2E008F25B1 /* CoreDisc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDisc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		238BB7D62E16290700E7C5B8 /* Exceptions for "CoreDisc" folder in "CoreDisc" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				Models/.gitkeep,
+				ViewModels/.gitkeep,
+			);
+			target = 238562CD2E0F0E2E008F25B1 /* CoreDisc */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		238562D02E0F0E2E008F25B1 /* CoreDisc */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				238BB7D62E16290700E7C5B8 /* Exceptions for "CoreDisc" folder in "CoreDisc" target */,
+			);
 			path = CoreDisc;
 			sourceTree = "<group>";
 		};
@@ -23,6 +43,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				238BB8172E16CEBE00E7C5B8 /* Kingfisher in Frameworks */,
+				238BB8142E16CEA100E7C5B8 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +87,8 @@
 			);
 			name = CoreDisc;
 			packageProductDependencies = (
+				238BB8132E16CEA100E7C5B8 /* Alamofire */,
+				238BB8162E16CEBE00E7C5B8 /* Kingfisher */,
 			);
 			productName = CoreDisc;
 			productReference = 238562CE2E0F0E2E008F25B1 /* CoreDisc.app */;
@@ -94,6 +118,10 @@
 			);
 			mainGroup = 238562C52E0F0E2E008F25B1;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				238BB8122E16CEA100E7C5B8 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				238BB8152E16CEBE00E7C5B8 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 238562CF2E0F0E2E008F25B1 /* Products */;
 			projectDirPath = "";
@@ -251,8 +279,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G8X4BWGTSS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CoreDisc/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -278,8 +308,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G8X4BWGTSS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CoreDisc/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -320,6 +352,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		238BB8122E16CEA100E7C5B8 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
+		238BB8152E16CEBE00E7C5B8 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		238BB8132E16CEA100E7C5B8 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 238BB8122E16CEA100E7C5B8 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		238BB8162E16CEBE00E7C5B8 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 238BB8152E16CEBE00E7C5B8 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 238562C62E0F0E2E008F25B1 /* Project object */;
 }
