@@ -49,6 +49,7 @@ struct QuestionMainView: View {
     }
     
     // CD, QuestionSelectItem
+    // TODO: CD 애니메이션 적용
     private var CDGroup: some View {
         ZStack {
             Image(.imgCd)
@@ -74,7 +75,7 @@ struct QuestionMainView: View {
     // 뒤로가기, SET 버튼
     private var BottomGroup: some View {
         HStack {
-            Button(action: {}) {
+            Button(action: {}) { // TODO: action 추가
                 ZStack {
                     Circle()
                         .stroke(.key, lineWidth: 2)
@@ -86,7 +87,7 @@ struct QuestionMainView: View {
             
             Spacer()
             
-            Button(action: {}) {
+            Button(action: {}) { // TODO: action 추가
                 ZStack {
                     Circle()
                         .stroke(.key, lineWidth: 2)
@@ -109,22 +110,26 @@ struct QuestionSelectItem: View {
     var endColor: Color = .grayText
     
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 24)
-                .fill(.white.gradient.shadow(.inner(color: .shadow, radius: 2, y: -2))) // 내부 그림자
-                .frame(width: 210, height: 48)
-            
-            HStack(spacing: 8) {
-                Circle()
-                    .linearGradient(startColor: startColor, endColor: endColor)
-                    .frame(width: 27)
+        Button(action: {}) { // TODO: action 추가
+            ZStack {
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(.white.gradient.shadow(.inner(color: .shadow, radius: 2, y: -2))) // 내부 그림자
+                    .frame(width: 210, height: 48)
                 
-                Text(text)
-                    .font(.PretendardRegular12)
-                    .frame(width: 143, alignment: .leading)
-                    .lineLimit(1)
+                HStack(spacing: 8) {
+                    Circle()
+                        .linearGradient(startColor: startColor, endColor: endColor)
+                        .frame(width: 27)
+                    
+                    Text(text)
+                        .font(.PretendardRegular12)
+                        .foregroundStyle(.black)
+                        .frame(width: 143, alignment: .leading)
+                        .lineLimit(1)
+                }
             }
         }
+        .buttonStyle(.plain)
     }
 }
 
