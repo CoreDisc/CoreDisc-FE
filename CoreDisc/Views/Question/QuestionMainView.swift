@@ -9,23 +9,25 @@ import SwiftUI
 
 struct QuestionMainView: View {
     var body: some View {
-        ZStack {
-            Image(.imgShortBackground)
-                .resizable()
-                .ignoresSafeArea()
-                
-            VStack {
-                Spacer().frame(height: 23)
-                
-                TitleGroup
-                
-                Spacer().frame(height: 61)
-                
-                CDGroup
-                
-                Spacer().frame(height: 78)
-                
-                BottomGroup
+        NavigationStack {
+            ZStack {
+                Image(.imgShortBackground)
+                    .resizable()
+                    .ignoresSafeArea()
+                    
+                VStack {
+                    Spacer().frame(height: 23)
+                    
+                    TitleGroup
+                    
+                    Spacer().frame(height: 61)
+                    
+                    CDGroup
+                    
+                    Spacer().frame(height: 78)
+                    
+                    BottomGroup
+                }
             }
         }
     }
@@ -103,14 +105,14 @@ struct QuestionMainView: View {
     }
 }
 
-// 질문 선택 컴포넌트
+// MARK: - 질문 선택 컴포넌트
 struct QuestionSelectItem: View {
     var text: String
     var startColor: Color = .grayText
     var endColor: Color = .grayText
     
     var body: some View {
-        Button(action: {}) { // TODO: action 추가
+        NavigationLink(destination: QuestionSelectView()) {
             ZStack {
                 RoundedRectangle(cornerRadius: 24)
                     .fill(.white.gradient.shadow(.inner(color: .shadow, radius: 2, y: -2))) // 내부 그림자
@@ -129,7 +131,6 @@ struct QuestionSelectItem: View {
                 }
             }
         }
-        .buttonStyle(.plain)
     }
 }
 
