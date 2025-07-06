@@ -13,11 +13,11 @@
 <br>
 
 ## 👥 멤버
-| 팀원 1 | 팀원 2 | 팀원 3 | 팀원 4 |
+| 마티/김미주 | 연두/신연주 | 초록/이채은 | 크롱/정서영 |
 |:------:|:------:|:------:|:------:|
-| 사진1 | 사진2 | 사진3 | 사진4 |
-| PL | FE | FE | FE |
-| [GitHub](깃허브 링크) | [GitHub](깃허브 링크) | [GitHub](깃허브 링크) | [GitHub](깃허브 링크) |
+| ![image](https://github.com/user-attachments/assets/5273ff91-6026-49d2-8433-5b824bf2e20a) | ![image](https://github.com/user-attachments/assets/49a38f66-d140-49bb-86b7-23959efe450d) | ![image](https://github.com/user-attachments/assets/7a453dfb-c2d3-4f6d-884b-605cf3d5afcf) | ![image](https://github.com/user-attachments/assets/12682fd6-4928-4f38-bfe8-d903eff121da) |
+| FE | FE | FE | FE |
+| [alwn8918](https://github.com/alwn8918) | [Yeondu428](https://github.com/Yeondu428) | [codmsdlrltgjqm](https://github.com/codmsdlrltgjqm) | [mzxxzysy](https://github.com/mzxxzysy) |
 
 <br>
 
@@ -29,8 +29,8 @@
 <br>
 
 ## 📆 프로젝트 기간
-- 전체 기간: `YYYY.MM.DD - YYYY.MM.DD`
-- 개발 기간: `YYYY.MM.DD - YYYY.MM.DD`
+- 전체 기간: `2025.06.03 - YYYY.MM.DD`
+- 개발 기간: `2025.07.07 - YYYY.MM.DD`
 
 <br>
 
@@ -46,7 +46,7 @@ Swift 6.0
 ## ⚒️ 개발 환경
 * Front : SwiftUI
 * 버전 및 이슈 관리 : Github, Github Issues
-* 협업 툴 : Discord, Notion
+* 협업 툴 : Discord, Notion, Figma
 
 <br>
 
@@ -102,8 +102,7 @@ Swift 6.0
 * `chore/xx` - 빌드 작업, 패키지 매니저 설정 등
 * `design/xx` - 디자인 변경
 * `bugfix/xx` - 디자인 변경
-
-
+### 
 
 <br>
 
@@ -143,7 +142,7 @@ if let user = self.veryLongFunctionNameWhichReturnsOptionalUser(),
     4. `리뷰 포인트`, 본인 PR에서 꼭 확인해야 할 부분을 작성한다.
     6. `PR 태그 종류`, PR 제목의 태그는 아래 형식을 따른다.
 
-#### 🌟 태그 종류 (커밋 컨벤션과 동일)
+#### 🌟 태그 종류
 | 태그        | 설명                                                   |
 |-------------|--------------------------------------------------------|
 | [Feat]      | 새로운 기능 추가                                       |
@@ -168,52 +167,21 @@ if let user = self.veryLongFunctionNameWhichReturnsOptionalUser(),
 
 ## 📑 커밋 컨벤션
 
-### 💬 깃모지 가이드
+- Feat : 새로운 기능 추가
+- Fix : 버그 수정
+- Design : UI(CSS) 수정
+- Typing Error : 오타 수정
+- Mod : 폴더 구조 이동 및 파일 이름 수정
+- Add : 파일 추가 (ex- 이미지 추가)
+- Del : 파일 삭제ch
+- Refactor : 코드 리펙토링
+- Begin : 프로젝트 세팅
+- Merge : 브랜치 합병
+- Deploy :  CI/CD 등 배포 관련
+- Docs : README나 WIKI 등의 문서 수정
+- Comment: 주석 추가
 
-| 아이콘 | 코드 | 설명 | 원문 |
-| :---: | :---: | :---: | :---: |
-| 🐛 | bug | 버그 수정 | Fix a bug |
-| ✨ | sparkles | 새 기능 | Introduce new features |
-| 💄 | lipstick | UI/스타일 파일 추가/수정 | Add or update the UI and style files |
-| ♻️ | recycle | 코드 리팩토링 | Refactor code |
-| ➕ | heavy_plus_sign | 의존성 추가 | Add a dependency |
-| 🔀 | twisted_rightwards_arrows | 브랜치 합병 | Merge branches |
-| 💡 | bulb | 주석 추가/수정 | Add or update comments in source code |
-| 🔥 | fire | 코드/파일 삭제 | Remove code or files |
-| 🚑 | ambulance | 긴급 수정 | Critical hotfix |
-| 🎉 | tada | 프로젝트 시작 | Begin a project |
-| 🔒 | lock | 보안 이슈 수정 | Fix security issues |
-| 🔖 | bookmark | 릴리즈/버전 태그 | Release / Version tags |
-| 📝 | memo | 문서 추가/수정 | Add or update documentation |
-| 🔧| wrench | 구성 파일 추가/삭제 | Add or update configuration files.|
-| ⚡️ | zap | 성능 개선 | Improve performance |
-| 🎨 | art | 코드 구조 개선 | Improve structure / format of the code |
-| 📦 | package | 컴파일된 파일 추가/수정 | Add or update compiled files |
-| 👽 | alien | 외부 API 변경 반영 | Update code due to external API changes |
-| 🚚 | truck | 리소스 이동, 이름 변경 | Move or rename resources |
-| 🙈 | see_no_evil | .gitignore 추가/수정 | Add or update a .gitignore file |
-
-### 🏷️ 커밋 태그 가이드
-
- | 태그        | 설명                                                   |
-|-------------|--------------------------------------------------------|
-| [Feat]      | 새로운 기능 추가                                       |
-| [Fix]       | 버그 수정                                              |
-| [Refactor]  | 코드 리팩토링 (기능 변경 없이 구조 개선)              |
-| [Style]     | 코드 포맷팅, 세미콜론 누락, 들여쓰기 수정 등          |
-| [Docs]      | README, 문서 수정                                     |
-| [Test]      | 테스트 코드 추가 및 수정                              |
-| [Chore]     | 패키지 매니저 설정, 빌드 설정 등 기타 작업           |
-| [Design]    | UI, CSS, 레이아웃 등 디자인 관련 수정                |
-| [Hotfix]    | 운영 중 긴급 수정이 필요한 버그 대응                 |
-| [CI/CD]     | 배포 관련 설정, 워크플로우 구성 등                    |
-
-### ✅ 커밋 예시 모음
-> 🎉 [Chore] 프로젝트 초기 세팅 <br>
-> ✨ [Feat] 프로필 화면 UI 구현 <br>
-> 🐛 [Fix] iOS 17에서 버튼 클릭 오류 수정 <br>
-> 💄 [Design] 로그인 화면 레이아웃 조정 <br>
-> 📝 [Docs] README에 프로젝트 소개 추가 <br>
+→ 커밋 메시지 [ex- **`Feat: 메인 페이지 구현 (#이슈번호)`**]
 
 <br>
 
