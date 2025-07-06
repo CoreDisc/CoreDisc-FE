@@ -56,16 +56,16 @@ struct QuestionMainView: View {
                 .frame(width: 479, height: 479)
                 .offset(x: 150)
             
-            QuestionSelectItem()
+            QuestionSelectItem(text: "고정질문을 선택하세요")
                 .position(x: 150+79, y: 97)
             
-            QuestionSelectItem()
+            QuestionSelectItem(text: "고정질문을 선택하세요")
                 .position(x: 150+34, y: 196)
             
-            QuestionSelectItem()
+            QuestionSelectItem(text: "고정질문을 선택하세요")
                 .position(x: 150+42, y: 295)
             
-            QuestionSelectItem()
+            QuestionSelectItem(text: "랜덤질문을 선택하세요")
                 .position(x: 150+79, y: 394)
         }
         .frame(width: UIScreen.main.bounds.width)
@@ -104,6 +104,10 @@ struct QuestionMainView: View {
 
 // 질문 선택 컴포넌트
 struct QuestionSelectItem: View {
+    var text: String
+    var startColor: Color = .grayText
+    var endColor: Color = .grayText
+    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 24)
@@ -112,10 +116,10 @@ struct QuestionSelectItem: View {
             
             HStack(spacing: 8) {
                 Circle()
-                    .fill(.grayText)
+                    .linearGradient(startColor: startColor, endColor: endColor)
                     .frame(width: 27)
                 
-                Text("고정질문을 선택하세요")
+                Text(text)
                     .font(.PretendardRegular12)
                     .frame(width: 143, alignment: .leading)
                     .lineLimit(1)

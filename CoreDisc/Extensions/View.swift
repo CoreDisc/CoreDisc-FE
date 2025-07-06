@@ -16,7 +16,7 @@ struct LinearGradientModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .overlay(
+            .foregroundStyle(
                 LinearGradient(
                     gradient: Gradient(colors: [startColor, endColor]),
                     startPoint: .leading,
