@@ -121,7 +121,16 @@ extension Font {
         return .primeform(type: .heavy, size: 13)
     }
     
+    // Bold 700
+    static var PrimeformBold16: Font {
+        return .primeform(type: .bold, size: 16)
+    }
+    
     // Semibold 600
+    static var PrimeformSemiBold12: Font {
+        return .primeform(type: .semiBold, size: 12)
+    }
+    
     static var PrimeformSemiBold8: Font {
         return .primeform(type: .semiBold, size: 8)
     }

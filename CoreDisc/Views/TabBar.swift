@@ -36,7 +36,6 @@ struct TabBar: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .ignoresSafeArea()
             
             CustomTabBar(selectedTab: $selectedTab, tabBarStyle: tabBarStyle)
         }
