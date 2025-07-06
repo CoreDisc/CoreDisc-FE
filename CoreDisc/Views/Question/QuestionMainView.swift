@@ -30,12 +30,13 @@ struct QuestionMainView: View {
         }
     }
     
+    // 상단 타이틀
     private var TitleGroup: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Today’s Coredisc")
                 .font(.Title_Text)
                 .foregroundStyle(.key)
-                .kerning(-2)
+                .kerning(-2) // 자간
             
             Text("오늘의 코어디스크를 기록해보세요")
                 .font(.PrimeformSemiBold12)
@@ -47,6 +48,7 @@ struct QuestionMainView: View {
         .padding(.horizontal, 23)
     }
     
+    // CD, QuestionSelectItem
     private var CDGroup: some View {
         ZStack {
             Image(.imgCd)
@@ -69,6 +71,7 @@ struct QuestionMainView: View {
         .frame(width: UIScreen.main.bounds.width)
     }
     
+    // 뒤로가기, SET 버튼
     private var BottomGroup: some View {
         HStack {
             Button(action: {}) {
@@ -99,11 +102,12 @@ struct QuestionMainView: View {
     }
 }
 
+// 질문 선택 컴포넌트
 struct QuestionSelectItem: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 24)
-                .fill(.white.gradient.shadow(.inner(color: .shadow, radius: 2, y: -2)))
+                .fill(.white.gradient.shadow(.inner(color: .shadow, radius: 2, y: -2))) // 내부 그림자
                 .frame(width: 210, height: 48)
             
             HStack(spacing: 8) {
