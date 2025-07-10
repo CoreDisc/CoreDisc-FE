@@ -103,7 +103,7 @@ Swift 6.0
 - `refac/xx` - 리팩토링
 - `design/xx` - 디자인 변경
 
-→ [ex- `feat/mainpage` ]
+→ [ex- `feat/MainPage` ]
 ### 
 
 <br>
