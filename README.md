@@ -1,8 +1,8 @@
-# 🚀 프로젝트 이름
+# 💽 CoreDisc
 
-![배너 이미지 또는 로고](링크)
+> 로고 추가 예정
 
-> 간단한 한 줄 소개 – 프로젝트의 핵심 가치 또는 기능
+하루에 4개, 매일 다른 질문에 대해 답변하며 **나만의 코어**를 찾아가는 기록 서비스
 
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)]()
 [![Xcode](https://img.shields.io/badge/Xcode-16.0-blue.svg)]()
@@ -24,7 +24,11 @@
 
 ## 📱 소개
 
-> 프로젝트의 주요 목적과 사용자가 얻게 될 경험을 설명해주세요.
+**하루에 질문 4개를 SHOOT.**
+
+똑같은 일상의 반복 속에서 좋아하는 것에 마음을 쓰는 일을 빼놓지 않고 기록하고 싶은 모두를 위한 서비스.
+
+최종적으로 매일을 살아가며 각자의 **코어**를 찾아갈 수 있는 서비스.
 
 <br>
 
@@ -56,23 +60,19 @@ Swift 6.0
 <img src="https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white" />
 <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" />
 <img src="https://img.shields.io/badge/SPM-FA7343?style=for-the-badge&logo=swift&logoColor=white" />
-<img src="https://img.shields.io/badge/Fastlane-n?style=for-the-badge&logo=fastlane&logoColor=black" />
 </div>
 
 ### Development
 <div align="left">
 <img src="https://img.shields.io/badge/Xcode-007ACC?style=for-the-badge&logo=Xcode&logoColor=white" />
-<img src="https://img.shields.io/badge/Firebase-DD2C00?style=for-the-badge&logo=Firebase&logoColor=white" />
 <img src="https://img.shields.io/badge/SwiftUI-42A5F5?style=for-the-badge&logo=swift&logoColor=white" />
 <img src="https://img.shields.io/badge/Alamofire-FF5722?style=for-the-badge&logo=swift&logoColor=white" />
 <img src="https://img.shields.io/badge/Moya-8A4182?style=for-the-badge&logo=swift&logoColor=white" />
 <img src="https://img.shields.io/badge/Kingfisher-0F92F3?style=for-the-badge&logo=swift&logoColor=white" />
-<img src="https://img.shields.io/badge/Combine-FF2D55?style=for-the-badge&logo=apple&logoColor=white" />
 </div>
 
 ### Communication
 <div align="left">
-<img src="https://img.shields.io/badge/Miro-FFFC00.svg?style=for-the-badge&logo=Miro&logoColor=050038" />
 <img src="https://img.shields.io/badge/Notion-white.svg?style=for-the-badge&logo=Notion&logoColor=000000" />
 <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white" />
 <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" />
@@ -81,6 +81,7 @@ Swift 6.0
 <br>
 
 ## 📱 화면 구성
+> 개발 후 수정 예정
 <table>
   <tr>
     <td>
@@ -93,21 +94,25 @@ Swift 6.0
   </tr>
 </table>
 
+<br>
+
 ## 🔖 브랜치 컨벤션
-* `main` - 제품 출시 브랜치
-* `develop` - 출시를 위해 개발하는 브랜치
-* `feat/xx` - 기능 단위로 독립적인 개발 환경을 위해 작성
-* `refac/xx` - 개발된 기능을 리팩토링 하기 위해 작성
-* `hotfix/xx` - 출시 버전에서 발생한 버그를 수정하는 브랜치
-* `chore/xx` - 빌드 작업, 패키지 매니저 설정 등
-* `design/xx` - 디자인 변경
-* `bugfix/xx` - 디자인 변경
+- `main`
+- `feat/xx` - 기능 개발
+- `fix/xx` - 버그 수정
+- `refac/xx` - 리팩토링
+- `design/xx` - 디자인 변경
+
+→ [ex- `feat/mainpage` ]
 ### 
 
 <br>
 
 ## 🌀 코딩 컨벤션
-* 파라미터 이름을 기준으로 줄바꿈 한다.
+**줄바꿈**
+
+- 파라미터가 2개 이상일 경우 파라미터 이름을 기준으로 줄바꿈 한다.
+
 ```swift
 let actionSheet = UIActionSheet(
   title: "정말 계정을 삭제하실 건가요?",
@@ -115,22 +120,35 @@ let actionSheet = UIActionSheet(
   cancelButtonTitle: "취소",
   destructiveButtonTitle: "삭제해주세요"
 )
+
 ```
 
-<br>
+- if let 구문이 길 경우에 줄바꿈 한다
 
-* if let 구문이 길 경우에 줄바꿈 한다
 ```swift
 if let user = self.veryLongFunctionNameWhichReturnsOptionalUser(),
    let name = user.veryLongFunctionNameWhichReturnsOptionalName(),
   user.gender == .female {
   // ...
 }
+
 ```
 
-* 나중에 추가로 작업해야 할 부분에 대해서는 `// TODO: - xxx 주석을 남기도록 한다.`
-* 코드의 섹션을 분리할 때는 `// MARK: - xxx 주석을 남기도록 한다.`
-* 함수에 대해 전부 주석을 남기도록 하여 무슨 액션을 하는지 알 수 있도록 한다.
+**주석**
+
+- 나중에 추가로 작업해야 할 부분에 대해서는 `// TODO: - xxx` 주석을 남기도록 한다.
+- 코드의 섹션을 분리할 때는 `// MARK: - xxx` 주석을 남기도록 한다.
+- 함수에 대해 전부 주석을 남기도록 하여 무슨 액션을 하는지 알 수 있도록 한다.
+
+**색상, 폰트**
+
+- 색상은 Color 등록 후 사용한다. (rgb코드 사용 금지)
+- 폰트는 Font extension 선언 후 사용한다.
+
+**컴포넌트**
+
+- 2개 이상의 View에서 사용하는 컴포넌트는 Views>Components 폴더 내부에 생성한다.
+- 1개의 View에서 사용하는 컴포넌트는 해당 View 하단에 작성한다. (QuestionMainView 참고)
 
 <br>
 
@@ -166,25 +184,22 @@ if let user = self.veryLongFunctionNameWhichReturnsOptionalUser(),
 <br>
 
 ## 📑 커밋 컨벤션
+| 이모티콘 | 기능 | 설명 |
+| --- | --- | --- |
+| ✨ | Feat | 새 기능 |
+| 🐛 | Fix | 버그 수정 |
+| 🚑 | Hotfix | 긴급 수정 |
+| 💄 | Design | UI/스타일 파일 추가/수정 |
+| ✏️ | Typing Error | 오타 수정 |
+| 🔥 | Del | 코드/파일 삭제 |
+| ♻️ | Refactor | 코드 리팩토링 |
+| 🎉 | Begin | 프로젝트 시작 |
+| 🔀 | Merge | 브랜치 합병 |
+| 📝 | Docs | 문서 추가/수정 |
+| 🔒 | Security | 보안 이슈 수정 |
+| ⏪ | Rewind | 변경 내용 되돌리기 |
+| 🚚 | Mod | 리소스 이동, 이름 변경 |
 
-- Feat : 새로운 기능 추가
-- Fix : 버그 수정
-- Design : UI(CSS) 수정
-- Typing Error : 오타 수정
-- Mod : 폴더 구조 이동 및 파일 이름 수정
-- Add : 파일 추가 (ex- 이미지 추가)
-- Del : 파일 삭제ch
-- Refactor : 코드 리펙토링
-- Begin : 프로젝트 세팅
-- Merge : 브랜치 합병
-- Deploy :  CI/CD 등 배포 관련
-- Docs : README나 WIKI 등의 문서 수정
-- Comment: 주석 추가
-
-→ 커밋 메시지 [ex- **`Feat: 메인 페이지 구현 (#이슈번호)`**]
+→ [ex- ✨ 메인 페이지 구현 (#이슈번호)]
 
 <br>
-
-## 🗂️ 폴더 컨벤션
-```
-```
