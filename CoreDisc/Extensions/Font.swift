@@ -123,82 +123,82 @@ extension TextStyle {
     static var Title_Text_Ko = TextStyle(
         font: .pretendard(type: .extraBold, size: 36),
         kerning: -2,
-        lineSpacing: 43
+        lineSpacing: 7
     )
     
     static var Title2_Text_Ko = TextStyle(
         font: .pretendard(type: .extraBold, size: 24),
         kerning: -2,
-        lineSpacing: 43
+        lineSpacing: 19
     )
     
     static var Title3_Text_Ko = TextStyle(
         font: .pretendard(type: .extraBold, size: 32),
         kerning: -0.7,
-        lineSpacing: 45
+        lineSpacing: 13
     )
     
     // bold 700
     static var Q_Main = TextStyle(
         font: .pretendard(type: .bold, size: 16),
         kerning: -0.7,
-        lineSpacing: 24
+        lineSpacing: 8
     )
     
     static var Button = TextStyle(
         font: .pretendard(type: .bold, size: 16),
         kerning: -0.7,
-        lineSpacing: 24
+        lineSpacing: 8
     )
     
     // medium 500
     static var Q_Sub = TextStyle(
         font: .pretendard(type: .medium, size: 12),
         kerning: 0,
-        lineSpacing: 16
+        lineSpacing: 4
     )
     
     static var login_info = TextStyle(
         font: .pretendard(type: .medium, size: 12),
         kerning: 0,
-        lineSpacing: 16
+        lineSpacing: 4
     )
     
     static var Button_s = TextStyle(
         font: .pretendard(type: .medium, size: 12),
         kerning: 0,
-        lineSpacing: 16
+        lineSpacing: 4
     )
     
     static var A_Main = TextStyle(
         font: .pretendard(type: .medium, size: 12),
         kerning: 0,
-        lineSpacing: 24
+        lineSpacing: 12
     )
     
     static var login_alert = TextStyle(
         font: .pretendard(type: .medium, size: 10),
         kerning: 0,
-        lineSpacing: 16
+        lineSpacing: 6
     )
     
     static var Small_Text_10 = TextStyle(
         font: .pretendard(type: .medium, size: 10),
         kerning: 0,
-        lineSpacing: 16
+        lineSpacing: 6
     )
     
     static var Post_Thumbnail_text = TextStyle(
         font: .pretendard(type: .medium, size: 8),
         kerning: -0.7,
-        lineSpacing: 12
+        lineSpacing: 4
     )
     
     // regular 400
     static var Sub_Text_Ko = TextStyle(
         font: .pretendard(type: .regular, size: 16),
         kerning: -0.7,
-        lineSpacing: 24
+        lineSpacing: 8
     )
     
     static var Texting_Q = TextStyle(
@@ -210,20 +210,20 @@ extension TextStyle {
     static var Q_pick = TextStyle(
         font: .pretendard(type: .regular, size: 12),
         kerning: 0,
-        lineSpacing: 24
+        lineSpacing: 12
     )
     
     static var Small_Text_6 = TextStyle(
         font: .pretendard(type: .regular, size: 6),
         kerning: -0.7,
-        lineSpacing: 8
+        lineSpacing: 2
     )
     
     // light 300
-    static var Small_Text_89 = TextStyle(
+    static var Small_Text_8 = TextStyle(
         font: .pretendard(type: .light, size: 8),
         kerning: 0,
-        lineSpacing: 10
+        lineSpacing: 2
     )
     
     // MARK: - Primeform
@@ -232,57 +232,57 @@ extension TextStyle {
     static var Title_Text_Eng = TextStyle(
         font: .primeform(type: .heavy, size: 36),
         kerning: -2,
-        lineSpacing: 43
+        lineSpacing: 7
     )
     
     static var Id_Find = TextStyle(
         font: .primeform(type: .heavy, size: 24),
         kerning: -0.7,
-        lineSpacing: 43
+        lineSpacing: 19
     )
     
     static var Pick_Q_Eng_bold = TextStyle(
         font: .primeform(type: .heavy, size: 16),
         kerning: -0.7,
-        lineSpacing: 43
+        lineSpacing: 27
     )
     
     static var category_bar = TextStyle(
         font: .primeform(type: .heavy, size: 13),
         kerning: 1,
-        lineSpacing: 42
+        lineSpacing: 29
     )
     
     // Semibold 600
     static var Post_UserID = TextStyle(
         font: .primeform(type: .semiBold, size: 8),
         kerning: -0.7,
-        lineSpacing: 10
+        lineSpacing: 2
     )
     
     static var Pick_Q_Eng = TextStyle(
         font: .primeform(type: .semiBold, size: 8),
         kerning: -0.7,
-        lineSpacing: 10
+        lineSpacing: 2
     )
     
     static var Comment_ID = TextStyle(
         font: .primeform(type: .semiBold, size: 8),
         kerning: -0.7,
-        lineSpacing: 10
+        lineSpacing: 2
     )
     
     // medium 500
     static var Small_Text = TextStyle(
         font: .primeform(type: .medium, size: 8),
         kerning: -0.7,
-        lineSpacing: 10
+        lineSpacing: 2
     )
     
     // light 300
     static var light_eng = TextStyle(
         font: .primeform(type: .light, size: 16),
         kerning: 0,
-        lineSpacing: 20
+        lineSpacing: 4
     )
 }
