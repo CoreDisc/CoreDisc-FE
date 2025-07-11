@@ -204,7 +204,7 @@ extension TextStyle {
     static var Texting_Q = TextStyle(
         font: .pretendard(type: .regular, size: 12),
         kerning: -0.7,
-        lineSpacing: 16
+        lineSpacing: 4
     )
     
     static var Q_pick = TextStyle(
