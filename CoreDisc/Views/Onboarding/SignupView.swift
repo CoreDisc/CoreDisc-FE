@@ -25,6 +25,7 @@ struct SignupView: View {
                 Rectangle()
                     .frame(width: 60, height: 60)
                     .foregroundColor(.key)
+                Spacer().frame(height: 16)
                 MainGroup
             }
         }

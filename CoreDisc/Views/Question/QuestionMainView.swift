@@ -67,34 +67,6 @@ struct QuestionMainView: View {
         }
         .frame(width: UIScreen.main.bounds.width)
     }
-    // 뒤로가기, SET 버튼
-    private var BottomGroup: some View {
-        HStack {
-            Button(action: {}) { // TODO: action 추가
-                ZStack {
-                    Circle()
-                        .stroke(.key, lineWidth: 2)
-                        .frame(width: 60)
-                    
-//                    Image(.iconBack)
-                }
-            }
-            
-            Spacer()
-            
-            Button(action: {}) { // TODO: action 추가
-                ZStack {
-                    Circle()
-                        .stroke(.key, lineWidth: 2)
-                        .frame(width: 60)
-                    
-                    Text("SET")
-                        .foregroundStyle(.key)
-                }
-            }
-        }
-        .padding(.horizontal, 35)
-    }
 }
 
 // 질문 선택 컴포넌트

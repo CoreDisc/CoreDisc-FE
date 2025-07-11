@@ -21,6 +21,7 @@ struct LoginView: View {
                 Rectangle()
                     .frame(width: 60, height: 60)
                     .foregroundColor(.key)
+                Spacer().frame(height: 16)
                 Text("Shoot Your")
                     .textStyle(.Title_Text_Ko)
                     .foregroundStyle(.white)
