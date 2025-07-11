@@ -10,10 +10,10 @@ import SwiftUI
 struct PostWriteView: View {
     var body: some View {
         VStack {
-            Text("PostWriteView")
-                .font(.Sub_Text)
-            Text("PostWriteView")
-                .font(.Title_Text)
+            Text("Pretendard")
+                .textStyle(.Title_Text_Ko)
+            Text("Preform")
+                .textStyle(.Title_Text_Eng)
         }
     }
 }

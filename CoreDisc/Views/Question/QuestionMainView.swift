@@ -24,8 +24,6 @@ struct QuestionMainView: View {
                 CDGroup
                 
                 Spacer().frame(height: 78)
-                
-                BottomGroup
             }
         }
     }
@@ -34,14 +32,12 @@ struct QuestionMainView: View {
     private var TitleGroup: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Today’s Coredisc")
-                .font(.Title_Text)
+                .textStyle(.Title_Text_Eng)
                 .foregroundStyle(.key)
-                .kerning(-2) // 자간
             
             Text("오늘의 코어디스크를 기록해보세요")
-                .font(.PrimeformSemiBold12)
+                .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
-                .kerning(-0.7)
                 .padding(.leading, 5)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -71,36 +67,6 @@ struct QuestionMainView: View {
         }
         .frame(width: UIScreen.main.bounds.width)
     }
-    
-    // 뒤로가기, SET 버튼
-    private var BottomGroup: some View {
-        HStack {
-            Button(action: {}) { // TODO: action 추가
-                ZStack {
-                    Circle()
-                        .stroke(.key, lineWidth: 2)
-                        .frame(width: 60)
-                    
-                    Image(.iconBack)
-                }
-            }
-            
-            Spacer()
-            
-            Button(action: {}) { // TODO: action 추가
-                ZStack {
-                    Circle()
-                        .stroke(.key, lineWidth: 2)
-                        .frame(width: 60)
-                    
-                    Text("SET")
-                        .font(.PrimeformBold16)
-                        .foregroundStyle(.key)
-                }
-            }
-        }
-        .padding(.horizontal, 35)
-    }
 }
 
 // 질문 선택 컴포넌트
@@ -122,7 +88,7 @@ struct QuestionSelectItem: View {
                         .frame(width: 27)
                     
                     Text(text)
-                        .font(.PretendardRegular12)
+                        .textStyle(.Q_pick)
                         .foregroundStyle(.black)
                         .frame(width: 143, alignment: .leading)
                         .lineLimit(1)

@@ -10,10 +10,10 @@ import SwiftUI
 struct MypageView: View {
     var body: some View {
         VStack {
-            Text("MypageView")
-                .font(.Sub_Text)
-            Text("MypageView")
-                .font(.Title_Text)
+            Text("Pretendard")
+                .textStyle(.Title_Text_Ko)
+            Text("Preform")
+                .textStyle(.Title_Text_Eng)
         }
     }
 }

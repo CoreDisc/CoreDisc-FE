@@ -11,9 +11,9 @@ struct QuestionShareView: View {
     var body: some View {
         VStack {
             Text("Pretendard")
-                .font(.Sub_Text)
+                .textStyle(.Title_Text_Ko)
             Text("Preform")
-                .font(.Title_Text)
+                .textStyle(.Title_Text_Eng)
         }
     }
 }

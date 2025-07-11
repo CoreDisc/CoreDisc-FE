@@ -10,10 +10,10 @@ import SwiftUI
 struct ReportMainView: View {
     var body: some View {
         VStack {
-            Text("ReportMainView")
-                .font(.Sub_Text)
-            Text("ReportMainView")
-                .font(.Title_Text)
+            Text("Pretendard")
+                .textStyle(.Title_Text_Ko)
+            Text("Preform")
+                .textStyle(.Title_Text_Eng)
         }
     }
 }
