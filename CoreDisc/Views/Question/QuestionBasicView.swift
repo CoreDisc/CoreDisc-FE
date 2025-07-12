@@ -52,7 +52,7 @@ struct QuestionBasicView: View {
     private var searchGroup: some View {
         ZStack(alignment: .leading) {
             RoundedRectangle(cornerRadius: 22.5)
-                .foregroundStyle(.tabDark)
+                .foregroundStyle(.black000)
                 .frame(height: 45)
                 .shadow(
                     color: .white.opacity(0.5),
