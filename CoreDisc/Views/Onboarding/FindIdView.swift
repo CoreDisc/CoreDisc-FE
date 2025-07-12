@@ -15,9 +15,9 @@ struct FindIdView: View {
     
     var body: some View {
         ZStack {
-            Image(.background)
-                .aspectRatio(contentMode: .fill)
-                .ignoresSafeArea()
+//            Image(.background)
+//                .aspectRatio(contentMode: .fill)
+//                .ignoresSafeArea()
             VStack{
                 Spacer().frame(height: 96)
                 Rectangle()
