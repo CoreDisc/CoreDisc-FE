@@ -29,10 +29,10 @@ struct CategorySelectButton: View {
             ZStack(alignment: .leading) {
                 Rectangle()
                     .frame(width: width, height: 60)
-                    .foregroundStyle(isSelected ? Color("key") : .black)
+                    .foregroundStyle(isSelected ? Color("key") : .black000)
                 Text("\(title)")
                     .textStyle(.Q_Main)
-                    .foregroundStyle(isSelected ? .black: .white)
+                    .foregroundStyle(isSelected ? .black000: .white)
                     .padding(.leading, 19)
             }
             

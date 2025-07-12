@@ -36,19 +36,17 @@ struct QuestionSummaryView: View {
             
             ZStack(alignment: .topLeading){
                 VStack(spacing: 0) {
-                    Group {
-                        UnevenRoundedRectangle(cornerRadii: .init(
-                            topLeading: 0,
-                            bottomLeading: 12,
-                            bottomTrailing: 12,
-                            topTrailing: 0))
-                        .frame(width: 360, height: 441)
-                        .foregroundStyle(.grayText)
-                        
-                        Triangle()
-                            .foregroundStyle(.grayText)
-                            .frame(width: 93, height: 20)
-                    }
+                    UnevenRoundedRectangle(cornerRadii: .init(
+                        topLeading: 0,
+                        bottomLeading: 12,
+                        bottomTrailing: 12,
+                        topTrailing: 0))
+                    .frame(width: 360, height: 441)
+                    .foregroundStyle(.gray400)
+                    
+                    Triangle()
+                        .foregroundStyle(.gray400)
+                        .frame(width: 93, height: 20)
                 }
                 VStack (alignment: .leading){
                     Text("작성 질문 요약")
@@ -70,14 +68,14 @@ struct QuestionSummaryView: View {
                             .foregroundStyle(.key)
                             .overlay(
                                 VStack(spacing: 0) {
-                                    Color.black.frame(height: 1)
+                                    Color.black000.frame(height: 1)
                                     Spacer()
-                                    Color.black.frame(height: 1)
+                                    Color.black000.frame(height: 1)
                                 }
                             )
                         Text("선택1")
                             .textStyle(.Q_Main)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.black000)
                             .padding(.leading, 27)
                     }
                     

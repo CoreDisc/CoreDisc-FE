@@ -10,7 +10,7 @@ import SwiftUI
 struct QuestionWriteView: View {
     let bubbleGradient = EllipticalGradient(
         stops: [
-            .init(color: .grayText.opacity(0.0), location: 0.2692),
+            .init(color: .gray400.opacity(0.0), location: 0.2692),
             .init(color: .white, location: 0.8125)
         ],
         center: .center,
@@ -51,54 +51,52 @@ struct QuestionWriteView: View {
     
     // 상단 타이틀
     var WriteSuggestion: some View {
-            VStack{
-                HStack {
-                    Button(action: {}){
-                        Image(.iconBack)
-                    }
-                    .padding(.leading, 17)
-                    Spacer()
+        VStack{
+            HStack {
+                Button(action: {}){
+                    Image(.iconBack)
                 }
-                ZStack{
-                    EllipticalGradient(
-                        stops: [
-                            .init(color: .grayText.opacity(0.0), location: 0.2692),
-                            .init(color: .white, location: 0.8125)
-                        ],
-                        center: .center,
-                        startRadiusFraction: 0,
-                        endRadiusFraction: 0.7431
-                    )
-                    .frame(width: 360, height: 147)
-                    .mask(
-                        VStack(spacing: 0){
-                            Group{
-                                UnevenRoundedRectangle(cornerRadii: .init(
-                                    topLeading: 0,
-                                    bottomLeading: 12,
-                                    bottomTrailing: 12,
-                                    topTrailing: 0))
-                                .frame(width: 360, height: 123)
-                                
-                                Triangle()
-                                    .foregroundStyle(.grayText)
-                                    .frame(width: 93, height: 20)
-                            }
-                        }
-                            
-                    )
-                    VStack(spacing: 10){
-                        Text("Make your own disk")
-                            .textStyle(.Title_Text_Eng)
-                            .foregroundStyle(.white)
-                        Text("오늘 함께할 질문을 작성해보세요.")
-                            .textStyle(.Sub_Text_Ko)
-                            .foregroundStyle(.white)
-                        Spacer().frame(height: 11.75)
-                    }
-                        
-                }
+                .padding(.leading, 17)
+                Spacer()
             }
+            ZStack{
+                EllipticalGradient(
+                    stops: [
+                        .init(color: .gray400.opacity(0.0), location: 0.2692),
+                        .init(color: .white, location: 0.8125)
+                    ],
+                    center: .center,
+                    startRadiusFraction: 0,
+                    endRadiusFraction: 0.7431
+                )
+                .frame(width: 360, height: 147)
+                .mask(
+                    VStack(spacing: 0){
+                        UnevenRoundedRectangle(cornerRadii: .init(
+                            topLeading: 0,
+                            bottomLeading: 12,
+                            bottomTrailing: 12,
+                            topTrailing: 0))
+                        .frame(width: 360, height: 123)
+                        
+                        Triangle()
+                            .foregroundStyle(.gray400)
+                            .frame(width: 93, height: 20)
+                    }
+                    
+                )
+                VStack(spacing: 10){
+                    Text("Make your own disk")
+                        .textStyle(.Title_Text_Eng)
+                        .foregroundStyle(.white)
+                    Text("오늘 함께할 질문을 작성해보세요.")
+                        .textStyle(.Sub_Text_Ko)
+                        .foregroundStyle(.white)
+                    Spacer().frame(height: 11.75)
+                }
+                
+            }
+        }
     }
     
     // 질문 카테고리 선택 부분
@@ -111,7 +109,7 @@ struct QuestionWriteView: View {
                         bottomTrailing: 12,
                         topTrailing: 0))
             .frame(width: 360, height: 423)
-            .foregroundStyle(.grayText)
+            .foregroundStyle(.gray400)
             
             VStack (alignment: .leading) {
                 Text("질문 카테고리를")
@@ -153,7 +151,7 @@ struct QuestionWriteView: View {
                         bottomTrailing: 12,
                         topTrailing: 0))
             .frame(width: 360, height: 315)
-            .foregroundStyle(.grayText)
+            .foregroundStyle(.gray400)
             
             VStack (alignment: .leading) {
                 Text("질문 내용을")
@@ -180,17 +178,17 @@ struct QuestionWriteView: View {
                                 text = String(text.prefix(50))
                             }
                         }
-
+                    
                     if text.isEmpty {
                         Text("내용을 입력해주세요.")
-                            .foregroundStyle(.grayText)
+                            .foregroundStyle(.gray400)
                             .textStyle(.Texting_Q)
                             .padding(.top, 30)
                             .padding(.leading, 25)
                     }
-
+                    
                     Text("\(text.count)/50")
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                         .textStyle(.Small_Text_10)
                         .frame(width: 310, height: 150, alignment: .bottomTrailing)
                 }
@@ -210,10 +208,10 @@ struct QuestionWriteView: View {
                             bottomTrailing: 12,
                             topTrailing: 0))
                 .frame(width: 360, height: 219)
-                .foregroundStyle(.grayBbar)
+                .foregroundStyle(.gray600)
                 
                 Triangle()
-                    .foregroundStyle(.grayBbar)
+                    .foregroundStyle(.gray600)
                     .frame(width: 93, height: 9)
             }
             

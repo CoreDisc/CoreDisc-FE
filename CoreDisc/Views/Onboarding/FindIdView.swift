@@ -85,10 +85,10 @@ struct FindIdView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("아이디 찾기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
             
@@ -97,10 +97,10 @@ struct FindIdView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("로그인 화면으로 돌아가기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
             
@@ -163,7 +163,7 @@ struct FindIdView: View {
                         .foregroundStyle(.key)
                     Text("비밀번호 찾기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
             
@@ -172,10 +172,10 @@ struct FindIdView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("로그인 화면으로 돌아가기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
             

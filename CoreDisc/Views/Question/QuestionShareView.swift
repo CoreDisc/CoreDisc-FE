@@ -97,7 +97,7 @@ struct QuestionShareItem: View {
                 
                 Text(content)
                     .textStyle(.Texting_Q)
-                    .foregroundStyle(.black)
+                    .foregroundStyle(.black000)
                 
                 Spacer().frame(height: 14)
                 

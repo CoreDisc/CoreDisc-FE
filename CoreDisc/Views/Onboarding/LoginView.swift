@@ -79,10 +79,10 @@ struct LoginView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("로그인")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
             
