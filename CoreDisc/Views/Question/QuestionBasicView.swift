@@ -10,7 +10,8 @@ import SwiftUI
 struct QuestionBasicView: View {
     private var viewModel: QuesitonBasicViewModel = .init()
     
-    @State private var draggedIndex: Int?
+    // 열려있는 카테고리
+    @State private var expandedCategoryIDs: Set<UUID> = []
     
     var body: some View {
         ZStack {
@@ -31,6 +32,8 @@ struct QuestionBasicView: View {
             }
         }
     }
+    
+    // MARK: - group
     
     // 상단 타이틀
     private var TopGroup: some View {
@@ -78,6 +81,21 @@ struct QuestionBasicView: View {
                     startColor: item.startColor,
                     endColor: item.endColor
                 )
+                .onTapGesture {
+                    withAnimation {
+                        toggleExpanded(for: item.id)
+                    }
+                }
+                
+                if expandedCategoryIDs.contains(item.id) {
+                    ForEach(0..<10, id: \.self) { index in
+                        QuestionBasicDetailItem(
+                            title: "\(item.title) \(index + 1)",
+                            startColor: item.startColor,
+                            endColor: item.endColor
+                        )
+                    }
+                }
             }
             .listRowSeparator(.hidden) // 구분선 제거
             .listRowBackground(Color.clear) // 리스트 기본 색상 제거
@@ -88,7 +106,20 @@ struct QuestionBasicView: View {
         .scrollContentBackground(.visible) // 기본 배경 색상 제거
         .padding(.leading, 21)
     }
+    
+    // MARK: - function
+    
+    // 카테고리 열기/닫기 토글
+    private func toggleExpanded(for id: UUID) {
+        if expandedCategoryIDs.contains(id) {
+            expandedCategoryIDs.remove(id)
+        } else {
+            expandedCategoryIDs.insert(id)
+        }
+    }
 }
+
+// MARK: - component
 
 // 질문 카테고리
 struct QuestionBasicCategoryItem: View {
@@ -133,6 +164,7 @@ struct QuestionBasicCategoryItem: View {
     }
 }
 
+// 질문 상세
 struct QuestionBasicDetailItem: View {
     var title: String
     var startColor: Color
