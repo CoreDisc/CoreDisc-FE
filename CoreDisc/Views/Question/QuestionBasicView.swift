@@ -9,6 +9,9 @@ import SwiftUI
 
 struct QuestionBasicView: View {
     private var viewModel: QuesitonBasicViewModel = .init()
+    
+    @State private var draggedIndex: Int?
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground)
@@ -126,6 +129,34 @@ struct QuestionBasicCategoryItem: View {
                 Image(.imgMoreButton)
             }
             .tint(.clear) // 기본 배경 제거
+        }
+    }
+}
+
+struct QuestionBasicDetailItem: View {
+    var title: String
+    var startColor: Color
+    var endColor: Color
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(.shadow(.inner(
+                    color: .shadow,
+                    radius: 6,
+                    y: -4
+                )))
+                .linearGradient(
+                    startColor: startColor,
+                    endColor: endColor)
+                .frame(minHeight: 64)
+            
+            Text(title.splitCharacter())
+                .textStyle(.Q_Main)
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 23)
+                .padding(.vertical, 14)
         }
     }
 }
