@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct QuestionBasicView: View {
+    private var viewModel: QuesitonBasicViewModel = .init()
+    
+    // 열려있는 카테고리
+    @State private var expandedCategoryIDs: Set<UUID> = []
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground)
@@ -27,6 +32,8 @@ struct QuestionBasicView: View {
             }
         }
     }
+    
+    // MARK: - group
     
     // 상단 타이틀
     private var TopGroup: some View {
@@ -66,17 +73,53 @@ struct QuestionBasicView: View {
     
     // 카테고리 목록
     private var categoryGroup: some View {
-        ScrollView {
-            VStack(spacing: 24) {
+        List {
+            ForEach(viewModel.categoryItem) { item in
                 QuestionBasicCategoryItem(
-                    title: "식사",
+                    title: item.title,
                     count: 99,
-                    startColor: .yellow1,
-                    endColor: .yellow2)
+                    startColor: item.startColor,
+                    endColor: item.endColor
+                )
+                .onTapGesture {
+                    withAnimation {
+                        toggleExpanded(for: item.id)
+                    }
+                }
+                
+                if expandedCategoryIDs.contains(item.id) {
+                    ForEach(0..<10, id: \.self) { index in
+                        QuestionBasicDetailItem(
+                            title: "\(item.title) \(index + 1)",
+                            startColor: item.startColor,
+                            endColor: item.endColor
+                        )
+                    }
+                }
             }
+            .listRowSeparator(.hidden) // 구분선 제거
+            .listRowBackground(Color.clear) // 리스트 기본 색상 제거
+            .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 21))
+        }
+        .listStyle(.plain) // list 주변영역 제거
+        .listRowSpacing(24) // 리스트 간격
+        .scrollContentBackground(.visible) // 기본 배경 색상 제거
+        .padding(.leading, 21)
+    }
+    
+    // MARK: - function
+    
+    // 카테고리 열기/닫기 토글
+    private func toggleExpanded(for id: UUID) {
+        if expandedCategoryIDs.contains(id) {
+            expandedCategoryIDs.remove(id)
+        } else {
+            expandedCategoryIDs.insert(id)
         }
     }
 }
+
+// MARK: - component
 
 // 질문 카테고리
 struct QuestionBasicCategoryItem: View {
@@ -86,35 +129,67 @@ struct QuestionBasicCategoryItem: View {
     var endColor: Color
     
     var body: some View {
-        Button(action: {
-            print("click")
-        }) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(.shadow(.inner(
-                        color: .shadow,
-                        radius: 6,
-                        y: -4)))
-                    .linearGradient(
-                        startColor: startColor,
-                        endColor: endColor)
-                    .frame(height: 64)
+        ZStack {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(.shadow(.inner(
+                    color: .shadow,
+                    radius: 6,
+                    y: -4)))
+                .linearGradient(
+                    startColor: startColor,
+                    endColor: endColor)
+                .frame(height: 64)
+            
+            HStack {
+                Text(title)
+                    .textStyle(.Q_Main)
+                    .foregroundStyle(.white)
                 
-                HStack {
-                    Text(title)
-                        .textStyle(.Q_Main)
-                        .foregroundStyle(.white)
-                    
-                    Spacer()
-                    
-                    Text("+\(count)")
-                        .textStyle(.Q_Main)
-                        .foregroundStyle(.white)
-                }
-                .padding(.horizontal, 23)
+                Spacer()
+                
+                Text("+\(count)")
+                    .textStyle(.Q_Main)
+                    .foregroundStyle(.white)
             }
+            .padding(.horizontal, 23)
         }
-        .padding(.horizontal, 21)
+        .swipeActions(edge: .leading) {
+            Button(action: { // TODO: action
+                print("More menu tapped")
+            }) {
+                Image(.imgMoreButton)
+            }
+            .tint(.clear) // 기본 배경 제거
+        }
+    }
+}
+
+// 질문 상세
+struct QuestionBasicDetailItem: View {
+    var title: String
+    var startColor: Color
+    var endColor: Color
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(.shadow(.inner(
+                    color: .shadow,
+                    radius: 6,
+                    y: -4
+                )))
+                .linearGradient(
+                    startColor: startColor,
+                    endColor: endColor)
+                .frame(minHeight: 64)
+            
+            Text(title.splitCharacter())
+                .textStyle(.Q_Main)
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 23)
+                .padding(.vertical, 14)
+        }
     }
 }
 
