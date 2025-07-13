@@ -20,8 +20,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				Models/.gitkeep,
-				ViewModels/.gitkeep,
 			);
 			target = 238562CD2E0F0E2E008F25B1 /* CoreDisc */;
 		};
