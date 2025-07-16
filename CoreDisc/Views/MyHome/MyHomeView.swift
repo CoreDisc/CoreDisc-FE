@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MypageView: View {
+struct MyHomeView: View {
     @State var showSheet: Bool = false
     
     var body: some View {
@@ -150,5 +150,5 @@ struct MypageView: View {
 }
 
 #Preview {
-    MypageView()
+    MyHomeView()
 }
