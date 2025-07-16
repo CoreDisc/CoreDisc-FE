@@ -67,7 +67,7 @@ struct MyHomeView: View {
                     .foregroundStyle(.white)
             }
             
-            Button(action: {}) { // TODO: action
+            NavigationLink(destination: SettingView()) {
                 Image(.iconSetting)
                     .foregroundStyle(.white)
             }
