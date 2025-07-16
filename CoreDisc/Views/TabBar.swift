@@ -39,6 +39,7 @@ struct TabBar: View {
             
             CustomTabBar(selectedTab: $selectedTab, tabBarStyle: tabBarStyle)
         }
+        .ignoresSafeArea(.keyboard)
         .onChange(of: selectedTab) {
             tabBarStyle = tabBarStyle(for: selectedTab)
         }

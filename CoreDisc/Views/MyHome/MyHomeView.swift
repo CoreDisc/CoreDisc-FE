@@ -11,44 +11,46 @@ struct MyHomeView: View {
     @State var showSheet: Bool = false
     
     var body: some View {
-        ZStack {
-            Image(.imgShortBackground2)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack {
-                Spacer().frame(height: 3)
+        NavigationStack {
+            ZStack {
+                Image(.imgShortBackground2)
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                TopMenuGroup
-                
-                ProfileGroup
-                
-                Spacer().frame(height: 13)
-                
-                CountGroup
-                
-                Spacer().frame(height: 25)
-                
-                Button(action: {}) { // TODO: action
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(.key)
-                            .frame(height: 39)
-                            .padding(.horizontal, 24)
-                        
-                        Text("Edit Profile")
-                            .textStyle(.Pick_Q_Eng)
-                            .foregroundStyle(.black000)
+                VStack {
+                    Spacer().frame(height: 3)
+                    
+                    TopMenuGroup
+                    
+                    ProfileGroup
+                    
+                    Spacer().frame(height: 13)
+                    
+                    CountGroup
+                    
+                    Spacer().frame(height: 25)
+                    
+                    NavigationLink(destination: EditProfileView()) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(.key)
+                                .frame(height: 39)
+                                .padding(.horizontal, 24)
+                            
+                            Text("Edit Profile")
+                                .textStyle(.Pick_Q_Eng)
+                                .foregroundStyle(.black000)
+                        }
                     }
+                    .buttonStyle(.plain)
+                    
+                    Spacer()
                 }
-                .buttonStyle(.plain)
                 
-                Spacer()
+                sheetView
             }
-            
-            sheetView
+            .animation(.easeInOut(duration: 0.3), value: showSheet)
         }
-        .animation(.easeInOut(duration: 0.3), value: showSheet)
     }
     
     // 상단 메뉴
