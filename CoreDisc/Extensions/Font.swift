@@ -261,9 +261,9 @@ extension TextStyle {
     )
     
     static var Pick_Q_Eng = TextStyle(
-        font: .primeform(type: .semiBold, size: 8),
-        kerning: -0.7,
-        lineSpacing: 2
+        font: .primeform(type: .semiBold, size: 16),
+        kerning: 0,
+        lineSpacing: 4
     )
     
     static var Comment_ID = TextStyle(

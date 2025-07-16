@@ -92,6 +92,7 @@ struct QuestionShareItem: View {
                     
                     Button(action: {}) { // TODO: action
                         Image(.iconClose)
+                            .foregroundStyle(.gray800)
                     }
                 }
                 

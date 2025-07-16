@@ -32,13 +32,14 @@ struct TabBar: View {
                 case .report:
                     ReportMainView()
                 case .mypage:
-                    MypageView()
+                    MyHomeView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             CustomTabBar(selectedTab: $selectedTab, tabBarStyle: tabBarStyle)
         }
+        .ignoresSafeArea(.keyboard)
         .onChange(of: selectedTab) {
             tabBarStyle = tabBarStyle(for: selectedTab)
         }
