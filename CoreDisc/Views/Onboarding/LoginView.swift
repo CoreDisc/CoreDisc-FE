@@ -14,7 +14,7 @@ struct LoginView: View {
     
     var body: some View {
         ZStack {
-            Image(.background)
+            Image(.imgShortBackground)
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
             VStack{
@@ -124,11 +124,11 @@ struct LoginView: View {
             Spacer().frame(height: 32)
             
             HStack{
-                Image(.naver)
+                Image(.imgShortBackground)
                 Spacer().frame(width: 43)
-                Image(.kakao)
+                //Image(.kakao)
                 Spacer().frame(width: 43)
-                Image(.google)
+                //Image(.google)
             }
         }
         .padding(.horizontal, 41)
