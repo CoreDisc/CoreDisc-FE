@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MypageView: View {
+    @State var showSheet: Bool = false
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground2)
@@ -43,7 +45,10 @@ struct MypageView: View {
                 
                 Spacer()
             }
+            
+            sheetView
         }
+        .animation(.easeInOut(duration: 0.3), value: showSheet)
     }
     
     // 상단 메뉴
@@ -100,7 +105,9 @@ struct MypageView: View {
             .frame(width: 100, height: 40)
             
             // follower
-            Button(action: {}) { // TODO: action
+            Button(action: {
+                showSheet = true
+            }) { // TODO: action
                 VStack {
                     Text("522")
                         .textStyle(.Q_Main)
@@ -128,6 +135,16 @@ struct MypageView: View {
             }
             .frame(width: 100, height: 40)
             .buttonStyle(.plain)
+        }
+    }
+    
+    // MARK: - bottom sheet
+    @ViewBuilder
+    private var sheetView: some View {
+        if showSheet {
+            FollowersSheetView(showSheet: $showSheet)
+                .transition(.move(edge: .bottom))
+                .zIndex(1)
         }
     }
 }
