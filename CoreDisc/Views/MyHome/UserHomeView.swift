@@ -10,6 +10,12 @@ import SwiftUI
 struct UserHomeView: View {
     @Environment(\.dismiss) var dismiss
     @State var isFollow: Bool = false
+    @State var isBlock: Bool = false
+    @State var showBlockButton: Bool = false
+    @State var showBlockModal: Bool = false
+    
+    // 임시
+    var userName: String = "@coredisc_kr"
     
     var body: some View {
         ZStack {
@@ -34,6 +40,30 @@ struct UserHomeView: View {
                 
                 Spacer()
             }
+            
+            // 차단 모달
+            if showBlockModal {
+                ModalView {
+                    VStack(spacing: 10) {
+                        Text("차단하면 서로의 게시글과 활동을 볼 수 없습니다.")
+                            .textStyle(.Button_s)
+                        
+                        Text("차단하시겠습니까?")
+                            .textStyle(.Button_s)
+                    }
+                } leftButton: {
+                    Button(action: {
+                        showBlockModal.toggle()
+                    }) {
+                        Text("취소하기")
+                    }
+                } rightButton: {
+                    Button(action: {}) { // TODO: block api
+                        Text("차단하기")
+                            .foregroundStyle(.red)
+                    }
+                }
+            }
         }
     }
     
@@ -49,7 +79,7 @@ struct UserHomeView: View {
                 Spacer()
             }
             
-            HStack {
+            HStack(alignment: .top) {
                 Button(action: {
                     dismiss()
                 }) {
@@ -58,8 +88,28 @@ struct UserHomeView: View {
                 
                 Spacer()
                 
-                Button(action: {}) {
-                    Image(.iconMore)
+                VStack(alignment: .trailing) {
+                    Button(action: {
+                        showBlockButton.toggle()
+                    }) {
+                        Image(.iconMore)
+                    }
+                    
+                    if showBlockButton {
+                        Button(action: {
+                            showBlockModal.toggle()
+                        }) {
+                            Text("block \(userName)")
+                                .textStyle(.Button_s)
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .fill(.gray800)
+                                )
+                        }
+                    }
                 }
             }
             .padding(.leading, 17)
@@ -73,7 +123,7 @@ struct UserHomeView: View {
             Circle() // TODO: 프로필 이미지
                 .frame(width: 124, height: 124)
             
-            Text("@coredisc_kr")
+            Text(userName)
                 .textStyle(.Pick_Q_Eng)
                 .foregroundStyle(.gray100)
             

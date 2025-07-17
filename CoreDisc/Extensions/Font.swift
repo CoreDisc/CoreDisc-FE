@@ -201,6 +201,12 @@ extension TextStyle {
         lineSpacing: 8
     )
     
+    static var Modal_Text = TextStyle(
+        font: .pretendard(type: .regular, size: 14),
+        kerning: -0.7,
+        lineSpacing: -4
+    )
+    
     static var Texting_Q = TextStyle(
         font: .pretendard(type: .regular, size: 12),
         kerning: -0.7,
