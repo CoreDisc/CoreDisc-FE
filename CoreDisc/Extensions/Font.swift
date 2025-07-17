@@ -152,6 +152,12 @@ extension TextStyle {
     )
     
     // medium 500
+    static var Post_Sub = TextStyle(
+        font: .pretendard(type: .medium, size: 14),
+        kerning: -1,
+        lineSpacing: 7
+    )
+    
     static var Q_Sub = TextStyle(
         font: .pretendard(type: .medium, size: 12),
         kerning: 0,
@@ -173,7 +179,7 @@ extension TextStyle {
     static var A_Main = TextStyle(
         font: .pretendard(type: .medium, size: 12),
         kerning: 0,
-        lineSpacing: 12
+        lineSpacing: 3
     )
     
     static var login_alert = TextStyle(
@@ -193,6 +199,7 @@ extension TextStyle {
         kerning: -0.7,
         lineSpacing: 4
     )
+    
     
     // regular 400
     static var Sub_Text_Ko = TextStyle(
@@ -244,7 +251,19 @@ extension TextStyle {
     static var Id_Find = TextStyle(
         font: .primeform(type: .heavy, size: 24),
         kerning: -0.7,
-        lineSpacing: 19
+        lineSpacing: 3
+    )
+    
+    static var Post_Title = TextStyle(
+        font: .primeform(type: .heavy, size: 24),
+        kerning: -2,
+        lineSpacing: 7
+    )
+    
+    static var Post_Time = TextStyle(
+        font: .primeform(type: .heavy, size: 24),
+        kerning: -1,
+        lineSpacing: 7
     )
     
     static var Pick_Q_Eng_bold = TextStyle(
@@ -260,12 +279,18 @@ extension TextStyle {
     )
     
     // Semibold 600
-    static var Post_UserID = TextStyle(
-        font: .primeform(type: .semiBold, size: 8),
+    static var Pick_Q_Eng = TextStyle(
+        font: .primeform(type: .semiBold, size: 16),
         kerning: -0.7,
         lineSpacing: 2
     )
     
+
+    static var Post_UserID = TextStyle(
+        font: .primeform(type: .semiBold, size: 8),
+        kerning: 0,
+        lineSpacing: 2
+
     static var Pick_Q_Eng = TextStyle(
         font: .primeform(type: .semiBold, size: 16),
         kerning: 0,
@@ -281,6 +306,13 @@ extension TextStyle {
     // medium 500
     static var Small_Text = TextStyle(
         font: .primeform(type: .medium, size: 8),
+        kerning: -0.7,
+        lineSpacing: 2
+    )
+    
+    // regular 400
+    static var Post_Id = TextStyle(
+        font: .primeform(type: .regular, size: 16),
         kerning: -0.7,
         lineSpacing: 2
     )
