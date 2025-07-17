@@ -15,6 +15,9 @@ struct UserHomeView: View {
     @State var showBlockModal: Bool = false
     @State var showUnblockModal: Bool = false
     
+    @State var showFollowerSheet: Bool = false
+    @State var showFollowingSheet: Bool = false
+    
     // 임시
     var userName: String = "@coredisc_kr"
     
@@ -101,7 +104,11 @@ struct UserHomeView: View {
                     }
                 }
             }
+            
+            sheetView
         }
+        .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
+        .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
     }
     
     // 상단 메뉴
@@ -187,7 +194,9 @@ struct UserHomeView: View {
             .frame(width: 100, height: 40)
             
             // follower
-            Button(action: {}) { // TODO: action
+            Button(action: {
+                showFollowerSheet = true
+            }) { // TODO: action
                 VStack {
                     Text("1.5k")
                         .textStyle(.Q_Main)
@@ -202,7 +211,9 @@ struct UserHomeView: View {
             .buttonStyle(.plain)
             
             // following
-            Button(action: {}) { // TODO: action
+            Button(action: {
+                showFollowingSheet = true
+            }) { // TODO: action
                 VStack {
                     Text("738")
                         .textStyle(.Q_Main)
@@ -238,6 +249,22 @@ struct UserHomeView: View {
             }
         }
         .buttonStyle(.plain)
+    }
+    
+    // MARK: - bottom sheet
+    @ViewBuilder
+    private var sheetView: some View {
+        if showFollowerSheet {
+            FollowSheetView(showSheet: $showFollowerSheet, followType: .follower)
+                .transition(.move(edge: .bottom))
+                .zIndex(1)
+        }
+        
+        if showFollowingSheet {
+            FollowSheetView(showSheet: $showFollowingSheet, followType: .following)
+                .transition(.move(edge: .bottom))
+                .zIndex(1)
+        }
     }
 }
 

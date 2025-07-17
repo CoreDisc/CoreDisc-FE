@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct MyHomeView: View {
-    @State var showSheet: Bool = false
+    @State var showFollowerSheet: Bool = false
+    @State var showFollowingSheet: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -49,7 +50,8 @@ struct MyHomeView: View {
                 
                 sheetView
             }
-            .animation(.easeInOut(duration: 0.3), value: showSheet)
+            .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
+            .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
         }
     }
     
@@ -108,7 +110,7 @@ struct MyHomeView: View {
             
             // follower
             Button(action: {
-                showSheet = true
+                showFollowerSheet = true
             }) { // TODO: action
                 VStack {
                     Text("522")
@@ -124,7 +126,9 @@ struct MyHomeView: View {
             .buttonStyle(.plain)
             
             // following
-            Button(action: {}) { // TODO: action
+            Button(action: {
+                showFollowingSheet = true
+            }) { // TODO: action
                 VStack {
                     Text("921")
                         .textStyle(.Q_Main)
@@ -143,8 +147,14 @@ struct MyHomeView: View {
     // MARK: - bottom sheet
     @ViewBuilder
     private var sheetView: some View {
-        if showSheet {
-            FollowersSheetView(showSheet: $showSheet)
+        if showFollowerSheet {
+            FollowSheetView(showSheet: $showFollowerSheet, followType: .follower)
+                .transition(.move(edge: .bottom))
+                .zIndex(1)
+        }
+        
+        if showFollowingSheet {
+            FollowSheetView(showSheet: $showFollowingSheet, followType: .following)
                 .transition(.move(edge: .bottom))
                 .zIndex(1)
         }

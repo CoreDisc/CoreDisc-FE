@@ -7,9 +7,15 @@
 
 import SwiftUI
 
-struct FollowersSheetView: View {
+enum FollowType: String {
+    case follower = "followers"
+    case following = "followings"
+}
+
+struct FollowSheetView: View {
     @Binding var showSheet: Bool
-    @State private var viewModel = FollowersSheetViewModel()
+    @State private var viewModel = FollowSheetViewModel()
+    var followType: FollowType
     
     // 유저 수 (임시)
     var coreCount: Int = 82
@@ -43,7 +49,7 @@ struct FollowersSheetView: View {
     // 상단바
     private var TopGroup: some View {
         ZStack() {
-            Text("followers")
+            Text(followType.rawValue)
                 .textStyle(.Pick_Q_Eng)
                 .foregroundStyle(.white)
             
@@ -72,7 +78,7 @@ struct FollowersSheetView: View {
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                 
-                Text("followers")
+                Text(followType.rawValue)
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.gray400)
             }
@@ -102,5 +108,5 @@ struct FollowersSheetView: View {
 }
 
 #Preview {
-    FollowersSheetView(showSheet: .constant(true))
+    FollowSheetView(showSheet: .constant(true), followType: .follower)
 }
