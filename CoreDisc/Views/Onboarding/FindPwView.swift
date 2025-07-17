@@ -20,7 +20,7 @@ struct FindPwView: View {
         ZStack {
 
             Image(.imgOnboardingBackground)
-                .aspectRatio(contentMode: .fill)
+                .resizable()
                 .ignoresSafeArea()
 
             VStack{
