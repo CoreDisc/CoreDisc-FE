@@ -19,7 +19,7 @@ struct SignupView: View {
     var body: some View {
         ZStack {
             Image(.imgOnboardingBackground)
-                .aspectRatio(contentMode: .fill)
+                .resizable()
                 .ignoresSafeArea()
 
             VStack{

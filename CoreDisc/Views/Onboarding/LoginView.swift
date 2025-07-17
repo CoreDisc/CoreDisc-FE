@@ -16,7 +16,7 @@ struct LoginView: View {
         ZStack {
 
             Image(.imgOnboardingBackground)
-                .aspectRatio(contentMode: .fill)
+                .resizable()
                 .ignoresSafeArea()
 
             VStack{
@@ -128,7 +128,7 @@ struct LoginView: View {
             HStack(spacing: 43){
                 Image(.imgNaver)
                 Image(.imgKakao)
-                Image(.imgKakao)
+                Image(.imgGoogle)
             }
         }
         .padding(.horizontal, 41)
