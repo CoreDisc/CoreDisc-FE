@@ -19,7 +19,7 @@ struct FindPwView: View {
     var body: some View {
         ZStack {
 
-            Image(.background)
+            Image(.imgOnboardingBackground)
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
 

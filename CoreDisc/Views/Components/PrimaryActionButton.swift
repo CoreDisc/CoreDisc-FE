@@ -30,7 +30,7 @@ struct PrimaryActionButton: View {
 }
 
 #Preview {
-    @State var tempFinished = false
+    @Previewable @State var tempFinished = false
     
     PrimaryActionButton(title: "확인 및 저장", isFinished: $tempFinished)
 }

@@ -32,7 +32,7 @@ struct TabBar: View {
                 case .report:
                     ReportMainView()
                 case .mypage:
-                    MyHomeView()
+                    UserHomeView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

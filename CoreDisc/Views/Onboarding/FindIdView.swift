@@ -15,9 +15,10 @@ struct FindIdView: View {
     
     var body: some View {
         ZStack {
-            Image(.background)
-                .aspectRatio(contentMode: .fill)
+            Image(.imgOnboardingBackground)
+                .resizable()
                 .ignoresSafeArea()
+            
             VStack{
                 Spacer().frame(height: 96)
                 Rectangle()

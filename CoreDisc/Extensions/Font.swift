@@ -208,6 +208,12 @@ extension TextStyle {
         lineSpacing: 8
     )
     
+    static var Modal_Text = TextStyle(
+        font: .pretendard(type: .regular, size: 14),
+        kerning: -0.7,
+        lineSpacing: -4
+    )
+    
     static var Texting_Q = TextStyle(
         font: .pretendard(type: .regular, size: 12),
         kerning: -0.7,
@@ -275,8 +281,8 @@ extension TextStyle {
     // Semibold 600
     static var Pick_Q_Eng = TextStyle(
         font: .primeform(type: .semiBold, size: 16),
-        kerning: -0.7,
-        lineSpacing: 2
+        kerning: 0,
+        lineSpacing: 4
     )
     
 
@@ -284,11 +290,6 @@ extension TextStyle {
         font: .primeform(type: .semiBold, size: 8),
         kerning: 0,
         lineSpacing: 2
-
-    static var Pick_Q_Eng = TextStyle(
-        font: .primeform(type: .semiBold, size: 16),
-        kerning: 0,
-        lineSpacing: 4
     )
     
     static var Comment_ID = TextStyle(
