@@ -16,7 +16,7 @@ struct CategoryButton: View {
         Button(action: {}) { // TODO: action 추가
             Text("#\(title)")
                 .textStyle(.Q_Sub)
-                .foregroundStyle(.grayUnclicked) // #f6f6f6
+                .foregroundStyle(.gray100)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
                 .background(

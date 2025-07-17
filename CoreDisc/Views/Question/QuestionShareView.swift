@@ -92,12 +92,13 @@ struct QuestionShareItem: View {
                     
                     Button(action: {}) { // TODO: action
                         Image(.iconClose)
+                            .foregroundStyle(.gray800)
                     }
                 }
                 
                 Text(content)
                     .textStyle(.Texting_Q)
-                    .foregroundStyle(.black)
+                    .foregroundStyle(.black000)
                 
                 Spacer().frame(height: 14)
                 

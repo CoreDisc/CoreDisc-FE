@@ -32,13 +32,14 @@ struct TabBar: View {
                 case .report:
                     ReportMainView()
                 case .mypage:
-                    MypageView()
+                    MyHomeView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             CustomTabBar(selectedTab: $selectedTab, tabBarStyle: tabBarStyle)
         }
+        .ignoresSafeArea(.keyboard)
         .onChange(of: selectedTab) {
             tabBarStyle = tabBarStyle(for: selectedTab)
         }
@@ -65,8 +66,7 @@ struct CustomTabBar: View {
             
             ZStack {
                 RoundedRectangle(cornerRadius: 50)
-                    .fill(tabBarStyle == .dark ? .tabDark : .tabLight)
-                    .stroke(tabBarStyle == .dark ? .clear : .grayWbar, lineWidth: 0.5)
+                    .fill(tabBarStyle == .dark ? .black000 : .white)
                     .frame(height: 54)
                     .padding(.horizontal, 24)
                 
@@ -90,15 +90,15 @@ struct TabBarItem: View {
     
     var selectedColor: Color {
         switch tabBarStyle {
-        case .dark: .grayWbar
-        case .light: .grayBbar
+        case .dark: .gray200
+        case .light: .gray800
         }
     }
     
     var defaultColor: Color {
         switch tabBarStyle {
-        case .dark: .grayBbar
-        case .light: .grayWbar
+        case .dark: .gray600
+        case .light: .gray200
         }
     }
     

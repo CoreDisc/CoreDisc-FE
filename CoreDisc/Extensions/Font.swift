@@ -279,10 +279,16 @@ extension TextStyle {
         lineSpacing: 2
     )
     
+
     static var Post_UserID = TextStyle(
         font: .primeform(type: .semiBold, size: 8),
         kerning: 0,
         lineSpacing: 2
+
+    static var Pick_Q_Eng = TextStyle(
+        font: .primeform(type: .semiBold, size: 16),
+        kerning: 0,
+        lineSpacing: 4
     )
     
     static var Comment_ID = TextStyle(

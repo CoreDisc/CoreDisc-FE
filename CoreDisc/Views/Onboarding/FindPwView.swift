@@ -18,9 +18,11 @@ struct FindPwView: View {
     
     var body: some View {
         ZStack {
-            Image(.imgShortBackground)
+
+            Image(.background)
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
+
             VStack{
                 Spacer().frame(height: 96)
                 Rectangle()
@@ -90,10 +92,10 @@ struct FindPwView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("인증번호 발송하기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
             
@@ -104,10 +106,10 @@ struct FindPwView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("로그인 화면으로 돌아가기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
 
@@ -151,10 +153,10 @@ struct FindPwView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("인증하기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
             
@@ -165,10 +167,10 @@ struct FindPwView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("로그인 화면으로 돌아가기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
 
@@ -202,7 +204,7 @@ struct FindPwView: View {
             
             Text("영문/숫자/특수문자(공백제외), 10~16자")
                 .textStyle(.login_alert)
-                .foregroundStyle(.grayText)
+                .foregroundStyle(.gray400)
             
             ZStack{
                 Capsule()
@@ -220,10 +222,10 @@ struct FindPwView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("변경하기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
             
@@ -234,10 +236,10 @@ struct FindPwView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("로그인 화면으로 돌아가기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
         }.padding(.horizontal, 41)

@@ -14,9 +14,11 @@ struct LoginView: View {
     
     var body: some View {
         ZStack {
-            Image(.imgShortBackground)
+
+            Image(.background)
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
+
             VStack{
                 Rectangle()
                     .frame(width: 60, height: 60)
@@ -79,10 +81,10 @@ struct LoginView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("로그인")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
             
@@ -124,11 +126,11 @@ struct LoginView: View {
             Spacer().frame(height: 32)
             
             HStack{
-                Image(.imgShortBackground)
+                Image(.naver)
                 Spacer().frame(width: 43)
-                //Image(.kakao)
+                Image(.kakao)
                 Spacer().frame(width: 43)
-                //Image(.google)
+                Image(.google)
             }
         }
         .padding(.horizontal, 41)

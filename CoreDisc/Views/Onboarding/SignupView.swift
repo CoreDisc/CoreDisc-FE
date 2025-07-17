@@ -18,9 +18,10 @@ struct SignupView: View {
     
     var body: some View {
         ZStack {
-            Image(.imgShortBackground)
+            Image(.background)
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
+
             VStack{
                 Rectangle()
                     .frame(width: 60, height: 60)
@@ -63,10 +64,10 @@ struct SignupView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("인증 번호 전송")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
             
@@ -86,10 +87,10 @@ struct SignupView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("인증하기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
             
@@ -106,7 +107,7 @@ struct SignupView: View {
             
             Text("영문/숫자/특수문자(공백제외), 10~16자")
                 .textStyle(.login_alert)
-                .foregroundStyle(.grayText)
+                .foregroundStyle(.gray400)
             
             ZStack{
                 Capsule()
@@ -130,7 +131,7 @@ struct SignupView: View {
             
             Text("16자 이내 영문,숫자,특수문자(_,.)만 사용 가능합니다.")
                 .textStyle(.login_alert)
-                .foregroundStyle(.grayText)
+                .foregroundStyle(.gray400)
             
             
             ZStack{
@@ -144,7 +145,7 @@ struct SignupView: View {
             
             Text("16자 이내 영문,한글만 사용 가능합니다.")
                 .textStyle(.login_alert)
-                .foregroundStyle(.grayText)
+                .foregroundStyle(.gray400)
             
         Spacer().frame(height: 22)
             
@@ -153,10 +154,10 @@ struct SignupView: View {
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.grayText)
+                        .foregroundStyle(.gray400)
                     Text("가입하기")
                         .textStyle(.login_info)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                 }
             })
         }

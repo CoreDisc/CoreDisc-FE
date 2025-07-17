@@ -72,8 +72,8 @@ struct QuestionMainView: View {
 // 질문 선택 컴포넌트
 struct QuestionSelectItem: View {
     var text: String
-    var startColor: Color = .grayText
-    var endColor: Color = .grayText
+    var startColor: Color = .gray400
+    var endColor: Color = .gray400
     
     var body: some View {
         Button(action: {}) { // TODO: action 추가
@@ -89,7 +89,7 @@ struct QuestionSelectItem: View {
                     
                     Text(text)
                         .textStyle(.Q_pick)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                         .frame(width: 143, alignment: .leading)
                         .lineLimit(1)
                 }
