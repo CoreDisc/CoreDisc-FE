@@ -48,7 +48,7 @@ struct PostDetailMainView: View {
                  Image(.iconAlert)
                      .resizable()
                      .frame(width:40, height: 48)
-                     .foregroundStyle(.grayBbar)
+                     .foregroundStyle(.black000)
              }
      }
 
@@ -110,7 +110,7 @@ struct PostCard: View {
                     Rectangle()
                         .frame(width: 164.25, height: 219)
                         .cornerRadius(12, corners: [.topLeft, .topRight])
-                        .foregroundStyle(.grayWbar)
+                        .foregroundStyle(.gray200)
                     
                     HStack(spacing: 3) {
                         // 추후 프로필 사진으로 변경
@@ -127,7 +127,7 @@ struct PostCard: View {
                             
                             Text("\(userID)")
                                 .textStyle(.Post_UserID)
-                                .foregroundStyle(.grayBbar)
+                                .foregroundStyle(.gray200)
                         }
                         .frame(width: 120)
                         
@@ -146,7 +146,7 @@ struct PostCard: View {
                         Image(systemName: "globe")
                             .resizable()
                             .frame(width: 10, height: 10)
-                            .foregroundStyle(.grayBbar)
+                            .foregroundStyle(.gray800)
                     }
                     .padding(.trailing, 7)
                     .padding(.bottom, 8)

@@ -138,7 +138,7 @@ struct PostDetailView: View {
                     
                     Text("@coredisc.ko")
                         .textStyle(.Post_Id)
-                        .foregroundStyle(.grayBbar)
+                        .foregroundStyle(.gray800)
                 }
             }
             .padding(.horizontal)
@@ -272,7 +272,7 @@ struct PostDetailView: View {
         VStack {
             Rectangle()
                 .frame(height: 68)
-                .foregroundStyle(.grayWbg)
+                .foregroundStyle(.gray600)
         }
     }
 }
