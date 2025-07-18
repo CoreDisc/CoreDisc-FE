@@ -29,21 +29,9 @@ struct MyHomeView: View {
                     
                     CountGroup
                     
-                    Spacer().frame(height: 25)
+                    Spacer().frame(height: 16)
                     
-                    NavigationLink(destination: EditProfileView()) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(.key)
-                                .frame(height: 39)
-                                .padding(.horizontal, 24)
-                            
-                            Text("Edit Profile")
-                                .textStyle(.Pick_Q_Eng)
-                                .foregroundStyle(.black000)
-                        }
-                    }
-                    .buttonStyle(.plain)
+                    ButtonGroup
                     
                     Spacer()
                 }
@@ -140,6 +128,39 @@ struct MyHomeView: View {
                 }
             }
             .frame(width: 100, height: 40)
+            .buttonStyle(.plain)
+        }
+    }
+    
+    // 버튼
+    private var ButtonGroup: some View {
+        VStack(spacing: 12) {
+            Button(action: {}) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(.key)
+                        .frame(height: 39)
+                        .padding(.horizontal, 24)
+                    
+                    Text("My Core Questions")
+                        .textStyle(.Pick_Q_Eng)
+                        .foregroundStyle(.black000)
+                }
+            }
+            .buttonStyle(.plain)
+            
+            NavigationLink(destination: EditProfileView()) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(.gray400)
+                        .frame(height: 39)
+                        .padding(.horizontal, 24)
+                    
+                    Text("Edit Profile")
+                        .textStyle(.Pick_Q_Eng)
+                        .foregroundStyle(.black000)
+                }
+            }
             .buttonStyle(.plain)
         }
     }
