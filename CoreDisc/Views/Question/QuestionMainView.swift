@@ -10,6 +10,10 @@ import SwiftUI
 struct QuestionMainView: View {
     @State var isSelectView: Bool = false
     
+    // 씨디 돌아가는 애니메이션
+    @State private var rotationAngle: Double = 0.0
+    let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -65,6 +69,12 @@ struct QuestionMainView: View {
             Image(.imgCd)
                 .resizable()
                 .frame(width: 529, height: 529)
+                .rotationEffect(.degrees(rotationAngle))
+                .onReceive(timer) { _ in
+                    withAnimation {
+                        rotationAngle += 1 // 회전 속도 조절
+                    }
+                }
                 .offset(x: 172)
             
             QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요")
