@@ -95,7 +95,7 @@ struct FollowSheetView: View {
     // 리스트
     private var FollowerList: some View {
         ScrollView {
-            LazyVStack(spacing: 30) {
+            LazyVStack(spacing: 16) {
                 ForEach(viewModel.followerSample, id: \.id) { item in
                     FollowListItem(nickname: item.nickname, username: item.username)
                 }
