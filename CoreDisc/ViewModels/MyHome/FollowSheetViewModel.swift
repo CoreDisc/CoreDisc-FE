@@ -8,7 +8,7 @@
 import Foundation
 
 @Observable
-class FollowersSheetViewModel {
+class FollowSheetViewModel {
     // 샘플 데이터
     let followerSample: [FollowerModel] = [
         .init(id: 1, nickname: "닉네임1", username: "user_name1"),

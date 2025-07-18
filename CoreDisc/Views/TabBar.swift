@@ -80,6 +80,7 @@ struct CustomTabBar: View {
             }
         }
     }
+    
 }
 
 struct TabBarItem: View {
