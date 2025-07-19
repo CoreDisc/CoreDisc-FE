@@ -8,75 +8,119 @@
 import SwiftUI
 
 struct QuestionMainView: View {
+    @State var isSelectView: Bool = false
+    
+    // 씨디 돌아가는 애니메이션
+    @State private var rotationAngle: Double = 0.0
+    let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
+    
     var body: some View {
-        ZStack {
-            Image(.imgShortBackground)
-                .resizable()
-                .ignoresSafeArea()
-                
-            VStack {
-                Spacer().frame(height: 23)
-                
-                TitleGroup
-                
-                Spacer().frame(height: 61)
-                
-                CDGroup
-                
-                Spacer().frame(height: 78)
+        NavigationStack {
+            ZStack {
+                Image(.imgShortBackground)
+                    .resizable()
+                    .ignoresSafeArea()
+                    
+                VStack {
+                    TitleGroup
+                    
+                    Spacer().frame(height: 36)
+                    
+                    MainCDGroup
+                    
+                    Spacer()
+                }
             }
         }
     }
     
     // 상단 타이틀
     private var TitleGroup: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Today’s Coredisc")
+        VStack(alignment: .leading, spacing: 1) {
+            Button(action: {
+                withAnimation(.easeInOut(duration: 0.4)) {
+                    isSelectView = false
+                }
+            }) {
+                Image(.iconBack)
+            }
+            .buttonStyle(.plain)
+            .opacity(isSelectView ? 1 : 0) // select일 때만 보이게
+            
+            Text(isSelectView ? "Select your own disc" : "Today’s Coredisc")
                 .textStyle(.Title_Text_Eng)
                 .foregroundStyle(.key)
+                .padding(.leading, 6)
+                .padding(.bottom, 5)
             
-            Text("오늘의 코어디스크를 기록해보세요")
+            Text(isSelectView ? "한달동안 함께 할 질문을 선택하세요" : "오늘의 코어디스크를 기록해보세요")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
-                .padding(.leading, 5)
+                .padding(.leading, 11)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 23)
+        .padding(.horizontal, 17)
     }
     
     // CD, QuestionSelectItem
     // TODO: CD 애니메이션 적용
-    private var CDGroup: some View {
+    private var MainCDGroup: some View {
         ZStack {
             Image(.imgCd)
                 .resizable()
-                .frame(width: 479, height: 479)
-                .offset(x: 150)
+                .frame(width: 529, height: 529)
+                .rotationEffect(.degrees(rotationAngle))
+                .onReceive(timer) { _ in
+                    withAnimation {
+                        rotationAngle += 1 // 회전 속도 조절
+                    }
+                }
+                .offset(x: 172)
             
-            QuestionSelectItem(text: "고정질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요")
                 .position(x: 150+79, y: 97)
             
-            QuestionSelectItem(text: "고정질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요")
                 .position(x: 150+34, y: 196)
             
-            QuestionSelectItem(text: "고정질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요")
                 .position(x: 150+42, y: 295)
             
-            QuestionSelectItem(text: "랜덤질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: "랜덤질문을 선택하세요")
                 .position(x: 150+79, y: 394)
+            
+            SelectCDGroup
+                .offset(x: 460)
         }
-        .frame(width: UIScreen.main.bounds.width)
+        .frame(width: UIScreen.main.bounds.width, height: 529)
+        .offset(x: isSelectView ? -366 : 0)
+    }
+    
+    private var SelectCDGroup: some View {
+        VStack(spacing: 22) {
+            QuestionSelectButton(title: "질문 작성")
+            QuestionSelectButton(title: "기본 질문")
+            QuestionSelectButton(title: "인기 질문")
+            QuestionSelectButton(title: "공유 질문")
+        }
+        .offset(x: 0)
     }
 }
 
 // 질문 선택 컴포넌트
 struct QuestionSelectItem: View {
+    @Binding var moveLeft: Bool
+    
     var text: String
     var startColor: Color = .gray400
     var endColor: Color = .gray400
     
     var body: some View {
-        Button(action: {}) { // TODO: action 추가
+        Button(action: {
+            withAnimation(.easeInOut(duration: 0.4)) {
+                moveLeft = true
+            }
+        }) {
             ZStack {
                 RoundedRectangle(cornerRadius: 24)
                     .fill(.white.gradient.shadow(.inner(color: .shadow, radius: 2, y: -2))) // 내부 그림자
@@ -94,6 +138,37 @@ struct QuestionSelectItem: View {
                         .lineLimit(1)
                 }
             }
+        }
+    }
+}
+
+// 질문 선택 버튼 컴포넌트
+struct QuestionSelectButton: View {
+    var title: String
+    
+    var body: some View {
+        Button(action: {}) {
+            ZStack(alignment: .top) {
+                Image(.imgCd)
+                    .resizable()
+                    .frame(width: 76, height: 76)
+                    .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
+                
+                ZStack(alignment: .topLeading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .horizontalLinearGradient(startColor: .white, endColor: .gray400)
+                        .frame(width: 98, height: 68)
+                        .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
+                    
+                    Text(title)
+                        .textStyle(.Q_Main)
+                        .foregroundStyle(.black000)
+                        .padding(.top, 10)
+                        .padding(.leading, 9)
+                }
+                .padding(.top, 38)
+            }
+            .compositingGroup() // 하나의 뷰로 만듦 (투명도 조절에 필요)
         }
         .buttonStyle(.plain)
     }

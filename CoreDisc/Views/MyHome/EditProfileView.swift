@@ -1,0 +1,147 @@
+//
+//  EditProfileView.swift
+//  CoreDisc
+//
+//  Created by 김미주 on 7/16/25.
+//
+
+import SwiftUI
+
+struct EditProfileView: View {
+    @Environment(\.dismiss) var dismiss
+    @FocusState private var isFocused: Bool
+    
+    var body: some View {
+        ZStack {
+            Image(.imgShortBackground2)
+                .resizable()
+                .ignoresSafeArea()
+                .onTapGesture { // 키보드 내리기 용도
+                    isFocused = false
+                }
+            
+            VStack(spacing: 0) {
+                Spacer().frame(height: 3)
+                
+                TopMenuGroup
+                
+                ProfileGroup
+                
+                Spacer().frame(height: 34)
+                
+                TextfieldGroup
+                
+                Spacer()
+            }
+        }
+        .toolbarVisibility(.hidden, for: .navigationBar)
+    }
+    
+    // 상단 메뉴
+    private var TopMenuGroup: some View {
+        ZStack(alignment: .top) {
+            HStack(alignment: .top) {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.highlight)
+                    .frame(width: 28, height: 55)
+                    .offset(x: -14)
+                
+                Spacer()
+            }
+            
+            ZStack {
+                Text("Edit Profile")
+                    .textStyle(.Pick_Q_Eng)
+                    .foregroundStyle(.gray200)
+                
+                HStack {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(.iconBack)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action: {}) { // TODO: complete action
+                        Text("완료")
+                            .textStyle(.Q_Main)
+                            .foregroundStyle(.highlight)
+                            .underline()
+                    }
+                }
+                .padding(.leading, 17)
+                .padding(.trailing, 22)
+            }
+        }
+    }
+    
+    // 프로필
+    private var ProfileGroup: some View {
+        ZStack(alignment: .bottomTrailing) {
+            Circle() // TODO: profile image
+                .frame(width: 124, height: 124)
+            
+            Button(action: {}) { // TODO: profile edit
+                Image(.iconEdit)
+                    .frame(width: 38, height: 38)
+                    .background(
+                        Circle()
+                            .fill(.gray400)
+                    )
+            }
+            .buttonStyle(.plain)
+        }
+    }
+    
+    // 텍스트 필드
+    private var TextfieldGroup: some View {
+        VStack(spacing: 16) {
+            ProfileEditTextField(type: "Nick Name", originalText: "닉네임")
+                .focused($isFocused) // 키보드 내리기
+            ProfileEditTextField(type: "User Name", originalText: "user_name")
+                .focused($isFocused) // 키보드 내리기
+        }
+    }
+}
+
+// 프로필 수정용 텍스트필드
+struct ProfileEditTextField: View {
+    var type: String
+    var originalText: String
+    
+    @State private var text: String = ""
+    
+    init(type: String, originalText: String) {
+        self.type = type
+        self.originalText = originalText
+        _text = State(initialValue: originalText) // 텍스트필드 초기값 설정
+    }
+    
+    var body: some View {
+        HStack(spacing: 15) {
+            Text(type)
+                .textStyle(.light_eng)
+                .foregroundStyle(.gray200)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                TextField(originalText,
+                          text: $text,
+                          prompt: Text(originalText).foregroundStyle(.gray600))
+                    .textStyle(.Q_Main)
+                    .foregroundStyle(.white)
+                    .textInputAutocapitalization(.never)
+                    .frame(width: 200)
+                    .padding(.horizontal, 10)
+                
+                Divider()
+                    .background(.gray200)
+                    .frame(width: 200)
+            }
+        }
+    }
+}
+
+#Preview {
+    EditProfileView()
+}
