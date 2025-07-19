@@ -11,6 +11,7 @@ struct ReportMainView: View {
     
     let viewModel = DiscItemViewModel()
     private let columns: [GridItem] = Array(repeating: GridItem(.fixed(91), spacing: 27), count: 3)
+    @State private var edit = false
     
     var body: some View {
         ZStack {
@@ -31,9 +32,18 @@ struct ReportMainView: View {
                 
                 HStack{
                     Spacer()
-                    Image(.imgDiscOff)
-                        .resizable()
-                        .frame(width: 60, height: 44)
+                    Button(action:{edit.toggle()}, label:{
+                        if edit {
+                            Image(.imgDiscOn)
+                                .resizable()
+                                .frame(width: 60, height: 44)
+                        } else {
+                            Image(.imgDiscOff)
+                                .resizable()
+                                .frame(width: 60, height: 44)
+                        }
+                    })
+  
                     Spacer().frame(width: 14)
                 }
                 
@@ -48,10 +58,22 @@ struct ReportMainView: View {
         ScrollView(.vertical){
             LazyVGrid(columns: columns){
                 ForEach(viewModel.DiscItemList, id: \.id){ item in
-                    Button(action: {}, label: {
-                        DiscItem(image: item.image)
-                            .padding(.vertical, 10)
-                    })
+                    if edit {
+                        Button(action: {}, label: {
+                            ZStack{
+                                DiscItem(image: item.image)
+                                    .padding(.vertical, 10)
+                                Image(.imgEdit)
+                                    .padding(.leading, 58)
+                                    .padding(.bottom, 54)
+                            }
+                        })
+                    } else {
+                        Button(action: {}, label: {
+                            DiscItem(image: item.image)
+                                .padding(.vertical, 10)
+                        })
+                    }
                 }
             }
         }
