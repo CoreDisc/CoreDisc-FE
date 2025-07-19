@@ -1,40 +1,41 @@
 //
-//  QuestionShareView.swift
+//  QuestionSaveView.swift
 //  CoreDisc
 //
-//  Created by 김미주 on 7/3/25.
+//  Created by 이채은 on 7/19/25.
 //
 
 import SwiftUI
 
-struct QuestionShareView: View {
+struct QuestionSaveView: View {
     @Environment(\.dismiss) var dismiss
     @State private var isSelected: Bool = false
-    let onNavigateToSave: () -> Void
+    let onNavigateToShare: () -> Void
     let items = Array(0..<17)
     
+    
     var body: some View {
-        ZStack {
-            Image(.imgShortBackground)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack(spacing: 28) {
-                TopGroup
+            ZStack {
+                Image(.imgShortBackground)
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                CategoryGroup
+                VStack(spacing: 28) {
+                    TopGroup
+                    
+                    CategoryGroup
+                    
+                    QuestionListGroup
                 
-                QuestionListGroup
-            }
-            
-            VStack {
-                Spacer()
-                PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true)) {
-                    onNavigateToSave()
+                }
+                VStack {
+                    Spacer()
+                    PrimaryActionButton(title: "공유한 질문 보기", isFinished: .constant(true)) {
+                        onNavigateToShare()
+                    }
                 }
             }
-        }
-        .navigationBarBackButtonHidden()
+            .navigationBarBackButtonHidden()
         
     }
     
@@ -47,7 +48,7 @@ struct QuestionShareView: View {
                 Image(.iconBack)
             }
             
-            Text("Shared Questions")
+            Text("Saved Questions")
                 .textStyle(.Title_Text_Eng)
                 .foregroundStyle(.white)
         }
@@ -76,13 +77,18 @@ struct QuestionShareView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 30))
                         .overlay(
                             RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
+                                .stroke(.white, lineWidth: isSelected ? 3 : 0)
                         )
+
                         Text("ALL")
                             .textStyle(.Q_Sub)
                             .foregroundStyle(.white)
                     }
                 }
+                CategoryButton(
+                    title: "즐겨찾기",
+                    startColor: .key,
+                    endColor: .gray700) //TODO: 색상 그라데이션, 크기 추후 수정 필요
                 
                 CategoryButton(
                     title: "카테고리1",
@@ -108,7 +114,7 @@ struct QuestionShareView: View {
             LazyVStack(alignment: .center) {
                 ForEach(items.indices, id: \.self) { index in
                     QuestionShareItem(
-                        type: "share",
+                        type: "save",
                         category: "감정,마음",
                         content: "맛있는 음식을 먹을 때 어떤 기분이 드나요? 표현해본다면요? 맛있는 음식을 먹을 때 어떤 ",
                         date: "26년 7월 4일",
@@ -121,12 +127,9 @@ struct QuestionShareView: View {
     }
 }
 
-extension String {
-    var forceCharWrapping: Self {
-        self.map({ String($0) }).joined(separator: "\u{200B}") // 200B: 가로폭 없는 공백문자
-    }
-}
 
 #Preview {
-    QuestionShareView(onNavigateToSave: {})
+    QuestionSaveView(onNavigateToShare: {})
 }
+
+

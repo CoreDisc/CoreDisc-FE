@@ -36,7 +36,9 @@ struct QuestionWriteView: View {
                     Spacer().frame(height: 15)
                     QuestionCaution
                     Spacer().frame(height: 43)
-                    PrimaryActionButton(title:"확인 및 저장", isFinished: .constant(!text.isEmpty && selectedCategory != nil))
+                    PrimaryActionButton(title:"확인 및 저장", isFinished: .constant(!text.isEmpty && selectedCategory != nil)) {
+                        print("click")
+                    }
                 }
             }
         }

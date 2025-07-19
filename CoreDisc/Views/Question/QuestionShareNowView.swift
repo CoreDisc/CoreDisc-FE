@@ -8,27 +8,47 @@
 import SwiftUI
 
 struct QuestionShareNowView: View {
-    let items = Array(0..<11)
-    @State private var selectedIndex = 0
-    @State private var currentAngle: Angle = .degrees(0)
-    @GestureState private var dragAngle: Angle = .zero
-    @GestureState private var dragOffset: CGFloat = 0
+    let items = Array(0..<17)
     private let spacingAngle: Double = 19
     @State private var hiddenCount = 0
+    @State private var path: [String] = []
     
     
     
     var body: some View {
-        ZStack {
-            Image(.imgShortBackground)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack {
-                InfoGroup
-                Spacer()
+        NavigationStack(path: $path){
+            ZStack {
+                Image(.imgShortBackground)
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                CircularScrollView
+                VStack {
+                    InfoGroup
+                    Spacer()
+                    
+                    CircularScrollView
+                }
+                
+                VStack {
+                    Spacer()
+                    PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true)) {
+                        path.append("save")
+                    }
+                }
+            }
+            .navigationDestination(for: String.self) { value in
+                switch value {
+                case "save":
+                    QuestionSaveView(onNavigateToShare: {
+                        path.append("share") 
+                    })
+                case "share":
+                    QuestionShareView(onNavigateToSave: {
+                        path.append("save")
+                    })
+                default:
+                    QuestionMainView()
+                }
             }
         }
     }
@@ -43,7 +63,9 @@ struct QuestionShareNowView: View {
                 
                 Spacer()
                 
-                Button(action: { }) { // TODO: 액션 추가
+                Button(action: {
+                    path.append("share")
+                }) { // TODO: 액션 추가
                     Image(.iconList)
                 }
                 .padding(.trailing, 18)
@@ -55,7 +77,7 @@ struct QuestionShareNowView: View {
                 .padding(.leading, 17)
             
             HStack(spacing: 6) {
-                Text("10")
+                Text("17")
                     .textStyle(.Title_Text_Ko)
                     .foregroundStyle(.white)
                 Text("개")
@@ -87,9 +109,9 @@ struct QuestionShareNowView: View {
                         let x = center.x + radius * CGFloat(cos(totalAngle.radians))
                         let y = center.y + radius * CGFloat(sin(totalAngle.radians))
 
-                        QuestionShareItemm(
+                        QuestionShareItem(
                             category: "카테고리\(index)",
-                            content: "맛있는 걸 먹을 때 어떤 기분이 드나요?",
+                            content: "맛있는 음식을 먹을 때 어떤 기분이 드나요? 표현해본다면요? 맛있는 음식을 먹을 때 어떤 ",
                             date: "25년 7월 16일",
                             index: index
                         )
@@ -126,12 +148,11 @@ struct QuestionShareNowView: View {
         
     }
     
-    struct QuestionShareItemm: View {
+    struct QuestionShareItem: View {
         var category: String
         var content: String
         var date: String
-        let index: Int
-        
+        var index: Int
         
         var body: some View {
             ZStack {
@@ -141,7 +162,7 @@ struct QuestionShareNowView: View {
                 
                 VStack(spacing: 5) {
                     HStack {
-                        Text("1") // 디자인 시스템 없음
+                        Text("\(index+1)") // 디자인 시스템 없음
                             .font(.pretendard(type: .bold, size: 12))
                             .frame(width: 20, height: 20)
                             .background(
@@ -151,14 +172,24 @@ struct QuestionShareNowView: View {
                         
                         Spacer()
                         
-                        Button(action: {}) { // TODO: action
-                            Image(.iconClose)
+                        Button(action: {}) {
+                            Image(.iconShare)
+                                .resizable()
+                                .frame(width: 18, height: 18)
                         }
+                        
+                        Spacer().frame(width: 5)
+                        
+                        Text("16")
+                            .font(.pretendard(type: .regular, size: 12))
                     }
                     
-                    Text(content)
+                    Spacer().frame(height: 4)
+                    
+                    Text(content.forceCharWrapping)
                         .textStyle(.Texting_Q)
                         .foregroundStyle(.black000)
+                    
                     
                     Spacer().frame(height: 14)
                     
@@ -168,6 +199,7 @@ struct QuestionShareNowView: View {
                         Text(category) // 디자인 시스템 없음
                             .font(.pretendard(type: .regular, size: 8))
                             .kerning(-0.7)
+            
                         
                         Text(date) // 디자인 시스템 없음
                             .font(.pretendard(type: .regular, size: 8))
@@ -178,6 +210,8 @@ struct QuestionShareNowView: View {
             }
             .frame(width: 340, height: 115)
         }
+    
+        
     }
 }
 
