@@ -11,20 +11,33 @@ struct CategoryButton: View {
     var title: String
     var startColor: Color
     var endColor: Color
-    
+
+    @State private var isSelected: Bool = false
+
     var body: some View {
-        Button(action: {}) { // TODO: action 추가
+        Button(action: {
+            isSelected.toggle() // TODO: action 추가
+        }) {
             Text("#\(title)")
                 .textStyle(.Q_Sub)
                 .foregroundStyle(.gray100)
                 .padding(.horizontal, 10)
-                .padding(.vertical, 6)
+                .padding(.vertical, 7)
                 .background(
                     RoundedRectangle(cornerRadius: 30)
-                        .linearGradient(
-                            startColor: startColor,
-                            endColor: endColor)
+                        .fill(
+                            LinearGradient(
+                                colors: [startColor, endColor],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
                 )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 30)
+                        .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
+                )
+                .padding(3)
         }
     }
 }

@@ -106,9 +106,15 @@ struct QuestionSummaryView: View {
     
     var ButtonGroup: some View{
         VStack (spacing: 12) {
-            PrimaryActionButton(title: "저장하기", isFinished: .constant(true))
-            PrimaryActionButton(title: "수정하기", isFinished: .constant(false))
-            PrimaryActionButton(title: "공유하기", isFinished: .constant(false))
+            PrimaryActionButton(title: "저장하기", isFinished: .constant(true)) {
+                print("click")
+            }
+            PrimaryActionButton(title: "수정하기", isFinished: .constant(false)) {
+                print("click")
+            }
+            PrimaryActionButton(title: "공유하기", isFinished: .constant(false)) {
+                print("click")
+            }
             
         }
         
