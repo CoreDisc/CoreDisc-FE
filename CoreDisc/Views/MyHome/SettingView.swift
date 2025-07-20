@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SettingView: View {
     @Environment(\.dismiss) var dismiss
-
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground2)
@@ -21,7 +21,7 @@ struct SettingView: View {
                 
                 TopMenuGroup
                 
-                Spacer().frame(height: 49)
+                Spacer().frame(height: 34)
                 
                 ButtonGroup
                 
@@ -66,9 +66,9 @@ struct SettingView: View {
     // 버튼
     private var ButtonGroup: some View {
         VStack(spacing: 18) {
-            SettingButton(title: "계정 관리")
-            SettingButton(title: "알림 설정")
-            SettingButton(title: "로그아웃")
+            SettingButton(title: "계정 관리") // TODO: 계정 관리 화면 전환
+            SettingButton(title: "알림 설정", destination: { AnyView(NotificationView()) })
+            SettingButton(title: "로그아웃") // TODO: 로그아웃 모달
         }
     }
 }
@@ -76,8 +76,19 @@ struct SettingView: View {
 // 설정 페이지 버튼
 struct SettingButton: View {
     var title: String
+    var destination: (() -> AnyView)?
     
     var body: some View {
+        if let destination = destination {
+            NavigationLink(destination: destination()) {
+                buttonContent
+            }
+        } else {
+            buttonContent
+        }
+    }
+    
+    private var buttonContent: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .fill(.gray400)
@@ -92,7 +103,7 @@ struct SettingButton: View {
                 
                 Spacer()
                 
-                NavigationLink(destination: {}) { // TODO: destination view
+                if title != "로그아웃" {
                     Image(.iconButtonArrow)
                 }
             }
