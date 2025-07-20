@@ -17,6 +17,9 @@ struct NotificationView: View {
     
     // 시간
     @State var showSheet: Bool = false
+    
+    // TODO: 토글에 따라 시간 버튼 활성화/비활성화 처리
+    // TODO: 바텀시트 배경 비활성화 처리
 
     var body: some View {
         ZStack {
