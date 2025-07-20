@@ -13,31 +13,31 @@ struct LoginView: View {
     @State var pwd: String = ""
     
     var body: some View {
-        ZStack {
-
-            Image(.imgOnboardingBackground)
-                .resizable()
-                .ignoresSafeArea()
-
-            VStack{
-                Rectangle()
-                    .frame(width: 60, height: 60)
-                    .foregroundColor(.key)
-                Spacer().frame(height: 16)
-                Text("Shoot Your")
-                    .textStyle(.Title_Text_Ko)
-                    .foregroundStyle(.white)
-                Text("Core.")
-                    .textStyle(.Title_Text_Ko)
-                    .foregroundStyle(.white)
+        NavigationStack {
+            ZStack {
+                Image(.imgOnboardingBackground)
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                Spacer().frame(height: 16)
-                MainGroup
-                Spacer().frame(height: 43)
-                SocialLoginGroup
+                VStack{
+                    Rectangle()
+                        .frame(width: 60, height: 60)
+                        .foregroundColor(.key)
+                    Spacer().frame(height: 16)
+                    Text("Shoot Your")
+                        .textStyle(.Title_Text_Ko)
+                        .foregroundStyle(.white)
+                    Text("Core.")
+                        .textStyle(.Title_Text_Ko)
+                        .foregroundStyle(.white)
+                    
+                    Spacer().frame(height: 16)
+                    MainGroup
+                    Spacer().frame(height: 43)
+                    SocialLoginGroup
+                }
             }
         }
-        
     }
     private var MainGroup : some View{
         VStack{
@@ -91,19 +91,21 @@ struct LoginView: View {
             Spacer().frame(height: 37)
             
             HStack{
-                Button(action:{}, label:{
+                NavigationLink(destination: SignupView()) {
                     Text("회원가입")
                         .textStyle(.login_info)
                         .underline()
                         .foregroundStyle(.highlight)
-                })
+                }
+                
                 Spacer().frame(width: 32)
-                Button(action:{}, label:{
+                
+                NavigationLink(destination: FindIdView()) {
                     Text("아이디/비밀번호 찾기")
                         .textStyle(.login_info)
                         .underline()
                         .foregroundStyle(.white)
-                })
+                }
             }
 
         }.padding(.horizontal, 41)
