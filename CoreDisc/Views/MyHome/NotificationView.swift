@@ -153,42 +153,32 @@ struct NotificationToggleBox: View {
                 
                 Spacer()
                 
-                NotificationToggle(isOn: $isOn, isActive: $isActive)
+                Button(action: {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isOn.toggle()
+                    }
+                }) {
+                    ZStack(alignment: isOn ? .trailing : .leading) {
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(isOn ? .black000 : .gray800)
+                            .stroke(isActive ? .white : .black000, lineWidth: 1)
+                            .frame(width: 70, height: 33)
+                        
+                        Text(isOn ? "On" : "Off")
+                            .textStyle(.Button_s)
+                            .foregroundStyle(isActive ? .black000 : .gray600)
+                            .frame(width: 27, height: 27)
+                            .background {
+                                Circle()
+                                    .fill(isOn ? .key : .gray400)
+                            }
+                            .padding(.horizontal, 3)
+                    }
+                }
+                .disabled(!isActive)
             }
             .padding(.horizontal, 12)
         }
-    }
-}
-
-// 알림 토글
-struct NotificationToggle: View {
-    @Binding var isOn: Bool
-    @Binding var isActive: Bool
-    
-    var body: some View {
-        Button(action: {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                isOn.toggle()
-            }
-        }) {
-            ZStack(alignment: isOn ? .trailing : .leading) {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(isOn ? .black000 : .gray800)
-                    .stroke(isActive ? .white : .black000, lineWidth: 1)
-                    .frame(width: 70, height: 33)
-                
-                Text(isOn ? "On" : "Off")
-                    .textStyle(.Button_s)
-                    .foregroundStyle(isActive ? .black000 : .gray600)
-                    .frame(width: 27, height: 27)
-                    .background {
-                        Circle()
-                            .fill(isOn ? .key : .gray400)
-                    }
-                    .padding(.horizontal, 3)
-            }
-        }
-        .disabled(!isActive)
     }
 }
 
