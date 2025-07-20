@@ -11,58 +11,45 @@ struct QuestionShareNowView: View {
     let items = Array(0..<17)
     private let spacingAngle: Double = 19
     @State private var hiddenCount = 0
-    @State private var path: [String] = []
-    
-    
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationStack(path: $path){
-            ZStack {
-                Image(.imgShortBackground)
-                    .resizable()
-                    .ignoresSafeArea()
+        ZStack {
+            Image(.imgShortBackground)
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack {
+                InfoGroup
+                Spacer()
                 
-                VStack {
-                    InfoGroup
-                    Spacer()
-                    
-                    CircularScrollView
-                }
-                
-                VStack {
-                    Spacer()
-                    PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true)) {
-                        path.append("save")
-                    }
-                    .padding(.horizontal, 21)
-                }
+                CircularScrollView
             }
-            .navigationDestination(for: String.self) { value in
-                switch value {
-                case "save":
-                    QuestionListView(isSaveMode: true)
-                case "share":
-                    QuestionListView(isSaveMode: false)
-                default:
-                    QuestionMainView()
+            
+            VStack {
+                Spacer()
+                PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true)) {
+                    // TODO: 수정 필요
                 }
+                .padding(.horizontal, 21)
             }
         }
+        .navigationBarBackButtonHidden()
     }
     
     private var InfoGroup: some View {
         VStack(alignment: .leading, spacing: 7) {
             HStack {
-                Button(action: { }){ // TODO: 액션 추가
+                Button(action: {
+                    dismiss()
+                }){ // TODO: 액션 추가
                     Image(.iconBack)
                 }
                 .padding(.leading, 17)
                 
                 Spacer()
                 
-                Button(action: {
-                    path.append("share")
-                }) { // TODO: 액션 추가
+                NavigationLink(destination: QuestionListView(isSaveMode: false)) {
                     Image(.iconList)
                 }
                 .padding(.trailing, 18)
@@ -95,17 +82,17 @@ struct QuestionShareNowView: View {
         GeometryReader { geometry in
             let radius = geometry.size.height / 1.2
             let center = CGPoint(x: geometry.size.width - radius * 1.4, y: geometry.size.height / 7)
-
+            
             ZStack {
                 ForEach(items.indices, id: \.self) { index in
                     if index >= hiddenCount {
                         let visibleIndex = index - hiddenCount
                         let itemAngle = Angle(degrees: Double(visibleIndex) * spacingAngle)
                         let totalAngle = itemAngle
-
+                        
                         let x = center.x + radius * CGFloat(cos(totalAngle.radians))
                         let y = center.y + radius * CGFloat(sin(totalAngle.radians))
-
+                        
                         QuestionShareItem(
                             category: "카테고리\(index)",
                             content: "맛있는 음식을 먹을 때 어떤 기분이 드나요? 표현해본다면요? 맛있는 음식을 먹을 때 어떤 ",
@@ -123,7 +110,7 @@ struct QuestionShareNowView: View {
                 DragGesture()
                     .onEnded { value in
                         let threshold: CGFloat = 50
-
+                        
                         if value.translation.height < -threshold {
                             if hiddenCount < items.count - 1 {
                                 withAnimation(.spring()) {
@@ -196,7 +183,7 @@ struct QuestionShareNowView: View {
                         Text(category) // 디자인 시스템 없음
                             .font(.pretendard(type: .regular, size: 8))
                             .kerning(-0.7)
-            
+                        
                         
                         Text(date) // 디자인 시스템 없음
                             .font(.pretendard(type: .regular, size: 8))
@@ -207,7 +194,7 @@ struct QuestionShareNowView: View {
             }
             .frame(width: 340, height: 115)
         }
-    
+        
         
     }
 }
