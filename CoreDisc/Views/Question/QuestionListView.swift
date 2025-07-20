@@ -11,19 +11,19 @@ struct QuestionListView: View {
     @Environment(\.dismiss) var dismiss
     @State var isSaveMode: Bool
     let items = Array(0..<17)
-
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground)
                 .resizable()
                 .ignoresSafeArea()
-
+            
             VStack(spacing: 28) {
                 TopGroup
                 CategoryGroup
                 QuestionListGroup
             }
-
+            
             VStack {
                 Spacer()
                 PrimaryActionButton(
@@ -36,13 +36,13 @@ struct QuestionListView: View {
         }
         .navigationBarBackButtonHidden()
     }
-
+    
     private var TopGroup: some View {
         VStack(alignment: .leading, spacing: 7) {
             Button(action: { dismiss() }) {
                 Image(.iconBack)
             }
-
+            
             Text(isSaveMode ? "Saved Questions" : "Shared Questions")
                 .textStyle(.Title_Text_Eng)
                 .foregroundStyle(.white)
@@ -50,7 +50,7 @@ struct QuestionListView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 16)
     }
-
+    
     //카테고리
     private var CategoryGroup: some View {
         ScrollView(.horizontal) {
@@ -61,15 +61,15 @@ struct QuestionListView: View {
                     }
                 } else {
                     ForEach(CategoryType.allCases.filter { $0 != .favorite }, id: \.self) { category in
-                                        CategoryButton(type: category)
-                                    }
+                        CategoryButton(type: category)
+                    }
                 }
             }
             .padding(.horizontal, 27)
         }
         .scrollIndicators(.hidden)
     }
-
+    
     //질문 목록
     private var QuestionListGroup: some View {
         ScrollView {

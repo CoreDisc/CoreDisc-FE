@@ -182,7 +182,7 @@ struct QuestionShareNowView: View {
                     
                     Spacer().frame(height: 4)
                     
-                    Text(content.forceCharWrapping)
+                    Text(content.splitCharacter())
                         .textStyle(.Texting_Q)
                         .foregroundStyle(.black000)
                     

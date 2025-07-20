@@ -34,56 +34,37 @@ struct CategoryButton: View {
                         RoundedRectangle(cornerRadius: 30)
                             .stroke(.white, lineWidth: isSelected ? 3 : 0)
                     )
+                    .padding(3)
 
                     Text("ALL")
                         .textStyle(.Q_Sub)
                         .foregroundStyle(.white)
                 }
-                .padding(3)
+                
             }
-    
-        case .favorite:
+        default:
             Button(action: {
                 isSelected.toggle() // TODO: action 추가
             }) {
                 Text("\(type.title)")
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.gray100)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 7)
                     .background(
                         RoundedRectangle(cornerRadius: 30)
                             .fill(
                                 type.color
                             )
+                            .frame(width: 75, height: 28)
+
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 30)
                             .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
+                            .frame(width: 75, height: 28)
                     )
                     .padding(3)
             }
-        default:
-            Button(action: {
-                isSelected.toggle() // TODO: action 추가
-            }) {
-                Text("#\(type.title)")
-                    .textStyle(.Q_Sub)
-                    .foregroundStyle(.gray100)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 7)
-                    .background(
-                        RoundedRectangle(cornerRadius: 30)
-                            .fill(
-                                type.color
-                            )
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 30)
-                            .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
-                    )
-                    .padding(3)
-            }
+            .frame(width: 75, height: 28)
         }
     }
 }

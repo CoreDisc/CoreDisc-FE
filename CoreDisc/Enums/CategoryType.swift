@@ -27,20 +27,19 @@ enum CategoryType: CaseIterable {
         switch self {
         case .all: Text("All")
         case .favorite: Text("즐겨찾기")
-        case .meal: Text("식사")
-        case .sleep: Text("수면")
-        case .hobby: Text("취미")
-        case .place: Text("장소")
-        case .feeling: Text("기분")
-        case .leisure: Text("여가")
-        case .other: Text("기타")
+        case .meal: Text("#식사")
+        case .sleep: Text("#수면")
+        case .hobby: Text("#취미")
+        case .place: Text("#장소")
+        case .feeling: Text("#기분")
+        case .leisure: Text("#여가")
+        case .other: Text("#기타")
         }
     }
     
     var style: CategoryStyle {
         switch self {
         case .all: .all
-        case .favorite: .favorite
         default: .normal
         }
     }
@@ -99,7 +98,6 @@ enum CategoryType: CaseIterable {
 
 enum CategoryStyle {
     case all
-    case favorite
     case normal
 }
 
