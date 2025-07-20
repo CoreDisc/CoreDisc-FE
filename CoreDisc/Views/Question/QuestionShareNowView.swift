@@ -39,13 +39,9 @@ struct QuestionShareNowView: View {
             .navigationDestination(for: String.self) { value in
                 switch value {
                 case "save":
-                    QuestionSaveView(onNavigateToShare: {
-                        path.append("share") 
-                    })
+                    QuestionListView(isSaveMode: true)
                 case "share":
-                    QuestionShareView(onNavigateToSave: {
-                        path.append("save")
-                    })
+                    QuestionListView(isSaveMode: false)
                 default:
                     QuestionMainView()
                 }

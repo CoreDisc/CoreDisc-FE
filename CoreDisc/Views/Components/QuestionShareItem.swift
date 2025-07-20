@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct QuestionShareItem: View {
-    @State var type: String
+    var type: String
     var category: String
     var content: String
     var date: String
