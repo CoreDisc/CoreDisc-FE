@@ -47,7 +47,6 @@ struct NotificationView: View {
                 TimePickerSheet(showSheet: $showSheet, timeType: notificationViewModel.timeType)
                     .environmentObject(notificationViewModel)
                     .transition(.move(edge: .bottom))
-                    .zIndex(1)
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showSheet)
