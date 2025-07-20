@@ -8,40 +8,67 @@
 import SwiftUI
 
 struct CategoryButton: View {
-    var title: String
-    var startColor: Color
-    var endColor: Color
+    let type: CategoryType
 
     @State private var isSelected: Bool = false
 
     var body: some View {
-        Button(action: {
-            isSelected.toggle() // TODO: action 추가
-        }) {
-            Text("#\(title)")
-                .textStyle(.Q_Sub)
-                .foregroundStyle(.gray100)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 7)
-                .background(
-                    RoundedRectangle(cornerRadius: 30)
-                        .fill(
-                            LinearGradient(
-                                colors: [startColor, endColor],
-                                startPoint: .leading,
-                                endPoint: .trailing
+        switch type.style {
+        case .all:
+            Button(action: {
+                isSelected.toggle()
+            }) { //TODO: Action 추가
+                ZStack {
+                    EllipticalGradient(
+                        stops: [
+                            .init(color: .gray400.opacity(0.0), location: 0.2692),
+                            .init(color: .white, location: 0.8125)
+                        ],
+                        center: .center,
+                        startRadiusFraction: 0,
+                        endRadiusFraction: 0.7431
+                    )
+                    .frame(width: 75, height: 28)
+                    .clipShape(RoundedRectangle(cornerRadius: 30))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 30)
+                            .stroke(.white, lineWidth: isSelected ? 3 : 0)
+                    )
+                    .padding(3)
+
+                    Text("ALL")
+                        .textStyle(.Q_Sub)
+                        .foregroundStyle(.white)
+                }
+                
+            }
+        default:
+            Button(action: {
+                isSelected.toggle() // TODO: action 추가
+            }) {
+                Text("\(type.title)")
+                    .textStyle(.Q_Sub)
+                    .foregroundStyle(.gray100)
+                    .background(
+                        RoundedRectangle(cornerRadius: 30)
+                            .fill(
+                                type.color
                             )
-                        )
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 30)
-                        .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
-                )
-                .padding(3)
+                            .frame(width: 75, height: 28)
+
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 30)
+                            .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
+                            .frame(width: 75, height: 28)
+                    )
+                    .padding(3)
+            }
+            .frame(width: 75, height: 28)
         }
     }
 }
 
 #Preview {
-    CategoryButton(title: "카테고리1", startColor: .blue1, endColor: .blue2)
+    CategoryButton(type: .meal)
 }

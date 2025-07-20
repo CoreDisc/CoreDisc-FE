@@ -34,18 +34,15 @@ struct QuestionShareNowView: View {
                     PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true)) {
                         path.append("save")
                     }
+                    .padding(.horizontal, 21)
                 }
             }
             .navigationDestination(for: String.self) { value in
                 switch value {
                 case "save":
-                    QuestionSaveView(onNavigateToShare: {
-                        path.append("share") 
-                    })
+                    QuestionListView(isSaveMode: true)
                 case "share":
-                    QuestionShareView(onNavigateToSave: {
-                        path.append("save")
-                    })
+                    QuestionListView(isSaveMode: false)
                 default:
                     QuestionMainView()
                 }
@@ -186,7 +183,7 @@ struct QuestionShareNowView: View {
                     
                     Spacer().frame(height: 4)
                     
-                    Text(content.forceCharWrapping)
+                    Text(content.splitCharacter())
                         .textStyle(.Texting_Q)
                         .foregroundStyle(.black000)
                     
