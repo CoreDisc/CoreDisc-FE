@@ -14,7 +14,7 @@ enum postCategoryTap : String, CaseIterable {
     case privatePost = "Private"
 }
 
-struct PostDetailMainView: View {
+struct PostMainView: View {
     @State private var selectedTab: postCategoryTap = .all
     @Namespace private var animation
     
@@ -31,6 +31,7 @@ struct PostDetailMainView: View {
                 
                 ScrollView{
                     PostGroup
+                    .padding(.bottom, 68) // 탭바 만큼 공간 추가
                 }
             }
         }
@@ -212,6 +213,6 @@ struct PostTopTabView: View {
 
 
 #Preview {
-    PostDetailMainView()
+    PostMainView()
 }
     
