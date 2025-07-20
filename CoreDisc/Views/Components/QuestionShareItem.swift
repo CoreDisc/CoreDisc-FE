@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct QuestionShareItem: View {
-    @State var type: String
+    var type: String
     var category: String
     var content: String
     var date: String
@@ -21,6 +21,8 @@ struct QuestionShareItem: View {
             RoundedRectangle(cornerRadius: 12)
                 .fill(.white)
                 .shadow(color: .key, radius: 2, x: 0, y: 0)
+                .frame(height: 115)
+                
             
             VStack(spacing: 5) {
                 HStack {
@@ -31,6 +33,8 @@ struct QuestionShareItem: View {
                             Circle()
                                 .fill(.highlight)
                         )
+                        .padding(.leading, 10)
+                        .padding(.top, 11)
                     
                     Spacer()
                     if type == "share" {
@@ -39,32 +43,41 @@ struct QuestionShareItem: View {
                                 .resizable()
                                 .frame(width: 18, height: 18)
                         }
+                        .padding(.top, 11)
                         
                         Spacer().frame(width: 5)
                         
                         Text("16")
                             .font(.pretendard(type: .regular, size: 12))
+                            .padding(.trailing, 17)
+                            .padding(.top, 11)
                     } else {
                         Button(action: {}) {
                             Image(.iconHeart)
                                 .resizable()
                                 .frame(width: 18, height: 18)
                         }
+                        .padding(.top, 11)
                         
                         Button(action: {
                             onDelete?()
                         }) { // TODO: action
                             Image(.iconClose)
+                                .renderingMode(.original)
         
                         }
+                        .padding(.trailing, 17)
+                        .padding(.top, 11)
                     }
                 }
                 
                 Spacer().frame(height: 4)
                 
-                Text(content.forceCharWrapping)
+                Text(content.splitCharacter())
                     .textStyle(.Texting_Q)
                     .foregroundStyle(.black000)
+                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal, 15)
                 
                 
                 Spacer().frame(height: 14)
@@ -75,16 +88,19 @@ struct QuestionShareItem: View {
                     Text(category) // 디자인 시스템 없음
                         .font(.pretendard(type: .regular, size: 8))
                         .kerning(-0.7)
+                        .padding(.bottom, 5)
         
                     
                     Text(date) // 디자인 시스템 없음
                         .font(.pretendard(type: .regular, size: 8))
                         .kerning(-0.7)
+                        .padding(.trailing, 17)
+                        .padding(.bottom, 5)
                 }
+                
             }
-            .padding(.horizontal, 11)
         }
-        .frame(width: 340, height: 115)
+        
     }
 }
 
