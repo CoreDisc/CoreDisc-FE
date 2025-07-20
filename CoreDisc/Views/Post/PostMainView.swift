@@ -19,42 +19,43 @@ struct PostMainView: View {
     @Namespace private var animation
     
     var body: some View {
-        ZStack{
-            Image(.imgPostDetailMainBg)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack {
-                TitleGroup
+        NavigationStack {
+            ZStack{
+                Image(.imgPostDetailMainBg)
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                CategoryGroup
-                
-                ScrollView{
-                    PostGroup
-                    .padding(.bottom, 68) // 탭바 만큼 공간 추가
+                VStack {
+                    TitleGroup
+                    
+                    CategoryGroup
+                    
+                    ScrollView{
+                        PostGroup
+                            .padding(.bottom, 68) // 탭바 만큼 공간 추가
+                    }
                 }
             }
         }
     }
     
     // 로고 타이틀 섹션
-     private var TitleGroup: some View {
-         HStack{
-             // TODO: 로고 디자인 완료 시 추가 예정
-             Text("logo 추가 예정")
-             
-             Spacer()
-             
-             Button(action:{}){
-                 Image(.iconAlert)
-                     .resizable()
-                     .frame(width:40, height: 48)
-                     .foregroundStyle(.black000)
-             }
-     }
-
-     .padding(.horizontal,19)
-     }
+    private var TitleGroup: some View {
+        HStack{
+            // TODO: 로고 디자인 완료 시 추가 예정
+            Text("logo 추가 예정")
+            
+            Spacer()
+            
+            Button(action:{}){
+                Image(.iconAlert)
+                    .resizable()
+                    .frame(width:40, height: 48)
+                    .foregroundStyle(.black000)
+            }
+        }
+        .padding(.horizontal,19)
+    }
     
     // 카테고리 메뉴바 섹션
     private var CategoryGroup: some View {
@@ -62,25 +63,25 @@ struct PostMainView: View {
             PostTopTabView(selectedTab: $selectedTab, animation: animation)
         }
     }
-
+    
     // 게시글 섹션
     private var PostGroup: some View {
         VStack(spacing: 16){
             Spacer().frame(height: 25)
             
             switch selectedTab {
-                    case .all:
-                        postSection()
-                        postSection()
-                        postSection()
-                        postSection()
-                    case .followers:
-                        Text("Followers")
-                    case .core:
-                        Text("Core")
-                    case .privatePost:
-                        Text("Private")
-                    }
+            case .all:
+                postSection()
+                postSection()
+                postSection()
+                postSection()
+            case .followers:
+                Text("Followers")
+            case .core:
+                Text("Core")
+            case .privatePost:
+                Text("Private")
+            }
         }
         .padding(.horizontal, 19)
     }
@@ -99,23 +100,21 @@ struct PostCard: View {
     var userID: String
     
     var body: some View {
+        NavigationLink(destination: PostDetailView()) { // TODO: 게시글 id 사용해서 화면 전환
             ZStack{
                 Rectangle()
                     .foregroundStyle(.white)
                     .cornerRadius(12)
                     .frame(width: 164, height: 271)
-
                 
                 VStack(spacing: 8){
-                    // 추후 게시물 사진으로 변경
-                    Rectangle()
+                    Rectangle() // TODO: 추후 게시물 사진으로 변경
                         .frame(width: 164.25, height: 219)
                         .cornerRadius(12, corners: [.topLeft, .topRight])
                         .foregroundStyle(.gray200)
                     
                     HStack(spacing: 3) {
-                        // 추후 프로필 사진으로 변경
-                        Circle()
+                        Circle() // TODO: 추후 프로필 사진으로 변경
                             .frame(width: 24, height: 24)
                         
                         VStack(alignment: .leading, spacing: 2) {
@@ -123,6 +122,7 @@ struct PostCard: View {
                                 .textStyle(.Post_Thumbnail_text)
                                 .foregroundStyle(.black000)
                                 .lineLimit(2)
+                                .multilineTextAlignment(.leading) // 두줄 이상일 때 왼쪽 정렬
                                 .padding(.leading,1)
                                 .padding(.trailing, 3)
                             
@@ -144,7 +144,7 @@ struct PostCard: View {
                     HStack {
                         Spacer()
                         
-                        Image(systemName: "globe")
+                        Image(.iconGlobe)
                             .resizable()
                             .frame(width: 10, height: 10)
                             .foregroundStyle(.gray800)
@@ -152,6 +152,7 @@ struct PostCard: View {
                     .padding(.trailing, 7)
                     .padding(.bottom, 8)
                 }
+            }
         }
     }
 }
@@ -187,7 +188,7 @@ struct PostTopTabView: View {
                     Text(item.rawValue)
                         .font(.system(size: 14, weight: selectedTab == item ? .bold : .regular))
                         .foregroundColor(.black)
-
+                    
                     if selectedTab == item {
                         Capsule()
                             .fill(Color.black)
@@ -215,4 +216,4 @@ struct PostTopTabView: View {
 #Preview {
     PostMainView()
 }
-    
+

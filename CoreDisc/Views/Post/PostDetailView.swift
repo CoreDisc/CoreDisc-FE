@@ -50,6 +50,7 @@ struct PostDetailView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden() // 기본 뒤로가기 버튼 제거
     }
     
     // 뒤로가기 버튼 섹션
@@ -163,8 +164,6 @@ struct PostDetailView: View {
                  QuestionText(question: "감정이 흔들렸던 대사나 장면이 기억나시나요?")
              }
          }
-         .padding(.top, 20)
-         .padding(.bottom, 27)
          .padding(.horizontal, 22)
          
      }
@@ -264,7 +263,6 @@ struct PostDetailView: View {
                     .frame(width:106, height: 42, alignment: .center)
             }
         }
-        .padding(.bottom, 33)
     }
     
     // 하단 뷰
