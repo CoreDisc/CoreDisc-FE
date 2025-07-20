@@ -39,8 +39,10 @@ struct QuestionWriteView: View {
                     PrimaryActionButton(title:"확인 및 저장", isFinished: .constant(!text.isEmpty && selectedCategory != nil)) {
                         print("click")
                     }
+                    .padding(.horizontal, 21)
                 }
             }
+            .frame(maxWidth: .infinity)
         }
         .background(
             Image(.imgLongBackground)
@@ -71,7 +73,6 @@ struct QuestionWriteView: View {
                     startRadiusFraction: 0,
                     endRadiusFraction: 0.7431
                 )
-                .frame(width: 360, height: 147)
                 .mask(
                     VStack(spacing: 0){
                         UnevenRoundedRectangle(cornerRadii: .init(
@@ -79,7 +80,7 @@ struct QuestionWriteView: View {
                             bottomLeading: 12,
                             bottomTrailing: 12,
                             topTrailing: 0))
-                        .frame(width: 360, height: 123)
+                        .padding(.horizontal, 21)
                         
                         Triangle()
                             .foregroundStyle(.gray400)
@@ -91,10 +92,13 @@ struct QuestionWriteView: View {
                     Text("Make your own disk")
                         .textStyle(.Title_Text_Eng)
                         .foregroundStyle(.white)
+                        .padding(.horizontal, 30)
+                        .padding(.top, 31)
                     Text("오늘 함께할 질문을 작성해보세요.")
                         .textStyle(.Sub_Text_Ko)
                         .foregroundStyle(.white)
-                    Spacer().frame(height: 11.75)
+                        .padding(.bottom, 48.75)
+                    
                 }
                 
             }
@@ -110,91 +114,104 @@ struct QuestionWriteView: View {
                         bottomLeading: 12,
                         bottomTrailing: 12,
                         topTrailing: 0))
-            .frame(width: 360, height: 423)
             .foregroundStyle(.gray400)
+            .padding(.horizontal, 21)
             
             VStack (alignment: .leading) {
                 Text("질문 카테고리를")
                     .textStyle(.Title3_Text_Ko)
-                    .padding(.leading, 30)
+                    .padding(.leading, 50)
+                    .padding(.top, 28)
                 
                 Spacer().frame(height: 5)
                 
                 Text("선택해주세요.")
                     .textStyle(.Title3_Text_Ko)
-                    .padding(.leading, 30)
+                    .padding(.leading, 50)
                 Spacer().frame(height: 37)
                 
-                HStack(spacing:4){
-                    CategorySelectButton(title:"선택 1", width: 224, selectedCategory: $selectedCategory)
-                    CategorySelectButton(title:"선택 2", width: 132, selectedCategory: $selectedCategory)
-                }
-                Spacer().frame(height: 20)
-                HStack(spacing:4){
-                    CategorySelectButton(title:"선택 3", width: 148, selectedCategory: $selectedCategory)
-                    CategorySelectButton(title:"선택 4", width: 208, selectedCategory: $selectedCategory)
-                }
-                Spacer().frame(height: 20)
-                HStack(spacing:4){
-                    CategorySelectButton(title:"선택 5", width: 184, selectedCategory: $selectedCategory)
-                    CategorySelectButton(title:"선택 6", width: 172, selectedCategory: $selectedCategory)
-                }
+                VStack(spacing: 20) {
+                            ResponsiveCategoryRow(
+                                left: ("선택1", 0.62),
+                                right: ("선택2", 0.38),
+                                selectedCategory: $selectedCategory
+                            )
+                            ResponsiveCategoryRow(
+                                left: ("선택3", 0.41),
+                                right: ("선택4", 0.59),
+                                selectedCategory: $selectedCategory
+                            )
+                            ResponsiveCategoryRow(
+                                left: ("선택5", 0.51),
+                                right: ("선택6", 0.49),
+                                selectedCategory: $selectedCategory
+                            )
+                        }
+                        .padding(.horizontal, 21)
+                        .padding(.bottom, 48)
+                    }
             }
-        }
+        
     }
     
     //질문 내용 작성 부분
     var QuestionInput: some View {
-        ZStack(alignment: .leading) {
+        ZStack(alignment: .topLeading) {
             UnevenRoundedRectangle(cornerRadii:
                     .init(
                         topLeading: 0,
                         bottomLeading: 12,
                         bottomTrailing: 12,
                         topTrailing: 0))
-            .frame(width: 360, height: 315)
+            .padding(.horizontal, 21)
             .foregroundStyle(.gray400)
             
             VStack (alignment: .leading) {
                 Text("질문 내용을")
                     .textStyle(.Title3_Text_Ko)
-                    .padding(.leading, 30)
+                    .padding(.top, 30)
+                    .padding(.leading, 50)
                 Spacer().frame(height: 5)
                 Text("입력해주세요.")
                     .textStyle(.Title3_Text_Ko)
-                    .padding(.leading, 30)
+                    .padding(.leading, 50)
                 
                 Spacer().frame(height: 15)
                 
-                ZStack(alignment: .topLeading) {
-                    TextEditor(text: $text)
-                        .padding(20)
-                        .background(Color.white)
-                        .textStyle(.Texting_Q)
-                        .cornerRadius(12)
-                        .frame(width: 320, height: 160)
-                        .textInputAutocapitalization(.never)
-                        .disableAutocorrection(true)
-                        .onChange(of: text, initial: false) {
-                            if text.count > 50 {
-                                text = String(text.prefix(50))
-                            }
-                        }
-                    
-                    if text.isEmpty {
-                        Text("내용을 입력해주세요.")
-                            .foregroundStyle(.gray400)
+                ZStack(alignment: .bottomTrailing) {
+                    ZStack(alignment: .topLeading) {
+                        TextEditor(text: $text)
+                            .padding(20)
+                            .background(Color.white)
                             .textStyle(.Texting_Q)
-                            .padding(.top, 30)
-                            .padding(.leading, 25)
+                            .cornerRadius(12)
+                            .textInputAutocapitalization(.never)
+                            .disableAutocorrection(true)
+                            .onChange(of: text, initial: false) {
+                                if text.count > 50 {
+                                    text = String(text.prefix(50))
+                                }
+                            }
+                            .frame(height: 160)
+                        
+                        if text.isEmpty {
+                            Text("내용을 입력해주세요.")
+                                .foregroundStyle(.gray400)
+                                .textStyle(.Texting_Q)
+                                .padding(.leading, 23)
+                                .padding(.top, 30)
+                        }
                     }
                     
                     Text("\(text.count)/50")
                         .foregroundStyle(.gray400)
                         .textStyle(.Small_Text_10)
-                        .frame(width: 310, height: 150, alignment: .bottomTrailing)
+                        .padding(.bottom, 10)
+                        .padding(.trailing, 10)
                 }
-                .padding(.leading, 19)
+                .padding(.horizontal, 41)
+                .padding(.bottom, 20)
+                
             }
         }
     }
@@ -209,7 +226,7 @@ struct QuestionWriteView: View {
                             bottomLeading: 12,
                             bottomTrailing: 12,
                             topTrailing: 0))
-                .frame(width: 360, height: 219)
+                .padding(.horizontal, 21)
                 .foregroundStyle(.gray600)
                 
                 Triangle()
@@ -221,14 +238,16 @@ struct QuestionWriteView: View {
                 Text("질문 작성시 주의 사항")
                     .textStyle(.Title2_Text_Ko)
                     .foregroundStyle(.warning)
-                    .padding(.leading, 28)
+                    .padding(.leading, 50)
+                    .padding(.top, 28)
                 
                 Spacer().frame(height: 15)
                 
-                Text("• 개인정보를 묻지 마세요 (주소, 나이, 연락처 등)\n• 차별적/혐오적/폭력적인 내용은 금지예요\n• 비속어, 선정적인 표현은 삼가주세요\n• 타인이나 단체에 대한 비난은 안 돼요\n• 정치, 종교 등 민감한 주제는 조심스럽게\n• 광고/홍보 목적의 질문은 금지예요\n• 운영 방침에 따라 부적절한 질문은 삭제될 수 있어요")
+                Text(" • 개인정보를 묻지 마세요 (주소, 나이, 연락처 등)\n • 차별적/혐오적/폭력적인 내용은 금지예요\n • 비속어, 선정적인 표현은 삼가주세요\n • 타인이나 단체에 대한 비난은 안 돼요\n • 정치, 종교 등 민감한 주제는 조심스럽게\n • 광고/홍보 목적의 질문은 금지예요\n • 운영 방침에 따라 부적절한 질문은 삭제될 수 있어요")
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.white)
-                    .padding(.leading, 19)
+                    .padding(.leading, 40)
+                    .padding(.bottom, 33)
             }
             
         }

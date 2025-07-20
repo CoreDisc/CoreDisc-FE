@@ -32,6 +32,7 @@ struct QuestionListView: View {
                 ) {
                     isSaveMode.toggle()
                 }
+                .padding(.horizontal, 21)
             }
         }
         .navigationBarBackButtonHidden()
@@ -73,18 +74,21 @@ struct QuestionListView: View {
     //질문 목록
     private var QuestionListGroup: some View {
         ScrollView {
-            LazyVStack(alignment: .center) {
+            LazyVStack {
                 ForEach(items.indices, id: \.self) { index in
                     QuestionShareItem(
                         type: isSaveMode ? "save" : "share",
                         category: "감정,마음",
-                        content: "맛있는 음식을 먹을 때 어떤 기분이 드나요? 표현해본다면요?",
+                        content: "맛있는 음식을 먹을 때 어떤 기분이 드나요? 표현해본다면요? 맛있는 음식을 먹을 때 어떤",
                         date: "26년 7월 4일",
                         index: index + 1
                     )
+                    .padding(.horizontal, 31)
                     Spacer().frame(height: 20)
+                    
                 }
             }
+            
         }
     }
 }

@@ -34,6 +34,7 @@ struct QuestionShareNowView: View {
                     PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true)) {
                         path.append("save")
                     }
+                    .padding(.horizontal, 21)
                 }
             }
             .navigationDestination(for: String.self) { value in
