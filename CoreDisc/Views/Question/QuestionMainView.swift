@@ -69,7 +69,7 @@ struct QuestionMainView: View {
             Image(.imgCd)
                 .resizable()
                 .frame(width: 529, height: 529)
-                .rotationEffect(.degrees(rotationAngle))
+                .rotationEffect(.degrees(-rotationAngle))
                 .onReceive(timer) { _ in
                     withAnimation {
                         rotationAngle += 1 // 회전 속도 조절
@@ -101,7 +101,7 @@ struct QuestionMainView: View {
             QuestionSelectButton(title: "질문 작성", destination: nil)
             QuestionSelectButton(title: "기본 질문", destination: { AnyView(QuestionBasicView()) })
             QuestionSelectButton(title: "인기 질문", destination: nil)
-            QuestionSelectButton(title: "공유 질문", destination: { AnyView(QuestionShareView()) })
+            QuestionSelectButton(title: "공유 질문", destination: nil)
         }
         .offset(x: 0)
     }
