@@ -10,6 +10,9 @@ import SwiftUI
 struct QuestionBasicView: View {
     private var viewModel: QuesitonBasicViewModel = .init()
     
+    @Environment(\.dismiss) var dismiss
+    @State var showModal: Bool = false
+    
     // 열려있는 카테고리
     @State private var expandedCategoryIDs: Set<UUID> = []
     
@@ -30,6 +33,34 @@ struct QuestionBasicView: View {
                 
                 categoryGroup
             }
+            
+            // 선택 확인 모달
+            if showModal {
+                ModalView {
+                    VStack(spacing: 10) {
+                        Text("고정질문으로 선택할까요?")
+                            .textStyle(.Button_s)
+                        
+                        Text("한번 설정한 고정질문은 30일간 변경이 불가능합니다.")
+                            .textStyle(.Button_s)
+                            .foregroundStyle(.red)
+                    }
+                } leftButton: {
+                    Button(action: {
+                        showModal.toggle() // 모달 제거
+                        // TODO: question select api
+                        dismiss()
+                    }) {
+                        Text("설정하기")
+                    }
+                } rightButton: {
+                    Button(action: {
+                        showModal.toggle() // 모달 제거
+                    }) {
+                        Text("뒤로가기")
+                    }
+                }
+            }
         }
     }
     
@@ -37,22 +68,25 @@ struct QuestionBasicView: View {
     
     // 상단 타이틀
     private var TopGroup: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Button(action: {}) { // TODO: 액션 추가
+        VStack(alignment: .leading, spacing: 9) {
+            Button(action: {
+                dismiss()
+            }) {
                 Image(.iconBack)
             }
             
             Text("Select your own disc")
                 .textStyle(.Title_Text_Eng)
                 .foregroundStyle(.key)
+                .padding(.leading, 9)
             
             Text("한 달동안 함께할 질문을 설정하세요.")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
-                .padding(.leading, 5)
+                .padding(.leading, 9)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 23)
+        .padding(.horizontal, 17)
     }
     
     // 검색창
@@ -90,6 +124,7 @@ struct QuestionBasicView: View {
                 if expandedCategoryIDs.contains(item.id) {
                     ForEach(0..<10, id: \.self) { index in
                         QuestionBasicDetailItem(
+                            showModal: $showModal,
                             title: "\(item.title) \(index + 1)",
                             startColor: item.startColor,
                             endColor: item.endColor
@@ -161,34 +196,41 @@ struct QuestionBasicCategoryItem: View {
             }
             .tint(.clear) // 기본 배경 제거
         }
+        .navigationBarBackButtonHidden()
     }
 }
 
 // 질문 상세
 struct QuestionBasicDetailItem: View {
+    @Binding var showModal: Bool
+    
     var title: String
     var startColor: Color
     var endColor: Color
     
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(.shadow(.inner(
-                    color: .shadow,
-                    radius: 6,
-                    y: -4
-                )))
-                .linearGradient(
-                    startColor: startColor,
-                    endColor: endColor)
-                .frame(minHeight: 64)
-            
-            Text(title.splitCharacter())
-                .textStyle(.Q_Main)
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 23)
-                .padding(.vertical, 14)
+        Button(action: {
+            showModal.toggle()
+        }) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.shadow(.inner(
+                        color: .shadow,
+                        radius: 6,
+                        y: -4
+                    )))
+                    .linearGradient(
+                        startColor: startColor,
+                        endColor: endColor)
+                    .frame(minHeight: 64)
+                
+                Text(title.splitCharacter())
+                    .textStyle(.Q_Main)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 23)
+                    .padding(.vertical, 14)
+            }
         }
     }
 }

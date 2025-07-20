@@ -27,10 +27,8 @@ struct FollowSheetView: View {
                 .fill(.gray600)
                 .shadow(color: .black000, radius: 5, x: 0, y: 0)
             
-            VStack(spacing: 0) {
+            VStack(spacing: 22) {
                 TopGroup
-                
-                Spacer().frame(height: 30)
                 
                 SecondGroup
                 
@@ -85,11 +83,11 @@ struct FollowSheetView: View {
             
             Spacer()
             
-            CorelistToggle()
+            if followType == .follower {
+                CorelistToggle()
+            }
         }
-        .padding(.top, 12)
         .padding(.horizontal, 3)
-        .padding(.bottom, 24)
     }
     
     // 리스트
@@ -97,7 +95,7 @@ struct FollowSheetView: View {
         ScrollView {
             LazyVStack(spacing: 16) {
                 ForEach(viewModel.followerSample, id: \.id) { item in
-                    FollowListItem(nickname: item.nickname, username: item.username)
+                    FollowListItem(nickname: item.nickname, username: item.username, followType: followType)
                 }
             }
             .padding(.bottom, 80)
@@ -108,5 +106,5 @@ struct FollowSheetView: View {
 }
 
 #Preview {
-    FollowSheetView(showSheet: .constant(true), followType: .follower)
+    FollowSheetView(showSheet: .constant(true), followType: .following)
 }
