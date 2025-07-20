@@ -64,7 +64,7 @@ struct TimePickerSheet: View {
                                 .foregroundStyle(.black000)
                         }
                     }
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 100) // 탭바에 가려지지 않게 80 추가
                     .buttonStyle(.plain)
                     
                 }
@@ -72,7 +72,7 @@ struct TimePickerSheet: View {
                 .padding(.horizontal, 15)
                 
             }
-            .frame(height: 324)
+            .frame(height: 404) // 탭바에 가려지지 않게 80 추가
             
         }
         .padding(.horizontal, 18)
@@ -149,4 +149,5 @@ struct TimePickerSheet: View {
 
 #Preview {
     TimePickerSheet(showSheet: .constant(true), timeType: .first)
+        .environmentObject(NotificationViewModel())
 }

@@ -24,7 +24,7 @@ struct TabBar: View {
             Group {
                 switch selectedTab {
                 case .home:
-                    MainView()
+                    PostMainView()
                 case .disk:
                     QuestionMainView()
                 case .write:
@@ -32,7 +32,7 @@ struct TabBar: View {
                 case .report:
                     ReportMainView()
                 case .mypage:
-                    UserHomeView()
+                    MyHomeView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

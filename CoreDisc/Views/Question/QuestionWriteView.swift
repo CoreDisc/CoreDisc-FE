@@ -18,8 +18,10 @@ struct QuestionWriteView: View {
         endRadiusFraction: 0.7431
     )
     
+    @Environment(\.dismiss) var dismiss
+    
     @State var selectedCategory: String? = nil
-    @State var text: String
+    @State var text: String = ""
     @State var isDone: Bool = false
     
     
@@ -50,6 +52,7 @@ struct QuestionWriteView: View {
                 .scaledToFill()
                 .ignoresSafeArea()
         )
+        .navigationBarBackButtonHidden()
     }
     
     
@@ -57,7 +60,9 @@ struct QuestionWriteView: View {
     var WriteSuggestion: some View {
         VStack{
             HStack {
-                Button(action: {}){
+                Button(action: {
+                    dismiss()
+                }){
                     Image(.iconBack)
                 }
                 .padding(.leading, 17)
@@ -249,7 +254,6 @@ struct QuestionWriteView: View {
                     .padding(.leading, 40)
                     .padding(.bottom, 33)
             }
-            
         }
     }
     
@@ -258,5 +262,5 @@ struct QuestionWriteView: View {
 
 
 #Preview {
-    QuestionWriteView(text: "오늘 저녁 뭐먹었어요?")
+    QuestionWriteView()
 }

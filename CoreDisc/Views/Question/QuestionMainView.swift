@@ -98,10 +98,10 @@ struct QuestionMainView: View {
     
     private var SelectCDGroup: some View {
         VStack(spacing: 22) {
-            QuestionSelectButton(title: "질문 작성", destination: nil)
+            QuestionSelectButton(title: "질문 작성", destination: { AnyView(QuestionWriteView()) })
             QuestionSelectButton(title: "기본 질문", destination: { AnyView(QuestionBasicView()) })
             QuestionSelectButton(title: "인기 질문", destination: nil)
-            QuestionSelectButton(title: "공유 질문", destination: nil)
+            QuestionSelectButton(title: "공유 질문", destination: { AnyView(QuestionShareNowView()) })
         }
         .offset(x: 0)
     }
