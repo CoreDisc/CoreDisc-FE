@@ -119,7 +119,6 @@ struct QuestionSummaryView: View {
             PrimaryActionButton(title: "공유하기", isFinished: .constant(false)) {
                 print("click")
             }
-            
         }
         .padding(.horizontal, 21)
         

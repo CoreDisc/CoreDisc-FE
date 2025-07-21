@@ -94,7 +94,7 @@ struct QuestionWriteView: View {
                     
                 )
                 VStack(spacing: 10){
-                    Text("Make your own disk")
+                    Text("Make your own disc")
                         .textStyle(.Title_Text_Eng)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 30)
