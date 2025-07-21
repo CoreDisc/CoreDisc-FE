@@ -28,10 +28,10 @@ struct QuestionShareNowView: View {
             
             VStack {
                 Spacer()
-                PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true)) {
-                    // TODO: 수정 필요
+                NavigationLink(destination: QuestionListView(isSaveMode: true)) {
+                    PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true))
+                        .padding(.horizontal, 21)
                 }
-                .padding(.horizontal, 21)
             }
         }
         .navigationBarBackButtonHidden()
@@ -57,7 +57,7 @@ struct QuestionShareNowView: View {
             
             Text("현재 발행한 공유 질문")
                 .textStyle(.Title_Text_Ko)
-                .foregroundStyle(.white)
+                .foregroundStyle(.key)
                 .padding(.leading, 17)
             
             HStack(spacing: 6) {
@@ -100,6 +100,7 @@ struct QuestionShareNowView: View {
                             date: "25년 8월 1일",
                             index: 1
                         )
+                        .padding(.horizontal, 24)
                         .rotationEffect(totalAngle)
                         .position(x: x, y: y)
                     }
