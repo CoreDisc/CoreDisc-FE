@@ -13,21 +13,25 @@ struct QuestionTrendingView: View {
     let items = Array(0..<5)
     
     var body: some View {
+        
         ZStack {
             Image(.imgShortBackground)
                 .resizable()
                 .ignoresSafeArea()
             
             VStack {
+                
                 TopGroup
                 
                 RankingGroup
                 
+                
                 Spacer()
             }
-            
         }
+        
     }
+    
     
     var TopGroup: some View {
         VStack(alignment: .leading) {
@@ -73,7 +77,7 @@ struct QuestionTrendingView: View {
                 VStack {
                     TrendingQuestionItem(
                         index: index+1,
-                        content: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.",
+                        content: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.헤헤헤헤헤헿헤",
                         nickname: "coredisc.ko",
                         sharing: 522,
                         isChecked: false
