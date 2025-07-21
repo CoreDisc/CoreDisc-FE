@@ -11,6 +11,8 @@ struct BlockListView: View {
     @Environment(\.dismiss) var dismiss
     @State private var viewModel = BlockListViewModel()
     
+    @State var showUnblockModal: Bool = false
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground2)
@@ -23,6 +25,33 @@ struct BlockListView: View {
                 TopMenuGroup
                 
                 ListGroup
+            }
+            
+            // 차단 해제 모달
+            if showUnblockModal {
+                ModalView {
+                    VStack(spacing: 10) {
+                        Text("차단을 해제하면 서로의 활동을 다시 볼 수 있습니다.")
+                            .textStyle(.Button_s)
+                        
+                        Text("차단 해제하시겠습니까?")
+                            .textStyle(.Button_s)
+                    }
+                } leftButton: {
+                    Button(action: {
+                        showUnblockModal.toggle() // 차단해제모달 제거
+                    }) {
+                        Text("취소하기")
+                    }
+                } rightButton: {
+                    Button(action: {
+                        showUnblockModal.toggle() // 차단해제모달 제거
+                        // TODO: unblock api
+                    }) {
+                        Text("차단 해제하기")
+                            .foregroundStyle(.red)
+                    }
+                }
             }
         }
         .ignoresSafeArea(edges: .bottom)
@@ -71,7 +100,7 @@ struct BlockListView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     ForEach(viewModel.blockSample, id: \.blockedId) { item in
-                        BlockListItem(nickname: item.blockedNickname, username: item.blockedUsername)
+                        BlockListItem(nickname: item.blockedNickname, username: item.blockedUsername, showUnblockModal: $showUnblockModal)
                     }
                 }
                 .padding(.top, 39)
@@ -86,6 +115,8 @@ struct BlockListView: View {
 struct BlockListItem: View {
     var nickname: String
     var username: String
+    
+    @Binding var showUnblockModal: Bool
     
     var body: some View {
         HStack(spacing: 11) {
@@ -104,7 +135,10 @@ struct BlockListItem: View {
             
             Spacer()
             
-            Button(action: {}) { // TODO: unblock api
+            Button(action: {
+                showUnblockModal = true
+                // TODO: unblock api
+            }) {
                 Text("unblock")
                     .textStyle(.Button_s)
                     .foregroundStyle(.white)
