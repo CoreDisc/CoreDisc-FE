@@ -8,96 +8,64 @@
 import SwiftUI
 
 struct SearchView: View {
-    @State var query:String
+    @Binding var query:String
+    @Binding var isSearch: Bool
+    @State private var path = NavigationPath()
     let items = Array(0..<5)
     
     var body: some View {
-        ZStack {
-            Image(.imgSearchBackground)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack {
-                Spacer().frame(height: 11)
-                searchGroup
-                Spacer().frame(height: 21)
-                recentSearchGroup
-                Spacer()
-            }
-        }
-    }
-    
-    private var searchGroup: some View {
-        HStack {
-            RoundedRectangle(cornerRadius: 12)
-                .foregroundStyle(.key)
-                .frame(width: 28, height: 114)
-                .offset(x: -14)
-            
-            Spacer().frame(width: 11)
-            
-            VStack(alignment: .leading) {
-                Text("Explore")
-                    .textStyle(.Title_Text_Eng)
-                    .foregroundStyle(.white)
-                Spacer().frame(height: 14)
-                HStack {
-                    ZStack(alignment: .leading) {
-                        TextEditor(text: $query)
-                            .padding(.leading, 46)
-                            .padding(.top, 5)
-                            .background(.white)
-                            .textStyle(.Pick_Q_Eng)
-                            .cornerRadius(32)
-                            .shadow(color: .white.opacity(0.5), radius: 4.8, x: 0, y: 0)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled(true)
-                            .frame(height: 45)
-                        
-                            HStack(spacing: 11) {
-                                Image(.iconSearch)
-                                    .resizable()
-                                    .frame(width: 18, height: 18)
-                                    .padding(.leading, 17)
-                                
-                                if query.isEmpty {
-                                    Text("Enter a user's name or ID")
-                                        .textStyle(.Pick_Q_Eng)
-                                        .foregroundStyle(.gray200)
-                                        .padding(.vertical, 12.5)
-                                        .padding(.leading, 2)
-                                }
-                            }
-                        
-                    }
-                    .padding(.trailing, 25)
-                }
+        NavigationStack(path: $path) {
+            ZStack {
+                Image(.imgSearchBackground)
+                    .resizable()
+                    .ignoresSafeArea()
                 
+                VStack {
+                    Spacer().frame(height: 11)
+                    SearchBarGroup(query: $query, isSearch: $isSearch, onSearch: {
+                        path.append(UUID()) // 🔥 매번 다른 값 push
+                    })
+                    Spacer().frame(height: isSearch ? 18 : 21)
+                    SearchGroup
+                    Spacer()
+                }
+            }
+            .navigationDestination(for: UUID.self) { _ in
+                SearchResultView(query: $query, isSearch: $isSearch, path: $path)
             }
         }
     }
     
-    private var recentSearchGroup: some View {
-        VStack(alignment: .leading) {
-            Text("Recent Searches")
-                .textStyle(.Pick_Q_Eng)
-                .foregroundStyle(.white)
-                .padding(.horizontal, 30)
-            
-            Spacer().frame(height: 8)
-            
-            ForEach(items.indices, id: \.self) {index in
-                RecentItem(text: "music")
-                Rectangle()
-                    .frame(height: 0.5)
-                    .foregroundStyle(.gray600)
+    
+    
+    private var SearchGroup: some View {
+        VStack {
+            if isSearch {
+                SearchRelatedView()
+            } else {
+                VStack(alignment: .leading) {
+                    Text("Recent Searches")
+                        .textStyle(.Pick_Q_Eng)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 30)
+                    
+                    
+                    Spacer().frame(height: 8)
+                    
+                    ForEach(items.indices, id: \.self) {index in
+                        RecentItem(text: "music")
+                        Rectangle()
+                            .frame(height: 0.5)
+                            .foregroundStyle(.gray600)
+                    }
+                    .padding(.horizontal, 33)
+                    
+                }
             }
-            .padding(.horizontal, 33)
-            
         }
     }
+    
 }
-
 struct RecentItem: View {
     let text: String
     
@@ -120,6 +88,15 @@ struct RecentItem: View {
     }
 }
 
+private struct SearchViewPreviewWrapper: View {
+    @State var tempQuery = ""
+    @State var tempSearch = false
+    
+    var body: some View {
+        SearchView(query: $tempQuery, isSearch: $tempSearch)
+    }
+}
+
 #Preview {
-    SearchView(query: "헷")
+    SearchViewPreviewWrapper()
 }
