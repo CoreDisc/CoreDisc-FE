@@ -10,16 +10,6 @@ import Moya
 
 // /api/auth API 연결
 enum AuthRouter {
-    // 토큰 유무
-    var needsToken: Bool {
-        switch self {
-        case .postLogout:
-            return true
-        default:
-            return false
-        }
-    }
-    
     case postSignup(signupData: SignupData)
     
     case getCheckEmail(email: String)
