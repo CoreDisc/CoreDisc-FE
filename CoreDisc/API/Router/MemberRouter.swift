@@ -71,11 +71,11 @@ extension MemberRouter: APITargetType {
         case .patchPassword(let passwordPatchData):
             return .requestJSONEncodable(passwordPatchData)
         case .patchMyhomeUsername(let newUsername):
-            return .requestParameters(parameters: ["newUsername": newUsername], encoding: URLEncoding.queryString)
+            return .requestParameters(parameters: ["newUsername": newUsername], encoding: JSONEncoding.default)
         case .patchMyhomePassword(let myhomePasswordPatchData):
             return .requestJSONEncodable(myhomePasswordPatchData)
         case .patchMyhomeEmail(let email):
-            return .requestParameters(parameters: ["email": email], encoding: URLEncoding.queryString)
+            return .requestParameters(parameters: ["email": email], encoding: JSONEncoding.default)
         
         case .getMyhome:
             return .requestPlain // TODO: 수정중
