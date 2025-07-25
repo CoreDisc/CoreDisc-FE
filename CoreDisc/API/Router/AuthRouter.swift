@@ -40,7 +40,7 @@ extension AuthRouter: APITargetType {
         case .postReissue:
             return "\(Self.authPath)/reissue"
         case .postVerifyUser:
-            return "\(Self.authPath)/verify-user"
+            return "\(Self.authPath)/password-reset/verify-user"
         case .postLogout:
             return "\(Self.authPath)/logout"
         case .postLogin:
@@ -73,11 +73,11 @@ extension AuthRouter: APITargetType {
         case .postSignup(let signupData):
             return .requestJSONEncodable(signupData)
         case .postSendCode(let email):
-            return .requestParameters(parameters: ["email": email], encoding: URLEncoding.default)
+            return .requestParameters(parameters: ["email": email], encoding: JSONEncoding.default)
+        case .postReissue: // TODO: 수정 필요
+            return .requestPlain
         case .postVerifyUser(let verifyUserData):
             return .requestJSONEncodable(verifyUserData)
-        case .postReissue:
-            return .requestPlain
         case .postLogout:
             return .requestPlain
         case .postLogin(let loginData):
