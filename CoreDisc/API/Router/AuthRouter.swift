@@ -22,6 +22,9 @@ enum AuthRouter {
     case getCheckUsername(username: String) // 아이디 중복 확인
     case getCheckNickname(nickname: String) // 닉네임 중복 확인
     case getCheckEmail(email: String) // 이메일 중복 확인
+    
+    // term
+    case getTerms // 이용 약관 리스트 조회
 }
 
 extension AuthRouter: APITargetType {
@@ -52,6 +55,9 @@ extension AuthRouter: APITargetType {
             return "\(Self.authPath)/check-nickname"
         case .getCheckEmail:
             return "\(Self.authPath)/check-email"
+            
+        case .getTerms:
+            return "/api/terms"
         }
     }
     
@@ -59,7 +65,7 @@ extension AuthRouter: APITargetType {
         switch self {
         case .postVerifyCode, .postUsername, .postSignup, .postSendCode, .postReissue, .postVerifyUser, .postLogout, .postLogin:
             return .post
-        case .getCheckUsername, .getCheckNickname, .getCheckEmail:
+        case .getCheckUsername, .getCheckNickname, .getCheckEmail, .getTerms:
             return .get
         }
     }
@@ -89,6 +95,9 @@ extension AuthRouter: APITargetType {
             return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
         case .getCheckEmail(let email):
             return .requestParameters(parameters: ["email": email], encoding: URLEncoding.queryString)
+            
+        case .getTerms:
+            return .requestPlain
         }
     }
 }
