@@ -28,9 +28,7 @@ struct ReportDetailView: View {
                     }
                     .padding(.bottom, 107)
                 }
-                
                 PresentGroup
-
             }
         }
     }
@@ -228,7 +226,6 @@ struct ReportFirstQuestion: View {
         }
     }
 }
-
 
 #Preview {
     ReportDetailView()
