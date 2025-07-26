@@ -10,12 +10,14 @@ import Moya
 
 // /api/auth API 연결
 enum AuthRouter {
-    case postVerifyCode(verifyCodeData: VerifyCodeData) // 이메일 코드 인증
     case postUsername(usernameData: UsernameData) // 아이디 찾기
+    case postKakao(accessToken: String) // 카카오 소셜 로그인
     case postSignup(signupData: SignupData) // 회원가입
+    case postVerifyCode(verifyCodeData: VerifyCodeData) // 회원가입 이메일 코드 인증
     case postSendCode(email: String) // 이메일 인증 메일 전송
+    case postPasswordVerifyCode(verifyCodeData: VerifyCodeData) // 비밀번호 변경 이메일 코드 인증
     case postReissue // 토큰 재발급
-    case postVerifyUser(verifyUserData: VerifyUserData) // 비밀번호 변경을 위한 사용자 검증
+    case postPasswordVerifyUser(verifyUserData: VerifyUserData) // 비밀번호 변경을 위한 사용자 검증
     case postLogout // 로그아웃
     case postLogin(loginData: LoginData) // 일반 로그인
     
@@ -32,17 +34,21 @@ extension AuthRouter: APITargetType {
     
     var path: String {
         switch self {
-        case .postVerifyCode:
-            return "\(Self.authPath)/verify-code"
         case .postUsername:
             return "\(Self.authPath)/username"
+        case .postKakao:
+            return "\(Self.authPath)/social/kakao"
         case .postSignup:
             return "\(Self.authPath)/signup"
+        case .postVerifyCode:
+            return "\(Self.authPath)/verify-code"
         case .postSendCode:
             return "\(Self.authPath)/send-code"
+        case .postPasswordVerifyCode:
+            return "\(Self.authPath)/reset-password/verify-code"
         case .postReissue:
             return "\(Self.authPath)/reissue"
-        case .postVerifyUser:
+        case .postPasswordVerifyUser:
             return "\(Self.authPath)/password-reset/verify-user"
         case .postLogout:
             return "\(Self.authPath)/logout"
@@ -63,7 +69,7 @@ extension AuthRouter: APITargetType {
     
     var method: Moya.Method {
         switch self {
-        case .postVerifyCode, .postUsername, .postSignup, .postSendCode, .postReissue, .postVerifyUser, .postLogout, .postLogin:
+        case .postUsername, .postKakao, .postSignup, .postVerifyCode, .postSendCode, .postPasswordVerifyCode, .postReissue, .postPasswordVerifyUser, .postLogout, .postLogin:
             return .post
         case .getCheckUsername, .getCheckNickname, .getCheckEmail, .getTerms:
             return .get
@@ -72,17 +78,21 @@ extension AuthRouter: APITargetType {
     
     var task: Task {
         switch self {
-        case .postVerifyCode(let verifyCodeData):
-            return .requestJSONEncodable(verifyCodeData)
         case .postUsername(let usernameData):
             return .requestJSONEncodable(usernameData)
+        case .postKakao(let accessToken):
+            return .requestParameters(parameters: ["accessToken": accessToken], encoding: JSONEncoding.default)
         case .postSignup(let signupData):
             return .requestJSONEncodable(signupData)
+        case .postVerifyCode(let verifyCodeData):
+            return .requestJSONEncodable(verifyCodeData)
         case .postSendCode(let email):
             return .requestParameters(parameters: ["email": email], encoding: JSONEncoding.default)
+        case .postPasswordVerifyCode(let verifyCodeData):
+            return .requestJSONEncodable(verifyCodeData)
         case .postReissue: // TODO: 수정 필요
             return .requestPlain
-        case .postVerifyUser(let verifyUserData):
+        case .postPasswordVerifyUser(let verifyUserData):
             return .requestJSONEncodable(verifyUserData)
         case .postLogout:
             return .requestPlain
