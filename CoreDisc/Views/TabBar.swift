@@ -43,6 +43,7 @@ struct TabBar: View {
         .onChange(of: selectedTab) {
             tabBarStyle = tabBarStyle(for: selectedTab)
         }
+        .navigationBarBackButtonHidden()
     }
     
     private func tabBarStyle(for tab: Tab) -> TabBarStyle {

@@ -38,8 +38,10 @@ struct QuestionWriteView: View {
                     Spacer().frame(height: 15)
                     QuestionCaution
                     Spacer().frame(height: 43)
-                    PrimaryActionButton(title:"확인 및 저장", isFinished: .constant(!text.isEmpty && selectedCategory != nil)) {
-                        print("click")
+                    Button(action: {
+                        
+                    }) {
+                        PrimaryActionButton(title:"확인 및 저장", isFinished: .constant(!text.isEmpty && selectedCategory != nil))
                     }
                     .padding(.horizontal, 21)
                 }
@@ -94,7 +96,7 @@ struct QuestionWriteView: View {
                     
                 )
                 VStack(spacing: 10){
-                    Text("Make your own disk")
+                    Text("Make your own disc")
                         .textStyle(.Title_Text_Eng)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 30)

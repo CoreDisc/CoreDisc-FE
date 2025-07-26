@@ -26,11 +26,13 @@ struct QuestionListView: View {
             
             VStack {
                 Spacer()
-                PrimaryActionButton(
-                    title: isSaveMode ? "공유한 질문 보기" : "저장한 공유질문 보기",
-                    isFinished: .constant(true)
-                ) {
+                Button(action:{
                     isSaveMode.toggle()
+                }) {
+                    PrimaryActionButton(
+                        title: isSaveMode ? "공유한 질문 보기" : "저장한 공유질문 보기",
+                        isFinished: .constant(true)
+                    )
                 }
                 .padding(.horizontal, 21)
             }

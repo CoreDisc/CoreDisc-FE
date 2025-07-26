@@ -10,11 +10,10 @@ import SwiftUI
 struct PrimaryActionButton: View {
     var title: String
     @Binding var isFinished: Bool
-    var action: () -> Void
     
     var body: some View {
         //TODO: 버튼 action 추가 필요
-        Button(action: action){
+        
             ZStack{
                 Rectangle()
                     .cornerRadius(12)
@@ -27,14 +26,12 @@ struct PrimaryActionButton: View {
             .frame(maxHeight: 60)
             
             
-        }
+        
     }
 }
 
 #Preview {
     @Previewable @State var tempFinished = false
     
-    PrimaryActionButton(title: "확인 및 저장", isFinished: $tempFinished){
-        print("click")
-    }
+    PrimaryActionButton(title: "확인 및 저장", isFinished: $tempFinished)
 }
