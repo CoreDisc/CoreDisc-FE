@@ -152,7 +152,7 @@ struct KakaoLoginButton: View {
     
     var body: some View {
         Button(action: {
-            let provider = MoyaProvider<AuthRouter>()
+            let provider = APIManager.shared.createProvider(for: AuthRouter.self)
             func kakaoLogin(accessToken: String) {
                 provider.request(.postKakao(accessToken: accessToken)) { result in
                     switch result {
