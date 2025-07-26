@@ -26,8 +26,29 @@ struct LinearGradientModifier: ViewModifier {
     }
 }
 
+// 가로 Linear
+struct HorizontalLinearGradientModifier: ViewModifier {
+    var startColor: Color
+    var endColor: Color
+    
+    func body(content: Content) -> some View {
+        content
+            .foregroundStyle(
+                LinearGradient(
+                    gradient: Gradient(colors: [startColor, endColor]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+    }
+}
+
 extension View {
     func linearGradient(startColor: Color, endColor: Color) -> some View {
         modifier(LinearGradientModifier(startColor: startColor, endColor: endColor))
+    }
+    
+    func horizontalLinearGradient(startColor: Color, endColor: Color) -> some View {
+        modifier(HorizontalLinearGradientModifier(startColor: startColor, endColor: endColor))
     }
 }

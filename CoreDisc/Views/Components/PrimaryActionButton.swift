@@ -13,19 +13,20 @@ struct PrimaryActionButton: View {
     
     var body: some View {
         //TODO: 버튼 action 추가 필요
-        Button(action: {}){
+        
             ZStack{
                 Rectangle()
                     .cornerRadius(12)
-                    .frame(width: 360, height: 60)
                     .foregroundStyle(isFinished ? .key : .gray400)
                 Text(title)
                     .textStyle(.Q_Main)
                     .foregroundStyle(isFinished ? .black000 : .gray600)
+                    .padding(.vertical, 18)
             }
+            .frame(maxHeight: 60)
             
             
-        }
+        
     }
 }
 

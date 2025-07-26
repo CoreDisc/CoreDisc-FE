@@ -34,37 +34,39 @@ struct QuestionSummaryView: View {
             
             Spacer().frame(height: 23)
             
-            ZStack(alignment: .topLeading){
+            ZStack {
                 VStack(spacing: 0) {
                     UnevenRoundedRectangle(cornerRadii: .init(
                         topLeading: 0,
                         bottomLeading: 12,
                         bottomTrailing: 12,
                         topTrailing: 0))
-                    .frame(width: 360, height: 441)
+                    .padding(.horizontal, 21)
                     .foregroundStyle(.gray400)
                     
                     Triangle()
                         .foregroundStyle(.gray400)
                         .frame(width: 93, height: 20)
                 }
-                VStack (alignment: .leading){
+                
+                VStack(alignment: .leading) {
                     Text("작성 질문 요약")
                         .textStyle(.Title3_Text_Ko)
                         .padding(.top, 28)
-                        .padding(.leading, 30)
+                        .padding(.leading, 51)
                     
                     Spacer().frame(height: 32)
                     
                     Text("선택한 카테고리")
                         .textStyle(.Q_Main)
-                        .padding(.leading, 27)
+                        .padding(.leading, 48)
                     
                     Spacer().frame(height: 8)
                     
                     ZStack(alignment: .leading) {
                         Rectangle()
-                            .frame(width: 360, height: 60)
+                            .padding(.horizontal, 21)
+                            .frame(height: 60)
                             .foregroundStyle(.key)
                             .overlay(
                                 VStack(spacing: 0) {
@@ -76,26 +78,27 @@ struct QuestionSummaryView: View {
                         Text("선택1")
                             .textStyle(.Q_Main)
                             .foregroundStyle(.black000)
-                            .padding(.leading, 27)
+                            .padding(.leading, 48)
                     }
                     
                     Spacer().frame(height: 32)
                     
                     Text("작성한 질문 내용")
                         .textStyle(.Q_Main)
-                        .padding(.leading, 27)
+                        .padding(.leading, 48)
                     Spacer().frame(height: 10)
                     
                     ZStack(alignment: .topLeading) {
                         RoundedRectangle(cornerRadius: 12)
                             .foregroundStyle(.white)
-                            .frame(width: 320, height: 160)
-                            .padding(.leading, 20)
+                            .padding(.horizontal, 21)
                         Text("하루 중에 가장 에너지가 나는 시간대는 언제야?")
                             .textStyle(.Texting_Q)
                             .padding(.leading, 40)
                             .padding([.top, .bottom, .trailing], 20)
                     }
+                    .padding(.horizontal, 21)
+                    .padding(.bottom, 42)
                     
                 }
                 
@@ -106,11 +109,24 @@ struct QuestionSummaryView: View {
     
     var ButtonGroup: some View{
         VStack (spacing: 12) {
-            PrimaryActionButton(title: "저장하기", isFinished: .constant(true))
-            PrimaryActionButton(title: "수정하기", isFinished: .constant(false))
-            PrimaryActionButton(title: "공유하기", isFinished: .constant(false))
+            Button(action: {
+                
+            }) {
+                PrimaryActionButton(title: "저장하기", isFinished: .constant(true))
+            }
+            Button(action: {
+                
+            }) {
+                PrimaryActionButton(title: "수정하기", isFinished: .constant(true))
+            }
+            Button(action: {
+                
+            }) {
+                PrimaryActionButton(title: "공유하기", isFinished: .constant(true))
+            }
             
         }
+        .padding(.horizontal, 21)
         
     }
 }

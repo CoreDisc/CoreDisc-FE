@@ -7,9 +7,15 @@
 
 import SwiftUI
 
-struct FollowersSheetView: View {
+enum FollowType: String {
+    case follower = "followers"
+    case following = "followings"
+}
+
+struct FollowSheetView: View {
     @Binding var showSheet: Bool
-    @State private var viewModel = FollowersSheetViewModel()
+    @State private var viewModel = FollowSheetViewModel()
+    var followType: FollowType
     
     // 유저 수 (임시)
     var coreCount: Int = 82
@@ -21,18 +27,10 @@ struct FollowersSheetView: View {
                 .fill(.gray600)
                 .shadow(color: .black000, radius: 5, x: 0, y: 0)
             
-            VStack(spacing: 0) {
+            VStack(spacing: 22) {
                 TopGroup
                 
-                Spacer().frame(height: 29)
-                
-                CORElist
-                
-                Divider()
-                    .background(.highlight)
-                    .frame(height: 0.4)
-                
-                FollowerCount
+                SecondGroup
                 
                 FollowerList
                 
@@ -49,7 +47,7 @@ struct FollowersSheetView: View {
     // 상단바
     private var TopGroup: some View {
         ZStack() {
-            Text("followers")
+            Text(followType.rawValue)
                 .textStyle(.Pick_Q_Eng)
                 .foregroundStyle(.white)
             
@@ -70,61 +68,34 @@ struct FollowersSheetView: View {
         }
     }
     
-    // 코어리스트
-    private var CORElist: some View {
-        VStack {
-            HStack(spacing: 13) {
-                Text("CORE list")
-                    .textStyle(.Pick_Q_Eng)
-                    .foregroundStyle(.white)
-                
-                Text("(\(coreCount))")
-                    .textStyle(.Sub_Text_Ko)
-                    .foregroundStyle(.white)
-                
-                Spacer()
-                
-                Button(action: {}) {
-                    Image(.iconArrow)
-                        .frame(width: 36, height: 36)
-                        .background(
-                            Circle()
-                                .fill(.highlight)
-                        )
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(.horizontal, 4)
-        }
-        .padding(.vertical, 18)
-    }
-    
-    // 유저 수
-    private var FollowerCount: some View {
+    // 유저 수 & 토글
+    private var SecondGroup: some View {
         HStack {
             VStack(alignment: .leading, spacing: 0) {
                 Text("\(followerCount)")
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                 
-                Text("followers")
+                Text(followType.rawValue)
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.gray400)
             }
             
             Spacer()
+            
+            if followType == .follower {
+                CorelistToggle()
+            }
         }
-        .padding(.top, 12)
         .padding(.horizontal, 3)
-        .padding(.bottom, 24)
     }
     
     // 리스트
     private var FollowerList: some View {
         ScrollView {
-            LazyVStack(spacing: 30) {
+            LazyVStack(spacing: 16) {
                 ForEach(viewModel.followerSample, id: \.id) { item in
-                    FollowListItem(nickname: item.nickname, username: item.username)
+                    FollowListItem(nickname: item.nickname, username: item.username, followType: followType)
                 }
             }
             .padding(.bottom, 80)
@@ -135,5 +106,5 @@ struct FollowersSheetView: View {
 }
 
 #Preview {
-    FollowersSheetView(showSheet: .constant(true))
+    FollowSheetView(showSheet: .constant(true), followType: .following)
 }

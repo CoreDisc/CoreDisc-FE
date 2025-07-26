@@ -9,10 +9,14 @@ import SwiftUI
 
 struct UserHomeView: View {
     @Environment(\.dismiss) var dismiss
-    @State var isFollow: Bool = false
-    @State var isBlock: Bool = false
+    @State var isFollow: Bool = false // 팔로우 여부
+    @State var isBlock: Bool = false // 차단 여부
     @State var showBlockButton: Bool = false
     @State var showBlockModal: Bool = false
+    @State var showUnblockModal: Bool = false
+    
+    @State var showFollowerSheet: Bool = false
+    @State var showFollowingSheet: Bool = false
     
     // 임시
     var userName: String = "@coredisc_kr"
@@ -53,18 +57,58 @@ struct UserHomeView: View {
                     }
                 } leftButton: {
                     Button(action: {
-                        showBlockModal.toggle()
+                        showBlockModal.toggle() // 차단모달 제거
+                        showBlockButton.toggle() // 차단버튼 제거
                     }) {
                         Text("취소하기")
                     }
                 } rightButton: {
-                    Button(action: {}) { // TODO: block api
+                    Button(action: {
+                        isBlock.toggle() // 차단여부
+                        showBlockModal.toggle() // 차단모달 제거
+                        showBlockButton.toggle() // 차단버튼 제거
+                        // TODO: block api
+                    }) {
                         Text("차단하기")
                             .foregroundStyle(.red)
                     }
                 }
             }
+            
+            // 차단 해제 모달
+            if showUnblockModal {
+                ModalView {
+                    VStack(spacing: 10) {
+                        Text("차단을 해제하면 서로의 활동을 다시 볼 수 있습니다.")
+                            .textStyle(.Button_s)
+                        
+                        Text("차단 해제하시겠습니까?")
+                            .textStyle(.Button_s)
+                    }
+                } leftButton: {
+                    Button(action: {
+                        showUnblockModal.toggle() // 차단해제모달 제거
+                        showBlockButton.toggle() // 차단버튼 제거
+                    }) {
+                        Text("취소하기")
+                    }
+                } rightButton: {
+                    Button(action: {
+                        isBlock.toggle() // 차단여부
+                        showUnblockModal.toggle() // 차단해제모달 제거
+                        showBlockButton.toggle() // 차단버튼 제거
+                        // TODO: unblock api
+                    }) {
+                        Text("차단 해제하기")
+                            .foregroundStyle(.red)
+                    }
+                }
+            }
+            
+            sheetView
         }
+        .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
+        .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
     }
     
     // 상단 메뉴
@@ -88,18 +132,19 @@ struct UserHomeView: View {
                 
                 Spacer()
                 
-                VStack(alignment: .trailing) {
+                VStack(alignment: .trailing, spacing: 0) {
                     Button(action: {
                         showBlockButton.toggle()
                     }) {
                         Image(.iconMore)
+                            .foregroundStyle(.key)
                     }
                     
                     if showBlockButton {
                         Button(action: {
-                            showBlockModal.toggle()
+                            isBlock ? showUnblockModal.toggle() : showBlockModal.toggle()
                         }) {
-                            Text("block \(userName)")
+                            Text(isBlock ? "unblock \(userName)" : "block \(userName)")
                                 .textStyle(.Button_s)
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 10)
@@ -149,7 +194,9 @@ struct UserHomeView: View {
             .frame(width: 100, height: 40)
             
             // follower
-            Button(action: {}) { // TODO: action
+            Button(action: {
+                showFollowerSheet = true
+            }) { // TODO: action
                 VStack {
                     Text("1.5k")
                         .textStyle(.Q_Main)
@@ -164,7 +211,9 @@ struct UserHomeView: View {
             .buttonStyle(.plain)
             
             // following
-            Button(action: {}) { // TODO: action
+            Button(action: {
+                showFollowingSheet = true
+            }) { // TODO: action
                 VStack {
                     Text("738")
                         .textStyle(.Q_Main)
@@ -189,16 +238,33 @@ struct UserHomeView: View {
         }) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(isFollow ? .gray400 : .key)
+                    .fill(isBlock ? .clear : isFollow ? .gray400 : .key)
+                    .stroke(isBlock ? .warning : .clear, lineWidth: 1)
                     .frame(height: 39)
                     .padding(.horizontal, 24)
                 
-                Text(isFollow ? "following" : "follow")
-                    .textStyle(.Pick_Q_Eng)
-                    .foregroundStyle(.black000)
+                Text(isBlock ? "blocked" : isFollow ? "following" : "follow")
+                    .textStyle(.Q_Sub)
+                    .foregroundStyle(isBlock ? .warning : .black000)
             }
         }
         .buttonStyle(.plain)
+    }
+    
+    // MARK: - bottom sheet
+    @ViewBuilder
+    private var sheetView: some View {
+        if showFollowerSheet {
+            FollowSheetView(showSheet: $showFollowerSheet, followType: .follower)
+                .transition(.move(edge: .bottom))
+                .zIndex(1)
+        }
+        
+        if showFollowingSheet {
+            FollowSheetView(showSheet: $showFollowingSheet, followType: .following)
+                .transition(.move(edge: .bottom))
+                .zIndex(1)
+        }
     }
 }
 
