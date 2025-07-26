@@ -16,7 +16,7 @@ enum FollowRouter {
     case deleteFollowings(targetId: Int) // 팔로우 취소
 }
 
-extension FollowRouter {
+extension FollowRouter: APITargetType {
     var path: String {
         switch self {
         case .postFollow(let targetId):
