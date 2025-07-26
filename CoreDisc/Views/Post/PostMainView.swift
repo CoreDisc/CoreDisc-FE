@@ -37,7 +37,6 @@ struct PostMainView: View {
                 }
             }
         }
-        .navigationBarBackButtonHidden()
     }
     
     // 로고 타이틀 섹션
