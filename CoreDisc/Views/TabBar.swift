@@ -24,7 +24,7 @@ struct TabBar: View {
             Group {
                 switch selectedTab {
                 case .home:
-                    MainView()
+                    PostMainView()
                 case .disk:
                     QuestionMainView()
                 case .write:
@@ -32,7 +32,7 @@ struct TabBar: View {
                 case .report:
                     ReportMainView()
                 case .mypage:
-                    UserHomeView()
+                    MyHomeView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -43,6 +43,7 @@ struct TabBar: View {
         .onChange(of: selectedTab) {
             tabBarStyle = tabBarStyle(for: selectedTab)
         }
+        .navigationBarBackButtonHidden()
     }
     
     private func tabBarStyle(for tab: Tab) -> TabBarStyle {

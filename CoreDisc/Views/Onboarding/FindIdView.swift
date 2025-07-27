@@ -9,6 +9,8 @@ import SwiftUI
 
 
 struct FindIdView: View {
+    @Environment(\.dismiss) var dismiss
+    
     @State var name: String = ""
     @State var email: String = ""
     @State private var find = false
@@ -93,7 +95,9 @@ struct FindIdView: View {
                 }
             })
             
-            Button(action:{}, label: {
+            Button(action:{
+                dismiss()
+            }, label: {
                 ZStack{
                     Rectangle()
                         .frame(height: 40)
@@ -108,19 +112,21 @@ struct FindIdView: View {
             Spacer().frame(height: 54)
             
             HStack{
-                Button(action:{}, label:{
+                NavigationLink(destination: SignupView()) {
                     Text("회원가입")
                         .textStyle(.login_info)
                         .underline()
                         .foregroundStyle(.highlight)
-                })
+                }
+                
                 Spacer().frame(width: 32)
-                Button(action:{}, label:{
+                
+                NavigationLink(destination: FindPwView()) {
                     Text("비밀번호 찾기")
                         .textStyle(.login_info)
                         .underline()
                         .foregroundStyle(.white)
-                })
+                }
             }
 
         }.padding(.horizontal, 41)

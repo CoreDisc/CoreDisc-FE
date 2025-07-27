@@ -69,7 +69,7 @@ struct QuestionMainView: View {
             Image(.imgCd)
                 .resizable()
                 .frame(width: 529, height: 529)
-                .rotationEffect(.degrees(rotationAngle))
+                .rotationEffect(.degrees(-rotationAngle))
                 .onReceive(timer) { _ in
                     withAnimation {
                         rotationAngle += 1 // 회전 속도 조절
@@ -98,10 +98,10 @@ struct QuestionMainView: View {
     
     private var SelectCDGroup: some View {
         VStack(spacing: 22) {
-            QuestionSelectButton(title: "질문 작성")
-            QuestionSelectButton(title: "기본 질문")
-            QuestionSelectButton(title: "인기 질문")
-            QuestionSelectButton(title: "공유 질문")
+            QuestionSelectButton(title: "질문 작성", destination: { AnyView(QuestionWriteView()) })
+            QuestionSelectButton(title: "기본 질문", destination: { AnyView(QuestionBasicView()) })
+            QuestionSelectButton(title: "인기 질문", destination: nil)
+            QuestionSelectButton(title: "공유 질문", destination: { AnyView(QuestionShareNowView()) })
         }
         .offset(x: 0)
     }
@@ -145,32 +145,41 @@ struct QuestionSelectItem: View {
 // 질문 선택 버튼 컴포넌트
 struct QuestionSelectButton: View {
     var title: String
+    var destination: (() -> AnyView)?
     
     var body: some View {
-        Button(action: {}) {
-            ZStack(alignment: .top) {
-                Image(.imgCd)
-                    .resizable()
-                    .frame(width: 76, height: 76)
-                    .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
-                
-                ZStack(alignment: .topLeading) {
-                    RoundedRectangle(cornerRadius: 4)
-                        .horizontalLinearGradient(startColor: .white, endColor: .gray400)
-                        .frame(width: 98, height: 68)
-                        .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
-                    
-                    Text(title)
-                        .textStyle(.Q_Main)
-                        .foregroundStyle(.black000)
-                        .padding(.top, 10)
-                        .padding(.leading, 9)
-                }
-                .padding(.top, 38)
+        if let destination = destination {
+            NavigationLink(destination: destination()) {
+                buttonContent
             }
-            .compositingGroup() // 하나의 뷰로 만듦 (투명도 조절에 필요)
+            .buttonStyle(.plain)
+        } else {
+            buttonContent
         }
-        .buttonStyle(.plain)
+    }
+
+    private var buttonContent: some View {
+        ZStack(alignment: .top) {
+            Image(.imgCd)
+                .resizable()
+                .frame(width: 76, height: 76)
+                .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
+
+            ZStack(alignment: .topLeading) {
+                RoundedRectangle(cornerRadius: 4)
+                    .horizontalLinearGradient(startColor: .white, endColor: .gray400)
+                    .frame(width: 98, height: 68)
+                    .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
+
+                Text(title)
+                    .textStyle(.Q_Main)
+                    .foregroundStyle(.black000)
+                    .padding(.top, 10)
+                    .padding(.leading, 9)
+            }
+            .padding(.top, 38)
+        }
+        .compositingGroup()
     }
 }
 

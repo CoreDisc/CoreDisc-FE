@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MyHomeView: View {
+    @State private var viewModel = MyHomeViewModel()
+    
     @State var showFollowerSheet: Bool = false
     @State var showFollowingSheet: Bool = false
     
@@ -37,6 +39,9 @@ struct MyHomeView: View {
                 }
                 
                 sheetView
+            }
+            .onAppear {
+                viewModel.fetchMyHome()
             }
             .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
             .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
@@ -71,11 +76,11 @@ struct MyHomeView: View {
             Circle() // TODO: 프로필 이미지
                 .frame(width: 124, height: 124)
             
-            Text("@music_sama")
+            Text("@\(viewModel.username)")
                 .textStyle(.Pick_Q_Eng)
                 .foregroundStyle(.gray100)
             
-            Text("닉네임")
+            Text(viewModel.nickname)
                 .textStyle(.Button_s)
                 .foregroundStyle(.gray100)
         }
@@ -86,11 +91,11 @@ struct MyHomeView: View {
         HStack(spacing: 0) {
             // disc
             VStack {
-                Text("153") // TODO: 게시글 수 반영
+                Text(viewModel.postCount)
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                 
-                Text("disc")
+                Text("post")
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.gray400)
             }
@@ -101,7 +106,7 @@ struct MyHomeView: View {
                 showFollowerSheet = true
             }) { // TODO: action
                 VStack {
-                    Text("522")
+                    Text(viewModel.followerCount)
                         .textStyle(.Q_Main)
                         .foregroundStyle(.white)
                     
@@ -118,7 +123,7 @@ struct MyHomeView: View {
                 showFollowingSheet = true
             }) { // TODO: action
                 VStack {
-                    Text("921")
+                    Text(viewModel.followingCount)
                         .textStyle(.Q_Main)
                         .foregroundStyle(.white)
                     
