@@ -110,61 +110,57 @@ struct ReportSummaryView: View {
                 Capsule().frame(width: 2, height: 345)
                     .foregroundStyle(.highlight)
                     .padding(.trailing, 13)
-                VStack {
-                    Spacer()
-                    
-                    VStack(spacing: 20) {
-                        ForEach(viewModel.ExtraDisc.indices, id: \.self) { index in
-                            let isCurrent = index == currentIndex
-                            let isNextOrPrevious = abs(index - currentIndex) == 1
-                            
-                            if isCurrent || isNextOrPrevious {
-                                VStack(spacing: 8) {
-                                    HStack{
-                                        ZStack {
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .fill(isCurrent ? Color.black000 : Color.gray800)
-                                                .frame(width: isCurrent ? 288 : 268,
-                                                       height: isCurrent ? 108 : 100)
-                                            Text(viewModel.ExtraDisc[index].text)
-                                                .foregroundColor(.white)
-                                                .textStyle(isCurrent ? .Bold_Text : .Button_s)
-                                                .multilineTextAlignment(.center)
-                                                .padding()
-                                                .frame(width: isCurrent ? 288 : 268)
-                                                .lineLimit(3)
-                                        }
-                                        Text(viewModel.ExtraDisc[index].date)
-                                            .textStyle(isCurrent ? .Button : .Button_s)
-                                            .foregroundColor(.gray200)
-                                            .offset(y:38)
+                VStack(spacing: 20) {
+                    ForEach(viewModel.ExtraDisc.indices, id: \.self) { index in
+                        let isCurrent = index == currentIndex
+                        let isNextOrPrevious = abs(index - currentIndex) == 1
+                        
+                        if isCurrent || isNextOrPrevious {
+                            VStack(spacing: 8) {
+                                HStack{
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(isCurrent ? Color.black000 : Color.gray800)
+                                            .frame(width: isCurrent ? 288 : 268,
+                                                   height: isCurrent ? 108 : 100)
+                                        Text(viewModel.ExtraDisc[index].text)
+                                            .foregroundColor(.white)
+                                            .textStyle(isCurrent ? .Bold_Text : .Button_s)
+                                            .multilineTextAlignment(.center)
+                                            .padding()
+                                            .frame(width: isCurrent ? 288 : 268)
+                                            .lineLimit(3)
                                     }
+                                    Text(viewModel.ExtraDisc[index].date)
+                                        .textStyle(isCurrent ? .Button : .Button_s)
+                                        .foregroundColor(.gray200)
+                                        .offset(y:38)
                                 }
-                                .scaleEffect(isCurrent ? 1 : 0.85)
-                                .opacity(isCurrent ? 1 : 0.5)
-                                .animation(.easeInOut(duration: 0.3), value: currentIndex)
-                            } else {
-                                EmptyView()
                             }
+                            .scaleEffect(isCurrent ? 1 : 0.85)
+                            .opacity(isCurrent ? 1 : 0.5)
+                            .animation(.easeInOut(duration: 0.3), value: currentIndex)
+                        } else {
+                            EmptyView()
                         }
                     }
-                    Spacer()
                 }
-                .frame(height: 345)
-                .clipped()
-                .gesture(
-                    DragGesture()
-                        .onEnded { value in
-                            if value.translation.height < -50 && currentIndex < viewModel.ExtraDisc.count - 1 {
-                                currentIndex += 1
-                            } else if value.translation.height > 50 && currentIndex > 0 {
-                                currentIndex -= 1
-                            }
-                        }
-                )
+                Spacer()
             }
             .frame(height: 345)
+            .clipped()
+            .gesture(
+                DragGesture()
+                    .onEnded { value in
+                        if value.translation.height < -50 && currentIndex < viewModel.ExtraDisc.count - 1 {
+                            currentIndex += 1
+                        } else if value.translation.height > 50 && currentIndex > 0 {
+                            currentIndex -= 1
+                        }
+                    }
+            )
         }
+        .frame(height: 345)
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.leading, 26)
     }
