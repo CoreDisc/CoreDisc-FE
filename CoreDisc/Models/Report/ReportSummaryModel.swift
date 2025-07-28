@@ -9,8 +9,13 @@ import Foundation
 import SwiftUI
 
 struct ReportSummaryModel {
-    let id = UUID()
     let question: String
     let answer: String
     let freq: String
+}
+
+struct ExtraDiscModel: Identifiable {
+    let id = UUID()
+    let text: String
+    let date: String
 }
