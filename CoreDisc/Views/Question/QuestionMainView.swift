@@ -15,21 +15,19 @@ struct QuestionMainView: View {
     let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Image(.imgShortBackground)
-                    .resizable()
-                    .ignoresSafeArea()
-                    
-                VStack {
-                    TitleGroup
-                    
-                    Spacer().frame(height: 36)
-                    
-                    MainCDGroup
-                    
-                    Spacer()
-                }
+        ZStack {
+            Image(.imgShortBackground)
+                .resizable()
+                .ignoresSafeArea()
+                
+            VStack {
+                TitleGroup
+                
+                Spacer().frame(height: 36)
+                
+                MainCDGroup
+                
+                Spacer()
             }
         }
     }
@@ -98,10 +96,18 @@ struct QuestionMainView: View {
     
     private var SelectCDGroup: some View {
         VStack(spacing: 22) {
-            QuestionSelectButton(title: "질문 작성", destination: { AnyView(QuestionWriteView()) })
-            QuestionSelectButton(title: "기본 질문", destination: { AnyView(QuestionBasicView()) })
-            QuestionSelectButton(title: "인기 질문", destination: nil)
-            QuestionSelectButton(title: "공유 질문", destination: { AnyView(QuestionShareNowView()) })
+            QuestionSelectButton(title: "질문 작성") {
+                QuestionWriteView()
+            }
+            QuestionSelectButton(title: "기본 질문") {
+                QuestionBasicView()
+            }
+            QuestionSelectButton(title: "인기 질문") {
+                QuestionTrendingView()
+            }
+            QuestionSelectButton(title: "공유 질문") {
+                QuestionShareNowView()
+            }
         }
         .offset(x: 0)
     }
@@ -143,9 +149,9 @@ struct QuestionSelectItem: View {
 }
 
 // 질문 선택 버튼 컴포넌트
-struct QuestionSelectButton: View {
+struct QuestionSelectButton<Destination: View>: View {
     var title: String
-    var destination: (() -> AnyView)?
+    var destination: (() -> Destination)?
     
     var body: some View {
         if let destination = destination {
