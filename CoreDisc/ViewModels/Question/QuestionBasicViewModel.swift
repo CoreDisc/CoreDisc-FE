@@ -10,13 +10,27 @@ import SwiftUI
 
 @Observable
 class QuesitonBasicViewModel {
-    let categoryItem: [QuestionBasicCategoryModel] = [
-        .init(title: "식사", startColor: .yellow1, endColor: .yellow2),
-        .init(title: "수면", startColor: .blue1, endColor: .blue2),
-        .init(title: "취미", startColor: .purple1, endColor: .purple2),
-        .init(title: "장소", startColor: .pink1, endColor: .pink2),
-        .init(title: "기분", startColor: .lavender1, endColor: .lavender2),
-        .init(title: "여가", startColor: .mint1, endColor: .mint2),
-        .init(title: "기타", startColor: .orange1, endColor: .orange2),
-    ]
+    var categoryItem: [QuestionBasicCategoryModel] = []
+    
+    private let categoriesProvider = APIManager.shared.createProvider(for: QuestionRouter.self)
+    
+    // MARK: - Functions
+    func fetchCategories() {
+        categoriesProvider.request(.getCategories) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(QuestionCategoriesResponse.self, from: response.data)
+
+                    DispatchQueue.main.async {
+                        self.categoryItem = decodedData.result.map { QuestionBasicCategoryModel(from: $0) }
+                    }
+                } catch {
+                    print("GetQuestionCategories 디코더 오류: \(error)")
+                }
+            case .failure(let error):
+                print("GetQuestionCategories API 오류: \(error)")
+            }
+        }
+    }
 }

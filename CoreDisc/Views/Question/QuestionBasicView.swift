@@ -62,6 +62,9 @@ struct QuestionBasicView: View {
                 }
             }
         }
+        .onAppear {
+            viewModel.fetchCategories()
+        }
     }
     
     // MARK: - group
@@ -111,7 +114,7 @@ struct QuestionBasicView: View {
             ForEach(viewModel.categoryItem) { item in
                 QuestionBasicCategoryItem(
                     title: item.title,
-                    count: 99,
+                    count: item.count,
                     startColor: item.startColor,
                     endColor: item.endColor
                 )
