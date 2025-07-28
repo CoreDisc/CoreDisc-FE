@@ -217,14 +217,18 @@ struct QuestionBasicDetailItem: View {
         }) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(.shadow(.inner(
-                        color: .shadow,
-                        radius: 6,
-                        y: -4
-                    )))
-                    .linearGradient(
-                        startColor: startColor,
-                        endColor: endColor)
+                    .fill(.black000)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .strokeBorder(
+                                LinearGradient(
+                                    colors: [startColor, endColor],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                ),
+                                lineWidth: 3
+                            )
+                    )
                     .frame(minHeight: 64)
                 
                 Text(title.splitCharacter())
