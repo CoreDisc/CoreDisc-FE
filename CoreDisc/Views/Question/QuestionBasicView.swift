@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct QuestionBasicView: View {
-    private var viewModel: QuesitonBasicViewModel = .init()
+    @StateObject private var viewModel = QuesitonBasicViewModel()
     
     @Environment(\.dismiss) var dismiss
     @State var showModal: Bool = false
@@ -62,6 +62,7 @@ struct QuestionBasicView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden()
         .onAppear {
             viewModel.fetchCategories()
         }
@@ -121,17 +122,32 @@ struct QuestionBasicView: View {
                 .onTapGesture {
                     withAnimation {
                         toggleExpanded(for: item.id)
+                        viewModel.fetchBasicLists(categoryUUID: item.id, categoryId: item.categoryId)
                     }
                 }
                 
-                if expandedCategoryIDs.contains(item.id) {
-                    ForEach(0..<10, id: \.self) { index in
+                if expandedCategoryIDs.contains(item.id),
+                   let questionList = viewModel.questionListMap[item.id] {
+                    ForEach(Array(questionList.enumerated()), id: \.element.id) { index, question in
                         QuestionBasicDetailItem(
                             showModal: $showModal,
-                            title: "\(item.title) \(index + 1)",
+                            title: question.question,
                             startColor: item.startColor,
                             endColor: item.endColor
                         )
+                        .onAppear {
+                            if index == questionList.count - 1 {
+                                // 마지막 셀에 도달했을 때
+                                let last = question
+                                viewModel.fetchBasicLists(
+                                    categoryUUID: item.id,
+                                    categoryId: item.categoryId,
+                                    cursorCreatedAt: last.createdAt,
+                                    cursorQuestionType: last.questionType,
+                                    cursorId: last.id
+                                )
+                            }
+                        }
                     }
                 }
             }
