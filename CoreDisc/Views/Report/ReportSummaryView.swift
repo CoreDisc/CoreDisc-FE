@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ReportSummaryView: View {
+    @Environment(\.dismiss) var dismiss
     @State private var currentIndex: Int = 0
     let viewModel = ReportSummaryViewModel()
     
@@ -28,16 +29,19 @@ struct ReportSummaryView: View {
                 }
                 PresentGroup
             }
-            
         }
+        .navigationBarBackButtonHidden()
     }
     
     private var HeaderGroup : some View{
         HStack{
             Image(.imgReportHeaderIcon)
+            Button(action: {
+                dismiss()
+            }){
+                Image(.imgGoback)
+            }
             Spacer()
-            Image(.imgGoback)
-                .padding(.trailing, 14)
         }
     }
     

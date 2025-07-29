@@ -9,41 +9,50 @@ import SwiftUI
 
 struct ReportDetailView: View {
     
+    @Environment(\.dismiss) var dismiss
     @State private var nowIndex: Int = 1
     let viewModel = ReportDetailViewModel()
     @State private var rotate = false
     
     var body: some View {
-        ZStack {
-            Image(.imgLongBackground)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack {
-                ScrollView(.vertical) {
-                    LazyVStack {
-                        HeaderGroup
-                        TotalDiscGroup
-                        Spacer().frame(height: 64)
-                        RandomGroup
-                        Spacer().frame(height: 64)
-                        TimeReportGroup
-                        Spacer().frame(height: 44)
-                        GoSummaryGroup
+        NavigationStack{
+            ZStack {
+                    Image(.imgLongBackground)
+                        .resizable()
+                        .ignoresSafeArea()
+                
+                VStack {
+                    ScrollView(.vertical) {
+                        LazyVStack {
+                            HeaderGroup
+                            TotalDiscGroup
+                            Spacer().frame(height: 64)
+                            RandomGroup
+                            Spacer().frame(height: 64)
+                            TimeReportGroup
+                            Spacer().frame(height: 44)
+                            GoSummaryGroup
+                        }
+                        .padding(.bottom, 107)
                     }
-                    .padding(.bottom, 107)
+                    PresentGroup
                 }
-                PresentGroup
             }
         }
+        .navigationBarBackButtonHidden()
     }
     
     private var HeaderGroup: some View {
         HStack {
             Image(.imgReportHeaderIcon)
+            
+            Button(action: {
+                dismiss()
+            }){
+                Image(.imgGoback)
+            }
+                
             Spacer()
-            Image(.imgGoback)
-                .padding(.trailing, 14)
         }
     }
     
@@ -106,45 +115,43 @@ struct ReportDetailView: View {
                 .foregroundStyle(.white)
                 .padding(.trailing, 36)
             
-            HStack(spacing: 20) {
+            HStack(spacing: 16) {
                 ForEach(viewModel.RandomQuestion.indices, id: \.self) { index in
                     let isCurrent = index == nowIndex
                     let isNextOrPrevious = abs(index - nowIndex) == 1
                     
                     if isCurrent || isNextOrPrevious {
-                        VStack(alignment: .leading, spacing: 8) {
-                            ZStack {
-                                Rectangle()
-                                    .fill(Color.clear)
-                                    .frame(width: 200, height: 200)
-                                    .background(
-                                                Group {
-                                                    if isCurrent {
-                                                        LinearGradient(
-                                                            gradient: Gradient(colors: [Color(.highlight), Color(.gray600)]),
-                                                            startPoint: UnitPoint(x: 0.8, y: 0.3),
-                                                            endPoint: UnitPoint(x: 0.2, y: 1.4)
-                                                        )
-                                                    } else {
-                                                        Color(.gray400)
-                                                    }
-                                                }
+                        ZStack {
+                            Rectangle()
+                                .fill(Color.clear)
+                                .frame(width: 200, height: 200)
+                                .background(
+                                    Group {
+                                        if isCurrent {
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [Color(.highlight), Color(.gray600)]),
+                                                startPoint: UnitPoint(x: 0.8, y: 0.3),
+                                                endPoint: UnitPoint(x: 0.2, y: 1.4)
                                             )
-                                    .cornerRadius(12)
-                                
-                                VStack{
-                                    Text(viewModel.RandomQuestion[index].question)
-                                        .foregroundColor(.black000)
-                                        .multilineTextAlignment(.center)
-                                        .textStyle(.Texting_Q)
-                                        .padding()
-                                    Text(viewModel.RandomQuestion[index].freq)
-                                        .textStyle(.Title2_Text_Ko)
-                                        .foregroundColor(.black000)
-                                        .frame(maxWidth: .infinity, alignment: .trailing)
-                                        .offset(y:30)
-                                        .padding()
-                                }
+                                        } else {
+                                            Color(.gray400)
+                                        }
+                                    }
+                                )
+                                .cornerRadius(12)
+                            
+                            VStack{
+                                Text(viewModel.RandomQuestion[index].question)
+                                    .foregroundColor(.black000)
+                                    .multilineTextAlignment(.center)
+                                    .textStyle(.Texting_Q)
+                                    .padding()
+                                Text(viewModel.RandomQuestion[index].freq)
+                                    .textStyle(.Title2_Text_Ko)
+                                    .foregroundColor(.black000)
+                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                                    .offset(y:30)
+                                    .padding()
                             }
                         }
                         .scaleEffect(isCurrent ? 1.0 : 0.85)
@@ -155,7 +162,7 @@ struct ReportDetailView: View {
                     }
                 }
             }
-            .frame(height: 240)
+            .frame(height: 200)
             .clipped()
             .gesture(
                 DragGesture()
@@ -174,10 +181,8 @@ struct ReportDetailView: View {
                         }
                     }
             )
-            .padding(.leading, 36)
             .frame(width: UIScreen.main.bounds.width)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     private var TimeReportGroup: some View {
@@ -198,7 +203,7 @@ struct ReportDetailView: View {
     
     private var GoSummaryGroup: some View {
         VStack {
-            Button(action: {}, label: {
+            NavigationLink(destination: ReportSummaryView()){
                 ZStack {
                     Rectangle()
                         .cornerRadius(16)
@@ -220,7 +225,7 @@ struct ReportDetailView: View {
                     }
                     .padding(18)
                 }
-            })
+            }
             
             Spacer().frame(height: 19)
             
