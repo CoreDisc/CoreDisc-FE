@@ -61,23 +61,23 @@ struct ReportDetailView: View {
                     .offset(x: -220)
                 
                 //글자 제한 수정 필요
-                ReportFirstQuestion(image: Image(.iconYellow), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-                    .position(x: 213, y: 55)
-                
-                ReportFirstQuestion(image: Image(.iconMint), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-                    .position(x: 248, y: 100)
-                
-                ReportFirstQuestion(image: Image(.iconMint), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-                    .position(x: 271, y: 165)
-                
-                ReportFirstQuestion(image: Image(.iconPurple), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-                    .position(x: 271, y: 235)
-                
-                ReportFirstQuestion(image: Image(.iconPurple), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-                    .position(x: 248, y: 300)
-
-                ReportFirstQuestion(image: Image(.iconPink), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-                    .position(x: 213, y: 345)
+//                ReportFirstQuestion(image: Image(.iconYellow), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
+//                    .position(x: 213, y: 55)
+//                
+//                ReportFirstQuestion(image: Image(.iconMint), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
+//                    .position(x: 248, y: 100)
+//                
+//                ReportFirstQuestion(image: Image(.iconMint), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
+//                    .position(x: 271, y: 165)
+//                
+//                ReportFirstQuestion(image: Image(.iconPurple), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
+//                    .position(x: 271, y: 235)
+//                
+//                ReportFirstQuestion(image: Image(.iconPurple), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
+//                    .position(x: 248, y: 300)
+//
+//                ReportFirstQuestion(image: Image(.iconPink), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
+//                    .position(x: 213, y: 345)
             }
         }
     }
@@ -131,7 +131,7 @@ struct ReportDetailView: View {
                 .foregroundStyle(.white)
             
             Spacer().frame(height: 19)
-            Image(.iconTimePink)
+//            Image(.iconTimePink)
         }
     }
     
