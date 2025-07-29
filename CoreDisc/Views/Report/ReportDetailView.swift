@@ -11,6 +11,7 @@ struct ReportDetailView: View {
     
     @State private var nowIndex: Int = 1
     let viewModel = ReportDetailViewModel()
+    @State private var rotate = false
     
     var body: some View {
         ZStack {
@@ -63,7 +64,13 @@ struct ReportDetailView: View {
                 Image(.imgReportCd)
                     .resizable()
                     .frame(width: 400, height: 400)
+                    .rotationEffect(.degrees(rotate ? 360 : 0))
+                    .animation(Animation.linear(duration: 5).repeatForever(autoreverses: false), value: rotate)
                     .offset(x: -220)
+                    .onAppear {
+                        rotate = true
+                    }
+                
                 
                 ReportFirstQuestion(image: Image(.iconYellow), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
                     .position(x: 213, y: 55)
