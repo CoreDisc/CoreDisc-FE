@@ -63,50 +63,22 @@ struct FindIdView: View {
             
             Spacer().frame(height: 24)
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("이름", text: $name)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("이메일", text: $email)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
             Spacer().frame(height: 36)
 
-            Button(action:{find = true}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("아이디 찾기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            ButtonView(action:{find = true}, label: {
+                Text("아이디 찾기")
             })
-            
-            Button(action:{
-                dismiss()
-            }, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("로그인 화면으로 돌아가기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+
+            ButtonView(action:{dismiss()}, label: {
+                Text("로그인 화면으로 돌아가기")
             })
             
             Spacer().frame(height: 54)
@@ -162,28 +134,12 @@ struct FindIdView: View {
             
             Spacer().frame(height: 29)
 
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.key)
-                    Text("비밀번호 찾기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            ButtonView(action:{}, label: {
+                Text("비밀번호 찾기")
             })
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("로그인 화면으로 돌아가기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            ButtonView(action:{dismiss()}, label: {
+                Text("로그인 화면으로 돌아가기")
             })
             
             Spacer().frame(height: 54)

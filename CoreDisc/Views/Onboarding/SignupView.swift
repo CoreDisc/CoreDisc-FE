@@ -21,7 +21,7 @@ struct SignupView: View {
             Image(.imgOnboardingBackground)
                 .resizable()
                 .ignoresSafeArea()
-
+            
             VStack{
                 Rectangle()
                     .frame(width: 60, height: 60)
@@ -47,118 +47,61 @@ struct SignupView: View {
                     .background(Color.white)
             }
             
+            Spacer().frame(height: 32)
             
-        Spacer().frame(height: 32)
-
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("이메일을 입력해주세요.", text: $email)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("인증 번호 전송")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            ButtonView(action:{}, label: {
+                Text("인증 번호 전송")
             })
             
-        Spacer().frame(height: 18)
-            
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            Spacer().frame(height: 18)
+            InputView{
                 TextField("인증번호를 입력해주세요.", text: $auth)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("인증하기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            
+            ButtonView(action:{}, label: {
+                Text("인증하기")
             })
             
-        Spacer().frame(height: 18)
+            Spacer().frame(height: 18)
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            
+            InputView{
                 SecureField("비밀번호를 입력해주세요.", text: $pwd)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
-            
             Text("영문/숫자/특수문자(공백제외), 10~16자")
                 .textStyle(.login_alert)
                 .foregroundStyle(.gray400)
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 SecureField("비밀번호를 한 번 더 입력해주세요.", text: $repwd)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-        Spacer().frame(height: 18)
-            
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            Spacer().frame(height: 18)
+            InputView{
                 TextField("계정명을 입력해주세요.", text: $id)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
             Text("16자 이내 영문,숫자,특수문자(_,.)만 사용 가능합니다.")
                 .textStyle(.login_alert)
                 .foregroundStyle(.gray400)
             
-            
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("이름을 입력해주세요.", text: $name)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
             Text("16자 이내 영문,한글만 사용 가능합니다.")
                 .textStyle(.login_alert)
                 .foregroundStyle(.gray400)
             
-        Spacer().frame(height: 22)
+            Spacer().frame(height: 22)
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("가입하기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            ButtonView(action:{}, label: {
+                Text("가입하기")
             })
         }
         .padding(.horizontal, 41)

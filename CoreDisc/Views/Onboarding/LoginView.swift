@@ -64,36 +64,18 @@ struct LoginView: View {
             
             Spacer().frame(height: 24)
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("아이디", text: $id)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 SecureField("비밀번호", text: $pwd)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
             Spacer().frame(height: 36)
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
+            ButtonView(action:{}, label: {
                     Text("로그인")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
             })
             
             Spacer().frame(height: 37)

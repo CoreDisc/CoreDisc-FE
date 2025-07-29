@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct FindPwView: View {
     @State var name: String = ""
     @State var id: String = ""
@@ -67,50 +66,25 @@ struct FindPwView: View {
             
             Spacer().frame(height: 24)
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("이름", text: $name)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("아이디", text: $id)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
             Spacer().frame(height: 36)
 
-            Button(action:{find = "auth"}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("인증번호 발송하기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            
+            ButtonView(action:{find = "auth"}, label: {
+                Text("인증번호 발송하기")
             })
             
             Spacer().frame(height: 12)
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("로그인 화면으로 돌아가기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            ButtonView(action:{}, label: {
+                Text("로그인 화면으로 돌아가기")
             })
 
         }.padding(.horizontal, 41)
@@ -133,13 +107,8 @@ struct FindPwView: View {
             
             Spacer().frame(height: 24)
 
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("인증번호 6자리", text: $auth)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
             Text("계정에 등록된 이메일로 인증번호가 전송되었습니다.")
@@ -148,30 +117,14 @@ struct FindPwView: View {
             
             Spacer().frame(height: 72)
 
-            Button(action:{find = "changePw"}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("인증하기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            ButtonView(action:{find = "changePw"}, label: {
+                Text("인증하기")
             })
             
             Spacer().frame(height: 12)
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("로그인 화면으로 돌아가기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            ButtonView(action:{}, label: {
+                Text("로그인 화면으로 돌아가기")
             })
 
         }.padding(.horizontal, 41)
@@ -193,54 +146,28 @@ struct FindPwView: View {
             
             Spacer().frame(height: 24)
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 SecureField("비밀번호를 입력해주세요.", text: $pwd)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
             Text("영문/숫자/특수문자(공백제외), 10~16자")
                 .textStyle(.login_alert)
                 .foregroundStyle(.gray400)
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 SecureField("비밀번호를 한 번 더 입력해주세요.", text: $rePwd)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
             Spacer().frame(height: 36)
 
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("변경하기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            ButtonView(action:{}, label: {
+                Text("변경하기")
             })
             
             Spacer().frame(height: 12)
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("로그인 화면으로 돌아가기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
+            ButtonView(action:{}, label: {
+                Text("로그인 화면으로 돌아가기")
             })
         }.padding(.horizontal, 41)
     }
