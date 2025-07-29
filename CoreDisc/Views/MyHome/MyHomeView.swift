@@ -20,22 +20,26 @@ struct MyHomeView: View {
                     .resizable()
                     .ignoresSafeArea()
                 
-                VStack {
+                VStack(spacing: 0) {
                     Spacer().frame(height: 3)
                     
                     TopMenuGroup
                     
-                    ProfileGroup
-                    
-                    Spacer().frame(height: 13)
-                    
-                    CountGroup
-                    
-                    Spacer().frame(height: 16)
-                    
-                    ButtonGroup
-                    
-                    Spacer()
+                    ScrollView {
+                        ProfileGroup
+                        
+                        Spacer().frame(height: 14)
+                        
+                        CountGroup
+                        
+                        Spacer().frame(height: 16)
+                        
+                        ButtonGroup
+                        
+                        Spacer().frame(height: 31)
+                        
+                        PostGroup
+                    }
                 }
                 
                 sheetView
@@ -168,6 +172,23 @@ struct MyHomeView: View {
             }
             .buttonStyle(.plain)
         }
+    }
+    
+    // 게시글
+    private var PostGroup: some View {
+        let columns = Array(repeating: GridItem(.flexible()), count: 3)
+
+        return LazyVGrid(columns: columns, spacing: 12) {
+            ForEach(1...10, id: \.self) { index in
+                Text("Item \(index)")
+                    .frame(height: 154)
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                    )
+            }
+        }
+        .padding(.horizontal, 15)
     }
     
     // MARK: - bottom sheet
