@@ -45,6 +45,7 @@ struct LoginView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden()
     }
     
     private var MainGroup : some View{

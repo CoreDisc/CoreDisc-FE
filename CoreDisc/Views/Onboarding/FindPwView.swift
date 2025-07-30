@@ -84,9 +84,18 @@ struct FindPwView: View {
             
             Spacer().frame(height: 12)
             
-            ButtonView(action:{dismiss()}, label: {
-                Text("로그인 화면으로 돌아가기")
-            })
+            NavigationLink(destination: LoginView()) {
+                ZStack{
+                    Rectangle()
+                        .frame(height: 40)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .foregroundStyle(.gray400)
+                    Text("로그인 화면으로 돌아가기")
+                        .textStyle(.login_info)
+                        .foregroundStyle(.black000)
+                }
+            }
+            
 
         }.padding(.horizontal, 41)
     }
@@ -124,9 +133,17 @@ struct FindPwView: View {
             
             Spacer().frame(height: 12)
             
-            ButtonView(action:{dismiss()}, label: {
-                Text("로그인 화면으로 돌아가기")
-            })
+            NavigationLink(destination: LoginView()) {
+                ZStack{
+                    Rectangle()
+                        .frame(height: 40)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .foregroundStyle(.gray400)
+                    Text("로그인 화면으로 돌아가기")
+                        .textStyle(.login_info)
+                        .foregroundStyle(.black000)
+                }
+            }
 
         }.padding(.horizontal, 41)
     }
@@ -160,16 +177,24 @@ struct FindPwView: View {
             }
             
             Spacer().frame(height: 36)
-
+            
             ButtonView(action:{}, label: {
                 Text("변경하기")
             })
             
             Spacer().frame(height: 12)
             
-            ButtonView(action:{dismiss()}, label: {
-                Text("로그인 화면으로 돌아가기")
-            })
+            NavigationLink(destination: LoginView()) {
+                ZStack{
+                    Rectangle()
+                        .frame(height: 40)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .foregroundStyle(.gray400)
+                    Text("로그인 화면으로 돌아가기")
+                        .textStyle(.login_info)
+                        .foregroundStyle(.black000)
+                }
+            }
         }.padding(.horizontal, 41)
     }
 }

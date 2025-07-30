@@ -77,9 +77,17 @@ struct FindIdView: View {
                 Text("아이디 찾기")
             })
             
-            ButtonView(action:{dismiss()}, label: {
-                Text("로그인 화면으로 돌아가기")
-            })
+            NavigationLink(destination: LoginView()) {
+                ZStack{
+                    Rectangle()
+                        .frame(height: 40)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .foregroundStyle(.gray400)
+                    Text("로그인 화면으로 돌아가기")
+                        .textStyle(.login_info)
+                        .foregroundStyle(.black000)
+                }
+            }
             
             Spacer().frame(height: 54)
             
@@ -138,9 +146,17 @@ struct FindIdView: View {
                 Text("비밀번호를 잊으셨나요?")
             })
             
-            ButtonView(action:{dismiss()}, label: {
-                Text("로그인 화면으로 돌아가기")
-            })
+            NavigationLink(destination: LoginView()) {
+                ZStack{
+                    Rectangle()
+                        .frame(height: 40)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .foregroundStyle(.gray400)
+                    Text("로그인 화면으로 돌아가기")
+                        .textStyle(.login_info)
+                        .foregroundStyle(.black000)
+                }
+            }
             
             Spacer().frame(height: 54)
             
