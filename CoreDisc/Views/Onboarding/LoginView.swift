@@ -24,10 +24,10 @@ struct LoginView: View {
                     .ignoresSafeArea()
                 
                 VStack{
-                    Rectangle()
-                        .frame(width: 60, height: 60)
-                        .foregroundColor(.key)
-                    Spacer().frame(height: 16)
+                    Image(.imgLogo)
+                        .resizable()
+                        .frame(width: 60, height: 36)
+                    Spacer().frame(height: 51)
                     Text("Shoot Your")
                         .textStyle(.Title_Text_Ko)
                         .foregroundStyle(.white)

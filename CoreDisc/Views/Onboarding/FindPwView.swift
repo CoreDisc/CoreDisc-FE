@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct FindPwView: View {
+    
+    @Environment(\.dismiss) var dismiss
     @State var name: String = ""
     @State var id: String = ""
     @State var auth: String = ""
@@ -17,17 +19,16 @@ struct FindPwView: View {
     
     var body: some View {
         ZStack {
-
             Image(.imgOnboardingBackground)
                 .resizable()
                 .ignoresSafeArea()
 
             VStack{
                 Spacer().frame(height: 96)
-                Rectangle()
-                    .frame(width: 60, height: 60)
-                    .foregroundColor(.key)
-                Spacer().frame(height: 16)
+                Image(.imgLogo)
+                    .resizable()
+                    .frame(width: 60, height: 36)
+                Spacer().frame(height: 51)
                 Text("Shoot Your")
                     .textStyle(.Title_Text_Ko)
                     .foregroundStyle(.white)
@@ -47,7 +48,7 @@ struct FindPwView: View {
                 Spacer()
             }
         }
-        
+        .navigationBarBackButtonHidden()
     }
     private var InputGroup : some View{
         VStack{
@@ -83,7 +84,7 @@ struct FindPwView: View {
             
             Spacer().frame(height: 12)
             
-            ButtonView(action:{}, label: {
+            ButtonView(action:{dismiss()}, label: {
                 Text("로그인 화면으로 돌아가기")
             })
 
@@ -123,7 +124,7 @@ struct FindPwView: View {
             
             Spacer().frame(height: 12)
             
-            ButtonView(action:{}, label: {
+            ButtonView(action:{dismiss()}, label: {
                 Text("로그인 화면으로 돌아가기")
             })
 
@@ -166,7 +167,7 @@ struct FindPwView: View {
             
             Spacer().frame(height: 12)
             
-            ButtonView(action:{}, label: {
+            ButtonView(action:{dismiss()}, label: {
                 Text("로그인 화면으로 돌아가기")
             })
         }.padding(.horizontal, 41)

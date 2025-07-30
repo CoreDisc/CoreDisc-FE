@@ -9,8 +9,8 @@ import SwiftUI
 
 
 struct FindIdView: View {
-    @Environment(\.dismiss) var dismiss
     
+    @Environment(\.dismiss) var dismiss
     @State var name: String = ""
     @State var email: String = ""
     @State private var find = false
@@ -23,10 +23,10 @@ struct FindIdView: View {
             
             VStack{
                 Spacer().frame(height: 96)
-                Rectangle()
-                    .frame(width: 60, height: 60)
-                    .foregroundColor(.key)
-                Spacer().frame(height: 16)
+                Image(.imgLogo)
+                    .resizable()
+                    .frame(width: 60, height: 36)
+                Spacer().frame(height: 51)
                 Text("Shoot Your")
                     .textStyle(.Title_Text_Ko)
                     .foregroundStyle(.white)
@@ -44,7 +44,7 @@ struct FindIdView: View {
                 Spacer()
             }
         }
-        
+        .navigationBarBackButtonHidden()
     }
     private var InputGroup : some View{
         VStack{
@@ -72,11 +72,11 @@ struct FindIdView: View {
             }
             
             Spacer().frame(height: 36)
-
+            
             ButtonView(action:{find = true}, label: {
                 Text("아이디 찾기")
             })
-
+            
             ButtonView(action:{dismiss()}, label: {
                 Text("로그인 화면으로 돌아가기")
             })
@@ -94,13 +94,13 @@ struct FindIdView: View {
                 Spacer().frame(width: 32)
                 
                 NavigationLink(destination: FindPwView()) {
-                    Text("비밀번호 찾기")
+                    Text("비밀번호를 잊으셨나요?")
                         .textStyle(.login_info)
                         .underline()
                         .foregroundStyle(.white)
                 }
             }
-
+            
         }.padding(.horizontal, 41)
     }
     
@@ -133,9 +133,9 @@ struct FindIdView: View {
                 .foregroundStyle(.white)
             
             Spacer().frame(height: 29)
-
+            
             ButtonView(action:{}, label: {
-                Text("비밀번호 찾기")
+                Text("비밀번호를 잊으셨나요?")
             })
             
             ButtonView(action:{dismiss()}, label: {
@@ -153,13 +153,13 @@ struct FindIdView: View {
                 })
                 Spacer().frame(width: 32)
                 Button(action:{}, label:{
-                    Text("비밀번호 찾기")
+                    Text("비밀번호를 잊으셨나요?")
                         .textStyle(.login_info)
                         .underline()
                         .foregroundStyle(.white)
                 })
             }
-
+            
         }.padding(.horizontal, 41)
     }
 }

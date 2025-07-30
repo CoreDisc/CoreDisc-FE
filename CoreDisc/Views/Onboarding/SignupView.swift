@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SignupView: View {
     
+    @Environment(\.dismiss) var dismiss
     @State var email: String = ""
     @State var auth: String = ""
     @State var pwd: String = ""
@@ -23,13 +24,24 @@ struct SignupView: View {
                 .ignoresSafeArea()
             
             VStack{
-                Rectangle()
-                    .frame(width: 60, height: 60)
-                    .foregroundColor(.key)
-                Spacer().frame(height: 16)
+                HStack{
+                    Button(action: {
+                        dismiss()
+                    }){
+                        Image(.imgGoback)
+                            .padding()
+                    }
+                Spacer()
+                }
+                Image(.imgLogo)
+                    .resizable()
+                    .frame(width: 60, height: 36)
+                Spacer().frame(height: 31)
                 MainGroup
+                Spacer()
             }
         }
+        .navigationBarBackButtonHidden()
     }
     
     private var MainGroup : some View{
