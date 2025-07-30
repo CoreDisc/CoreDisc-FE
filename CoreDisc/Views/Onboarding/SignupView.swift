@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SignupView: View {
     
+    @Environment(\.dismiss) var dismiss
     @State var email: String = ""
     @State var auth: String = ""
     @State var pwd: String = ""
@@ -16,20 +17,42 @@ struct SignupView: View {
     @State var id: String = ""
     @State var name: String = ""
     
+    @State private var emailError = false
+    @State private var numberSend = true
+    @State private var numberError = true
+    @State private var numberAuth = true
+    @State private var pwdShown = false
+    @State private var pwdError = true
+    @State private var rePwdShown = false
+    @State private var rePwdError = true
+    @State private var idError = true
+    @State private var nicknameError = true
+    
     var body: some View {
         ZStack {
             Image(.imgOnboardingBackground)
                 .resizable()
                 .ignoresSafeArea()
-
+            
             VStack{
-                Rectangle()
-                    .frame(width: 60, height: 60)
-                    .foregroundColor(.key)
-                Spacer().frame(height: 16)
+                HStack{
+                    Button(action: {
+                        dismiss()
+                    }){
+                        Image(.imgGoback)
+                            .padding()
+                    }
+                Spacer()
+                }
+                Image(.imgLogo)
+                    .resizable()
+                    .frame(width: 60, height: 36)
+                Spacer().frame(height: 31)
                 MainGroup
+                Spacer()
             }
         }
+        .navigationBarBackButtonHidden()
     }
     
     private var MainGroup : some View{
@@ -47,119 +70,170 @@ struct SignupView: View {
                     .background(Color.white)
             }
             
+            Spacer().frame(height: 32)
             
-        Spacer().frame(height: 32)
-
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("이메일을 입력해주세요.", text: $email)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("인증 번호 전송")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
-            })
+            ButtonView(action:{print("인증 번호 전송")}, label: {
+                Text("인증 번호 전송")
+            }, boxColor: (email.isEmpty || emailError) ? .gray400 : .key)
+            .disabled(email.isEmpty)
             
-        Spacer().frame(height: 18)
-            
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            if emailError {
+                Text("잘못된 이메일 형식입니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 19)
+            } else if numberSend {
+                Text("인증번호가 전송되었습니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.gray400)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 19)
+            }
+            else {
+                Spacer().frame(height: 34)
+            }
+     
+            InputView{
                 TextField("인증번호를 입력해주세요.", text: $auth)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("인증하기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
+            ButtonView(action:{print("인증하기")}, label: {
+                Text("인증하기")
+            }, boxColor: (auth.isEmpty || emailError) ? .gray400 : .key)
+            .disabled(auth.isEmpty)
+            
+            if numberAuth{
+                Text("인증되었습니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.gray400)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 19)
+            } else if numberError {
+                Text("인증번호를 다시 확인해주세요.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 19)
+            } else {
+                Spacer().frame(height: 34)
+            }
+            
+            
+            InputView{
+                if pwdShown{
+                    HStack{
+                        TextField("비밀번호를 입력해주세요.", text: $pwd)
+                        Spacer()
+                        Button(action:{
+                            pwdShown.toggle()
+                        }, label: {
+                            Image(.iconShown)
+                                .padding(.horizontal)
+                        })
+                    }
+                } else{
+                    HStack{
+                        SecureField("비밀번호를 입력해주세요.", text: $pwd)
+                        Spacer()
+                        Button(action:{
+                            pwdShown.toggle()
+                        }, label: {
+                            Image(.iconNotShown)
+                                .padding(.horizontal)
+                        })
+                    }
                 }
-            })
-            
-        Spacer().frame(height: 18)
-            
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
-                SecureField("비밀번호를 입력해주세요.", text: $pwd)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            Text("영문/숫자/특수문자(공백제외), 10~16자")
-                .textStyle(.login_alert)
-                .foregroundStyle(.gray400)
-            
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
-                SecureField("비밀번호를 한 번 더 입력해주세요.", text: $repwd)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
+            if pwdError {
+                Text("영문/숫자/특수문자(공백제외), 10~16자로 입력해주세요.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Text("영문/숫자/특수문자(공백제외), 10~16자로 입력해주세요.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.gray400)
             }
             
-        Spacer().frame(height: 18)
-            
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
-                TextField("계정명을 입력해주세요.", text: $id)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
+            InputView{
+                if rePwdShown{
+                    HStack{
+                        TextField("비밀번호를 한 번 더 입력해주세요.", text: $repwd)
+                        Spacer()
+                        Button(action:{
+                            rePwdShown.toggle()
+                        }, label: {
+                            Image(.iconShown)
+                                .padding(.horizontal)
+                        })
+                    }
+                } else{
+                    HStack{
+                        SecureField("비밀번호를 한 번 더 입력해주세요.", text: $repwd)
+                        Spacer()
+                        Button(action:{
+                            rePwdShown.toggle()
+                        }, label: {
+                            Image(.iconNotShown)
+                                .padding(.horizontal)
+                        })
+                    }
+                }
             }
             
-            Text("16자 이내 영문,숫자,특수문자(_,.)만 사용 가능합니다.")
-                .textStyle(.login_alert)
-                .foregroundStyle(.gray400)
+            if rePwdError {
+                Text("비밀번호가 일치하지 않습니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 19)
+            } else {
+                Spacer().frame(height: 34)
+            }
             
+            InputView{
+                TextField("아이디를 입력해주세요.", text: $id)
+            }
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            if idError {
+                Text("16자 이내 영문,숫자,특수문자(_,.)만 사용 가능합니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Text("16자 이내 영문,숫자,특수문자(_,.)만 사용 가능합니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.gray400)
+            }
+            
+            InputView{
                 TextField("이름을 입력해주세요.", text: $name)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            Text("16자 이내 영문,한글만 사용 가능합니다.")
-                .textStyle(.login_alert)
-                .foregroundStyle(.gray400)
+            if nicknameError {
+                Text("16자 이내 영문,한글만 사용 가능합니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Text("16자 이내 영문,한글만 사용 가능합니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.gray400)
+            }
             
-        Spacer().frame(height: 22)
+            Spacer().frame(height: 22)
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("가입하기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
-            })
+            ButtonView(action:{print("가입하기")}, label: {
+                Text("가입하기")
+            }, boxColor: (email.isEmpty || auth.isEmpty || pwd.isEmpty || repwd.isEmpty || id.isEmpty || name.isEmpty) ? .gray400 : .key)
+            .disabled(email.isEmpty || auth.isEmpty || pwd.isEmpty || repwd.isEmpty || id.isEmpty || name.isEmpty)
+            
         }
         .padding(.horizontal, 41)
     }

@@ -15,6 +15,7 @@ struct LoginView: View {
     @State var id: String = ""
     @State var pwd: String = ""
     @State private var isLoginSuccess = false
+    @State private var isError = false
     
     var body: some View {
         NavigationStack {
@@ -24,10 +25,10 @@ struct LoginView: View {
                     .ignoresSafeArea()
                 
                 VStack{
-                    Rectangle()
-                        .frame(width: 60, height: 60)
-                        .foregroundColor(.key)
-                    Spacer().frame(height: 16)
+                    Image(.imgLogo)
+                        .resizable()
+                        .frame(width: 60, height: 36)
+                    Spacer().frame(height: 51)
                     Text("Shoot Your")
                         .textStyle(.Title_Text_Ko)
                         .foregroundStyle(.white)
@@ -45,6 +46,7 @@ struct LoginView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden()
     }
     
     private var MainGroup : some View{
@@ -64,37 +66,28 @@ struct LoginView: View {
             
             Spacer().frame(height: 24)
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("아이디", text: $id)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 SecureField("비밀번호", text: $pwd)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            Spacer().frame(height: 36)
+            if isError {
+                Text("아이디 혹은 비밀번호가 일치하지 않습니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 16)
+            } else {
+                Spacer().frame(height: 36)
+            }
             
-            Button(action:{}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("로그인")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
-            })
+            ButtonView(action:{print("login")}, label: {
+                Text("로그인")
+            }, boxColor: (id.isEmpty || pwd.isEmpty) ? .gray400 : .key)
+            .disabled(id.isEmpty || pwd.isEmpty)
             
             Spacer().frame(height: 37)
             
@@ -103,7 +96,7 @@ struct LoginView: View {
                     Text("회원가입")
                         .textStyle(.login_info)
                         .underline()
-                        .foregroundStyle(.highlight)
+                        .foregroundStyle(.key)
                 }
                 
                 Spacer().frame(width: 32)
