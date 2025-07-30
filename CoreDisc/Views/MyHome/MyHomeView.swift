@@ -9,7 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct MyHomeView: View {
-    @State private var viewModel = MyHomeViewModel()
+    @StateObject private var viewModel = MyHomeViewModel()
     
     @State var showFollowerSheet: Bool = false
     @State var showFollowingSheet: Bool = false
@@ -78,8 +78,13 @@ struct MyHomeView: View {
     // 프로필 영역
     private var ProfileGroup: some View {
         VStack(spacing: 8) {
-            Circle() // TODO: 프로필 이미지
-                .frame(width: 124, height: 124)
+            if let url = URL(string: viewModel.profileImageURL) {
+                KFImage(url)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 124, height: 124)
+                    .clipShape(Circle())
+            }
             
             Text("@\(viewModel.username)")
                 .textStyle(.Pick_Q_Eng)

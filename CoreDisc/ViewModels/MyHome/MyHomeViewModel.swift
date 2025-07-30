@@ -11,12 +11,12 @@ import Moya
 class MyHomeViewModel: ObservableObject {
     // MARK: - Properties
     // fetchMyHome
-    var username: String = ""
-    var nickname: String = ""
-    var followerCount: String = "0"
-    var followingCount: String = "0"
-    var postCount: String = "0"
-    var profileImageURL: String = ""
+    @Published var username: String = ""
+    @Published var nickname: String = ""
+    @Published var followerCount: String = "0"
+    @Published var followingCount: String = "0"
+    @Published var postCount: String = "0"
+    @Published var profileImageURL: String = ""
     
     // fetchMyPosts
     @Published var postList: [MyHomePostValue] = []
