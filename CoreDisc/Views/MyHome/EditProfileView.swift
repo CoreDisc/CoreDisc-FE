@@ -119,10 +119,12 @@ struct ProfileEditTextField: View {
     }
     
     var body: some View {
-        HStack(spacing: 15) {
+        HStack(spacing: 0) {
             Text(type)
                 .textStyle(.light_eng)
                 .foregroundStyle(.gray200)
+            
+            Spacer().frame(width: 16)
             
             VStack(alignment: .leading, spacing: 2) {
                 TextField(originalText,
@@ -131,14 +133,40 @@ struct ProfileEditTextField: View {
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                     .textInputAutocapitalization(.never)
-                    .frame(width: 200)
+                    .frame(maxWidth: 200)
                     .padding(.horizontal, 10)
                 
                 Divider()
                     .background(.gray200)
-                    .frame(width: 200)
+                    .frame(maxWidth: 200)
+                
+                if type == "User Name" {
+                    Text("이미 존재하는 아이디입니다.")
+                        .textStyle(.login_alert)
+                        .foregroundStyle(.warning)
+                }
+            }
+            
+            Spacer().frame(width: 5)
+            
+            if type == "User Name" {
+                Button(action: {}) { // TODO: 중복확인 action
+                    Text("중복확인")
+                        .textStyle(.Q_pick)
+                        .foregroundStyle(.black000)
+                        .frame(width: 63, height: 24)
+                        .background(
+                            RoundedRectangle(cornerRadius: 30)
+                                .fill(.key)
+                        )
+                }
+            } else {
+                Spacer()
+                    .frame(width: 63, height: 24)
             }
         }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 17)
     }
 }
 

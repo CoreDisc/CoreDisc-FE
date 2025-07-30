@@ -183,9 +183,9 @@ extension TextStyle {
     )
     
     static var login_alert = TextStyle(
-        font: .pretendard(type: .medium, size: 10),
+        font: .pretendard(type: .medium, size: 12),
         kerning: 0,
-        lineSpacing: 6
+        lineSpacing: 4
     )
     
     static var Small_Text_10 = TextStyle(
