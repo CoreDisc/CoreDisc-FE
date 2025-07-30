@@ -8,36 +8,52 @@
 import SwiftUI
 
 struct ChangeCoverView: View {
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         ZStack {
             Image(.imgShortBackground2)
                 .resizable()
                 .ignoresSafeArea()
             VStack{
-                Text("Choose a cover")
-                    .textStyle(.Title_Text_Eng)
-                    .foregroundStyle(.white)
-                Spacer().frame(height: 42)
+                HStack{
+                    Button(action: {
+                        dismiss()
+                    }){
+                        Image(.imgGoback)
+                            .padding()
+                    }
+                    Spacer()
+                }
+                .frame(width: UIScreen.main.bounds.width)
+                Spacer().frame(height:108)
                 CoverGroup
+                Spacer()
+            }
+        }
+        .navigationBarBackButtonHidden()
+    }
+    
+    private var CoverGroup : some View{
+        VStack{
+            Text("Choose a cover")
+                .textStyle(.Title_Text_Eng)
+                .foregroundStyle(.white)
+            Spacer().frame(height: 42)
+            HStack{
+                Image(.imgOrangeCover)
+                Spacer().frame(width: 23)
+                
+                Button(action:{}, label:{
+                    Image(.imgCoverChange)
+                })
+                
+                Spacer().frame(width: 23)
+                Image(.imgBlueCover)
             }
         }
     }
-    
-    //애니메이션 추가해야함
-    private var CoverGroup : some View{
-        HStack{
-            Image(.imgOrangeCover)
-            Spacer().frame(width: 23)
-            
-            Button(action:{}, label:{
-                Image(.imgCoverChange)
-            })
-            
-            Spacer().frame(width: 23)
-            Image(.imgBlueCover)
-        }
-    }
 }
+
 
 #Preview {
     ChangeCoverView()

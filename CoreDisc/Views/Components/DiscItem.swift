@@ -28,6 +28,11 @@ struct DiscItem: View {
                 .frame(width: 86, height: 86)
                 .padding(.leading, 5)
             
+            Text("2025-07")
+                .textStyle(.Small_Text_10)
+                .foregroundStyle(.white)
+                .offset(x:10, y:-35)
+                .shadow(color: Color.black.opacity(0.4), radius: 2, x: 0, y: 0)
         }
     }
 }
