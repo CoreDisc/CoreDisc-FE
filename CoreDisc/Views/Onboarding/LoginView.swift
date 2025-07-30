@@ -15,6 +15,7 @@ struct LoginView: View {
     @State var id: String = ""
     @State var pwd: String = ""
     @State private var isLoginSuccess = false
+    @State private var isError = false
     
     var body: some View {
         NavigationStack {
@@ -73,11 +74,20 @@ struct LoginView: View {
                 SecureField("비밀번호", text: $pwd)
             }
             
-            Spacer().frame(height: 36)
+            if isError {
+                Text("아이디 혹은 비밀번호가 일치하지 않습니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 16)
+            } else {
+                Spacer().frame(height: 36)
+            }
             
-            ButtonView(action:{}, label: {
-                    Text("로그인")
-            })
+            ButtonView(action:{print("login")}, label: {
+                Text("로그인")
+            }, boxColor: (id.isEmpty || pwd.isEmpty) ? .gray400 : .key)
+            .disabled(id.isEmpty || pwd.isEmpty)
             
             Spacer().frame(height: 37)
             
@@ -86,7 +96,7 @@ struct LoginView: View {
                     Text("회원가입")
                         .textStyle(.login_info)
                         .underline()
-                        .foregroundStyle(.highlight)
+                        .foregroundStyle(.key)
                 }
                 
                 Spacer().frame(width: 32)

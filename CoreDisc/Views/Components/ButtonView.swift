@@ -11,10 +11,12 @@ struct ButtonView<Content: View>: View {
     
     let label: Content
     let action: () -> Void
+    let boxColor: Color
     
-    init(action: @escaping () -> Void, @ViewBuilder label: () -> Content) {
+    init(action: @escaping () -> Void, @ViewBuilder label: () -> Content, boxColor: Color = .gray400) {
         self.label = label()
         self.action = action
+        self.boxColor = boxColor
     }
     
     var body: some View {
@@ -25,7 +27,7 @@ struct ButtonView<Content: View>: View {
                 Rectangle()
                     .frame(height: 40)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .foregroundStyle(.gray400)
+                    .foregroundStyle(boxColor)
                 label
                     .textStyle(.login_info)
                     .foregroundStyle(.black000)
