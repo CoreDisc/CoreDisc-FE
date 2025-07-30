@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct EditProfileView: View {
+    @StateObject private var viewModel = MyHomeViewModel()
+
     @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused: Bool
     
@@ -33,6 +36,9 @@ struct EditProfileView: View {
                 
                 Spacer()
             }
+        }
+        .onAppear {
+            viewModel.fetchMyHome()
         }
         .toolbarVisibility(.hidden, for: .navigationBar)
     }
@@ -79,8 +85,13 @@ struct EditProfileView: View {
     // 프로필
     private var ProfileGroup: some View {
         ZStack(alignment: .bottomTrailing) {
-            Circle() // TODO: profile image
-                .frame(width: 124, height: 124)
+            if let url = URL(string: viewModel.profileImageURL) {
+                KFImage(url)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 124, height: 124)
+                    .clipShape(Circle())
+            }
             
             Button(action: {}) { // TODO: profile edit
                 Image(.iconEdit)
@@ -97,9 +108,9 @@ struct EditProfileView: View {
     // 텍스트 필드
     private var TextfieldGroup: some View {
         VStack(spacing: 16) {
-            ProfileEditTextField(type: "Nick Name", originalText: "닉네임")
+            ProfileEditTextField(type: "Nick Name", text: $viewModel.nickname)
                 .focused($isFocused) // 키보드 내리기
-            ProfileEditTextField(type: "User Name", originalText: "user_name")
+            ProfileEditTextField(type: "User Name", text: $viewModel.username)
                 .focused($isFocused) // 키보드 내리기
         }
     }
@@ -108,32 +119,29 @@ struct EditProfileView: View {
 // 프로필 수정용 텍스트필드
 struct ProfileEditTextField: View {
     var type: String
-    var originalText: String
-    
-    @State private var text: String = ""
-    
-    init(type: String, originalText: String) {
-        self.type = type
-        self.originalText = originalText
-        _text = State(initialValue: originalText) // 텍스트필드 초기값 설정
-    }
+    @Binding var text: String
     
     var body: some View {
-        HStack(spacing: 0) {
+        HStack(alignment: .top, spacing: 0) {
             Text(type)
-                .textStyle(.light_eng)
+                .textStyle(.Pick_Q_Eng)
                 .foregroundStyle(.gray200)
+                .padding(.vertical, 8)
             
             Spacer().frame(width: 16)
             
-            VStack(alignment: .leading, spacing: 2) {
-                TextField(originalText,
-                          text: $text,
-                          prompt: Text(originalText).foregroundStyle(.gray600))
-                    .textStyle(.Q_Main)
+            VStack(alignment: .leading, spacing: 0) {
+                TextField(
+                    "",
+                    text: $text,
+                    prompt: Text(type).foregroundStyle(.gray600)
+                )
+                    .textStyle(.Pick_Q_Eng)
                     .foregroundStyle(.white)
                     .textInputAutocapitalization(.never)
+                    .frame(height: 28)
                     .frame(maxWidth: 200)
+                    .padding(.vertical, 2)
                     .padding(.horizontal, 10)
                 
                 Divider()
@@ -144,6 +152,7 @@ struct ProfileEditTextField: View {
                     Text("이미 존재하는 아이디입니다.")
                         .textStyle(.login_alert)
                         .foregroundStyle(.warning)
+                        .padding(.top, 2)
                 }
             }
             
