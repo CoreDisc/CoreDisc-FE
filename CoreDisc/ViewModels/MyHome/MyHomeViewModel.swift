@@ -22,7 +22,11 @@ class MyHomeViewModel: ObservableObject {
     @Published var postList: [MyHomePostValue] = []
     @Published var hasNextPage: Bool = false
     
+    // fetchIdCheck
+    @Published var duplicated: Bool = false
+    
     private let memberProvider = APIManager.shared.createProvider(for: MemberRouter.self)
+    private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
     
     // MARK: - Functions
     func fetchMyHome() {
@@ -74,6 +78,24 @@ class MyHomeViewModel: ObservableObject {
                 }
             case .failure(let error):
                 print("GetMyPosts API 오류: \(error)")
+            }
+        }
+    }
+    
+    func fetchIdCheck(username: String) {
+        authProvider.request(.getCheckUsername(username: username)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(EditCheckUsernameResponse.self, from: response.data)
+                    let result = decodedData.result
+                    
+                    self.duplicated = result.duplicated
+                } catch {
+                    print("GetCheckUsername 디코더 오류: \(error)")
+                }
+            case .failure(let error):
+                print("GetCheckUsername API 오류: \(error)")
             }
         }
     }

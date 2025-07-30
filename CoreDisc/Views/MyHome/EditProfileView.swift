@@ -108,9 +108,19 @@ struct EditProfileView: View {
     // 텍스트 필드
     private var TextfieldGroup: some View {
         VStack(spacing: 16) {
-            ProfileEditTextField(type: "Nick Name", text: $viewModel.nickname)
+            ProfileEditTextField(
+                type: "Nick Name",
+                text: $viewModel.nickname,
+                duplicated: .constant(false),
+                viewModel: viewModel
+            )
                 .focused($isFocused) // 키보드 내리기
-            ProfileEditTextField(type: "User Name", text: $viewModel.username)
+            ProfileEditTextField(
+                type: "User Name",
+                text: $viewModel.username,
+                duplicated: $viewModel.duplicated,
+                viewModel: viewModel
+            )
                 .focused($isFocused) // 키보드 내리기
         }
     }
@@ -120,6 +130,8 @@ struct EditProfileView: View {
 struct ProfileEditTextField: View {
     var type: String
     @Binding var text: String
+    @Binding var duplicated: Bool
+    @ObservedObject var viewModel: MyHomeViewModel
     
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
@@ -148,10 +160,15 @@ struct ProfileEditTextField: View {
                     .background(.gray200)
                     .frame(maxWidth: 200)
                 
-                if type == "User Name" {
+                if type == "User Name", duplicated {
                     Text("이미 존재하는 아이디입니다.")
                         .textStyle(.login_alert)
                         .foregroundStyle(.warning)
+                        .padding(.top, 2)
+                } else if type == "User Name", !duplicated {
+                    Text("사용 가능한 아이디입니다.")
+                        .textStyle(.login_alert)
+                        .foregroundStyle(.white)
                         .padding(.top, 2)
                 }
             }
@@ -159,7 +176,9 @@ struct ProfileEditTextField: View {
             Spacer().frame(width: 5)
             
             if type == "User Name" {
-                Button(action: {}) { // TODO: 중복확인 action
+                Button(action: {
+                    viewModel.fetchIdCheck(username: text)
+                }) {
                     Text("중복확인")
                         .textStyle(.Q_pick)
                         .foregroundStyle(.black000)
