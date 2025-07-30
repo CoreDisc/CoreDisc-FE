@@ -19,8 +19,8 @@ class MyHomeViewModel: ObservableObject {
     var profileImageURL: String = ""
     
     // fetchMyPosts
-    @Published var postListMap: [MyHomePostValue] = []
-    @Published var hasNextPageMap: [Bool] = []
+    @Published var postList: [MyHomePostValue] = []
+    @Published var hasNextPage: Bool = false
     
     private let memberProvider = APIManager.shared.createProvider(for: MemberRouter.self)
     
@@ -59,8 +59,21 @@ class MyHomeViewModel: ObservableObject {
                     let decodedData = try JSONDecoder().decode(MyHomePostResponse.self, from: response.data)
                     let result = decodedData.result
                     
-                    
+                    DispatchQueue.main.async {
+                        if cursorId == nil {
+                            // 첫 요청 -> 전체 초기화
+                            self.postList = result.values
+                        } else {
+                            // 다음 페이지 -> append
+                            self.postList.append(contentsOf: result.values)
+                        }
+                        self.hasNextPage = result.hasNext
+                    }
+                } catch {
+                    print("GetMyPosts 디코더 오류: \(error)")
                 }
+            case .failure(let error):
+                print("GetMyPosts API 오류: \(error)")
             }
         }
     }

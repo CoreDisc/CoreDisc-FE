@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct MyHomeView: View {
     @State private var viewModel = MyHomeViewModel()
@@ -179,13 +180,30 @@ struct MyHomeView: View {
         let columns = Array(repeating: GridItem(.flexible()), count: 3)
 
         return LazyVGrid(columns: columns, spacing: 12) {
-            ForEach(1...10, id: \.self) { index in
-                Text("Item \(index)")
-                    .frame(height: 154)
-                    .frame(maxWidth: .infinity)
-                    .background(
+            ForEach(viewModel.postList, id: \.postId) { post in
+                if let url = URL(string: post.postImageThumbnailDTO.thumbnailUrl),
+                   !post.postImageThumbnailDTO.thumbnailUrl.isEmpty { // 이미지
+                    KFImage(url)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 154)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                } else { // 텍스트
+                    ZStack {
                         RoundedRectangle(cornerRadius: 12)
-                    )
+                            .fill(.gray100)
+                            .stroke(.gray200, lineWidth: 0.3)
+                            .frame(height: 154)
+                        
+                        Text(post.postTextThumbnailDTO.content)
+                            .textStyle(.Q_pick)
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(.black000)
+                            .padding(22)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
             }
         }
         .padding(.horizontal, 15)
