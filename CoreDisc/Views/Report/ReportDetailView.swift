@@ -80,7 +80,6 @@ struct ReportDetailView: View {
                         rotate = true
                     }
                 
-                
                 ReportFirstQuestion(image: Image(.iconYellow), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
                     .position(x: 213, y: 55)
                 
@@ -197,7 +196,7 @@ struct ReportDetailView: View {
                 .foregroundStyle(.white)
             
             Spacer().frame(height: 19)
-            Image(.iconTimePink)
+//            Image(.iconTimePink)
         }
     }
     

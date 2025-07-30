@@ -8,15 +8,75 @@
 import Foundation
 import SwiftUI
 
-@Observable
-class QuesitonBasicViewModel {
-    let categoryItem: [QuestionBasicCategoryModel] = [
-        .init(title: "식사", startColor: .yellow1, endColor: .yellow2),
-        .init(title: "수면", startColor: .blue1, endColor: .blue2),
-        .init(title: "취미", startColor: .purple1, endColor: .purple2),
-        .init(title: "장소", startColor: .pink1, endColor: .pink2),
-        .init(title: "기분", startColor: .lavender1, endColor: .lavender2),
-        .init(title: "여가", startColor: .mint1, endColor: .mint2),
-        .init(title: "기타", startColor: .orange1, endColor: .orange2),
-    ]
+class QuesitonBasicViewModel: ObservableObject {
+    @Published var categoryItem: [QuestionBasicCategoryModel] = []
+    @Published var questionListMap: [UUID: [QuestionBasicListValue]] = [:]
+    @Published var hasNextPageMap: [UUID: Bool] = [:]
+
+    private let basicProvider = APIManager.shared.createProvider(for: QuestionRouter.self)
+    
+    // MARK: - Functions
+    func fetchCategories() {
+        basicProvider.request(.getCategories) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(QuestionCategoriesResponse.self, from: response.data)
+
+                    DispatchQueue.main.async {
+                        self.categoryItem = decodedData.result.map { QuestionBasicCategoryModel(from: $0) }
+                    }
+                } catch {
+                    print("GetQuestionCategories 디코더 오류: \(error)")
+                }
+            case .failure(let error):
+                print("GetQuestionCategories API 오류: \(error)")
+            }
+        }
+    }
+    
+    func fetchBasicLists(
+        categoryUUID: UUID,
+        categoryId: Int,
+        cursorCreatedAt: String? = nil,
+        cursorQuestionType: String? = nil,
+        cursorId: Int? = nil,
+        size: Int = 10
+    ) {
+        if cursorId != nil, hasNextPageMap[categoryUUID] == false {
+            return
+        }
+        
+        basicProvider.request(.getBasic(
+            categoryId: categoryId,
+            cursorCreatedAt: cursorCreatedAt,
+            cursorQuestionType: cursorQuestionType,
+            cursorId: cursorId,
+            size: size
+        )) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(QuestionBasicListResponse.self, from: response.data)
+                    
+                    DispatchQueue.main.async {
+                        if cursorId == nil {
+                            // 첫 요청 -> 전체 초기화
+                            self.questionListMap[categoryUUID] = decodedData.result.values
+                        } else {
+                            // 다음 페이지 -> append
+                            var existingList = self.questionListMap[categoryUUID] ?? []
+                            existingList.append(contentsOf: decodedData.result.values)
+                            self.questionListMap[categoryUUID] = existingList
+                        }
+                        self.hasNextPageMap[categoryUUID] = decodedData.result.hasNext
+                    }
+                } catch {
+                    print("GetQuestionBasic 디코더 오류: \(error)")
+                }
+            case .failure(let error):
+                print("GetQuestionBasic API 오류: \(error)")
+            }
+        }
+    }
 }
