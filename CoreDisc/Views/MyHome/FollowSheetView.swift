@@ -105,6 +105,99 @@ struct FollowSheetView: View {
     }
 }
 
+// MARK: - components
+// 리스트 아이템
+struct FollowListItem: View {
+    @State var isCoreList: Bool = false
+    @State var showLabel: Bool = false
+    
+    var nickname: String = "닉네임"
+    var username: String = "user_name"
+    var followType: FollowType
+    
+    var body: some View {
+        HStack(alignment: .top) {
+            Circle() // TODO: profile image
+                .frame(width: 32, height: 32)
+            
+            VStack(alignment: .leading, spacing: 0) {
+                Text(nickname)
+                    .textStyle(.Button_s)
+                    .foregroundStyle(.white)
+                
+                Text("@\(username)")
+                    .textStyle(.Pick_Q_Eng)
+                    .foregroundStyle(.white)
+            }
+            
+            Spacer()
+            
+            if followType == .follower {
+                VStack(spacing: 4) {
+                    Button(action: {
+                        isCoreList.toggle()
+                        showLabel = true
+                        
+                        // 시간 지나면 자동으로 label 없애기
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            withAnimation {
+                                showLabel = false
+                            }
+                        }
+                        
+                        // TODO: core +/- api
+                    }) {
+                        Image(.iconCore)
+                            .foregroundStyle(isCoreList ? .key : .gray400)
+                    }
+                    .buttonStyle(.plain)
+                    
+                    Text(isCoreList ? "+ CORE list" : "- CORE list")
+                        .textStyle(.Post_UserID)
+                        .foregroundStyle(.black000)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(.gray400)
+                        )
+                        .opacity(showLabel ? 1 : 0)
+                        .animation(.easeInOut, value: showLabel)
+                }
+            }
+        }
+    }
+}
+
+// 코어리스트 토글
+struct CorelistToggle: View {
+    @State private var isCorelist: Bool = false
+    
+    var body: some View {
+        Button(action: {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isCorelist.toggle()
+            }
+        }) {
+            ZStack(alignment: isCorelist ? .trailing : .leading) {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.gray800)
+                    .frame(width: 60, height: 32)
+                
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(isCorelist ? .black000 : .gray600)
+                    .frame(width: 56, height: 28)
+                    .padding(.horizontal, 2)
+                
+                Image(.iconCore)
+                    .foregroundStyle(isCorelist ? .key : .gray400)
+                    .padding(.horizontal, 4)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+}
+
 #Preview {
     FollowSheetView(showSheet: .constant(true), followType: .following)
 }
