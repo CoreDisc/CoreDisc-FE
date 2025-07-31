@@ -121,7 +121,7 @@ struct TrendingQuestionItem: View {
                         .padding(.leading, 16)
                         .padding(.top, 12)
                         .padding(.bottom, 4)
-                        .padding(.trailing, 48)
+                        .padding(.trailing, 14)
                     
                     HStack(spacing: 7){
                         Text("@\(nickname)")

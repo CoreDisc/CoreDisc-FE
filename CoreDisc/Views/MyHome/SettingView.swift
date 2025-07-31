@@ -66,7 +66,8 @@ struct SettingView: View {
     // 버튼
     private var ButtonGroup: some View {
         VStack(spacing: 18) {
-            SettingButton(title: "계정 관리", destination: { AnyView(AccountManageView()) }) // TODO: 계정 관리 화면 전환
+            SettingButton(title: "계정 관리", destination: { AnyView(AccountManageView()) })
+            SettingButton(title: "차단 유저 목록", destination: { AnyView(BlockListView()) })
             SettingButton(title: "알림 설정", destination: { AnyView(NotificationView()) })
             SettingButton(title: "로그아웃") // TODO: 로그아웃 모달
         }

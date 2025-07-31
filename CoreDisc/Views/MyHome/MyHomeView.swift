@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct MyHomeView: View {
+    @StateObject private var viewModel = MyHomeViewModel()
+    
     @State var showFollowerSheet: Bool = false
     @State var showFollowingSheet: Bool = false
     
@@ -18,25 +21,32 @@ struct MyHomeView: View {
                     .resizable()
                     .ignoresSafeArea()
                 
-                VStack {
+                VStack(spacing: 0) {
                     Spacer().frame(height: 3)
                     
                     TopMenuGroup
                     
-                    ProfileGroup
-                    
-                    Spacer().frame(height: 13)
-                    
-                    CountGroup
-                    
-                    Spacer().frame(height: 16)
-                    
-                    ButtonGroup
-                    
-                    Spacer()
+                    ScrollView {
+                        ProfileGroup
+                        
+                        Spacer().frame(height: 14)
+                        
+                        CountGroup
+                        
+                        Spacer().frame(height: 16)
+                        
+                        ButtonGroup
+                        
+                        Spacer().frame(height: 31)
+                        
+                        PostGroup
+                    }
                 }
                 
                 sheetView
+            }
+            .onAppear {
+                viewModel.fetchMyHome()
             }
             .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
             .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
@@ -68,14 +78,19 @@ struct MyHomeView: View {
     // 프로필 영역
     private var ProfileGroup: some View {
         VStack(spacing: 8) {
-            Circle() // TODO: 프로필 이미지
-                .frame(width: 124, height: 124)
+            if let url = URL(string: viewModel.profileImageURL) {
+                KFImage(url)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 124, height: 124)
+                    .clipShape(Circle())
+            }
             
-            Text("@music_sama")
+            Text("@\(viewModel.username)")
                 .textStyle(.Pick_Q_Eng)
                 .foregroundStyle(.gray100)
             
-            Text("닉네임")
+            Text(viewModel.nickname)
                 .textStyle(.Button_s)
                 .foregroundStyle(.gray100)
         }
@@ -86,11 +101,11 @@ struct MyHomeView: View {
         HStack(spacing: 0) {
             // disc
             VStack {
-                Text("153") // TODO: 게시글 수 반영
+                Text(viewModel.postCount)
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                 
-                Text("disc")
+                Text("post")
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.gray400)
             }
@@ -101,7 +116,7 @@ struct MyHomeView: View {
                 showFollowerSheet = true
             }) { // TODO: action
                 VStack {
-                    Text("522")
+                    Text(viewModel.followerCount)
                         .textStyle(.Q_Main)
                         .foregroundStyle(.white)
                     
@@ -118,7 +133,7 @@ struct MyHomeView: View {
                 showFollowingSheet = true
             }) { // TODO: action
                 VStack {
-                    Text("921")
+                    Text(viewModel.followingCount)
                         .textStyle(.Q_Main)
                         .foregroundStyle(.white)
                     
@@ -163,6 +178,40 @@ struct MyHomeView: View {
             }
             .buttonStyle(.plain)
         }
+    }
+    
+    // 게시글
+    private var PostGroup: some View {
+        let columns = Array(repeating: GridItem(.flexible()), count: 3)
+
+        return LazyVGrid(columns: columns, spacing: 12) {
+            ForEach(viewModel.postList, id: \.postId) { post in
+                if let url = URL(string: post.postImageThumbnailDTO.thumbnailUrl),
+                   !post.postImageThumbnailDTO.thumbnailUrl.isEmpty { // 이미지
+                    KFImage(url)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 154)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                } else { // 텍스트
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.gray100)
+                            .stroke(.gray200, lineWidth: 0.3)
+                            .frame(height: 154)
+                        
+                        Text(post.postTextThumbnailDTO.content)
+                            .textStyle(.Q_pick)
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(.black000)
+                            .padding(22)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+            }
+        }
+        .padding(.horizontal, 15)
     }
     
     // MARK: - bottom sheet
