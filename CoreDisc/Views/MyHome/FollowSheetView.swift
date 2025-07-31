@@ -101,13 +101,15 @@ struct FollowSheetView: View {
             LazyVStack(spacing: 16) {
                 let list = viewModel.getDisplayList(for: followType)
                 ForEach(list, id: \.id) { item in
-                    FollowListItem(item: item, followType: followType, isCoreList: item.isCore)
-                        .onAppear {
-                            if item.id == list.last?.id,
-                               viewModel.hasNextPage(for: followType) {
-                                viewModel.fetchMore(for: followType, cursorId: item.id)
+                    NavigationLink(destination: UserHomeView(userName: item.username)) {
+                        FollowListItem(item: item, followType: followType, isCoreList: item.isCore)
+                            .onAppear {
+                                if item.id == list.last?.id,
+                                   viewModel.hasNextPage(for: followType) {
+                                    viewModel.fetchMore(for: followType, cursorId: item.id)
+                                }
                             }
-                        }
+                    }
                 }
             }
             .padding(.bottom, 80)
