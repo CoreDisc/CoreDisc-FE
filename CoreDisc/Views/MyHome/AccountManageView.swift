@@ -160,8 +160,8 @@ struct AccountManageView: View {
                         Button(action:{
                             pwdShown.toggle()
                         }, label: {
-                            Image(.iconShown)
-                                .padding(.horizontal)
+//                            Image(.iconShown)
+//                                .padding(.horizontal)
                         })
                     }
                 } else{
@@ -171,8 +171,8 @@ struct AccountManageView: View {
                         Button(action:{
                             pwdShown.toggle()
                         }, label: {
-                            Image(.iconNotShown)
-                                .padding(.horizontal)
+//                            Image(.iconNotShown)
+//                                .padding(.horizontal)
                         })
                     }
                 }
@@ -195,8 +195,8 @@ struct AccountManageView: View {
                         Button(action:{
                             newPwdShown.toggle()
                         }, label: {
-                            Image(.iconShown)
-                                .padding(.horizontal)
+//                            Image(.iconShown)
+//                                .padding(.horizontal)
                         })
                     }
                 } else{
@@ -206,8 +206,8 @@ struct AccountManageView: View {
                         Button(action:{
                             newPwdShown.toggle()
                         }, label: {
-                            Image(.iconNotShown)
-                                .padding(.horizontal)
+//                            Image(.iconNotShown)
+//                                .padding(.horizontal)
                         })
                     }
                 }
@@ -232,8 +232,8 @@ struct AccountManageView: View {
                         Button(action:{
                             rePwdShown.toggle()
                         }, label: {
-                            Image(.iconShown)
-                                .padding(.horizontal)
+//                            Image(.iconShown)
+//                                .padding(.horizontal)
                         })
                     }
                 } else{
@@ -243,8 +243,8 @@ struct AccountManageView: View {
                         Button(action:{
                             rePwdShown.toggle()
                         }, label: {
-                            Image(.iconNotShown)
-                                .padding(.horizontal)
+//                            Image(.iconNotShown)
+//                                .padding(.horizontal)
                         })
                     }
                 }

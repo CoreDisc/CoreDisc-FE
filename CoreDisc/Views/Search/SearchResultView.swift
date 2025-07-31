@@ -22,11 +22,13 @@ struct SearchResultView: View {
             VStack {
                 Spacer().frame(height: 11)
                 SearchBarGroup(query: $query, isSearch: $isSearch, onSearch: {
-                                if let path = path {
-                                    path.wrappedValue = NavigationPath()     // 🔄 reset
-                                    path.wrappedValue.append(UUID())         // 🔥 다시 push
-                                }
-                            })
+                    if let path = path {
+                        path.wrappedValue = NavigationPath()
+                        path.wrappedValue.append(UUID())
+                    }
+                },
+                               path: path
+                )
                 Spacer().frame(height: isSearch ? 18 : 21)
                 
                 ResultGroup

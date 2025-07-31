@@ -11,6 +11,7 @@ struct SearchBarGroup: View {
     @Binding var query: String
     @Binding var isSearch: Bool
     var onSearch: () -> Void
+    var path: Binding<NavigationPath>? = nil
     
     var body: some View{
         HStack {
@@ -49,7 +50,7 @@ struct SearchBarGroup: View {
                         HStack(spacing: 11) {
                             Button(action: {
                                 if !query.isEmpty {
-                                                onSearch() // 🔥 SearchView에서 path.append(UUID())
+                                                onSearch() 
                                             }
                             }) {
                                 Image(.iconSearch)
@@ -64,6 +65,22 @@ struct SearchBarGroup: View {
                                     .foregroundStyle(.gray200)
                                     .padding(.vertical, 12.5)
                                     .padding(.leading, 2)
+                            }
+                            Spacer()
+                            
+                            if !query.isEmpty {
+                                Button(action: {
+                                    query = ""
+                                    isSearch = false
+                                    path?.wrappedValue = NavigationPath()
+                                }) {
+                                    Image(.iconClose)
+                                        .resizable()
+                                        .foregroundStyle(.gray200)
+                                        .frame(width: 24, height: 24)
+                                }
+                                .padding(.trailing, 15)
+                                .transition(.opacity)
                             }
                         }
                         

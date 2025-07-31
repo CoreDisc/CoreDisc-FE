@@ -23,7 +23,7 @@ struct SearchView: View {
                 VStack {
                     Spacer().frame(height: 11)
                     SearchBarGroup(query: $query, isSearch: $isSearch, onSearch: {
-                        path.append(UUID()) // 🔥 매번 다른 값 push
+                        path.append(UUID())
                     })
                     Spacer().frame(height: isSearch ? 18 : 21)
                     SearchGroup
