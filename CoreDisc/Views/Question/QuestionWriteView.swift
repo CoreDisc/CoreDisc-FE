@@ -193,7 +193,7 @@ struct QuestionWriteView: View {
                             .textStyle(.Texting_Q)
                             .cornerRadius(12)
                             .textInputAutocapitalization(.never)
-                            .disableAutocorrection(true)
+                            .autocorrectionDisabled(true)
                             .onChange(of: text, initial: false) {
                                 if text.count > 50 {
                                     text = String(text.prefix(50))

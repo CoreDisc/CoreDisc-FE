@@ -178,8 +178,8 @@ struct FindPwView: View {
                         Button(action:{
                             pwdShown.toggle()
                         }, label: {
-                            Image(.iconShown)
-                                .padding(.horizontal)
+//                            Image(.iconShown)
+//                                .padding(.horizontal)
                         })
                     }
                 } else{
@@ -189,8 +189,8 @@ struct FindPwView: View {
                         Button(action:{
                             pwdShown.toggle()
                         }, label: {
-                            Image(.iconNotShown)
-                                .padding(.horizontal)
+//                            Image(.iconNotShown)
+//                                .padding(.horizontal)
                         })
                     }
                 }
@@ -215,8 +215,8 @@ struct FindPwView: View {
                         Button(action:{
                             rePwdShown.toggle()
                         }, label: {
-                            Image(.iconShown)
-                                .padding(.horizontal)
+//                            Image(.iconShown)
+//                                .padding(.horizontal)
                         })
                     }
                 } else{
@@ -226,8 +226,8 @@ struct FindPwView: View {
                         Button(action:{
                             rePwdShown.toggle()
                         }, label: {
-                            Image(.iconNotShown)
-                                .padding(.horizontal)
+//                            Image(.iconNotShown)
+//                                .padding(.horizontal)
                         })
                     }
                 }
