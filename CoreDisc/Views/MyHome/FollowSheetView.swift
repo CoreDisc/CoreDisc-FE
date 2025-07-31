@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 enum FollowType: String {
     case follower = "followers"
@@ -14,12 +15,8 @@ enum FollowType: String {
 
 struct FollowSheetView: View {
     @Binding var showSheet: Bool
-    @State private var viewModel = FollowSheetViewModel()
+    @StateObject private var viewModel = FollowSheetViewModel()
     var followType: FollowType
-    
-    // 유저 수 (임시)
-    var coreCount: Int = 82
-    var followerCount: Int = 522
     
     var body: some View {
         ZStack {
@@ -42,6 +39,9 @@ struct FollowSheetView: View {
         .padding(.top, 120)
         .padding(.horizontal, 18)
         .ignoresSafeArea()
+        .onAppear {
+            viewModel.fetchFollowers()
+        }
     }
     
     // 상단바
@@ -72,7 +72,7 @@ struct FollowSheetView: View {
     private var SecondGroup: some View {
         HStack {
             VStack(alignment: .leading, spacing: 0) {
-                Text("\(followerCount)")
+                Text("\(viewModel.followerCount)")
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                 
@@ -94,8 +94,15 @@ struct FollowSheetView: View {
     private var FollowerList: some View {
         ScrollView {
             LazyVStack(spacing: 16) {
-                ForEach(viewModel.followerSample, id: \.id) { item in
-                    FollowListItem(nickname: item.nickname, username: item.username, followType: followType)
+                ForEach(viewModel.followerList, id: \.followerId) { item in
+                    FollowListItem(item: item, followType: followType)
+                        .onAppear {
+                            if item.followerId == viewModel.followerList.last?.followerId,
+                               viewModel.followerHasNextPage {
+                                let lastId = item.followerId
+                                viewModel.fetchFollowers(cursorId: lastId)
+                            }
+                        }
                 }
             }
             .padding(.bottom, 80)
@@ -111,21 +118,30 @@ struct FollowListItem: View {
     @State var isCoreList: Bool = false
     @State var showLabel: Bool = false
     
-    var nickname: String = "닉네임"
-    var username: String = "user_name"
+    let item: FollowerValues
     var followType: FollowType
     
     var body: some View {
         HStack(alignment: .top) {
-            Circle() // TODO: profile image
-                .frame(width: 32, height: 32)
+            if let imageUrl = item.profileImgDTO?.imageUrl,
+               let url = URL(string: imageUrl) {
+                KFImage(url)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 32, height: 32)
+                    .clipShape(Circle())
+            } else {
+                Circle()
+                    .fill(.gray400)
+                    .frame(width: 32, height: 32)
+            }
             
             VStack(alignment: .leading, spacing: 0) {
-                Text(nickname)
+                Text(item.nickname)
                     .textStyle(.Button_s)
                     .foregroundStyle(.white)
                 
-                Text("@\(username)")
+                Text("@\(item.username)")
                     .textStyle(.Pick_Q_Eng)
                     .foregroundStyle(.white)
             }
