@@ -13,7 +13,6 @@ struct UserHomeView: View {
     
     @Environment(\.dismiss) var dismiss
     
-    @State var isFollow: Bool = false // 팔로우 여부
     @State var isBlock: Bool = false // 차단 여부
     @State var showBlockButton: Bool = false
     @State var showBlockModal: Bool = false
@@ -245,17 +244,25 @@ struct UserHomeView: View {
     private var FollowButton: some View {
         Button(action: {
             withAnimation(nil) {
-                isFollow.toggle()
+                if viewModel.isFollowing {
+                    viewModel.fetchUnfollow(targetId: viewModel.memberId) {
+                        viewModel.fetchUserHome(username: userName)
+                    }
+                } else {
+                    viewModel.fetchFollow(targetId: viewModel.memberId) {
+                        viewModel.fetchUserHome(username: userName)
+                    }
+                }
             }
         }) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(isBlock ? .clear : isFollow ? .gray400 : .key)
+                    .fill(isBlock ? .clear : viewModel.isFollowing ? .gray400 : .key)
                     .stroke(isBlock ? .warning : .clear, lineWidth: 1)
                     .frame(height: 39)
                     .padding(.horizontal, 24)
                 
-                Text(isBlock ? "blocked" : isFollow ? "following" : "follow")
+                Text(isBlock ? "blocked" : viewModel.isFollowing ? "following" : "follow")
                     .textStyle(.Q_Sub)
                     .foregroundStyle(isBlock ? .warning : .black000)
             }

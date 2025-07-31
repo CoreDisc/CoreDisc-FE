@@ -69,6 +69,29 @@ struct FollowingProfileImgDTO: Decodable {
     let imageUrl: String
 }
 
+// MARK: - 팔로우하기
+struct FollowResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: FollowResult
+}
+
+struct FollowResult: Decodable {
+    let id: Int
+    let followerId: Int
+    let followingId: Int
+    let createdAt: String
+}
+
+// MARK: - 언팔로우하기
+struct UnfollowResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: String
+}
+
 // MARK: - Common
 struct FollowDisplayModel: Identifiable {
     let id: Int
