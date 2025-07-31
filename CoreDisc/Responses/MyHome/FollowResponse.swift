@@ -1,0 +1,79 @@
+//
+//  FollowersResponse.swift
+//  CoreDisc
+//
+//  Created by 김미주 on 8/1/25.
+//
+
+import Foundation
+
+// MARK: - Follower
+struct FollowersResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: FollowersResult
+}
+
+struct FollowersResult: Decodable {
+    let totalCount: Int
+    let followerCursor: FollowerCursor
+}
+
+struct FollowerCursor: Decodable {
+    let values: [FollowerValues]
+    let hasNext: Bool
+}
+
+struct FollowerValues: Decodable {
+    let followerId: Int
+    let nickname: String
+    let username: String
+    let profileImgDTO: FollowerProfileImgDTO?
+    let isMutual: Bool
+    let circle: Bool
+}
+
+struct FollowerProfileImgDTO: Decodable {
+    let profileImgId: Int
+    let imageUrl: String
+}
+
+// MARK: - Following
+struct FollowingsResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: FollowingsResult
+}
+
+struct FollowingsResult: Decodable {
+    let totalCount: Int
+    let followingCursor: FollowingCursor
+}
+
+struct FollowingCursor: Decodable {
+    let values: [FollowingValues]
+    let hasNext: Bool
+}
+
+struct FollowingValues: Decodable {
+    let followingId: Int
+    let nickname: String
+    let username: String
+    let profileImgDTO: FollowingProfileImgDTO?
+}
+
+struct FollowingProfileImgDTO: Decodable {
+    let profileImgId: Int
+    let imageUrl: String
+}
+
+// MARK: - Common
+struct FollowDisplayModel: Identifiable {
+    let id: Int
+    let nickname: String
+    let username: String
+    let profileImgUrl: String?
+    let isCore: Bool
+}

@@ -40,7 +40,12 @@ struct FollowSheetView: View {
         .padding(.horizontal, 18)
         .ignoresSafeArea()
         .onAppear {
-            viewModel.fetchFollowers()
+            switch followType {
+            case .follower:
+                viewModel.fetchFollowers()
+            case .following:
+                viewModel.fetchFollowings()
+            }
         }
     }
     
@@ -94,13 +99,13 @@ struct FollowSheetView: View {
     private var FollowerList: some View {
         ScrollView {
             LazyVStack(spacing: 16) {
-                ForEach(viewModel.followerList, id: \.followerId) { item in
-                    FollowListItem(item: item, followType: followType)
+                let list = viewModel.getDisplayList(for: followType)
+                ForEach(list, id: \.id) { item in
+                    FollowListItem(item: item, followType: followType, isCoreList: item.isCore)
                         .onAppear {
-                            if item.followerId == viewModel.followerList.last?.followerId,
-                               viewModel.followerHasNextPage {
-                                let lastId = item.followerId
-                                viewModel.fetchFollowers(cursorId: lastId)
+                            if item.id == list.last?.id,
+                               viewModel.hasNextPage(for: followType) {
+                                viewModel.fetchMore(for: followType, cursorId: item.id)
                             }
                         }
                 }
@@ -115,15 +120,15 @@ struct FollowSheetView: View {
 // MARK: - components
 // 리스트 아이템
 struct FollowListItem: View {
-    @State var isCoreList: Bool = false
-    @State var showLabel: Bool = false
-    
-    let item: FollowerValues
+    let item: FollowDisplayModel
     var followType: FollowType
+    
+    @State var isCoreList: Bool
+    @State var showLabel: Bool = false
     
     var body: some View {
         HStack(alignment: .top) {
-            if let imageUrl = item.profileImgDTO?.imageUrl,
+            if let imageUrl = item.profileImgUrl,
                let url = URL(string: imageUrl) {
                 KFImage(url)
                     .resizable()

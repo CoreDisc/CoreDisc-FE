@@ -11,7 +11,7 @@ import Moya
 // 팔로우 관련 API 연결
 enum FollowRouter {
     case postFollow(targetId: Int) // 팔로우
-    case getFollowings // 팔로잉 목록 조회
+    case getFollowings(cursorId: Int?, size: Int?) // 팔로잉 목록 조회
     case getFollowers(cursorId: Int?, size: Int?) // 팔로워 목록 조회
     case deleteFollowings(targetId: Int) // 팔로우 취소
 }
