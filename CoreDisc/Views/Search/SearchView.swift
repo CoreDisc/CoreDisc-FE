@@ -11,7 +11,7 @@ struct SearchView: View {
     @Binding var query:String
     @Binding var isSearch: Bool
     @State private var path = NavigationPath()
-    let items = Array(0..<5)
+    let items = Array(0..<10)
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -51,15 +51,16 @@ struct SearchView: View {
                     
                     
                     Spacer().frame(height: 8)
-                    
-                    ForEach(items.indices, id: \.self) {index in
-                        RecentItem(text: "music")
-                        Rectangle()
-                            .frame(height: 0.5)
-                            .foregroundStyle(.gray600)
+                    ScrollView {
+                        ForEach(items.indices, id: \.self) {index in
+                            RecentItem(text: "music")
+                            Rectangle()
+                                .frame(height: 0.5)
+                                .foregroundStyle(.gray600)
+                        }
+                        .padding(.horizontal, 33)
                     }
-                    .padding(.horizontal, 33)
-                    
+                    .frame(height: 274)
                 }
             }
         }
