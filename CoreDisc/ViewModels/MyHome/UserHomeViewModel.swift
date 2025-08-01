@@ -53,6 +53,43 @@ class UserHomeViewModel: ObservableObject {
         }
     }
     
+    func fetchUserPosts(
+        targetUsername: String,
+        cursorId: Int? = nil,
+        size: Int? = 10
+    ) {
+        memberProvider.request(.getMyhomePostsTargetUsername(
+            targetUsername: targetUsername,
+            cursorId: cursorId,
+            size: size)
+        ) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(MyHomePostResponse.self, from: response.data)
+                    let result = decodedData.result
+                    
+                    DispatchQueue.main.async {
+                        let validPosts = result.values.compactMap { $0 } // null 제거
+                        
+                        if cursorId == nil {
+                            // 첫 요청 -> 전체 초기화
+                            self.postList = validPosts
+                        } else {
+                            // 다음 페이지 -> append
+                            self.postList.append(contentsOf: validPosts)
+                        }
+                        self.hasNextPage = result.hasNext
+                    }
+                } catch {
+                    print("GetUserPosts 디코더 오류: \(error)")
+                }
+            case .failure(let error):
+                print("GetUserPosts API 오류: \(error)")
+            }
+        }
+    }
+    
     func fetchFollow(targetId: Int, completion: (() -> Void)? = nil) {
         followProvider.request(.postFollow(targetId: targetId)) { result in
             switch result {

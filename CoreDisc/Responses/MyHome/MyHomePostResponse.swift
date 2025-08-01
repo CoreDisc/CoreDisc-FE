@@ -15,14 +15,14 @@ struct MyHomePostResponse: Decodable {
 }
 
 struct MyHomePostResult: Decodable {
-    let values: [MyHomePostValue]
+    let values: [MyHomePostValue?]
     let hasNext: Bool
 }
 
 struct MyHomePostValue: Decodable {
     let postId: Int
-    let postImageThumbnailDTO: PostImageThumbnailDTO
-    let postTextThumbnailDTO: PostTextThumbnailDTO
+    let postImageThumbnailDTO: PostImageThumbnailDTO?
+    let postTextThumbnailDTO: PostTextThumbnailDTO?
 }
 
 struct PostImageThumbnailDTO: Decodable {

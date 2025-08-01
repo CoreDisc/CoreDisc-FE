@@ -34,17 +34,21 @@ struct UserHomeView: View {
                 
                 TopMenuGroup
                 
-                ProfileGroup
-                
-                Spacer().frame(height: 13)
-                
-                CountGroup
-                
-                Spacer().frame(height: 25)
-                
-                FollowButton
-                
-                Spacer()
+                ScrollView {
+                    ProfileGroup
+                    
+                    Spacer().frame(height: 13)
+                    
+                    CountGroup
+                    
+                    Spacer().frame(height: 25)
+                    
+                    FollowButton
+                    
+                    Spacer().frame(height: 25)
+                    
+                    PostGroup
+                }
             }
             
             // 차단 모달
@@ -111,6 +115,7 @@ struct UserHomeView: View {
         }
         .onAppear {
             viewModel.fetchUserHome(username: userName)
+            viewModel.fetchUserPosts(targetUsername: userName)
         }
         .navigationBarBackButtonHidden()
         .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
@@ -268,6 +273,40 @@ struct UserHomeView: View {
             }
         }
         .buttonStyle(.plain)
+    }
+    
+    // 게시글
+    private var PostGroup: some View {
+        let columns = Array(repeating: GridItem(.flexible()), count: 3)
+
+        return LazyVGrid(columns: columns, spacing: 12) {
+            ForEach(viewModel.postList, id: \.postId) { post in
+                if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
+                   !url.absoluteString.isEmpty { // 이미지
+                    KFImage(url)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 154)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                } else if let text = post.postTextThumbnailDTO?.content { // 텍스트
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.gray100)
+                            .stroke(.gray200, lineWidth: 0.3)
+                            .frame(height: 154)
+                        
+                        Text(text)
+                            .textStyle(.Q_pick)
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(.black000)
+                            .padding(22)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+            }
+        }
+        .padding(.horizontal, 15)
     }
     
     // MARK: - bottom sheet
