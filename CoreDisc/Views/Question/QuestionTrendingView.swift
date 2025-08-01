@@ -80,10 +80,11 @@ struct QuestionTrendingView: View {
                         content: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.헤헤헤헤헤헿헤",
                         nickname: "coredisc.ko",
                         sharing: 522,
-                        isChecked: false
+                        isChecked: false,
+                        isFavorite: false
                     )
                     .padding(.leading, 43)
-                    .padding(.trailing, 36)
+                    .padding(.trailing, 47)
                     
                     Rectangle()
                         .foregroundStyle(.white)
@@ -102,6 +103,7 @@ struct TrendingQuestionItem: View {
     var nickname: String
     var sharing: Int
     @State var isChecked: Bool
+    @State var isFavorite: Bool
     
     var body: some View {
         VStack {
@@ -118,7 +120,7 @@ struct TrendingQuestionItem: View {
                     Text("\(content.splitCharacter())")
                         .textStyle(.Texting_Q)
                         .foregroundStyle(.white)
-                        .padding(.leading, 16)
+                        .padding(.leading, 8)
                         .padding(.top, 12)
                         .padding(.bottom, 4)
                         .padding(.trailing, 14)
@@ -143,6 +145,16 @@ struct TrendingQuestionItem: View {
                     Image(isChecked ? .iconChecked : .iconCheck)
                         .resizable()
                         .frame(width: 32, height: 32)
+                }
+                
+                Button(action: {
+                    isFavorite.toggle()
+                }) {
+                    Image(.iconLove)
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundStyle(.gray400)
                 }
             }
         }

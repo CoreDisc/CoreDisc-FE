@@ -14,41 +14,47 @@ struct ReportMainView: View {
     @State private var edit = false
     
     var body: some View {
-        ZStack {
-            Image(.imgShortBackground2)
-                .resizable()
-                .ignoresSafeArea()
+        NavigationStack{
             
-            VStack{
-                HStack{
-                    Image(.imgReportHeaderIcon)
-                        .resizable()
-                        .frame(width: 14, height: 55)
-                    Text(" Disc Museum")
-                        .textStyle(.Title_Text_Eng)
-                        .foregroundStyle(.white)
-                    Spacer()
-                }
+            ZStack {
+                Image(.imgShortBackground2)
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                HStack{
-                    Spacer()
-                    Button(action:{edit.toggle()}, label:{
-                        if edit {
-                            Image(.imgDiscOn)
-                                .resizable()
-                                .frame(width: 60, height: 44)
-                        } else {
-                            Image(.imgDiscOff)
-                                .resizable()
-                                .frame(width: 60, height: 44)
-                        }
-                    })
-  
-                    Spacer().frame(width: 14)
+                VStack{
+                    HStack{
+                        Image(.imgReportHeaderIcon)
+                            .resizable()
+                            .frame(width: 14, height: 55)
+                        Image(.imgGoback)
+                        
+                        Spacer()
+                    }
+                    
+                    HStack{
+                        Text(" Disc Museum")
+                            .textStyle(.Title_Text_Eng)
+                            .foregroundStyle(.white)
+                            .padding(.leading, 25)
+                        Spacer()
+                        Button(action:{edit.toggle()}, label:{
+                            if edit {
+                                Image(.imgDiscOn)
+                                    .resizable()
+                                    .frame(width: 60, height: 44)
+                            } else {
+                                Image(.imgDiscOff)
+                                    .resizable()
+                                    .frame(width: 60, height: 44)
+                            }
+                        })
+                        
+                        Spacer().frame(width: 14)
+                    }
+                    
+                    Spacer().frame(height: 11)
+                    DiscGroup
                 }
-                
-                Spacer().frame(height: 11)
-                DiscGroup
             }
         }
     }
@@ -59,20 +65,19 @@ struct ReportMainView: View {
             LazyVGrid(columns: columns){
                 ForEach(viewModel.DiscItemList, id: \.id){ item in
                     if edit {
-                        Button(action: {}, label: {
+                        NavigationLink(destination: ChangeCoverView()){
                             ZStack{
                                 DiscItem(image: item.image)
                                     .padding(.vertical, 10)
                                 Image(.imgEdit)
-                                    .padding(.leading, 58)
-                                    .padding(.bottom, 54)
+                                    .offset(x:30, y:30)
                             }
-                        })
+                        }
                     } else {
-                        Button(action: {}, label: {
+                        NavigationLink(destination: ReportDetailView()){
                             DiscItem(image: item.image)
                                 .padding(.vertical, 10)
-                        })
+                        }
                     }
                 }
             }

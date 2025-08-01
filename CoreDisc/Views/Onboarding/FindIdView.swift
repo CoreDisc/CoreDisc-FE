@@ -9,42 +9,45 @@ import SwiftUI
 
 
 struct FindIdView: View {
-    @Environment(\.dismiss) var dismiss
     
+    @Environment(\.dismiss) var dismiss
     @State var name: String = ""
     @State var email: String = ""
     @State private var find = false
+    @State private var isError = true
     
     var body: some View {
-        ZStack {
-            Image(.imgOnboardingBackground)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack{
-                Spacer().frame(height: 96)
-                Rectangle()
-                    .frame(width: 60, height: 60)
-                    .foregroundColor(.key)
-                Spacer().frame(height: 16)
-                Text("Shoot Your")
-                    .textStyle(.Title_Text_Ko)
-                    .foregroundStyle(.white)
-                Text("Core.")
-                    .textStyle(.Title_Text_Ko)
-                    .foregroundStyle(.white)
+        NavigationStack {
+            ZStack {
+                Image(.imgOnboardingBackground)
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                Spacer().frame(height: 16)
-                
-                if find {
-                    FindGroup
-                } else {
-                    InputGroup
+                VStack{
+                    Spacer().frame(height: 96)
+                    Image(.imgLogo)
+                        .resizable()
+                        .frame(width: 60, height: 36)
+                    Spacer().frame(height: 51)
+                    Text("Shoot Your")
+                        .textStyle(.Title_Text_Ko)
+                        .foregroundStyle(.white)
+                    Text("Core.")
+                        .textStyle(.Title_Text_Ko)
+                        .foregroundStyle(.white)
+                    
+                    Spacer().frame(height: 16)
+                    
+                    if find {
+                        FindGroup
+                    } else {
+                        InputGroup
+                    }
+                    Spacer()
                 }
-                Spacer()
             }
         }
-        
+        .navigationBarBackButtonHidden()
     }
     private var InputGroup : some View{
         VStack{
@@ -63,41 +66,32 @@ struct FindIdView: View {
             
             Spacer().frame(height: 24)
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("이름", text: $name)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            ZStack{
-                Capsule()
-                    .frame(height: 40)
-                    .foregroundStyle(.white)
+            InputView{
                 TextField("이메일", text: $email)
-                    .textStyle(.login_info)
-                    .padding(.leading, 31)
             }
             
-            Spacer().frame(height: 36)
-
-            Button(action:{find = true}, label: {
-                ZStack{
-                    Rectangle()
-                        .frame(height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.gray400)
-                    Text("아이디 찾기")
-                        .textStyle(.login_info)
-                        .foregroundStyle(.black000)
-                }
-            })
+            if isError {
+                Text("일치하는 이름 혹은 이메일이 존재하지 않습니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 16)
+            } else {
+                Spacer().frame(height: 36)
+            }
             
-            Button(action:{
-                dismiss()
-            }, label: {
+            
+            ButtonView(action:{find = true}, label: {
+                Text("아이디 찾기")
+            }, boxColor: (name.isEmpty || email.isEmpty) ? .gray400 : .key)
+            .disabled(name.isEmpty || email.isEmpty)
+            
+            Spacer().frame(height: 12)
+            NavigationLink(destination: LoginView()) {
                 ZStack{
                     Rectangle()
                         .frame(height: 40)
@@ -107,7 +101,7 @@ struct FindIdView: View {
                         .textStyle(.login_info)
                         .foregroundStyle(.black000)
                 }
-            })
+            }
             
             Spacer().frame(height: 54)
             
@@ -122,13 +116,13 @@ struct FindIdView: View {
                 Spacer().frame(width: 32)
                 
                 NavigationLink(destination: FindPwView()) {
-                    Text("비밀번호 찾기")
+                    Text("비밀번호를 잊으셨나요?")
                         .textStyle(.login_info)
                         .underline()
                         .foregroundStyle(.white)
                 }
             }
-
+            
         }.padding(.horizontal, 41)
     }
     
@@ -161,20 +155,21 @@ struct FindIdView: View {
                 .foregroundStyle(.white)
             
             Spacer().frame(height: 29)
-
-            Button(action:{}, label: {
+            
+            
+            NavigationLink(destination: FindPwView()) {
                 ZStack{
                     Rectangle()
                         .frame(height: 40)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                         .foregroundStyle(.key)
-                    Text("비밀번호 찾기")
+                    Text("비밀번호를 잊으셨나요?")
                         .textStyle(.login_info)
                         .foregroundStyle(.black000)
                 }
-            })
+            }
             
-            Button(action:{}, label: {
+            NavigationLink(destination: LoginView()) {
                 ZStack{
                     Rectangle()
                         .frame(height: 40)
@@ -184,26 +179,8 @@ struct FindIdView: View {
                         .textStyle(.login_info)
                         .foregroundStyle(.black000)
                 }
-            })
-            
-            Spacer().frame(height: 54)
-            
-            HStack{
-                Button(action:{}, label:{
-                    Text("회원가입")
-                        .textStyle(.login_info)
-                        .underline()
-                        .foregroundStyle(.highlight)
-                })
-                Spacer().frame(width: 32)
-                Button(action:{}, label:{
-                    Text("비밀번호 찾기")
-                        .textStyle(.login_info)
-                        .underline()
-                        .foregroundStyle(.white)
-                })
             }
-
+            Spacer()
         }.padding(.horizontal, 41)
     }
 }

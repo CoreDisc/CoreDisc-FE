@@ -151,6 +151,12 @@ extension TextStyle {
         lineSpacing: 8
     )
     
+    static var Bold_Text = TextStyle(
+        font: .pretendard(type: .bold, size: 14),
+        kerning: -0.7,
+        lineSpacing: 8
+    )
+    
     // medium 500
     static var Post_Sub = TextStyle(
         font: .pretendard(type: .medium, size: 14),
@@ -183,9 +189,9 @@ extension TextStyle {
     )
     
     static var login_alert = TextStyle(
-        font: .pretendard(type: .medium, size: 10),
+        font: .pretendard(type: .medium, size: 12),
         kerning: 0,
-        lineSpacing: 6
+        lineSpacing: 4
     )
     
     static var Small_Text_10 = TextStyle(

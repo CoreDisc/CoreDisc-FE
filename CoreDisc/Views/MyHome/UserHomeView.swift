@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct UserHomeView: View {
+    @StateObject var viewModel = UserHomeViewModel()
+    
     @Environment(\.dismiss) var dismiss
-    @State var isFollow: Bool = false // 팔로우 여부
+    
     @State var isBlock: Bool = false // 차단 여부
     @State var showBlockButton: Bool = false
     @State var showBlockModal: Bool = false
@@ -18,8 +21,7 @@ struct UserHomeView: View {
     @State var showFollowerSheet: Bool = false
     @State var showFollowingSheet: Bool = false
     
-    // 임시
-    var userName: String = "@coredisc_kr"
+    var userName: String
     
     var body: some View {
         ZStack {
@@ -107,6 +109,10 @@ struct UserHomeView: View {
             
             sheetView
         }
+        .onAppear {
+            viewModel.fetchUserHome(username: userName)
+        }
+        .navigationBarBackButtonHidden()
         .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
         .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
     }
@@ -165,14 +171,19 @@ struct UserHomeView: View {
     // 프로필 영역
     private var ProfileGroup: some View {
         VStack(spacing: 8) {
-            Circle() // TODO: 프로필 이미지
-                .frame(width: 124, height: 124)
+            if let url = URL(string: viewModel.profileImageURL) {
+                KFImage(url)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 124, height: 124)
+                    .clipShape(Circle())
+            }
             
-            Text(userName)
+            Text("@\(viewModel.username)")
                 .textStyle(.Pick_Q_Eng)
                 .foregroundStyle(.gray100)
             
-            Text("닉네임")
+            Text(viewModel.nickname)
                 .textStyle(.Button_s)
                 .foregroundStyle(.gray100)
         }
@@ -183,11 +194,11 @@ struct UserHomeView: View {
         HStack(spacing: 0) {
             // disc
             VStack {
-                Text("93") // TODO: 게시글 수 반영
+                Text(viewModel.postCount)
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                 
-                Text("disc")
+                Text("post")
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.gray400)
             }
@@ -198,7 +209,7 @@ struct UserHomeView: View {
                 showFollowerSheet = true
             }) { // TODO: action
                 VStack {
-                    Text("1.5k")
+                    Text(viewModel.followerCount)
                         .textStyle(.Q_Main)
                         .foregroundStyle(.white)
                     
@@ -215,7 +226,7 @@ struct UserHomeView: View {
                 showFollowingSheet = true
             }) { // TODO: action
                 VStack {
-                    Text("738")
+                    Text(viewModel.followingCount)
                         .textStyle(.Q_Main)
                         .foregroundStyle(.white)
                     
@@ -233,17 +244,25 @@ struct UserHomeView: View {
     private var FollowButton: some View {
         Button(action: {
             withAnimation(nil) {
-                isFollow.toggle()
+                if viewModel.isFollowing {
+                    viewModel.fetchUnfollow(targetId: viewModel.memberId) {
+                        viewModel.fetchUserHome(username: userName)
+                    }
+                } else {
+                    viewModel.fetchFollow(targetId: viewModel.memberId) {
+                        viewModel.fetchUserHome(username: userName)
+                    }
+                }
             }
         }) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(isBlock ? .clear : isFollow ? .gray400 : .key)
+                    .fill(isBlock ? .clear : viewModel.isFollowing ? .gray400 : .key)
                     .stroke(isBlock ? .warning : .clear, lineWidth: 1)
                     .frame(height: 39)
                     .padding(.horizontal, 24)
                 
-                Text(isBlock ? "blocked" : isFollow ? "following" : "follow")
+                Text(isBlock ? "blocked" : viewModel.isFollowing ? "following" : "follow")
                     .textStyle(.Q_Sub)
                     .foregroundStyle(isBlock ? .warning : .black000)
             }
@@ -269,5 +288,5 @@ struct UserHomeView: View {
 }
 
 #Preview {
-    UserHomeView()
+    UserHomeView(userName: "")
 }
