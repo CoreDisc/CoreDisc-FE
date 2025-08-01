@@ -79,4 +79,20 @@ class QuesitonBasicViewModel: ObservableObject {
             }
         }
     }
+    
+    func fetchFixedBasic(fixedData: FixedData) {
+        basicProvider.request(.postFixed(fixedData: fixedData)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(QuestionFixedResponse.self, from: response.data)
+                    let result = decodedData.result
+                } catch {
+                    print("PostFixed 디코더 오류: \(error)")
+                }
+            case .failure(let error):
+                print("PostFixed API 오류: \(error)")
+            }
+        }
+    }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct QuestionMainView: View {
     @State var isSelectView: Bool = false
+    @State var currentOrder: Int = 0
     
     // 씨디 돌아가는 애니메이션
     @State private var rotationAngle: Double = 0.0
@@ -75,16 +76,22 @@ struct QuestionMainView: View {
                 }
                 .offset(x: 172)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요", order: 1, onTap: { order in
+                currentOrder = order
+            })
                 .position(x: 150+79, y: 97)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요", order: 2, onTap: { order in
+                currentOrder = order
+            })
                 .position(x: 150+34, y: 196)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요", order: 3, onTap: { order in
+                currentOrder = order
+            })
                 .position(x: 150+42, y: 295)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: "랜덤질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: "랜덤질문을 선택하세요", order: 4)
                 .position(x: 150+79, y: 394)
             
             SelectCDGroup
@@ -100,7 +107,7 @@ struct QuestionMainView: View {
                 QuestionWriteView()
             }
             QuestionSelectButton(title: "기본 질문") {
-                QuestionBasicView()
+                QuestionBasicView(order: currentOrder)
             }
             QuestionSelectButton(title: "인기 질문") {
                 QuestionTrendingView()
@@ -118,6 +125,9 @@ struct QuestionSelectItem: View {
     @Binding var moveLeft: Bool
     
     var text: String
+    var order: Int // 1, 2, 3
+    var onTap: ((Int) -> Void)? = nil
+    
     var startColor: Color = .gray400
     var endColor: Color = .gray400
     
@@ -125,6 +135,7 @@ struct QuestionSelectItem: View {
         Button(action: {
             withAnimation(.easeInOut(duration: 0.4)) {
                 moveLeft = true
+                onTap?(order)
             }
         }) {
             ZStack {
