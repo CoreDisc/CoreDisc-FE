@@ -9,22 +9,22 @@ import SwiftUI
 
 // 카테고리 선택 컴포넌트
 struct CategorySelectButton: View {
-    var title: String
+    let type: CategoryType
         var width: CGFloat
         @Binding var selectedCategory: String?
 
         var isSelected: Bool {
-            selectedCategory == title
+            selectedCategory == type.title
         }
 
         var body: some View {
             Button(action: {
-                selectedCategory = isSelected ? nil : title
+                selectedCategory = isSelected ? nil : type.title
             }) {
                 ZStack(alignment: .leading) {
                     Rectangle()
-                        .foregroundStyle(isSelected ? Color("key") : .black)
-                    Text(title)
+                        .fill(isSelected ? AnyShapeStyle(type.color) : AnyShapeStyle(Color.black))
+                    Text(type.title)
                         .padding(.leading, 19)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(isSelected ? .black : .white)
@@ -36,8 +36,8 @@ struct CategorySelectButton: View {
 
 //카테고리 선택 열
 struct ResponsiveCategoryRow: View {
-    var left: (String, CGFloat)
-    var right: (String, CGFloat)
+    var left: (CategoryType, CGFloat)
+    var right: (CategoryType, CGFloat)
     @Binding var selectedCategory: String?
 
     var body: some View {
@@ -47,8 +47,8 @@ struct ResponsiveCategoryRow: View {
             let rightWidth = total * right.1 - 4 * right.1
 
             HStack(spacing: 4) {
-                CategorySelectButton(title: left.0, width: leftWidth, selectedCategory: $selectedCategory)
-                CategorySelectButton(title: right.0, width: rightWidth, selectedCategory: $selectedCategory)
+                CategorySelectButton(type: left.0, width: leftWidth, selectedCategory: $selectedCategory)
+                CategorySelectButton(type: right.0, width: rightWidth, selectedCategory: $selectedCategory)
             }
         }
         .frame(height: 60)
