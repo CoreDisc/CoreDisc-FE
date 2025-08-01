@@ -54,7 +54,7 @@ struct CategoryButton: View {
                             if type.title == "라이프스타일" {
                                 RoundedRectangle(cornerRadius: 30)
                                     .fill(
-                                        type.color
+type.color
                                     )
                                     .frame(width: 90, height: 28)
                             } else {
