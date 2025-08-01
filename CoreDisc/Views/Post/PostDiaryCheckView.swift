@@ -106,11 +106,11 @@ struct PostDiaryCheckView: View {
                         .frame(height: 180)
                 }
             )
-            .offset(y: -40)
+            .offset(y: -20)
 
             
             VStack (alignment: .center, spacing: 13) {
-                Spacer().frame(height: 8)
+                Spacer().frame(height: 28)
                 
                 Text("누구랑 있었나요?")
                     .textStyle(.Q_Main)
