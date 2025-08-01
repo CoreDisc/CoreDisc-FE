@@ -196,6 +196,7 @@ struct SignupView: View {
             
             InputView{
                 TextField("아이디를 입력해주세요.", text: $viewModel.username)
+                    .textInputAutocapitalization(.never)
             }
             
             if idError {

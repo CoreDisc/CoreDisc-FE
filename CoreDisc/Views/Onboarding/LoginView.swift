@@ -68,6 +68,7 @@ struct LoginView: View {
             
             InputView{
                 TextField("아이디", text: $viewModel.username)
+                    .textInputAutocapitalization(.never)
             }
             
             InputView{
