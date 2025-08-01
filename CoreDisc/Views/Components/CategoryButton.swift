@@ -9,9 +9,9 @@ import SwiftUI
 
 struct CategoryButton: View {
     let type: CategoryType
-
+    
     @State private var isSelected: Bool = false
-
+    
     var body: some View {
         switch type.style {
         case .all:
@@ -35,7 +35,7 @@ struct CategoryButton: View {
                             .stroke(.white, lineWidth: isSelected ? 3 : 0)
                     )
                     .padding(3)
-
+                    
                     Text("ALL")
                         .textStyle(.Q_Sub)
                         .foregroundStyle(.white)
@@ -46,29 +46,47 @@ struct CategoryButton: View {
             Button(action: {
                 isSelected.toggle() // TODO: action 추가
             }) {
-                Text("\(type.title)")
+                Text(type.title)
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.gray100)
                     .background(
-                        RoundedRectangle(cornerRadius: 30)
-                            .fill(
-                                type.color
-                            )
-                            .frame(width: 75, height: 28)
-
+                        Group {
+                            if type.title == "라이프스타일" {
+                                RoundedRectangle(cornerRadius: 30)
+                                    .fill(
+type.color
+                                    )
+                                    .frame(width: 90, height: 28)
+                            } else {
+                                RoundedRectangle(cornerRadius: 30)
+                                    .fill(
+                                        type.color
+                                    )
+                                    .frame(width: 75, height: 28)
+                            }
+                        }
+                        
                     )
                     .overlay(
-                        RoundedRectangle(cornerRadius: 30)
-                            .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
-                            .frame(width: 75, height: 28)
+                        Group{
+                            if type.title == "라이프스타일" {
+                                RoundedRectangle(cornerRadius: 30)
+                                    .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
+                                    .frame(width: 90, height: 28)
+                            } else {
+                                RoundedRectangle(cornerRadius: 30)
+                                    .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
+                                    .frame(width: 75, height: 28)
+                            }
+                        }
                     )
                     .padding(3)
             }
-            .frame(width: 75, height: 28)
+            .frame(width: type == .lifeStyle ? 90 : 75)
         }
     }
 }
 
 #Preview {
-    CategoryButton(type: .meal)
+    CategoryButton(type: .hobby)
 }
