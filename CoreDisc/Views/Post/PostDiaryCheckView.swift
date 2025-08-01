@@ -85,27 +85,84 @@ struct PostDiaryCheckView: View {
     
     // 선택일기 요약
     private var DiaryGroup: some View {
-        EllipticalGradient(stops: [
-            .init(color: .gray.opacity(0.0), location: 0.2692),
-            .init(color: .white, location: 0.8125)],
-                           center: .center,
-                           startRadiusFraction: 0,
-                           endRadiusFraction: 0.7431)
-        
-        .frame(width: 370, height: 550)
-        .mask(
-            VStack(spacing: 0) {
-                UnevenRoundedRectangle(cornerRadii: .init(
-                                   topLeading: 185,
-                                   bottomLeading: 0,
-                                   bottomTrailing: 0,
-                                   topTrailing: 185))
+        ZStack {
+            EllipticalGradient(stops: [
+                .init(color: .gray.opacity(0.0), location: 0.2692),
+                .init(color: .white, location: 0.8125)],
+                               center: .center,
+                               startRadiusFraction: 0,
+                               endRadiusFraction: 0.7431)
+            
+            .frame(width: 370, height: 550)
+            .mask(
+                VStack(spacing: 0) {
+                    UnevenRoundedRectangle(cornerRadii: .init(
+                        topLeading: 185,
+                        bottomLeading: 0,
+                        bottomTrailing: 0,
+                        topTrailing: 185))
                     .frame(height: 370)
-                Rectangle()
-                    .frame(height: 180)
+                    Rectangle()
+                        .frame(height: 180)
+                }
+            )
+            .offset(y: -40)
+
+            
+            VStack (alignment: .center, spacing: 13) {
+                Spacer().frame(height: 8)
+                
+                Text("누구랑 있었나요?")
+                    .textStyle(.Q_Main)
+                    .foregroundStyle(.black000)
+                
+                Text("친구")
+                    .textStyle(.Texting_Q)
+                    .foregroundStyle(.black000)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 297, height: 38)
+                    .background(.gray100)
+                    .cornerRadius(30)
+                
+                Text("어디에 있었나요??")
+                    .textStyle(.Q_Main)
+                    .foregroundStyle(.black000)
+                
+                Text("우리집")
+                    .textStyle(.Texting_Q)
+                    .foregroundStyle(.black000)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 297, height: 38)
+                    .background(.gray100)
+                    .cornerRadius(30)
+                
+                Text("무엇을 했나요?")
+                    .textStyle(.Q_Main)
+                    .foregroundStyle(.black000)
+                
+                Text("요리,저녁식사")
+                    .textStyle(.Texting_Q)
+                    .foregroundStyle(.black000)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 297, height: 38)
+                    .background(.gray100)
+                    .cornerRadius(30)
+                
+                Text("더 기록하고 싶은 내용이 있나요?")
+                    .textStyle(.Q_Main)
+                    .foregroundStyle(.black000)
+                
+                Text("오늘 오랜만에 친구랑 저녁 먹었는데 진짜 별 얘기 안 했는데도 \n 너무 편하고 좋았어. 같이 웃고, 먹고, 걷고 그런 게 뭐 대단한 건 \n아닌데 괜히 마음이 따뜻해지더라.")
+                    .textStyle(.Texting_Q)
+                    .foregroundStyle(.black000)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 297, height: 83)
+                    .background(.gray100)
+                    .cornerRadius(12)
+                
+                Spacer()
             }
-        )
-        .offset(y: -40)
+        }
     }
 }
 
