@@ -114,17 +114,32 @@ struct QuestionWriteView: View {
     
     // 질문 카테고리 선택 부분
     var QuestionCategory: some View {
-        ZStack {
-            UnevenRoundedRectangle(cornerRadii:
-                    .init(
-                        topLeading: 0,
-                        bottomLeading: 12,
-                        bottomTrailing: 12,
-                        topTrailing: 0))
+        let categoryPairs: [(CategoryType, CGFloat)] = [
+            (.taste, 0.62), (.lifeStyle, 0.38),
+            (.relationship, 0.41), (.selfImprovement, 0.59),
+            (.health, 0.51), (.culture, 0.49),
+            (.feeling, 0.45), (.hobby, 0.55),
+            (.dream, 0.3), (.other, 0.7)
+        ]
+        
+        // 🔧 사전에 쌍을 미리 계산해둠
+        let pairs = stride(from: 0, to: categoryPairs.count, by: 2).map { i in
+            (
+                left: (categoryPairs[i].0.title, categoryPairs[i].1),
+                right: (categoryPairs[i + 1].0.title, categoryPairs[i + 1].1)
+            )
+        }
+        
+        return ZStack {
+            UnevenRoundedRectangle(cornerRadii: .init(
+                topLeading: 0,
+                bottomLeading: 12,
+                bottomTrailing: 12,
+                topTrailing: 0))
             .foregroundStyle(.gray400)
             .padding(.horizontal, 21)
             
-            VStack (alignment: .leading) {
+            VStack(alignment: .leading) {
                 Text("질문 카테고리를")
                     .textStyle(.Title3_Text_Ko)
                     .padding(.leading, 50)
@@ -135,31 +150,27 @@ struct QuestionWriteView: View {
                 Text("선택해주세요.")
                     .textStyle(.Title3_Text_Ko)
                     .padding(.leading, 50)
+                
                 Spacer().frame(height: 37)
                 
                 VStack(spacing: 20) {
-                            ResponsiveCategoryRow(
-                                left: ("선택1", 0.62),
-                                right: ("선택2", 0.38),
-                                selectedCategory: $selectedCategory
-                            )
-                            ResponsiveCategoryRow(
-                                left: ("선택3", 0.41),
-                                right: ("선택4", 0.59),
-                                selectedCategory: $selectedCategory
-                            )
-                            ResponsiveCategoryRow(
-                                left: ("선택5", 0.51),
-                                right: ("선택6", 0.49),
-                                selectedCategory: $selectedCategory
-                            )
-                        }
-                        .padding(.horizontal, 21)
-                        .padding(.bottom, 48)
+                    ForEach(0..<categoryPairs.count / 2, id: \.self) { i in
+                        let left = categoryPairs[i * 2]
+                        let right = categoryPairs[i * 2 + 1]
+                        
+                        ResponsiveCategoryRow(
+                            left: left,
+                            right: right,
+                            selectedCategory: $selectedCategory
+                        )
                     }
+                }
+                .padding(.horizontal, 21)
+                .padding(.bottom, 48)
             }
-        
+        }
     }
+    
     
     //질문 내용 작성 부분
     var QuestionInput: some View {
