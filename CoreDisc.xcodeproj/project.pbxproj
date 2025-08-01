@@ -13,10 +13,15 @@
 		20564DD82E3BCDF0009E3080 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 20564DD72E3BCDF0009E3080 /* Moya */; };
 		238BB8142E16CEA100E7C5B8 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 238BB8132E16CEA100E7C5B8 /* Alamofire */; };
 		238BB8172E16CEBE00E7C5B8 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 238BB8162E16CEBE00E7C5B8 /* Kingfisher */; };
+		441FBD7E2E3CD83B00B45DD0 /* Secret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 441FBD7D2E3CD83B00B45DD0 /* Secret.xcconfig */; };
+		441FBD802E3CD86200B45DD0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 441FBD7F2E3CD86200B45DD0 /* GoogleService-Info.plist */; };
+		441FBD832E3CD8C800B45DD0 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 441FBD822E3CD8C800B45DD0 /* FirebaseAnalytics */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		238562CE2E0F0E2E008F25B1 /* CoreDisc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDisc.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		441FBD7D2E3CD83B00B45DD0 /* Secret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secret.xcconfig; sourceTree = "<group>"; };
+		441FBD7F2E3CD86200B45DD0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				441FBD832E3CD8C800B45DD0 /* FirebaseAnalytics in Frameworks */,
 				238BB8172E16CEBE00E7C5B8 /* Kingfisher in Frameworks */,
 				20564DD32E3BCD3A009E3080 /* KakaoSDK in Frameworks */,
 				20564DD82E3BCDF0009E3080 /* Moya in Frameworks */,
@@ -60,8 +66,10 @@
 		238562C52E0F0E2E008F25B1 = {
 			isa = PBXGroup;
 			children = (
+				441FBD7F2E3CD86200B45DD0 /* GoogleService-Info.plist */,
 				238562D02E0F0E2E008F25B1 /* CoreDisc */,
 				238562CF2E0F0E2E008F25B1 /* Products */,
+				441FBD7D2E3CD83B00B45DD0 /* Secret.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,6 +107,7 @@
 				20564DD22E3BCD3A009E3080 /* KakaoSDK */,
 				20564DD42E3BCD3A009E3080 /* KakaoSDKAuth */,
 				20564DD72E3BCDF0009E3080 /* Moya */,
+				441FBD822E3CD8C800B45DD0 /* FirebaseAnalytics */,
 			);
 			productName = CoreDisc;
 			productReference = 238562CE2E0F0E2E008F25B1 /* CoreDisc.app */;
@@ -133,6 +142,7 @@
 				238BB8152E16CEBE00E7C5B8 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				20564DCF2E3BCD15009E3080 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 				20564DD62E3BCDF0009E3080 /* XCRemoteSwiftPackageReference "Moya" */,
+				441FBD812E3CD8C800B45DD0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 238562CF2E0F0E2E008F25B1 /* Products */;
@@ -149,6 +159,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				441FBD7E2E3CD83B00B45DD0 /* Secret.xcconfig in Resources */,
+				441FBD802E3CD86200B45DD0 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,8 +179,7 @@
 /* Begin XCBuildConfiguration section */
 		238562D72E0F0E2F008F25B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
-			baseConfigurationReferenceRelativePath = Secret.xcconfig;
+			baseConfigurationReference = 441FBD7D2E3CD83B00B45DD0 /* Secret.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -233,8 +244,7 @@
 		};
 		238562D82E0F0E2F008F25B1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
-			baseConfigurationReferenceRelativePath = Secret.xcconfig;
+			baseConfigurationReference = 441FBD7D2E3CD83B00B45DD0 /* Secret.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -292,6 +302,7 @@
 		};
 		238562DA2E0F0E2F008F25B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 441FBD7D2E3CD83B00B45DD0 /* Secret.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -321,6 +332,7 @@
 		};
 		238562DB2E0F0E2F008F25B1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 441FBD7D2E3CD83B00B45DD0 /* Secret.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -404,6 +416,14 @@
 				minimumVersion = 8.4.0;
 			};
 		};
+		441FBD812E3CD8C800B45DD0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -436,6 +456,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 238BB8152E16CEBE00E7C5B8 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		441FBD822E3CD8C800B45DD0 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 441FBD812E3CD8C800B45DD0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -13,7 +13,7 @@ enum AuthRouter {
     case postUsername(usernameData: UsernameData) // 아이디 찾기
     case postKakao(accessToken: String) // 카카오 소셜 로그인
     case postSignup(signupData: SignupData) // 회원가입
-    case postVerifyCode(verifyCodeData: VerifyCodeData) // 회원가입 이메일 코드 인증
+    case postVerifyCode(verifyCodeData: VerifySignupCodeData) // 회원가입 이메일 코드 인증
     case postSendCode(email: String) // 이메일 인증 메일 전송
     case postPasswordVerifyCode(verifyCodeData: VerifyCodeData) // 비밀번호 변경 이메일 코드 인증
     case postReissue // 토큰 재발급
@@ -41,7 +41,7 @@ extension AuthRouter: APITargetType {
         case .postSignup:
             return "\(Self.authPath)/signup"
         case .postVerifyCode:
-            return "\(Self.authPath)/verify-code"
+            return "\(Self.authPath)/signup/verify-code"
         case .postSendCode:
             return "\(Self.authPath)/send-code"
         case .postPasswordVerifyCode:
@@ -84,8 +84,8 @@ extension AuthRouter: APITargetType {
             return .requestParameters(parameters: ["accessToken": accessToken], encoding: JSONEncoding.default)
         case .postSignup(let signupData):
             return .requestJSONEncodable(signupData)
-        case .postVerifyCode(let verifyCodeData):
-            return .requestJSONEncodable(verifyCodeData)
+        case .postVerifyCode(let verifySignupCodeData):
+            return .requestJSONEncodable(verifySignupCodeData)
         case .postSendCode(let email):
             return .requestParameters(parameters: ["email": email], encoding: JSONEncoding.default)
         case .postPasswordVerifyCode(let verifyCodeData):
