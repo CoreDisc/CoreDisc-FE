@@ -12,8 +12,8 @@ import KakaoSDKUser
 import Moya
 
 struct LoginView: View {
-    @State var id: String = ""
-    @State var pwd: String = ""
+    
+    @StateObject private var viewModel = LoginViewModel()
     @State private var isLoginSuccess = false
     @State private var isError = false
     
@@ -67,11 +67,11 @@ struct LoginView: View {
             Spacer().frame(height: 24)
             
             InputView{
-                TextField("아이디", text: $id)
+                TextField("아이디", text: $viewModel.username)
             }
             
             InputView{
-                SecureField("비밀번호", text: $pwd)
+                SecureField("비밀번호", text: $viewModel.password)
             }
             
             if isError {
@@ -84,10 +84,11 @@ struct LoginView: View {
                 Spacer().frame(height: 36)
             }
             
-            ButtonView(action:{print("login")}, label: {
+            ButtonView(action:{viewModel.login()}, label: {
                 Text("로그인")
-            }, boxColor: (id.isEmpty || pwd.isEmpty) ? .gray400 : .key)
-            .disabled(id.isEmpty || pwd.isEmpty)
+            }, boxColor: (viewModel.username.isEmpty || viewModel.password.isEmpty) ? .gray400 : .key)
+            .disabled(viewModel.username.isEmpty || viewModel.password.isEmpty)
+            .navigationDestination(isPresented: $viewModel.isLogin) {TabBar()}
             
             Spacer().frame(height: 37)
             

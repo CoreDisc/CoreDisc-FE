@@ -14,10 +14,26 @@ struct SendCodeResponse: Decodable {
     let result: SendResult?
 }
 
-struct SendResult: Decodable {
-    let email: String
+enum SendResult: Decodable {
+    case success(String)
+    case error(ValidationError)
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        
+        if let stringValue = try? container.decode(String.self) {
+            self = .success(stringValue)
+        } else if let errorValue = try? container.decode(ValidationError.self) {
+            self = .error(errorValue)
+        } else {
+            throw DecodingError.typeMismatch(SendResult.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Cannot decode SendResult"))
+        }
+    }
 }
 
+struct ValidationError: Decodable {
+    let email: String
+}
 struct VerifyCodeResponse: Decodable {
     let isSuccess: Bool
     let code: String

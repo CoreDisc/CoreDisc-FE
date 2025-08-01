@@ -11,17 +11,17 @@ struct SignupView: View {
     
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = SignupViewModel()
-    
+
     @State private var emailError = false
-    @State private var numberSend = true
-    @State private var numberError = true
-    @State private var numberAuth = true
+    @State private var numberSend = false
+    @State private var numberError = false
+    @State private var numberAuth = false
     @State private var pwdShown = false
-    @State private var pwdError = true
+    @State private var pwdError = false
     @State private var rePwdShown = false
-    @State private var rePwdError = true
-    @State private var idError = true
-    @State private var nicknameError = true
+    @State private var rePwdError = false
+    @State private var idError = false
+    @State private var nicknameError = false
     
     var body: some View {
         NavigationStack{
