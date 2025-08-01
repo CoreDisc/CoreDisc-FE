@@ -76,7 +76,7 @@ struct PostDiaryCheckView: View {
                         .frame(width: 152, height: 152)
                         .cornerRadius(152)
                     }
-                    Image(.iconShare)
+                    Image(.iconShareWhite)
                 }
             }
         }
