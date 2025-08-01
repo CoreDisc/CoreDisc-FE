@@ -11,6 +11,7 @@ struct SignupView: View {
     
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = SignupViewModel()
+    @FocusState private var isFocused: Bool
 
     @State private var emailError = false
     @State private var numberSend = false
@@ -29,6 +30,9 @@ struct SignupView: View {
                 Image(.imgOnboardingBackground)
                     .resizable()
                     .ignoresSafeArea()
+                    .onTapGesture { // 키보드 내리기 용도
+                        isFocused = false
+                    }
                 
                 VStack{
                     HStack{
@@ -72,6 +76,7 @@ struct SignupView: View {
             InputView{
                 TextField("이메일을 입력해주세요.", text: $viewModel.email)
                     .textInputAutocapitalization(.never)
+                    .focused($isFocused)
             }
             
             ButtonView(action:{viewModel.sendCode()}, label: {
@@ -97,6 +102,7 @@ struct SignupView: View {
      
             InputView{
                 TextField("인증번호를 입력해주세요.", text: $viewModel.code)
+                    .focused($isFocused)
             }
             
             ButtonView(action:{viewModel.verifyCode()}, label: {
@@ -125,6 +131,7 @@ struct SignupView: View {
                 if pwdShown{
                     HStack{
                         TextField("비밀번호를 입력해주세요.", text: $viewModel.password)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
@@ -136,6 +143,7 @@ struct SignupView: View {
                 } else{
                     HStack{
                         SecureField("비밀번호를 입력해주세요.", text: $viewModel.password)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
@@ -162,6 +170,7 @@ struct SignupView: View {
                 if rePwdShown{
                     HStack{
                         TextField("비밀번호를 한 번 더 입력해주세요.", text: $viewModel.passwordCheck)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
@@ -173,6 +182,7 @@ struct SignupView: View {
                 } else{
                     HStack{
                         SecureField("비밀번호를 한 번 더 입력해주세요.", text: $viewModel.passwordCheck)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
@@ -197,6 +207,7 @@ struct SignupView: View {
             InputView{
                 TextField("아이디를 입력해주세요.", text: $viewModel.username)
                     .textInputAutocapitalization(.never)
+                    .focused($isFocused)
             }
             
             if idError {
@@ -212,6 +223,7 @@ struct SignupView: View {
             
             InputView{
                 TextField("이름을 입력해주세요.", text: $viewModel.name)
+                    .focused($isFocused)
             }
             
             if nicknameError {

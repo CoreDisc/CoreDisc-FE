@@ -16,6 +16,7 @@ struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
     @State private var isLoginSuccess = false
     @State private var isError = false
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         NavigationStack {
@@ -23,6 +24,9 @@ struct LoginView: View {
                 Image(.imgOnboardingBackground)
                     .resizable()
                     .ignoresSafeArea()
+                    .onTapGesture { // 키보드 내리기 용도
+                        isFocused = false
+                    }
                 
                 VStack{
                     Image(.imgLogo)
@@ -69,10 +73,12 @@ struct LoginView: View {
             InputView{
                 TextField("아이디", text: $viewModel.username)
                     .textInputAutocapitalization(.never)
+                    .focused($isFocused)
             }
             
             InputView{
                 SecureField("비밀번호", text: $viewModel.password)
+                    .focused($isFocused)
             }
             
             if isError {
