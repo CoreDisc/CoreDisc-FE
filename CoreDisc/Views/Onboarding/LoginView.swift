@@ -15,7 +15,6 @@ struct LoginView: View {
     
     @StateObject private var viewModel = LoginViewModel()
     @State private var isLoginSuccess = false
-    @State private var isError = false
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -57,14 +56,14 @@ struct LoginView: View {
         VStack{
             HStack{
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
                 Text("로그인 또는 가입")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 20)
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
             }
             
@@ -81,7 +80,7 @@ struct LoginView: View {
                     .focused($isFocused)
             }
             
-            if isError {
+            if viewModel.isError {
                 Text("아이디 혹은 비밀번호가 일치하지 않습니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -124,14 +123,14 @@ struct LoginView: View {
         VStack{
             HStack{
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
                 Text("간편 로그인")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 20)
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
             }
             
