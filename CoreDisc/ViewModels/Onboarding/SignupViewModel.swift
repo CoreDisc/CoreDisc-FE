@@ -8,6 +8,7 @@
 import Foundation
 import Moya
 
+// 중복확인 추가 필요 + 약관 동의 추가 + 에러메세지 다양한 실패 테스트 필요
 class SignupViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var name: String = ""
@@ -21,7 +22,12 @@ class SignupViewModel: ObservableObject {
     @Published var EmailVerified: Bool = false
     @Published var CodeVerified: Bool = false
     @Published var codeErrorMessage: String = ""
-    @Published var isSignedUp = false
+    @Published var isSignedUp: Bool = false
+    @Published var pwdError: Bool = false
+    @Published var rePwdError: Bool = false
+    @Published var idError: Bool = false
+    @Published var nicknameError: Bool = false
+    @Published var signupError: Bool = false
     
     private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
     
@@ -29,42 +35,24 @@ class SignupViewModel: ObservableObject {
         authProvider.request(.postSendCode(email: email)) { result in
             switch result {
             case .success(let response):
-                do {
-                    let decodedResponse = try JSONDecoder().decode(SendCodeResponse.self, from: response.data)
-                    
-                    if decodedResponse.isSuccess {
-                        print("성공: \(decodedResponse.message)")
-                        self.EmailVerified = true
-                        self.emailErrorMessage = ""
-                    } else {
-                        print("실패: \(decodedResponse.message)")
-                        self.EmailVerified = false
-                        switch decodedResponse.result {
-                        case .error(let validationError):
-                            self.emailErrorMessage = validationError.email
-                        case .success(_), .none:
-                            self.emailErrorMessage = decodedResponse.message
-                        }
-                    }
-                } catch {
-                    print("디코딩 오류: \(error.localizedDescription)")
-                    self.EmailVerified = false
-                    self.emailErrorMessage = "오류가 발생했습니다."
+                if let decodedResponse = try? JSONDecoder().decode(SendCodeResponse.self, from: response.data) {
+                    print("성공: \(decodedResponse.message)")
+                    self.EmailVerified = true
+                    self.emailErrorMessage = ""
                 }
-                
             case .failure(let error):
                 if let response = error.response {
                     do {
                         let decodedResponse = try JSONDecoder().decode(SendCodeResponse.self, from: response.data)
-                        let errorMsg: String
+                        let sendCodeErrorMsg: String
                         switch decodedResponse.result {
                         case .error(let validationError):
-                            errorMsg = validationError.email
+                            sendCodeErrorMsg = validationError.email
                         case .success(_), .none:
-                            errorMsg = decodedResponse.message
+                            sendCodeErrorMsg = decodedResponse.message
                         }
-                        print("실패 : \(errorMsg)")
-                        self.emailErrorMessage = errorMsg
+                        print("실패 : \(sendCodeErrorMsg)")
+                        self.emailErrorMessage = sendCodeErrorMsg
                     } catch {
                         print("디코딩 실패 : \(error.localizedDescription)")
                         self.emailErrorMessage = "오류가 발생했습니다."
@@ -90,27 +78,44 @@ class SignupViewModel: ObservableObject {
         )){ result in
             switch result{
             case .success(let response):
-                do {
-                    let decodedResponse = try JSONDecoder().decode(VerifyCodeResponse.self, from: response.data)
-                    
-                    if decodedResponse.isSuccess {
-                        print("성공 : \(String(describing: decodedResponse.result))")
-                        self.CodeVerified = true
-                        self.codeErrorMessage = "인증되었습니다."
-                    } else {
-                        print("실패 : \(decodedResponse.message)")
-                        self.CodeVerified = true
-                        self.codeErrorMessage = decodedResponse.message
-                    }
-                } catch {
-                    print("디코딩 오류 : \(error.localizedDescription)")
-                    self.CodeVerified = false
-                    self.codeErrorMessage = "오류가 발생했습니다."
+                if let decodedResponse = try? JSONDecoder().decode(VerifyCodeResponse.self, from: response.data) {
+                    print("성공: \(decodedResponse.message)")
+                    self.CodeVerified = true
+                    self.codeErrorMessage = "인증되었습니다."
                 }
             case .failure(let error):
-                print("API 오류 : \(error.localizedDescription)")
-                self.CodeVerified = false
-                self.codeErrorMessage = "네트워크 오류가 발생했습니다."
+                if let response = error.response {
+                    do {
+                        let decodedResponse = try JSONDecoder().decode(SendCodeResponse.self, from: response.data)
+                        let verifyCodeErrorMsg: String
+                        switch decodedResponse.result {
+                        case .error(let validationError):
+                            verifyCodeErrorMsg = validationError.email
+                        case .success(_), .none:
+                            verifyCodeErrorMsg = decodedResponse.message
+                        }
+                        print("실패 : \(verifyCodeErrorMsg)")
+                        self.codeErrorMessage = verifyCodeErrorMsg
+                        
+                        switch decodedResponse.code {
+                        case "AUTH4002":
+                            self.EmailVerified = false
+                        case "AUTH4003":
+                            break
+                        default:
+                            break
+                        }
+                        
+                    } catch {
+                        print("디코딩 실패 : \(error.localizedDescription)")
+                        self.codeErrorMessage = "오류가 발생했습니다."
+                    }
+                    self.CodeVerified = false
+                } else {
+                    print("네트워크 오류: \(error.localizedDescription)")
+                    self.CodeVerified = false
+                    self.codeErrorMessage = "네트워크 오류가 발생했습니다."
+                }
             }
         }
     }
@@ -128,24 +133,42 @@ class SignupViewModel: ObservableObject {
         )){ result in
             switch result {
             case .success(let response):
-                do {
-                    let decodedResponse = try JSONDecoder().decode(SignupResponse.self, from: response.data)
-                    
-                    if decodedResponse.isSuccess {
-                        print("성공 : \(String(describing: decodedResponse.result))")
-                        DispatchQueue.main.async {
-                            self.isSignedUp = true
-                        }
-                    } else{
-                        print("실패 : \(decodedResponse.message)")
-                    }
-                } catch {
-                    
+                if let decodedResponse = try? JSONDecoder().decode(SignupResponse.self, from: response.data) {
+                    print("성공: \(decodedResponse.message)")
+                    self.isSignedUp = true
                 }
             case .failure(let error):
-                print("API 오류 : \(error.localizedDescription)")
-                self.CodeVerified = false
-                self.codeErrorMessage = "네트워크 오류가 발생했습니다."
+                if let response = error.response {
+                    do {
+                        let decodedResponse = try JSONDecoder().decode(SendCodeResponse.self, from: response.data)
+                        let signupErrorMsg: String
+                        switch decodedResponse.result {
+                        case .error(let validationError):
+                            signupErrorMsg = validationError.email
+                        case .success(_), .none:
+                            signupErrorMsg = decodedResponse.message
+                        }
+                        print("실패 : \(signupErrorMsg)")
+                        
+                        switch decodedResponse.code {
+                        case "COMMON400":
+                            self.pwdError = true
+                        case "AUTH4001":
+                            self.rePwdError = true
+                        case "AUTH4005":
+                            self.nicknameError = true
+                        case "AUTH4004":
+                            self.idError = true
+                        default:
+                            break
+                        }
+                    } catch {
+                        print("디코딩 실패 : \(error.localizedDescription)")
+                        self.signupError = true
+                    }
+                } else {
+                    print("네트워크 오류: \(error.localizedDescription)")
+                }
             }
         }
     }

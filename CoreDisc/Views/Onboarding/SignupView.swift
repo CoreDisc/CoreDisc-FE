@@ -13,16 +13,8 @@ struct SignupView: View {
     @StateObject private var viewModel = SignupViewModel()
     @FocusState private var isFocused: Bool
 
-    @State private var emailError = false
-    @State private var numberSend = false
-    @State private var numberError = false
-    @State private var numberAuth = false
     @State private var pwdShown = false
-    @State private var pwdError = false
     @State private var rePwdShown = false
-    @State private var rePwdError = false
-    @State private var idError = false
-    @State private var nicknameError = false
     
     var body: some View {
         NavigationStack{
@@ -155,7 +147,7 @@ struct SignupView: View {
                 }
             }
             
-            if pwdError {
+            if viewModel.pwdError {
                 Text("영문/숫자/특수문자(공백제외), 10~16자로 입력해주세요.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -194,7 +186,7 @@ struct SignupView: View {
                 }
             }
             
-            if rePwdError {
+            if viewModel.rePwdError {
                 Text("비밀번호가 일치하지 않습니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -210,7 +202,7 @@ struct SignupView: View {
                     .focused($isFocused)
             }
             
-            if idError {
+            if viewModel.idError {
                 Text("16자 이내 영문,숫자,특수문자(_,.)만 사용 가능합니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -226,7 +218,7 @@ struct SignupView: View {
                     .focused($isFocused)
             }
             
-            if nicknameError {
+            if viewModel.nicknameError {
                 Text("16자 이내 영문,한글만 사용 가능합니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -237,9 +229,25 @@ struct SignupView: View {
                     .foregroundStyle(.gray400)
             }
             
-            Spacer().frame(height: 22)
-            
-            ButtonView(action:{viewModel.signup()}, label: {
+            if viewModel.signupError {
+                Text("입력하지 않은 값 또는 조건에 맞지 않는 값이 있습니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                Spacer().frame(height: 7)
+            } else {
+                Spacer().frame(height: 22)
+            }
+    
+            ButtonView(action:{
+                viewModel.emailErrorMessage = ""
+                viewModel.codeErrorMessage = ""
+                viewModel.pwdError = false
+                viewModel.rePwdError = false
+                viewModel.idError = false
+                viewModel.nicknameError = false
+                viewModel.signupError = false
+                viewModel.signup()
+            }, label: {
                 Text("가입하기")
             }, boxColor: (viewModel.email.isEmpty || viewModel.code.isEmpty || viewModel.password.isEmpty || viewModel.passwordCheck.isEmpty || viewModel.username.isEmpty || viewModel.name.isEmpty) ? .gray400 : .key)
             .disabled(viewModel.email.isEmpty || viewModel.code.isEmpty || viewModel.password.isEmpty || viewModel.passwordCheck.isEmpty || viewModel.username.isEmpty || viewModel.name.isEmpty)
