@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct QuestionMainView: View {
+    @StateObject var viewModel = QuestionMainViewModel()
+    
     @State var isSelectView: Bool = false
+    @State var currentOrder: Int = 0
     
     // 씨디 돌아가는 애니메이션
     @State private var rotationAngle: Double = 0.0
@@ -29,6 +32,9 @@ struct QuestionMainView: View {
                 
                 Spacer()
             }
+        }
+        .onAppear {
+            viewModel.fetchSelected()
         }
     }
     
@@ -63,7 +69,13 @@ struct QuestionMainView: View {
     // CD, QuestionSelectItem
     // TODO: CD 애니메이션 적용
     private var MainCDGroup: some View {
-        ZStack {
+        // 질문 리스트
+        let question1 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 1 })?.question ?? "고정질문을 선택하세요"
+        let question2 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 2 })?.question ?? "고정질문을 선택하세요"
+        let question3 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 3 })?.question ?? "고정질문을 선택하세요"
+        let question4 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 4 })?.question ?? "랜덤질문을 선택하세요"
+        
+        return ZStack {
             Image(.imgCd)
                 .resizable()
                 .frame(width: 529, height: 529)
@@ -75,16 +87,22 @@ struct QuestionMainView: View {
                 }
                 .offset(x: 172)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: question1, order: 1, onTap: { order in
+                currentOrder = order
+            })
                 .position(x: 150+79, y: 97)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: question2, order: 2, onTap: { order in
+                currentOrder = order
+            })
                 .position(x: 150+34, y: 196)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: "고정질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: question3, order: 3, onTap: { order in
+                currentOrder = order
+            })
                 .position(x: 150+42, y: 295)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: "랜덤질문을 선택하세요")
+            QuestionSelectItem(moveLeft: $isSelectView, text: question4, order: 4)
                 .position(x: 150+79, y: 394)
             
             SelectCDGroup
@@ -100,7 +118,7 @@ struct QuestionMainView: View {
                 QuestionWriteView()
             }
             QuestionSelectButton(title: "기본 질문") {
-                QuestionBasicView()
+                QuestionBasicView(order: currentOrder)
             }
             QuestionSelectButton(title: "인기 질문") {
                 QuestionTrendingView()
@@ -118,6 +136,9 @@ struct QuestionSelectItem: View {
     @Binding var moveLeft: Bool
     
     var text: String
+    var order: Int // 1, 2, 3
+    var onTap: ((Int) -> Void)? = nil
+    
     var startColor: Color = .gray400
     var endColor: Color = .gray400
     
@@ -125,6 +146,7 @@ struct QuestionSelectItem: View {
         Button(action: {
             withAnimation(.easeInOut(duration: 0.4)) {
                 moveLeft = true
+                onTap?(order)
             }
         }) {
             ZStack {

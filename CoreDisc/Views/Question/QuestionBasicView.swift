@@ -14,6 +14,10 @@ struct QuestionBasicView: View {
     @State var showModal: Bool = false
     private let topAnchorID = "top" // 스크롤 초기화 용도
     
+    // 질문 선택 용도
+    let order: Int
+    @State private var selectedQuestionId: Int? = nil
+    
     // 열려있는 카테고리
     @State private var expandedCategoryIDs: Set<UUID> = []
     
@@ -48,8 +52,15 @@ struct QuestionBasicView: View {
                     }
                 } leftButton: {
                     Button(action: {
+                        if let questionId = selectedQuestionId {
+                           let data = FixedData(
+                               selectedQuestionType: .DEFAULT,
+                               questionOrder: order,
+                               questionId: questionId
+                           )
+                            viewModel.fetchFixedBasic(fixedData: data)
+                        }
                         showModal.toggle() // 모달 제거
-                        // TODO: question select api
                         dismiss()
                     }) {
                         Text("설정하기")
@@ -137,7 +148,11 @@ struct QuestionBasicView: View {
                                         showModal: $showModal,
                                         title: question.question,
                                         startColor: item.startColor,
-                                        endColor: item.endColor
+                                        endColor: item.endColor,
+                                        questionId: question.id,
+                                        onSelect: { id in
+                                            selectedQuestionId = id
+                                        }
                                     )
                                     .onAppear {
                                         if index == questionList.count - 1 {
@@ -249,9 +264,13 @@ struct QuestionBasicDetailItem: View {
     var startColor: Color
     var endColor: Color
     
+    var questionId: Int
+    var onSelect: (Int) -> Void
+    
     var body: some View {
         Button(action: {
             showModal.toggle()
+            onSelect(questionId)
         }) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
@@ -281,5 +300,5 @@ struct QuestionBasicDetailItem: View {
 }
 
 #Preview {
-    QuestionBasicView()
+    QuestionBasicView(order: 1)
 }

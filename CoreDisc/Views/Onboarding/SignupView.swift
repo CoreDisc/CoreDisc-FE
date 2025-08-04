@@ -10,49 +10,42 @@ import SwiftUI
 struct SignupView: View {
     
     @Environment(\.dismiss) var dismiss
-    @State var email: String = ""
-    @State var auth: String = ""
-    @State var pwd: String = ""
-    @State var repwd: String = ""
-    @State var id: String = ""
-    @State var name: String = ""
-    
-    @State private var emailError = false
-    @State private var numberSend = true
-    @State private var numberError = true
-    @State private var numberAuth = true
+    @StateObject private var viewModel = SignupViewModel()
+    @FocusState private var isFocused: Bool
+
     @State private var pwdShown = false
-    @State private var pwdError = true
     @State private var rePwdShown = false
-    @State private var rePwdError = true
-    @State private var idError = true
-    @State private var nicknameError = true
     
     var body: some View {
-        ZStack {
-            Image(.imgOnboardingBackground)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack{
-                HStack{
-                    Button(action: {
-                        dismiss()
-                    }){
-                        Image(.imgGoback)
-                            .padding()
-                    }
-                Spacer()
-                }
-                Image(.imgLogo)
+        NavigationStack{
+            ZStack {
+                Image(.imgOnboardingBackground)
                     .resizable()
-                    .frame(width: 60, height: 36)
-                Spacer().frame(height: 31)
-                MainGroup
-                Spacer()
+                    .ignoresSafeArea()
+                    .onTapGesture { // 키보드 내리기 용도
+                        isFocused = false
+                    }
+                
+                VStack{
+                    HStack{
+                        Button(action: {
+                            dismiss()
+                        }){
+                            Image(.imgGoback)
+                                .padding()
+                        }
+                        Spacer()
+                    }
+                    Image(.imgLogo)
+                        .resizable()
+                        .frame(width: 60, height: 36)
+                    Spacer().frame(height: 31)
+                    MainGroup
+                    Spacer()
+                }
             }
+            .navigationBarBackButtonHidden()
         }
-        .navigationBarBackButtonHidden()
     }
     
     private var MainGroup : some View{
@@ -73,48 +66,50 @@ struct SignupView: View {
             Spacer().frame(height: 32)
             
             InputView{
-                TextField("이메일을 입력해주세요.", text: $email)
+                TextField("이메일을 입력해주세요.", text: $viewModel.email)
+                    .textInputAutocapitalization(.never)
+                    .focused($isFocused)
             }
             
-            ButtonView(action:{print("인증 번호 전송")}, label: {
+            ButtonView(action:{viewModel.sendCode()}, label: {
                 Text("인증 번호 전송")
-            }, boxColor: (email.isEmpty || emailError) ? .gray400 : .key)
-            .disabled(email.isEmpty)
+            }, boxColor: (viewModel.email.isEmpty || viewModel.EmailVerified) ? .gray400 : .key)
+            .disabled(viewModel.email.isEmpty || viewModel.EmailVerified)
             
-            if emailError {
-                Text("잘못된 이메일 형식입니다.")
+            if !viewModel.emailErrorMessage.isEmpty {
+                Text(viewModel.emailErrorMessage)
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer().frame(height: 19)
-            } else if numberSend {
+            } else if viewModel.EmailVerified {
                 Text("인증번호가 전송되었습니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.gray400)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer().frame(height: 19)
-            }
-            else {
+            } else {
                 Spacer().frame(height: 34)
             }
      
             InputView{
-                TextField("인증번호를 입력해주세요.", text: $auth)
+                TextField("인증번호를 입력해주세요.", text: $viewModel.code)
+                    .focused($isFocused)
             }
             
-            ButtonView(action:{print("인증하기")}, label: {
+            ButtonView(action:{viewModel.verifyCode()}, label: {
                 Text("인증하기")
-            }, boxColor: (auth.isEmpty || emailError) ? .gray400 : .key)
-            .disabled(auth.isEmpty)
+            }, boxColor: (viewModel.code.isEmpty || viewModel.CodeVerified) ? .gray400 : .key)
+            .disabled(viewModel.code.isEmpty || viewModel.CodeVerified)
             
-            if numberAuth{
+            if viewModel.CodeVerified {
                 Text("인증되었습니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.gray400)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer().frame(height: 19)
-            } else if numberError {
-                Text("인증번호를 다시 확인해주세요.")
+            } else if !viewModel.codeErrorMessage.isEmpty {
+                Text(viewModel.codeErrorMessage)
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -127,30 +122,32 @@ struct SignupView: View {
             InputView{
                 if pwdShown{
                     HStack{
-                        TextField("비밀번호를 입력해주세요.", text: $pwd)
+                        TextField("비밀번호를 입력해주세요.", text: $viewModel.password)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
                         }, label: {
-//                            Image(.iconShown)
-//                                .padding(.horizontal)
+                            Image(.iconShown)
+                                .padding(.horizontal)
                         })
                     }
                 } else{
                     HStack{
-                        SecureField("비밀번호를 입력해주세요.", text: $pwd)
+                        SecureField("비밀번호를 입력해주세요.", text: $viewModel.password)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
                         }, label: {
-//                            Image(.iconNotShown)
-//                                .padding(.horizontal)
+                            Image(.iconNotShown)
+                                .padding(.horizontal)
                         })
                     }
                 }
             }
             
-            if pwdError {
+            if viewModel.pwdError {
                 Text("영문/숫자/특수문자(공백제외), 10~16자로 입력해주세요.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -164,30 +161,32 @@ struct SignupView: View {
             InputView{
                 if rePwdShown{
                     HStack{
-                        TextField("비밀번호를 한 번 더 입력해주세요.", text: $repwd)
+                        TextField("비밀번호를 한 번 더 입력해주세요.", text: $viewModel.passwordCheck)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
                         }, label: {
-//                            Image(.iconShown)
-//                                .padding(.horizontal)
+                            Image(.iconShown)
+                                .padding(.horizontal)
                         })
                     }
                 } else{
                     HStack{
-                        SecureField("비밀번호를 한 번 더 입력해주세요.", text: $repwd)
+                        SecureField("비밀번호를 한 번 더 입력해주세요.", text: $viewModel.passwordCheck)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
                         }, label: {
-//                            Image(.iconNotShown)
-//                                .padding(.horizontal)
+                            Image(.iconNotShown)
+                                .padding(.horizontal)
                         })
                     }
                 }
             }
             
-            if rePwdError {
+            if viewModel.rePwdError {
                 Text("비밀번호가 일치하지 않습니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -198,10 +197,12 @@ struct SignupView: View {
             }
             
             InputView{
-                TextField("아이디를 입력해주세요.", text: $id)
+                TextField("아이디를 입력해주세요.", text: $viewModel.username)
+                    .textInputAutocapitalization(.never)
+                    .focused($isFocused)
             }
             
-            if idError {
+            if viewModel.idError {
                 Text("16자 이내 영문,숫자,특수문자(_,.)만 사용 가능합니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -213,10 +214,11 @@ struct SignupView: View {
             }
             
             InputView{
-                TextField("이름을 입력해주세요.", text: $name)
+                TextField("이름을 입력해주세요.", text: $viewModel.name)
+                    .focused($isFocused)
             }
             
-            if nicknameError {
+            if viewModel.nicknameError {
                 Text("16자 이내 영문,한글만 사용 가능합니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -227,13 +229,32 @@ struct SignupView: View {
                     .foregroundStyle(.gray400)
             }
             
-            Spacer().frame(height: 22)
-            
-            ButtonView(action:{print("가입하기")}, label: {
+            if viewModel.signupError {
+                Text("입력하지 않은 값 또는 조건에 맞지 않는 값이 있습니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                Spacer().frame(height: 7)
+            } else {
+                Spacer().frame(height: 22)
+            }
+    
+            ButtonView(action:{
+                viewModel.emailErrorMessage = ""
+                viewModel.codeErrorMessage = ""
+                viewModel.pwdError = false
+                viewModel.rePwdError = false
+                viewModel.idError = false
+                viewModel.nicknameError = false
+                viewModel.signupError = false
+                viewModel.signup()
+            }, label: {
                 Text("가입하기")
-            }, boxColor: (email.isEmpty || auth.isEmpty || pwd.isEmpty || repwd.isEmpty || id.isEmpty || name.isEmpty) ? .gray400 : .key)
-            .disabled(email.isEmpty || auth.isEmpty || pwd.isEmpty || repwd.isEmpty || id.isEmpty || name.isEmpty)
+            }, boxColor: (viewModel.email.isEmpty || viewModel.code.isEmpty || viewModel.password.isEmpty || viewModel.passwordCheck.isEmpty || viewModel.username.isEmpty || viewModel.name.isEmpty) ? .gray400 : .key)
+            .disabled(viewModel.email.isEmpty || viewModel.code.isEmpty || viewModel.password.isEmpty || viewModel.passwordCheck.isEmpty || viewModel.username.isEmpty || viewModel.name.isEmpty)
             
+            .navigationDestination(isPresented: $viewModel.isSignedUp) {
+                LoginView()
+            }
         }
         .padding(.horizontal, 41)
     }

@@ -12,10 +12,10 @@ import KakaoSDKUser
 import Moya
 
 struct LoginView: View {
-    @State var id: String = ""
-    @State var pwd: String = ""
+    
+    @StateObject private var viewModel = LoginViewModel()
     @State private var isLoginSuccess = false
-    @State private var isError = false
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         NavigationStack {
@@ -23,6 +23,9 @@ struct LoginView: View {
                 Image(.imgOnboardingBackground)
                     .resizable()
                     .ignoresSafeArea()
+                    .onTapGesture { // 키보드 내리기 용도
+                        isFocused = false
+                    }
                 
                 VStack{
                     Image(.imgLogo)
@@ -53,28 +56,31 @@ struct LoginView: View {
         VStack{
             HStack{
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
                 Text("로그인 또는 가입")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 20)
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
             }
             
             Spacer().frame(height: 24)
             
             InputView{
-                TextField("아이디", text: $id)
+                TextField("아이디", text: $viewModel.username)
+                    .textInputAutocapitalization(.never)
+                    .focused($isFocused)
             }
             
             InputView{
-                SecureField("비밀번호", text: $pwd)
+                SecureField("비밀번호", text: $viewModel.password)
+                    .focused($isFocused)
             }
             
-            if isError {
+            if viewModel.isError {
                 Text("아이디 혹은 비밀번호가 일치하지 않습니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -84,10 +90,11 @@ struct LoginView: View {
                 Spacer().frame(height: 36)
             }
             
-            ButtonView(action:{print("login")}, label: {
+            ButtonView(action:{viewModel.login()}, label: {
                 Text("로그인")
-            }, boxColor: (id.isEmpty || pwd.isEmpty) ? .gray400 : .key)
-            .disabled(id.isEmpty || pwd.isEmpty)
+            }, boxColor: (viewModel.username.isEmpty || viewModel.password.isEmpty) ? .gray400 : .key)
+            .disabled(viewModel.username.isEmpty || viewModel.password.isEmpty)
+            .navigationDestination(isPresented: $viewModel.isLogin) {TabBar()}
             
             Spacer().frame(height: 37)
             
@@ -116,14 +123,14 @@ struct LoginView: View {
         VStack{
             HStack{
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
                 Text("간편 로그인")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 20)
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
             }
             
