@@ -31,7 +31,7 @@ struct FollowerValues: Decodable {
     let username: String
     let profileImgDTO: FollowerProfileImgDTO?
     let isCircle: Bool
-    let isMutual: Bool
+    let isMutual: Bool?
 }
 
 struct FollowerProfileImgDTO: Decodable {

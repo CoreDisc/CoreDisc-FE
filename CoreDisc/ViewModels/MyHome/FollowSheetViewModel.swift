@@ -31,6 +31,11 @@ class FollowSheetViewModel: ObservableObject {
     @Published var userFollowingHasNextPage: Bool = false
     @Published var userFollowingCount: Int = 0
     
+    // fetchCircleList
+    @Published var coreList: [FollowerValues] = []
+    @Published var coreHasNextPage: Bool = false
+    @Published var coreCount: Int = 0
+    
     private let followProvider = APIManager.shared.createProvider(for: FollowRouter.self)
     private let circleProvieer = APIManager.shared.createProvider(for: CircleRouter.self)
     
@@ -77,6 +82,16 @@ class FollowSheetViewModel: ObservableObject {
                     isCore: false
                 )
             }
+        case .coreList:
+            return coreList.map {
+                FollowDisplayModel(
+                    id: $0.followerId,
+                    nickname: $0.nickname,
+                    username: $0.username,
+                    profileImgUrl: $0.profileImgDTO?.imageUrl,
+                    isCore: false
+                )
+            }
         }
     }
     
@@ -90,6 +105,8 @@ class FollowSheetViewModel: ObservableObject {
             return userFollowerHasNextPage
         case .userFollowing:
             return userFollowingHasNextPage
+        case .coreList:
+            return coreHasNextPage
         }
     }
     
@@ -103,6 +120,8 @@ class FollowSheetViewModel: ObservableObject {
             fetchUserFollowers(targetUsername: currentTargetUsername, cursorId: cursorId)
         case .userFollowing:
             fetchUserFollowings(targetUsername: currentTargetUsername, cursorId: cursorId)
+        case .coreList:
+            fetchCircleList(cursorId: cursorId)
         }
     }
     
@@ -116,6 +135,8 @@ class FollowSheetViewModel: ObservableObject {
             return userFollowerCount
         case .userFollowing:
             return userFollowingCount
+        case .coreList:
+            return coreCount
         }
     }
     
@@ -270,6 +291,37 @@ class FollowSheetViewModel: ObservableObject {
                 }
             case .failure(let error):
                 print("PatchCircle API 오류: \(error)")
+            }
+        }
+    }
+    
+    func fetchCircleList(
+        cursorId: Int? = nil,
+        size: Int? = 10
+    ) {
+        circleProvieer.request(.getCircle(cursorId: cursorId, size: size)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(FollowersResponse.self, from: response.data)
+                    let result = decodedData.result
+                    
+                    DispatchQueue.main.async {
+                        if cursorId == nil {
+                            // 첫 요청 -> 전체 초기화
+                            self.coreList = result.followerCursor.values
+                        } else {
+                            // 다음 페이지 -> append
+                            self.coreList.append(contentsOf: result.followerCursor.values)
+                        }
+                        self.coreCount = result.totalCount
+                        self.coreHasNextPage = result.followerCursor.hasNext
+                    }
+                } catch {
+                    print("GetCircle 디코더 오류: \(error)")
+                }
+            case .failure(let error):
+                print("GetCircle API 오류: \(error)")
             }
         }
     }
