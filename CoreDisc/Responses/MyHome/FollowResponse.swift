@@ -30,11 +30,41 @@ struct FollowerValues: Decodable {
     let nickname: String
     let username: String
     let profileImgDTO: FollowerProfileImgDTO?
+    let isCircle: Bool
     let isMutual: Bool
-    let circle: Bool
 }
 
 struct FollowerProfileImgDTO: Decodable {
+    let profileImgId: Int
+    let imageUrl: String
+}
+
+// MARK: - UserFollower
+struct UserFollowersResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: UserFollowersResult
+}
+
+struct UserFollowersResult: Decodable {
+    let totalCount: Int
+    let followerCursor: UserFollowerCursor
+}
+
+struct UserFollowerCursor: Decodable {
+    let values: [UserFollowerValues]
+    let hasNext: Bool
+}
+
+struct UserFollowerValues: Decodable {
+    let followerId: Int
+    let nickname: String
+    let username: String
+    let profileImgDTO: FollowerProfileImgDTO?
+}
+
+struct UserFollowerProfileImgDTO: Decodable {
     let profileImgId: Int
     let imageUrl: String
 }

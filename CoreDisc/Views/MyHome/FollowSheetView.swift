@@ -9,14 +9,15 @@ import SwiftUI
 import Kingfisher
 
 enum FollowType: String {
-    case follower = "followers"
-    case following = "followings"
+    case follower, userFollower = "followers"
+    case following, userFollowing = "followings"
 }
 
 struct FollowSheetView: View {
     @Binding var showSheet: Bool
     @StateObject private var viewModel = FollowSheetViewModel()
     var followType: FollowType
+    var targetUsrname: String
     
     var body: some View {
         ZStack {
@@ -40,11 +41,16 @@ struct FollowSheetView: View {
         .padding(.horizontal, 18)
         .ignoresSafeArea()
         .onAppear {
+            viewModel.currentTargetUsername = targetUsrname
             switch followType {
             case .follower:
                 viewModel.fetchFollowers()
             case .following:
                 viewModel.fetchFollowings()
+            case .userFollower:
+                viewModel.fetchUserFollowers(targetUsername: targetUsrname)
+            case .userFollowing:
+                viewModel.fetchUserFollowings(targetUsername: targetUsrname)
             }
         }
     }
@@ -77,7 +83,7 @@ struct FollowSheetView: View {
     private var SecondGroup: some View {
         HStack {
             VStack(alignment: .leading, spacing: 0) {
-                Text("\(viewModel.followerCount)")
+                Text("\(viewModel.getCount(for: followType))")
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                 
@@ -222,5 +228,5 @@ struct CorelistToggle: View {
 }
 
 #Preview {
-    FollowSheetView(showSheet: .constant(true), followType: .following)
+    FollowSheetView(showSheet: .constant(true), followType: .following, targetUsrname: "")
 }

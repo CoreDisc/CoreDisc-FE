@@ -219,13 +219,13 @@ struct MyHomeView: View {
     @ViewBuilder
     private var sheetView: some View {
         if showFollowerSheet {
-            FollowSheetView(showSheet: $showFollowerSheet, followType: .follower)
+            FollowSheetView(showSheet: $showFollowerSheet, followType: .follower, targetUsrname: "")
                 .transition(.move(edge: .bottom))
                 .zIndex(1)
         }
         
         if showFollowingSheet {
-            FollowSheetView(showSheet: $showFollowingSheet, followType: .following)
+            FollowSheetView(showSheet: $showFollowingSheet, followType: .following, targetUsrname: "")
                 .transition(.move(edge: .bottom))
                 .zIndex(1)
         }
