@@ -35,3 +35,23 @@ struct UnblockResponse: Decodable {
     let message: String
     let result: String
 }
+
+// MARK: - 차단 목록
+struct BlockListResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: BlockListResult
+}
+
+struct BlockListResult: Decodable {
+    let values: [BlockListValue]
+    let hasNext: Bool
+}
+
+struct BlockListValue: Decodable {
+    let blockedId: Int
+    let blockedNickname: String
+    let blockedUsername: String
+    let profileImgDTO: BlockProfileImgDTO
+}
