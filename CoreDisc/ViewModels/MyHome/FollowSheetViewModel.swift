@@ -32,6 +32,7 @@ class FollowSheetViewModel: ObservableObject {
     @Published var userFollowingCount: Int = 0
     
     private let followProvider = APIManager.shared.createProvider(for: FollowRouter.self)
+    private let circleProvieer = APIManager.shared.createProvider(for: CircleRouter.self)
     
     // MARK: - Functions
     func getDisplayList(for type: FollowType) -> [FollowDisplayModel] {
@@ -249,6 +250,26 @@ class FollowSheetViewModel: ObservableObject {
                 }
             case .failure(let error):
                 print("GetUserFollowings API 오류: \(error)")
+            }
+        }
+    }
+    
+    func fetchCircle(
+        targetId: Int,
+        isCircle: Bool,
+        completion: (() -> Void)? = nil
+    ) {
+        circleProvieer.request(.patchCircle(targetId: targetId, isCircle: isCircle)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(CircleResponse.self, from: response.data)
+                    completion?()
+                } catch {
+                    print("PatchCircle 디코더 오류: \(error)")
+                }
+            case .failure(let error):
+                print("PatchCircle API 오류: \(error)")
             }
         }
     }

@@ -10,7 +10,7 @@ import Moya
 
 // 친한 친구 관련 API
 enum CircleRouter {
-    case patchCircle(targetId: Int) // 친한 친구 설정 변경
+    case patchCircle(targetId: Int, isCircle: Bool) // 친한 친구 설정 변경
     case getCircle(cursorId: Int, size: Int) // 친한 친구 목록 조회 // TODO: 옵셔널로 수정 필요
 }
 
@@ -19,7 +19,7 @@ extension CircleRouter: APITargetType {
     
     var path: String {
         switch self {
-        case .patchCircle(let targetId):
+        case .patchCircle(let targetId, _):
             return "\(Self.circlePath)/\(targetId)"
         case .getCircle:
             return "\(Self.circlePath)s"
@@ -37,8 +37,8 @@ extension CircleRouter: APITargetType {
     
     var task: Task {
         switch self {
-        case .patchCircle:
-            return .requestPlain
+        case .patchCircle(_, let isCircle):
+            return .requestParameters(parameters: ["isCircle": isCircle], encoding: URLEncoding.queryString)
         case .getCircle(let cursorId, let size):
             return .requestParameters(parameters: [
                 "cursorId": cursorId,

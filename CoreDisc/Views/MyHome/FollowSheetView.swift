@@ -108,7 +108,12 @@ struct FollowSheetView: View {
                 let list = viewModel.getDisplayList(for: followType)
                 ForEach(list, id: \.id) { item in
                     NavigationLink(destination: UserHomeView(userName: item.username)) {
-                        FollowListItem(item: item, followType: followType, isCoreList: item.isCore)
+                        FollowListItem(
+                            item: item,
+                            followType: followType,
+                            isCoreList: item.isCore,
+                            viewModel: viewModel
+                        )
                             .onAppear {
                                 if item.id == list.last?.id,
                                    viewModel.hasNextPage(for: followType) {
@@ -133,6 +138,8 @@ struct FollowListItem: View {
     
     @State var isCoreList: Bool
     @State var showLabel: Bool = false
+    
+    @ObservedObject var viewModel: FollowSheetViewModel
     
     var body: some View {
         HStack(alignment: .top) {
@@ -164,17 +171,17 @@ struct FollowListItem: View {
             if followType == .follower {
                 VStack(spacing: 4) {
                     Button(action: {
-                        isCoreList.toggle()
-                        showLabel = true
-                        
-                        // 시간 지나면 자동으로 label 없애기
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            withAnimation {
-                                showLabel = false
+                        viewModel.fetchCircle(targetId: item.id, isCircle: !isCoreList) {
+                            isCoreList.toggle()
+                            showLabel = true
+                            
+                            // 시간 지나면 자동으로 label 없애기
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                withAnimation {
+                                    showLabel = false
+                                }
                             }
                         }
-                        
-                        // TODO: core +/- api
                     }) {
                         Image(.iconCore)
                             .foregroundStyle(isCoreList ? .key : .gray400)
