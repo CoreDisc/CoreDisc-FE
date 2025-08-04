@@ -284,7 +284,7 @@ class FollowSheetViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    let decodedData = try JSONDecoder().decode(CircleResponse.self, from: response.data)
+                    _ = try JSONDecoder().decode(CircleResponse.self, from: response.data)
                     completion?()
                 } catch {
                     print("PatchCircle 디코더 오류: \(error)")

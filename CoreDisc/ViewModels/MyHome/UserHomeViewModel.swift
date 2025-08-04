@@ -98,7 +98,7 @@ class UserHomeViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    let decodedData = try JSONDecoder().decode(FollowResponse.self, from: response.data)
+                    _ = try JSONDecoder().decode(FollowResponse.self, from: response.data)
                     completion?()
                 } catch {
                     print("PostFollow 디코더 오류: \(error)")
@@ -114,7 +114,7 @@ class UserHomeViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    let decodedData = try JSONDecoder().decode(UnfollowResponse.self, from: response.data)
+                    _ = try JSONDecoder().decode(UnfollowResponse.self, from: response.data)
                     completion?()
                 } catch {
                     print("DeleteFollowings 디코더 오류: \(error)")
@@ -130,7 +130,7 @@ class UserHomeViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    let decodedData = try JSONDecoder().decode(BlockResponse.self, from: response.data)
+                    _ = try JSONDecoder().decode(BlockResponse.self, from: response.data)
                     completion?()
                 } catch {
                     print("PostBlock 디코더 오류: \(error)")
@@ -146,7 +146,7 @@ class UserHomeViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    let decodedData = try JSONDecoder().decode(UnblockResponse.self, from: response.data)
+                    _ = try JSONDecoder().decode(UnblockResponse.self, from: response.data)
                     completion?()
                 } catch {
                     print("DeleteBlock 디코더 오류: \(error)")
