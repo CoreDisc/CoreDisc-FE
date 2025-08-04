@@ -13,7 +13,6 @@ struct UserHomeView: View {
     
     @Environment(\.dismiss) var dismiss
     
-    @State var isBlock: Bool = false // 차단 여부
     @State var showBlockButton: Bool = false
     @State var showBlockModal: Bool = false
     @State var showUnblockModal: Bool = false
@@ -70,10 +69,11 @@ struct UserHomeView: View {
                     }
                 } rightButton: {
                     Button(action: {
-                        isBlock.toggle() // 차단여부
+                        viewModel.fetchBlock(targetId: viewModel.memberId) {
+                            viewModel.fetchUserHome(username: userName)
+                        }
                         showBlockModal.toggle() // 차단모달 제거
                         showBlockButton.toggle() // 차단버튼 제거
-                        // TODO: block api
                     }) {
                         Text("차단하기")
                             .foregroundStyle(.red)
@@ -100,10 +100,11 @@ struct UserHomeView: View {
                     }
                 } rightButton: {
                     Button(action: {
-                        isBlock.toggle() // 차단여부
+                        viewModel.fetchUnblock(targetId: viewModel.memberId) {
+                            viewModel.fetchUserHome(username: userName)
+                        }
                         showUnblockModal.toggle() // 차단해제모달 제거
                         showBlockButton.toggle() // 차단버튼 제거
-                        // TODO: unblock api
                     }) {
                         Text("차단 해제하기")
                             .foregroundStyle(.red)
@@ -153,9 +154,9 @@ struct UserHomeView: View {
                     
                     if showBlockButton {
                         Button(action: {
-                            isBlock ? showUnblockModal.toggle() : showBlockModal.toggle()
+                            viewModel.blocked ? showUnblockModal.toggle() : showBlockModal.toggle()
                         }) {
-                            Text(isBlock ? "unblock \(userName)" : "block \(userName)")
+                            Text(viewModel.blocked ? "unblock \(userName)" : "block \(userName)")
                                 .textStyle(.Button_s)
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 10)
@@ -262,14 +263,14 @@ struct UserHomeView: View {
         }) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(isBlock ? .clear : viewModel.isFollowing ? .gray400 : .key)
-                    .stroke(isBlock ? .warning : .clear, lineWidth: 1)
+                    .fill(viewModel.blocked ? .clear : viewModel.isFollowing ? .gray400 : .key)
+                    .stroke(viewModel.blocked ? .warning : .clear, lineWidth: 1)
                     .frame(height: 39)
                     .padding(.horizontal, 24)
                 
-                Text(isBlock ? "blocked" : viewModel.isFollowing ? "following" : "follow")
+                Text(viewModel.blocked ? "blocked" : viewModel.isFollowing ? "following" : "follow")
                     .textStyle(.Q_Sub)
-                    .foregroundStyle(isBlock ? .warning : .black000)
+                    .foregroundStyle(viewModel.blocked ? .warning : .black000)
             }
         }
         .buttonStyle(.plain)
@@ -278,7 +279,7 @@ struct UserHomeView: View {
     // 게시글
     private var PostGroup: some View {
         let columns = Array(repeating: GridItem(.flexible()), count: 3)
-
+        
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(viewModel.postList, id: \.postId) { post in
                 if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
