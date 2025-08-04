@@ -11,21 +11,62 @@ struct ReportDetailView: View {
     
     @Environment(\.dismiss) var dismiss
     @State private var nowIndex: Int = 1
-    let viewModel = ReportDetailViewModel()
+    @StateObject private var viewModel = ReportDetailViewModel()
+    @StateObject private var DiscQuestionViewModel = DiscViewModel()
     @State private var rotate = false
+    @State private var questionsOpacity: Double = 1.0
+    
+    let sixItemPositions: [CGPoint] = [
+        CGPoint(x: 213, y: 55),
+        CGPoint(x: 250, y: 103),
+        CGPoint(x: 271, y: 165),
+        CGPoint(x: 271, y: 235),
+        CGPoint(x: 250, y: 297),
+        CGPoint(x: 213, y: 345)
+    ]
+    
+    let fourItemPositions: [CGPoint] = [
+        CGPoint(x: 250, y: 103),
+        CGPoint(x: 271, y: 165),
+        CGPoint(x: 271, y: 235),
+        CGPoint(x: 250, y: 297)
+    ]
+    
     
     var body: some View {
         NavigationStack{
             ZStack {
-                    Image(.imgLongBackground)
-                        .resizable()
-                        .ignoresSafeArea()
+                Image(.imgLongBackground)
+                    .resizable()
+                    .ignoresSafeArea()
                 
                 VStack {
                     ScrollView(.vertical) {
                         LazyVStack {
                             HeaderGroup
                             TotalDiscGroup
+                                .highPriorityGesture(
+                                    DragGesture(minimumDistance: 5)
+                                        .onEnded { value in
+                                            if value.translation.height < -5 {
+                                                if DiscQuestionViewModel.hasNextPage {
+                                                    animatePageChange {
+                                                        DiscQuestionViewModel.nextPage()
+                                                    }
+                                                } else {
+                                                    DiscQuestionViewModel.nextPage()
+                                                }
+                                            } else if value.translation.height > 5 {
+                                                if DiscQuestionViewModel.hasPreviousPage {
+                                                    animatePageChange {
+                                                        DiscQuestionViewModel.previousPage()
+                                                    }
+                                                } else {
+                                                    DiscQuestionViewModel.previousPage()
+                                                }
+                                            }
+                                        }
+                                )
                             Spacer().frame(height: 64)
                             RandomGroup
                             Spacer().frame(height: 64)
@@ -40,6 +81,20 @@ struct ReportDetailView: View {
             }
         }
         .navigationBarBackButtonHidden()
+    }
+    
+    //디스크 애니메이션
+    private func animatePageChange(completion: @escaping () -> Void) {
+        withAnimation(.easeInOut(duration: 0.15)) {
+            questionsOpacity = 0.0
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            completion()
+            
+            withAnimation(.easeInOut(duration: 0.15)) {
+                questionsOpacity = 1.0
+            }
+        }
     }
     
     private var HeaderGroup: some View {
@@ -80,24 +135,17 @@ struct ReportDetailView: View {
                         rotate = true
                     }
                 
-//                ReportFirstQuestion(image: Image(.iconYellow), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-//                    .position(x: 213, y: 55)
-                
-//                ReportFirstQuestion(image: Image(.iconMint), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-//                    .position(x: 248, y: 100)
-//                
-//                ReportFirstQuestion(image: Image(.iconMint), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-//                    .position(x: 271, y: 165)
-//                
-//                ReportFirstQuestion(image: Image(.iconPurple), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-//                    .position(x: 271, y: 235)
-//                
-//                ReportFirstQuestion(image: Image(.iconPurple), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-//                    .position(x: 248, y: 300)
-//                
-//                ReportFirstQuestion(image: Image(.iconPink), question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.")
-//                    .position(x: 213, y: 345)
+                ForEach(Array(DiscQuestionViewModel.pagedItems.enumerated()), id: \.offset) { index, item in
+                    let positions = DiscQuestionViewModel.pagedItems.count == 4 ? fourItemPositions : sixItemPositions
+                    if index < positions.count {
+                        DiscQuestion(item: item, position: positions[index])
+                            .opacity(questionsOpacity)
+                            .animation(.easeInOut(duration: 0.25), value: questionsOpacity)
+                            .transition(.opacity)
+                    }
+                }
             }
+            
         }
     }
     
@@ -285,22 +333,6 @@ struct ReportDetailView: View {
             .padding(.horizontal, 24)
         }
         .frame(height: 40)
-    }
-    
-    struct ReportFirstQuestion: View {
-        let image: Image
-        let question: String
-        
-        var body: some View {
-            HStack {
-                image
-                    .padding(.trailing, 4)
-                Text(question)
-                    .textStyle(.Small_Text_10)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: 176)
-            }
-        }
     }
 }
 
