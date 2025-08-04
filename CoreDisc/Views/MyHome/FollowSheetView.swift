@@ -9,14 +9,18 @@ import SwiftUI
 import Kingfisher
 
 enum FollowType: String {
-    case follower = "followers"
-    case following = "followings"
+    case follower, userFollower, coreList = "followers"
+    case following, userFollowing = "followings"
 }
 
 struct FollowSheetView: View {
     @Binding var showSheet: Bool
     @StateObject private var viewModel = FollowSheetViewModel()
+    
+    @State private var currentFollowType: FollowType = .follower
+    
     var followType: FollowType
+    var targetUsrname: String
     
     var body: some View {
         ZStack {
@@ -40,11 +44,20 @@ struct FollowSheetView: View {
         .padding(.horizontal, 18)
         .ignoresSafeArea()
         .onAppear {
+            currentFollowType = followType
+            viewModel.currentTargetUsername = targetUsrname
+            
             switch followType {
             case .follower:
                 viewModel.fetchFollowers()
             case .following:
                 viewModel.fetchFollowings()
+            case .userFollower:
+                viewModel.fetchUserFollowers(targetUsername: targetUsrname)
+            case .userFollowing:
+                viewModel.fetchUserFollowings(targetUsername: targetUsrname)
+            case .coreList:
+                viewModel.fetchCircleList()
             }
         }
     }
@@ -77,7 +90,7 @@ struct FollowSheetView: View {
     private var SecondGroup: some View {
         HStack {
             VStack(alignment: .leading, spacing: 0) {
-                Text("\(viewModel.followerCount)")
+                Text("\(viewModel.getCount(for: currentFollowType))")
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                 
@@ -88,8 +101,8 @@ struct FollowSheetView: View {
             
             Spacer()
             
-            if followType == .follower {
-                CorelistToggle()
+            if followType == .follower || currentFollowType == .coreList {
+                CorelistToggle(currentFollowType: $currentFollowType, viewModel: viewModel)
             }
         }
         .padding(.horizontal, 3)
@@ -99,14 +112,19 @@ struct FollowSheetView: View {
     private var FollowerList: some View {
         ScrollView {
             LazyVStack(spacing: 16) {
-                let list = viewModel.getDisplayList(for: followType)
+                let list = viewModel.getDisplayList(for: currentFollowType)
                 ForEach(list, id: \.id) { item in
                     NavigationLink(destination: UserHomeView(userName: item.username)) {
-                        FollowListItem(item: item, followType: followType, isCoreList: item.isCore)
+                        FollowListItem(
+                            item: item,
+                            followType: currentFollowType,
+                            isCoreList: item.isCore,
+                            viewModel: viewModel
+                        )
                             .onAppear {
                                 if item.id == list.last?.id,
-                                   viewModel.hasNextPage(for: followType) {
-                                    viewModel.fetchMore(for: followType, cursorId: item.id)
+                                   viewModel.hasNextPage(for: currentFollowType) {
+                                    viewModel.fetchMore(for: currentFollowType, cursorId: item.id)
                                 }
                             }
                     }
@@ -127,6 +145,8 @@ struct FollowListItem: View {
     
     @State var isCoreList: Bool
     @State var showLabel: Bool = false
+    
+    @ObservedObject var viewModel: FollowSheetViewModel
     
     var body: some View {
         HStack(alignment: .top) {
@@ -155,20 +175,20 @@ struct FollowListItem: View {
             
             Spacer()
             
-            if followType == .follower {
+            if followType == .follower || followType == .coreList {
                 VStack(spacing: 4) {
                     Button(action: {
-                        isCoreList.toggle()
-                        showLabel = true
-                        
-                        // 시간 지나면 자동으로 label 없애기
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            withAnimation {
-                                showLabel = false
+                        viewModel.fetchCircle(targetId: item.id, isCircle: !isCoreList) {
+                            isCoreList.toggle()
+                            showLabel = true
+                            
+                            // 시간 지나면 자동으로 label 없애기
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                withAnimation {
+                                    showLabel = false
+                                }
                             }
                         }
-                        
-                        // TODO: core +/- api
                     }) {
                         Image(.iconCore)
                             .foregroundStyle(isCoreList ? .key : .gray400)
@@ -194,11 +214,21 @@ struct FollowListItem: View {
 
 // 코어리스트 토글
 struct CorelistToggle: View {
+    @Binding var currentFollowType: FollowType
     @State private var isCorelist: Bool = false
+    
+    @ObservedObject var viewModel: FollowSheetViewModel
     
     var body: some View {
         Button(action: {
             withAnimation(.easeInOut(duration: 0.2)) {
+                if isCorelist {
+                    currentFollowType = .follower
+                    viewModel.fetchCircleList()
+                } else {
+                    currentFollowType = .coreList
+                    viewModel.fetchCircleList()
+                }
                 isCorelist.toggle()
             }
         }) {
@@ -222,5 +252,5 @@ struct CorelistToggle: View {
 }
 
 #Preview {
-    FollowSheetView(showSheet: .constant(true), followType: .following)
+    FollowSheetView(showSheet: .constant(true), followType: .following, targetUsrname: "")
 }

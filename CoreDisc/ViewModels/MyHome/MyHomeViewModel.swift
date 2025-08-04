@@ -64,12 +64,14 @@ class MyHomeViewModel: ObservableObject {
                     let result = decodedData.result
                     
                     DispatchQueue.main.async {
+                        let validPosts = result.values.compactMap { $0 } // null 제거
+                        
                         if cursorId == nil {
                             // 첫 요청 -> 전체 초기화
-                            self.postList = result.values
+                            self.postList = validPosts
                         } else {
                             // 다음 페이지 -> append
-                            self.postList.append(contentsOf: result.values)
+                            self.postList.append(contentsOf: validPosts)
                         }
                         self.hasNextPage = result.hasNext
                     }

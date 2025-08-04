@@ -85,8 +85,7 @@ class QuesitonBasicViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    let decodedData = try JSONDecoder().decode(QuestionFixedResponse.self, from: response.data)
-                    let result = decodedData.result
+                    _ = try JSONDecoder().decode(QuestionFixedResponse.self, from: response.data)
                 } catch {
                     print("PostFixed 디코더 오류: \(error)")
                 }

@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct BlockListView: View {
     @Environment(\.dismiss) var dismiss
-    @State private var viewModel = BlockListViewModel()
+    @StateObject var userViewModel = UserHomeViewModel()
+    @StateObject private var viewModel = BlockListViewModel()
     
     @State var showUnblockModal: Bool = false
+    @State var blockedUserId: Int = 0
     
     var body: some View {
         ZStack {
@@ -45,14 +48,19 @@ struct BlockListView: View {
                     }
                 } rightButton: {
                     Button(action: {
+                        userViewModel.fetchUnblock(targetId: blockedUserId) {
+                            viewModel.fetchBlockList()
+                        }
                         showUnblockModal.toggle() // 차단해제모달 제거
-                        // TODO: unblock api
                     }) {
                         Text("차단 해제하기")
                             .foregroundStyle(.red)
                     }
                 }
             }
+        }
+        .onAppear {
+            viewModel.fetchBlockList()
         }
         .ignoresSafeArea(edges: .bottom)
         .toolbarVisibility(.hidden, for: .navigationBar)
@@ -99,8 +107,13 @@ struct BlockListView: View {
             
             ScrollView {
                 VStack(spacing: 16) {
-                    ForEach(viewModel.blockSample, id: \.blockedId) { item in
-                        BlockListItem(nickname: item.blockedNickname, username: item.blockedUsername, showUnblockModal: $showUnblockModal)
+                    let list = viewModel.blockList
+                    ForEach(list, id: \.blockedId) { item in
+                        BlockListItem(
+                            item: item,
+                            blockedUserId: $blockedUserId,
+                            showUnblockModal: $showUnblockModal
+                        )
                     }
                 }
                 .padding(.top, 39)
@@ -113,22 +126,27 @@ struct BlockListView: View {
 
 // MARK: - component
 struct BlockListItem: View {
-    var nickname: String
-    var username: String
+    let item: BlockListValue
     
+    @Binding var blockedUserId: Int
     @Binding var showUnblockModal: Bool
     
     var body: some View {
         HStack(spacing: 11) {
-            Circle() // TODO: user profile image
-                .frame(width: 32, height: 32)
+            if let url = URL(string: item.profileImgDTO.imageUrl) {
+                KFImage(url)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 32, height: 32)
+                    .clipShape(Circle())
+            }
             
             VStack(alignment: .leading, spacing: 0) {
-                Text(nickname)
+                Text(item.blockedNickname)
                     .textStyle(.Button_s)
                     .foregroundStyle(.gray100)
                 
-                Text("@\(username)")
+                Text("@\(item.blockedUsername)")
                     .textStyle(.Pick_Q_Eng)
                     .foregroundStyle(.gray100)
             }
@@ -136,8 +154,8 @@ struct BlockListItem: View {
             Spacer()
             
             Button(action: {
+                blockedUserId = item.blockedId
                 showUnblockModal = true
-                // TODO: unblock api
             }) {
                 Text("unblock")
                     .textStyle(.Button_s)

@@ -13,7 +13,6 @@ struct UserHomeView: View {
     
     @Environment(\.dismiss) var dismiss
     
-    @State var isBlock: Bool = false // 차단 여부
     @State var showBlockButton: Bool = false
     @State var showBlockModal: Bool = false
     @State var showUnblockModal: Bool = false
@@ -34,17 +33,21 @@ struct UserHomeView: View {
                 
                 TopMenuGroup
                 
-                ProfileGroup
-                
-                Spacer().frame(height: 13)
-                
-                CountGroup
-                
-                Spacer().frame(height: 25)
-                
-                FollowButton
-                
-                Spacer()
+                ScrollView {
+                    ProfileGroup
+                    
+                    Spacer().frame(height: 13)
+                    
+                    CountGroup
+                    
+                    Spacer().frame(height: 25)
+                    
+                    FollowButton
+                    
+                    Spacer().frame(height: 25)
+                    
+                    PostGroup
+                }
             }
             
             // 차단 모달
@@ -66,10 +69,11 @@ struct UserHomeView: View {
                     }
                 } rightButton: {
                     Button(action: {
-                        isBlock.toggle() // 차단여부
+                        viewModel.fetchBlock(targetId: viewModel.memberId) {
+                            viewModel.fetchUserHome(username: userName)
+                        }
                         showBlockModal.toggle() // 차단모달 제거
                         showBlockButton.toggle() // 차단버튼 제거
-                        // TODO: block api
                     }) {
                         Text("차단하기")
                             .foregroundStyle(.red)
@@ -96,10 +100,11 @@ struct UserHomeView: View {
                     }
                 } rightButton: {
                     Button(action: {
-                        isBlock.toggle() // 차단여부
+                        viewModel.fetchUnblock(targetId: viewModel.memberId) {
+                            viewModel.fetchUserHome(username: userName)
+                        }
                         showUnblockModal.toggle() // 차단해제모달 제거
                         showBlockButton.toggle() // 차단버튼 제거
-                        // TODO: unblock api
                     }) {
                         Text("차단 해제하기")
                             .foregroundStyle(.red)
@@ -111,6 +116,7 @@ struct UserHomeView: View {
         }
         .onAppear {
             viewModel.fetchUserHome(username: userName)
+            viewModel.fetchUserPosts(targetUsername: userName)
         }
         .navigationBarBackButtonHidden()
         .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
@@ -148,9 +154,9 @@ struct UserHomeView: View {
                     
                     if showBlockButton {
                         Button(action: {
-                            isBlock ? showUnblockModal.toggle() : showBlockModal.toggle()
+                            viewModel.blocked ? showUnblockModal.toggle() : showBlockModal.toggle()
                         }) {
-                            Text(isBlock ? "unblock \(userName)" : "block \(userName)")
+                            Text(viewModel.blocked ? "unblock \(userName)" : "block \(userName)")
                                 .textStyle(.Button_s)
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 10)
@@ -257,30 +263,64 @@ struct UserHomeView: View {
         }) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(isBlock ? .clear : viewModel.isFollowing ? .gray400 : .key)
-                    .stroke(isBlock ? .warning : .clear, lineWidth: 1)
+                    .fill(viewModel.blocked ? .clear : viewModel.isFollowing ? .gray400 : .key)
+                    .stroke(viewModel.blocked ? .warning : .clear, lineWidth: 1)
                     .frame(height: 39)
                     .padding(.horizontal, 24)
                 
-                Text(isBlock ? "blocked" : viewModel.isFollowing ? "following" : "follow")
+                Text(viewModel.blocked ? "blocked" : viewModel.isFollowing ? "following" : "follow")
                     .textStyle(.Q_Sub)
-                    .foregroundStyle(isBlock ? .warning : .black000)
+                    .foregroundStyle(viewModel.blocked ? .warning : .black000)
             }
         }
         .buttonStyle(.plain)
+    }
+    
+    // 게시글
+    private var PostGroup: some View {
+        let columns = Array(repeating: GridItem(.flexible()), count: 3)
+        
+        return LazyVGrid(columns: columns, spacing: 12) {
+            ForEach(viewModel.postList, id: \.postId) { post in
+                if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
+                   !url.absoluteString.isEmpty { // 이미지
+                    KFImage(url)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 154)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                } else if let text = post.postTextThumbnailDTO?.content { // 텍스트
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.gray100)
+                            .stroke(.gray200, lineWidth: 0.3)
+                            .frame(height: 154)
+                        
+                        Text(text)
+                            .textStyle(.Q_pick)
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(.black000)
+                            .padding(22)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+            }
+        }
+        .padding(.horizontal, 15)
     }
     
     // MARK: - bottom sheet
     @ViewBuilder
     private var sheetView: some View {
         if showFollowerSheet {
-            FollowSheetView(showSheet: $showFollowerSheet, followType: .follower)
+            FollowSheetView(showSheet: $showFollowerSheet, followType: .userFollower, targetUsrname: userName)
                 .transition(.move(edge: .bottom))
                 .zIndex(1)
         }
         
         if showFollowingSheet {
-            FollowSheetView(showSheet: $showFollowingSheet, followType: .following)
+            FollowSheetView(showSheet: $showFollowingSheet, followType: .userFollowing, targetUsrname: userName)
                 .transition(.move(edge: .bottom))
                 .zIndex(1)
         }
