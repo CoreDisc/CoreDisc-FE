@@ -37,7 +37,7 @@ class FollowSheetViewModel: ObservableObject {
     @Published var coreCount: Int = 0
     
     private let followProvider = APIManager.shared.createProvider(for: FollowRouter.self)
-    private let circleProvieer = APIManager.shared.createProvider(for: CircleRouter.self)
+    private let circleProvier = APIManager.shared.createProvider(for: CircleRouter.self)
     
     // MARK: - Functions
     func getDisplayList(for type: FollowType) -> [FollowDisplayModel] {
@@ -280,7 +280,7 @@ class FollowSheetViewModel: ObservableObject {
         isCircle: Bool,
         completion: (() -> Void)? = nil
     ) {
-        circleProvieer.request(.patchCircle(targetId: targetId, isCircle: isCircle)) { result in
+        circleProvier.request(.patchCircle(targetId: targetId, isCircle: isCircle)) { result in
             switch result {
             case .success(let response):
                 do {
@@ -299,7 +299,7 @@ class FollowSheetViewModel: ObservableObject {
         cursorId: Int? = nil,
         size: Int? = 10
     ) {
-        circleProvieer.request(.getCircle(cursorId: cursorId, size: size)) { result in
+        circleProvier.request(.getCircle(cursorId: cursorId, size: size)) { result in
             switch result {
             case .success(let response):
                 do {
