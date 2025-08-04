@@ -15,7 +15,7 @@ class BlockListViewModel: ObservableObject {
     private let blockProvider = APIManager.shared.createProvider(for: BlockRouter.self)
 
     // MARK: - Functions - API
-    func fetchFollowers(
+    func fetchBlockList(
         cursorId: Int? = nil,
         size: Int? = 10
     ) {

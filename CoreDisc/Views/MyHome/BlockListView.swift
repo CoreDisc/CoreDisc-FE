@@ -49,7 +49,7 @@ struct BlockListView: View {
                 } rightButton: {
                     Button(action: {
                         userViewModel.fetchUnblock(targetId: blockedUserId) {
-                            viewModel.fetchFollowers()
+                            viewModel.fetchBlockList()
                         }
                         showUnblockModal.toggle() // 차단해제모달 제거
                     }) {
@@ -60,7 +60,7 @@ struct BlockListView: View {
             }
         }
         .onAppear {
-            viewModel.fetchFollowers()
+            viewModel.fetchBlockList()
         }
         .ignoresSafeArea(edges: .bottom)
         .toolbarVisibility(.hidden, for: .navigationBar)
