@@ -8,20 +8,12 @@
 import SwiftUI
 
 struct AccountManageView: View {
+    
     @Environment(\.dismiss) var dismiss
-    @State var email: String = ""
-    @State var id: String = ""
-    @State var pwd: String = ""
-    @State var newpwd: String = ""
-    @State var repwd: String = ""
-    
+    @StateObject private var viewModel = AccountManageViewModel()
     @State private var pwdShown = false
-    @State private var pwdError = false
     @State private var newPwdShown = false
-    @State private var newPwdError = false
     @State private var rePwdShown = false
-    @State private var rePwdError = false
-    
     @State var WithdrawModal = false
     
     var body: some View {
@@ -102,7 +94,7 @@ struct AccountManageView: View {
                 .foregroundStyle(.white)
             ZStack{
                 InputView{
-                    TextField("새로운 이메일을 입력해주세요.", text: $email)
+                    TextField("새로운 이메일을 입력해주세요.", text: $viewModel.email)
                 }
                 HStack{
                     Spacer()
@@ -128,7 +120,7 @@ struct AccountManageView: View {
                 .foregroundStyle(.white)
             ZStack{
                 InputView{
-                    TextField("새로운 아이디를 입력해주세요.", text: $id)
+                    TextField("새로운 아이디를 입력해주세요.", text: $viewModel.id)
                 }
                 HStack{
                     Spacer()
@@ -155,30 +147,30 @@ struct AccountManageView: View {
             InputView{
                 if pwdShown{
                     HStack{
-                        TextField("현재 비밀번호를 입력해주세요.", text: $pwd)
+                        TextField("현재 비밀번호를 입력해주세요.", text: $viewModel.pwd)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
                         }, label: {
-//                            Image(.iconShown)
-//                                .padding(.horizontal)
+                            Image(.iconShown)
+                                .padding(.horizontal)
                         })
                     }
                 } else{
                     HStack{
-                        SecureField("현재 비밀번호를 입력해주세요.", text: $pwd)
+                        SecureField("현재 비밀번호를 입력해주세요.", text: $viewModel.pwd)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
                         }, label: {
-//                            Image(.iconNotShown)
-//                                .padding(.horizontal)
+                            Image(.iconNotShown)
+                                .padding(.horizontal)
                         })
                     }
                 }
             }
             
-            if pwdError {
+            if viewModel.pwdError {
                 Text("비밀번호가 틀렸습니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -190,30 +182,30 @@ struct AccountManageView: View {
             InputView{
                 if newPwdShown{
                     HStack{
-                        TextField("새로운 비밀번호를 입력해주세요.", text: $newpwd)
+                        TextField("새로운 비밀번호를 입력해주세요.", text: $viewModel.newPwd)
                         Spacer()
                         Button(action:{
                             newPwdShown.toggle()
                         }, label: {
-//                            Image(.iconShown)
-//                                .padding(.horizontal)
+                            Image(.iconShown)
+                                .padding(.horizontal)
                         })
                     }
                 } else{
                     HStack{
-                        SecureField("새로운 비밀번호를 입력해주세요.", text: $newpwd)
+                        SecureField("새로운 비밀번호를 입력해주세요.", text: $viewModel.newPwd)
                         Spacer()
                         Button(action:{
                             newPwdShown.toggle()
                         }, label: {
-//                            Image(.iconNotShown)
-//                                .padding(.horizontal)
+                            Image(.iconNotShown)
+                                .padding(.horizontal)
                         })
                     }
                 }
             }
             
-            if newPwdError {
+            if viewModel.newPwdError {
                 Text("영문/숫자/특수문자(공백제외), 10~16자로 입력해주세요.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -227,30 +219,30 @@ struct AccountManageView: View {
             InputView{
                 if rePwdShown{
                     HStack{
-                        TextField("새로운 비밀번호를 한 번 더 입력해주세요.", text: $repwd)
+                        TextField("새로운 비밀번호를 한 번 더 입력해주세요.", text: $viewModel.rePwd)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
                         }, label: {
-//                            Image(.iconShown)
-//                                .padding(.horizontal)
+                            Image(.iconShown)
+                                .padding(.horizontal)
                         })
                     }
                 } else{
                     HStack{
-                        SecureField("새로운 비밀번호를 한 번 더 입력해주세요.", text: $repwd)
+                        SecureField("새로운 비밀번호를 한 번 더 입력해주세요.", text: $viewModel.rePwd)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
                         }, label: {
-//                            Image(.iconNotShown)
-//                                .padding(.horizontal)
+                            Image(.iconNotShown)
+                                .padding(.horizontal)
                         })
                     }
                 }
             }
             
-            if rePwdError {
+            if viewModel.rePwdError {
                 Text("비밀번호가 일치하지 않습니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -260,13 +252,26 @@ struct AccountManageView: View {
                 Spacer().frame(height: 34)
             }
             
-            ButtonView(action:{print("변경하기")}, label: {
+            ButtonView(action:{
+                viewModel.pwdError = false
+                viewModel.rePwdError = false
+                viewModel.changePw()
+            }, label: {
                 Text("변경하기")
-            }, boxColor: (email.isEmpty || pwd.isEmpty || newpwd.isEmpty || repwd.isEmpty || id.isEmpty) ? .gray400 : .key)
-            .disabled(email.isEmpty || pwd.isEmpty || newpwd.isEmpty || repwd.isEmpty || id.isEmpty )
-        
+            }, boxColor: viewModel.email.isEmpty &&
+                       viewModel.id.isEmpty &&
+                       (viewModel.pwd.isEmpty || viewModel.newPwd.isEmpty || viewModel.rePwd.isEmpty) ? .gray400 : .key)
+            .disabled(viewModel.email.isEmpty &&
+                      viewModel.id.isEmpty &&
+                      (viewModel.pwd.isEmpty || viewModel.newPwd.isEmpty || viewModel.rePwd.isEmpty) )
+            .onChange(of: viewModel.changeSuccess, {
+                if viewModel.changeSuccess {
+                    dismiss()
+                }
+            })
+            
             Capsule()
-                .frame(width: .infinity, height:1)
+                .frame(maxWidth: .infinity, maxHeight: 1)
                 .foregroundStyle(.white)
                 .padding(.vertical, 24)
             
