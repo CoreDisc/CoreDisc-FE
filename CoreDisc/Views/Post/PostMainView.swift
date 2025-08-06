@@ -47,7 +47,7 @@ struct PostMainView: View {
             
             Spacer()
             
-            Button(action:{}){
+            NavigationLink(destination: NotificationView()) {
                 Image(.iconAlert)
                     .resizable()
                     .frame(width:40, height: 48)
