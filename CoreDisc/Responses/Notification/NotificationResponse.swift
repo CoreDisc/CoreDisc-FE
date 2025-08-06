@@ -37,3 +37,11 @@ struct NotificationProfileImgDTO: Decodable {
     let profileImgId: Int
     let imageUrl: String?
 }
+
+// 개별 알림 읽음
+struct NotificationReadResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: String
+}

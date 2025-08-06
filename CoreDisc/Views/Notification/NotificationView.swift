@@ -61,7 +61,7 @@ struct NotificationView: View {
                     NotificationDate(date: group.date)
                     
                     ForEach(group.values, id: \.notificationId) { item in
-                        NotificationListItem(item: item)
+                        NotificationListItem(item: item, viewModel: viewModel)
                     }
                 }
             }
@@ -95,39 +95,47 @@ struct NotificationDate: View {
 struct NotificationListItem: View {
     var item: NotificationValues
     
+    @ObservedObject var viewModel: NotificationViewModel
+    
     var body: some View {
-        ZStack(alignment: .leading) {
-            Rectangle()
-                .fill(.gray200)
-                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 2)
-            
-            HStack(spacing: 18) {
-                if let imageUrl = item.profileImgDTO.imageUrl,
-                   let url = URL(string: imageUrl) {
-                    KFImage(url)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 36, height: 36)
-                        .clipShape(Circle())
-                } else {
-                    Circle()
-                        .fill(.gray400)
-                        .frame(width: 36, height: 36)
-                }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(item.content)
-                        .textStyle(.A_Main)
-                        .foregroundStyle(.black000)
-                    Text(item.timeStamp)
-                        .textStyle(.Small_Text_10)
-                        .foregroundStyle(.black000)
-                }
+        Button(action: {
+            if !item.isRead {
+                viewModel.fetchRead(notificationId: item.notificationId)
             }
-            .padding(.leading, 28)
+        }) {
+            ZStack(alignment: .leading) {
+                Rectangle()
+                    .fill(item.isRead ? .gray200 : .highlight)
+                    .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 2)
+                
+                HStack(spacing: 18) {
+                    if let imageUrl = item.profileImgDTO.imageUrl,
+                       let url = URL(string: imageUrl) {
+                        KFImage(url)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 36, height: 36)
+                            .clipShape(Circle())
+                    } else {
+                        Circle()
+                            .fill(.gray400)
+                            .frame(width: 36, height: 36)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(item.content)
+                            .textStyle(.A_Main)
+                            .foregroundStyle(.black000)
+                        Text(item.timeStamp)
+                            .textStyle(.Small_Text_10)
+                            .foregroundStyle(.black000)
+                    }
+                }
+                .padding(.leading, 28)
+            }
+            .frame(height: 63)
+            .frame(maxWidth: .infinity)
         }
-        .frame(height: 63)
-        .frame(maxWidth: .infinity)
     }
 }
 

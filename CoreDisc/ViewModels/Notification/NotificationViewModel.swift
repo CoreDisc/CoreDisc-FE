@@ -58,4 +58,20 @@ class NotificationViewModel: ObservableObject {
             .sorted { $0.key > $1.key } // 최신순 정렬
             .map { ($0.key, $0.value) }
     }
+    
+    func fetchRead(notificationId: Int) {
+        notificationProvider.request(.patchNotificationRead(notificationId: notificationId)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    _ = try JSONDecoder().decode(NotificationReadResponse.self, from: response.data)
+                    self.fetchNotifications()
+                } catch {
+                    print("PatchNotificationRead 디코더 오류: \(error)")
+                }
+            case .failure(let error):
+                print("PatchNotificationRead API 오류: \(error)")
+            }
+        }
+    }
 }
