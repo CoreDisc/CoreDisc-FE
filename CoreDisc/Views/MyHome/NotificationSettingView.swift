@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct NotificationView: View {
-    @StateObject var notificationViewModel: NotificationViewModel = .init()
+struct NotificationSettingView: View {
+    @StateObject var notificationSettingViewModel: NotificationSettingViewModel = .init()
     @Environment(\.dismiss) var dismiss
     
     // 토글 상태
@@ -44,8 +44,8 @@ struct NotificationView: View {
             }
             
             if showSheet {
-                TimePickerSheet(showSheet: $showSheet, timeType: notificationViewModel.timeType)
-                    .environmentObject(notificationViewModel)
+                TimePickerSheet(showSheet: $showSheet, timeType: notificationSettingViewModel.timeType)
+                    .environmentObject(notificationSettingViewModel)
                     .transition(.move(edge: .bottom))
             }
         }
@@ -119,7 +119,7 @@ struct NotificationView: View {
                 timeType: .first,
                 showSheet: $showSheet,
             )
-            .environmentObject(notificationViewModel)
+            .environmentObject(notificationSettingViewModel)
             
             Spacer().frame(height: 11.6)
             
@@ -128,7 +128,7 @@ struct NotificationView: View {
                 timeType: .second,
                 showSheet: $showSheet
             )
-            .environmentObject(notificationViewModel)
+            .environmentObject(notificationSettingViewModel)
         }
         .padding(.horizontal, 38)
     }
@@ -186,7 +186,7 @@ struct NotificationToggleBox: View {
 
 // 알림 시간 박스
 struct NotificationTimeBox: View {
-    @EnvironmentObject var notificationViewModel: NotificationViewModel
+    @EnvironmentObject var notificationViewModel: NotificationSettingViewModel
     
     var title: String
     var timeType: TimeType
@@ -236,5 +236,5 @@ struct NotificationTimeBox: View {
 
 #Preview {
     NotificationView()
-        .environmentObject(NotificationViewModel())
+        .environmentObject(NotificationSettingViewModel())
 }
