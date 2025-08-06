@@ -49,6 +49,6 @@ struct UsernameData: Codable {
 
 // 비밀번호 변경 - 사용자 검증
 struct VerifyUserData: Codable {
-    let name: String
     let username: String
+    let email: String
 }
