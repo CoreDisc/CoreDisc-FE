@@ -235,6 +235,6 @@ struct NotificationTimeBox: View {
 }
 
 #Preview {
-    NotificationView()
+    NotificationSettingView()
         .environmentObject(NotificationSettingViewModel())
 }
