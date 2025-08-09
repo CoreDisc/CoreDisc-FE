@@ -37,7 +37,7 @@ struct EditProfileView: View {
                 Spacer()
             }
         }
-        .onAppear {
+        .task {
             viewModel.fetchMyHome()
         }
         .toolbarVisibility(.hidden, for: .navigationBar)
