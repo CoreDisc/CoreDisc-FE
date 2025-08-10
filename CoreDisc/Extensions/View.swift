@@ -68,7 +68,7 @@ struct ToastModifier: ViewModifier {
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .animation(.easeInOut(duration: 1), value: isPresented)
-                .onAppear {
+                .task {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         withAnimation {
                             isPresented = false
