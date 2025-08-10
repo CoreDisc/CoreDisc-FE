@@ -36,6 +36,9 @@ struct CoreDiscApp: App {
                         _ = AuthController.handleOpenUrl(url: url)
                     }
                 }
+                .overlay(alignment: .bottom) {
+                    GlobalToastView()
+                }
         }
     }
 }

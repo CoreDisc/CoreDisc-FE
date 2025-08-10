@@ -45,9 +45,15 @@ class MyHomeViewModel: ObservableObject {
                     self.profileImageURL = result.profileImgDTO.imageUrl
                 } catch {
                     print("GetMyHome 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("마이홈 정보를 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetMyHome 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("마이홈 정보를 불러오지 못했습니다.")
+                }
             }
         }
     }
@@ -77,9 +83,15 @@ class MyHomeViewModel: ObservableObject {
                     }
                 } catch {
                     print("GetMyPosts 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("마이홈 게시글을 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetMyPosts API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("마이홈 게시글을 불러오지 못했습니다.")
+                }
             }
         }
     }
@@ -95,9 +107,15 @@ class MyHomeViewModel: ObservableObject {
                     self.duplicated = result.duplicated
                 } catch {
                     print("GetCheckUsername 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("아이디 중복 확인을 하지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetCheckUsername API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("아이디 중복 확인을 하지 못했습니다.")
+                }
             }
         }
     }

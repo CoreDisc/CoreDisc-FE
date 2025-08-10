@@ -41,9 +41,15 @@ class NotificationViewModel: ObservableObject {
                     }
                 } catch {
                     print("GetNotifications 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("알림 리스트를 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetNotifications API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("알림 리스트를 불러오지 못했습니다.")
+                }
             }
         }
     }
@@ -68,9 +74,15 @@ class NotificationViewModel: ObservableObject {
                     self.fetchNotifications()
                 } catch {
                     print("PatchNotificationRead 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("알림 조회 상태를 변경하지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("PatchNotificationRead API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("알림 조회 상태를 변경하지 못했습니다.")
+                }
             }
         }
     }
