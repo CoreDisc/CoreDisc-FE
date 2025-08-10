@@ -40,4 +40,19 @@ enum QuestionCategoryType: String, CaseIterable {
         case .기타: return .gray2
         }
     }
+    
+    var cdImage: UIImage {
+        switch self {
+        case .취향: return .imgCoreYellow
+        case .라이프스타일: return .imgCoreBlue
+        case .인간관계: return .imgCorePurple
+        case .자기계발: return .imgCorePink
+        case .건강: return .imgCoreLavender
+        case .문화: return .imgCoreMint
+        case .감정: return .imgCoreOrange
+        case .취미: return .imgCoreRed
+        case .꿈: return .imgCoreViolet
+        case .기타: return .imgCoreGray
+        }
+    }
 }
