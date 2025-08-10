@@ -12,8 +12,9 @@ struct QuestionBasicView: View {
     
     @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused: Bool
-    @State var showModal: Bool = false
     private let topAnchorID = "top" // 스크롤 초기화 용도
+    
+    @State var showModal: Bool = false
     
     // 질문 선택 용도
     let order: Int
@@ -63,11 +64,11 @@ struct QuestionBasicView: View {
                 } leftButton: {
                     Button(action: {
                         if let questionId = selectedQuestionId {
-                           let data = FixedData(
-                               selectedQuestionType: .DEFAULT,
-                               questionOrder: order,
-                               questionId: questionId
-                           )
+                            let data = FixedData(
+                                selectedQuestionType: .DEFAULT,
+                                questionOrder: order,
+                                questionId: questionId
+                            )
                             viewModel.fetchFixedBasic(fixedData: data)
                         }
                         showModal.toggle() // 모달 제거
@@ -194,12 +195,14 @@ struct QuestionBasicView: View {
                             
                             if expandedCategoryIDs.contains(item.id) {
                                 let questionList = isSearching
-                                    ? (viewModel.searchQuestionListMap[item.id] ?? [])
-                                    : (viewModel.questionListMap[item.id] ?? [])
+                                ? (viewModel.searchQuestionListMap[item.id] ?? [])
+                                : (viewModel.questionListMap[item.id] ?? [])
                                 
                                 ForEach(Array(questionList.enumerated()), id: \.element.id) { index, question in
                                     QuestionBasicDetailItem(
                                         showModal: $showModal,
+                                        isSelected: false,
+                                        isSaved: false,
                                         title: question.question,
                                         startColor: item.startColor,
                                         endColor: item.endColor,
@@ -313,6 +316,8 @@ struct QuestionBasicCategoryItem: View {
 // 질문 상세
 struct QuestionBasicDetailItem: View {
     @Binding var showModal: Bool
+    @State var isSelected: Bool
+    @State var isSaved: Bool
     
     var title: String
     var startColor: Color
@@ -321,10 +326,13 @@ struct QuestionBasicDetailItem: View {
     var questionId: Int
     var onSelect: (Int) -> Void
     
+    @State private var isShifted: Bool = false
+    
     var body: some View {
         Button(action: {
-            showModal.toggle()
-            onSelect(questionId)
+            withAnimation(.easeInOut) {
+                isShifted.toggle()
+            }
         }) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
@@ -349,10 +357,55 @@ struct QuestionBasicDetailItem: View {
                     .padding(.horizontal, 23)
                     .padding(.vertical, 14)
             }
+            .offset(x: isShifted ? 131 : 0)
+        }
+        .buttonStyle(.plain)
+        .frame(maxWidth: .infinity)
+        .overlay(alignment: .leading) {
+            HStack(spacing: 3) {
+                Button {
+                    isSelected.toggle()
+                    showModal.toggle()
+                    onSelect(questionId)
+                } label: {
+                    Image(isSelected ? .iconBasicSelected : .iconBasicSelect)
+                }
+
+                Button {
+                    isSaved.toggle()
+                    // TODO: Question Save
+                } label: {
+                    Image(isSaved ? .iconBasicSaved : .iconBasicSave)
+                }
+
+                Spacer().frame(width: 13)
+            }
+            .offset(x: isShifted ? 0 : -131)
+            .buttonStyle(.plain)
         }
     }
 }
 
+struct PreviewView: View {
+    @State var showModal: Bool = false
+    
+    var body: some View {
+        ForEach(1..<10, id: \.self) { item in
+            QuestionBasicDetailItem(
+                showModal: $showModal,
+                isSelected: false,
+                isSaved: false,
+                title: "좋아하는 음식 사진을 보여주세요",
+                startColor: .yellow1,
+                endColor: .yellow2,
+                questionId: 1,
+                onSelect: { id in
+                    
+                }
+            )
+        }
+    }
+}
 #Preview {
-    QuestionBasicView(order: 1)
+    PreviewView()
 }
