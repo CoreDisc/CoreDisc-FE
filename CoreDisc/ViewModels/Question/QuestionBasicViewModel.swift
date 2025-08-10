@@ -28,9 +28,15 @@ class QuesitonBasicViewModel: ObservableObject {
                     }
                 } catch {
                     print("GetQuestionCategories 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("카테고리를 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetQuestionCategories API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("카테고리를 불러오지 못했습니다.")
+                }
             }
         }
     }
@@ -73,9 +79,15 @@ class QuesitonBasicViewModel: ObservableObject {
                     }
                 } catch {
                     print("GetQuestionBasic 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("기본 질문 리스트를 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetQuestionBasic API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("기본 질문 리스트를 불러오지 못했습니다.")
+                }
             }
         }
     }
@@ -88,9 +100,15 @@ class QuesitonBasicViewModel: ObservableObject {
                     _ = try JSONDecoder().decode(QuestionFixedResponse.self, from: response.data)
                 } catch {
                     print("PostFixed 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("기본 질문을 설정하지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("PostFixed API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("기본 질문을 설정하지 못했습니다.")
+                }
             }
         }
     }

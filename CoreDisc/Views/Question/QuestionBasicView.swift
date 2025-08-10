@@ -75,7 +75,7 @@ struct QuestionBasicView: View {
             }
         }
         .navigationBarBackButtonHidden()
-        .onAppear {
+        .task {
             viewModel.fetchCategories()
         }
     }
@@ -154,7 +154,7 @@ struct QuestionBasicView: View {
                                             selectedQuestionId = id
                                         }
                                     )
-                                    .onAppear {
+                                    .task {
                                         if index == questionList.count - 1 {
                                             // 마지막 셀에 도달했을 때
                                             let last = question

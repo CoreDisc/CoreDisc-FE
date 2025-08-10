@@ -45,7 +45,7 @@ struct MyHomeView: View {
                 
                 sheetView
             }
-            .onAppear {
+            .task {
                 viewModel.fetchMyHome()
                 viewModel.fetchMyPosts()
             }
