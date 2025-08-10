@@ -11,6 +11,7 @@ struct QuestionBasicView: View {
     @StateObject private var viewModel = QuesitonBasicViewModel()
     
     @Environment(\.dismiss) var dismiss
+    @FocusState private var isFocused: Bool
     @State var showModal: Bool = false
     private let topAnchorID = "top" // 스크롤 초기화 용도
     
@@ -21,22 +22,31 @@ struct QuestionBasicView: View {
     // 열려있는 카테고리
     @State private var expandedCategoryIDs: Set<UUID> = []
     
+    // 검색
+    @State private var searchText: String = ""
+    private var isSearching: Bool {
+        !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground)
                 .resizable()
                 .ignoresSafeArea()
+                .onTapGesture { // 키보드 내리기 용도
+                    isFocused = false
+                }
             
-            VStack {
+            VStack(spacing: 21) {
                 TopGroup
-                
-                Spacer().frame(height: 21)
                 
                 searchGroup
                 
-                Spacer().frame(height: 17)
-                
-                categoryGroup
+                if isSearching {
+                    categoryGroup(isSearching: true, keyword: searchText)
+                } else {
+                    categoryGroup(isSearching: false, keyword: nil)
+                }
             }
             
             // 선택 확인 모달
@@ -75,8 +85,13 @@ struct QuestionBasicView: View {
             }
         }
         .navigationBarBackButtonHidden()
+        .ignoresSafeArea(.keyboard)
         .task {
             viewModel.fetchCategories()
+        }
+        .task(id: searchText) {
+            let keyword = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+            viewModel.fetchSearchCategories(keyword: keyword)
         }
     }
     
@@ -115,19 +130,44 @@ struct QuestionBasicView: View {
                     color: .white.opacity(0.5),
                     radius: 2.4, x: 0, y: 0)
             
-            Image(.iconSearchWhite)
-                .padding(.leading, 13)
+            HStack {
+                Image(.iconSearchWhite)
+                
+                TextField("", text: $searchText)
+                    .textStyle(.Q_Main)
+                    .foregroundStyle(.white)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .focused($isFocused)
+                
+                Button(action: {
+                    searchText = ""
+                }) {
+                    Image(.iconClose)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundStyle(.white)
+                }
+            }
+            .padding(.horizontal, 14)
         }
         .padding(.horizontal, 25)
     }
     
     // 카테고리 목록
-    private var categoryGroup: some View {
+    private func categoryGroup(
+        isSearching: Bool,
+        keyword: String?
+    ) -> some View {
         ScrollViewReader { proxy in
             ZStack(alignment: .bottomTrailing) {
                 List {
                     Section {
-                        ForEach(viewModel.categoryItem) { item in
+                        // 개수 0개면 안 보이게
+                        let categories = (isSearching ? viewModel.searchCategoryItem : viewModel.categoryItem)
+                            .filter { $0.count > 0 }
+                        
+                        ForEach(categories) { item in
                             QuestionBasicCategoryItem(
                                 title: item.title,
                                 count: item.count,
@@ -137,12 +177,26 @@ struct QuestionBasicView: View {
                             .onTapGesture {
                                 withAnimation {
                                     toggleExpanded(for: item.id)
-                                    viewModel.fetchBasicLists(categoryUUID: item.id, categoryId: item.categoryId)
+                                    if isSearching, let keyword {
+                                        viewModel.fetchBasicListsSearch(
+                                            categoryUUID: item.id,
+                                            categoryId: item.categoryId,
+                                            keyword: keyword
+                                        )
+                                    } else {
+                                        viewModel.fetchBasicLists(
+                                            categoryUUID: item.id,
+                                            categoryId: item.categoryId
+                                        )
+                                    }
                                 }
                             }
                             
-                            if expandedCategoryIDs.contains(item.id),
-                               let questionList = viewModel.questionListMap[item.id] {
+                            if expandedCategoryIDs.contains(item.id) {
+                                let questionList = isSearching
+                                    ? (viewModel.searchQuestionListMap[item.id] ?? [])
+                                    : (viewModel.questionListMap[item.id] ?? [])
+                                
                                 ForEach(Array(questionList.enumerated()), id: \.element.id) { index, question in
                                     QuestionBasicDetailItem(
                                         showModal: $showModal,
