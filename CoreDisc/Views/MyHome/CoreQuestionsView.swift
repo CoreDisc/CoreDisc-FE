@@ -32,6 +32,7 @@ struct CoreQuestionsView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden()
     }
     
     // 상단 메뉴
