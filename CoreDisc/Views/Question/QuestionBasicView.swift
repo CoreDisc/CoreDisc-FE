@@ -386,26 +386,6 @@ struct QuestionBasicDetailItem: View {
     }
 }
 
-struct PreviewView: View {
-    @State var showModal: Bool = false
-    
-    var body: some View {
-        ForEach(1..<10, id: \.self) { item in
-            QuestionBasicDetailItem(
-                showModal: $showModal,
-                isSelected: false,
-                isSaved: false,
-                title: "좋아하는 음식 사진을 보여주세요",
-                startColor: .yellow1,
-                endColor: .yellow2,
-                questionId: 1,
-                onSelect: { id in
-                    
-                }
-            )
-        }
-    }
-}
 #Preview {
-    PreviewView()
+    QuestionBasicView(order: 1)
 }
