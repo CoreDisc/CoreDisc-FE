@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class QuesitonBasicViewModel: ObservableObject {
+class QuestionBasicViewModel: ObservableObject {
     // 기본
     @Published var categoryItem: [QuestionBasicCategoryModel] = []
     @Published var questionListMap: [UUID: [QuestionBasicListValue]] = [:]

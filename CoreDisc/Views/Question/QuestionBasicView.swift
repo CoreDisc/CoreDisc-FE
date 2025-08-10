@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct QuestionBasicView: View {
-    @StateObject private var viewModel = QuesitonBasicViewModel()
+    @StateObject private var viewModel = QuestionBasicViewModel()
     
     @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused: Bool
