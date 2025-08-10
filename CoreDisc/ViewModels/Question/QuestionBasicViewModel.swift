@@ -187,13 +187,34 @@ class QuesitonBasicViewModel: ObservableObject {
                 } catch {
                     print("PostFixed 디코더 오류: \(error)")
                     DispatchQueue.main.async {
-                        ToastManager.shared.show("기본 질문을 설정하지 못했습니다.")
+                        ToastManager.shared.show("고정 질문을 설정하지 못했습니다.")
                     }
                 }
             case .failure(let error):
                 print("PostFixed API 오류: \(error)")
                 DispatchQueue.main.async {
-                    ToastManager.shared.show("기본 질문을 설정하지 못했습니다.")
+                    ToastManager.shared.show("고정 질문을 설정하지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    func fetchRandomBasic(randomData: RandomData) {
+        basicProvider.request(.postRandom(randomData: randomData)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    _ = try JSONDecoder().decode(QuestionFixedResponse.self, from: response.data)
+                } catch {
+                    print("PostRandom 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("랜덤 질문을 설정하지 못했습니다.")
+                    }
+                }
+            case .failure(let error):
+                print("PostRandom API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("랜덤 질문을 설정하지 못했습니다.")
                 }
             }
         }
