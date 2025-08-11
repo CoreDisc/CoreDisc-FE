@@ -77,7 +77,7 @@ struct TimePickerSheet: View {
         }
         .padding(.horizontal, 18)
         .ignoresSafeArea()
-        .onAppear {
+        .task {
             switch timeType {
             case .first:
                 selectedHour = notificationViewModel.firstHour

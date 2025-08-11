@@ -49,9 +49,15 @@ class UserHomeViewModel: ObservableObject {
                     self.blocked = result.blocked
                 } catch {
                     print("GetUserHome 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("유저홈 정보를 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetUserHome 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("유저홈 정보를 불러오지 못했습니다.")
+                }
             }
         }
     }
@@ -86,9 +92,15 @@ class UserHomeViewModel: ObservableObject {
                     }
                 } catch {
                     print("GetUserPosts 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("유저홈 게시글을 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetUserPosts API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("유저홈 게시글을 불러오지 못했습니다.")
+                }
             }
         }
     }
@@ -102,9 +114,15 @@ class UserHomeViewModel: ObservableObject {
                     completion?()
                 } catch {
                     print("PostFollow 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("팔로우 상태를 변경하지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("PostFollow API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("팔로우 상태를 변경하지 못했습니다.")
+                }
             }
         }
     }
@@ -118,9 +136,15 @@ class UserHomeViewModel: ObservableObject {
                     completion?()
                 } catch {
                     print("DeleteFollowings 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("팔로우 상태를 변경하지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("DeleteFollowings API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("팔로우 상태를 변경하지 못했습니다.")
+                }
             }
         }
     }
@@ -134,9 +158,15 @@ class UserHomeViewModel: ObservableObject {
                     completion?()
                 } catch {
                     print("PostBlock 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("차단 상태를 변경하지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("PostBlock API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("차단 상태를 변경하지 못했습니다.")
+                }
             }
         }
     }
@@ -150,9 +180,15 @@ class UserHomeViewModel: ObservableObject {
                     completion?()
                 } catch {
                     print("DeleteBlock 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("차단 상태를 변경하지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("DeleteBlock API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("차단 상태를 변경하지 못했습니다.")
+                }
             }
         }
     }

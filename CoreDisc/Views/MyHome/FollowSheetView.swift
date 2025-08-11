@@ -43,7 +43,7 @@ struct FollowSheetView: View {
         .padding(.top, 120)
         .padding(.horizontal, 18)
         .ignoresSafeArea()
-        .onAppear {
+        .task {
             currentFollowType = followType
             viewModel.currentTargetUsername = targetUsrname
             
@@ -121,7 +121,7 @@ struct FollowSheetView: View {
                             isCoreList: item.isCore,
                             viewModel: viewModel
                         )
-                            .onAppear {
+                            .task {
                                 if item.id == list.last?.id,
                                    viewModel.hasNextPage(for: currentFollowType) {
                                     viewModel.fetchMore(for: currentFollowType, cursorId: item.id)

@@ -165,9 +165,15 @@ class FollowSheetViewModel: ObservableObject {
                     }
                 } catch {
                     print("GetFollowers 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("팔로워 리스트를 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetFollowers API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("팔로워 리스트를 불러오지 못했습니다.")
+                }
             }
         }
     }
@@ -196,9 +202,15 @@ class FollowSheetViewModel: ObservableObject {
                     }
                 } catch {
                     print("GetFollowings 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("팔로잉 리스트를 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetFollowings API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("팔로잉 리스트를 불러오지 못했습니다.")
+                }
             }
         }
     }
@@ -232,9 +244,15 @@ class FollowSheetViewModel: ObservableObject {
                     }
                 } catch {
                     print("GetUserFollowers 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("타사용자 팔로워 리스트를 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetUserFollowers API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("타사용자 팔로워 리스트를 불러오지 못했습니다.")
+                }
             }
         }
     }
@@ -268,9 +286,15 @@ class FollowSheetViewModel: ObservableObject {
                     }
                 } catch {
                     print("GetUserFollowings 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("타사용자 팔로잉 리스트를 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetUserFollowings API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("타사용자 팔로잉 리스트를 불러오지 못했습니다.")
+                }
             }
         }
     }
@@ -288,9 +312,15 @@ class FollowSheetViewModel: ObservableObject {
                     completion?()
                 } catch {
                     print("PatchCircle 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("코어리스트 설정을 변경하지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("PatchCircle API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("코어리스트 설정을 변경하지 못했습니다.")
+                }
             }
         }
     }
@@ -319,9 +349,15 @@ class FollowSheetViewModel: ObservableObject {
                     }
                 } catch {
                     print("GetCircle 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("코어리스트를 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetCircle API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("코어리스트를 불러오지 못했습니다.")
+                }
             }
         }
     }

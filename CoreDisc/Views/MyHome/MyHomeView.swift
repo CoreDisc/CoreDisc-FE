@@ -45,7 +45,7 @@ struct MyHomeView: View {
                 
                 sheetView
             }
-            .onAppear {
+            .task {
                 viewModel.fetchMyHome()
                 viewModel.fetchMyPosts()
             }
@@ -151,7 +151,7 @@ struct MyHomeView: View {
     // 버튼
     private var ButtonGroup: some View {
         VStack(spacing: 12) {
-            Button(action: {}) {
+            NavigationLink(destination: CoreQuestionsView()) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
                         .fill(.key)

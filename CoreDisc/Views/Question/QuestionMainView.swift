@@ -33,7 +33,7 @@ struct QuestionMainView: View {
                 Spacer()
             }
         }
-        .onAppear {
+        .task {
             viewModel.fetchSelected()
         }
     }

@@ -131,7 +131,7 @@ struct ReportDetailView: View {
                     .rotationEffect(.degrees(rotate ? 360 : 0))
                     .animation(Animation.linear(duration: 5).repeatForever(autoreverses: false), value: rotate)
                     .offset(x: -220)
-                    .onAppear {
+                    .task {
                         rotate = true
                     }
                 

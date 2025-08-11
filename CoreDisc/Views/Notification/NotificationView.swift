@@ -26,7 +26,7 @@ struct NotificationView: View {
             }
         }
         .navigationBarBackButtonHidden()
-        .onAppear {
+        .task {
             viewModel.fetchNotifications()
         }
     }

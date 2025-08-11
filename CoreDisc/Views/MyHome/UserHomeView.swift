@@ -114,7 +114,7 @@ struct UserHomeView: View {
             
             sheetView
         }
-        .onAppear {
+        .task {
             viewModel.fetchUserHome(username: userName)
             viewModel.fetchUserPosts(targetUsername: userName)
         }

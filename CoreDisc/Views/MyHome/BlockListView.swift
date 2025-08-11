@@ -59,7 +59,7 @@ struct BlockListView: View {
                 }
             }
         }
-        .onAppear {
+        .task {
             viewModel.fetchBlockList()
         }
         .ignoresSafeArea(edges: .bottom)
