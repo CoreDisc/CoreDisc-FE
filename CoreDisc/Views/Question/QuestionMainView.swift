@@ -71,11 +71,23 @@ struct QuestionMainView: View {
     // CD, QuestionSelectItem
     // TODO: CD 애니메이션 적용
     private var MainCDGroup: some View {
+        // 색상 설정
+        func colors(for type: String?) -> (Color, Color) {
+            switch type {
+            case "FIXED":
+                return (.highlight, .gray600)
+            case "RANDOM":
+                return (.gray100, .gray600)
+            default:
+                return (.black000, .black000)
+            }
+        }
+        
         // 질문 리스트
-        let question1 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 1 })?.question ?? "고정질문을 선택하세요"
-        let question2 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 2 })?.question ?? "고정질문을 선택하세요"
-        let question3 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 3 })?.question ?? "고정질문을 선택하세요"
-        let question4 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 4 })?.question ?? "랜덤질문을 선택하세요"
+        let question1 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 1 })
+        let question2 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 2 })
+        let question3 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 3 })
+        let question4 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 4 })
         
         return ZStack {
             Image(.imgCd)
@@ -89,22 +101,44 @@ struct QuestionMainView: View {
                 }
                 .offset(x: 172)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: question1, order: 1, onTap: { order in
-                currentOrder = order
-            })
+            QuestionSelectItem(
+                moveLeft: $isSelectView,
+                text: question1?.question ?? "고정질문을 선택하세요",
+                order: 1,
+                onTap: { currentOrder = $0 },
+                startColor: colors(for: question1?.questionType).0,
+                endColor: colors(for: question1?.questionType).1
+            )
                 .position(x: 150+79, y: 97)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: question2, order: 2, onTap: { order in
-                currentOrder = order
-            })
+            QuestionSelectItem(
+                moveLeft: $isSelectView,
+                text: question2?.question ?? "고정질문을 선택하세요",
+                order: 2,
+                onTap: { currentOrder = $0 },
+                startColor: colors(for: question2?.questionType).0,
+                endColor: colors(for: question2?.questionType).1
+            )
                 .position(x: 150+34, y: 196)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: question3, order: 3, onTap: { order in
-                currentOrder = order
-            })
+            QuestionSelectItem(
+                moveLeft: $isSelectView,
+                text: question3?.question ?? "고정질문을 선택하세요",
+                order: 3,
+                onTap: { currentOrder = $0 },
+                startColor: colors(for: question3?.questionType).0,
+                endColor: colors(for: question3?.questionType).1
+            )
                 .position(x: 150+42, y: 295)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: question4, order: 4)
+            QuestionSelectItem(
+                moveLeft: $isSelectView,
+                text: question4?.question ?? "랜덤질문을 선택하세요",
+                order: 4,
+                onTap: { currentOrder = $0 },
+                startColor: colors(for: question4?.questionType).0,
+                endColor: colors(for: question4?.questionType).1
+            )
                 .position(x: 150+79, y: 394)
             
             SelectCDGroup
@@ -141,8 +175,8 @@ struct QuestionSelectItem: View {
     var order: Int // 1, 2, 3
     var onTap: ((Int) -> Void)? = nil
     
-    var startColor: Color = .gray400
-    var endColor: Color = .gray400
+    var startColor: Color
+    var endColor: Color
     
     var body: some View {
         Button(action: {
@@ -158,7 +192,7 @@ struct QuestionSelectItem: View {
                 
                 HStack(spacing: 8) {
                     Circle()
-                        .linearGradient(startColor: startColor, endColor: endColor)
+                        .horizontalLinearGradient(startColor: startColor, endColor: endColor)
                         .frame(width: 27)
                     
                     Text(text)
