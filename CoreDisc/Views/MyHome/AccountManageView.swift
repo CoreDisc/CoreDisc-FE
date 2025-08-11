@@ -210,12 +210,8 @@ struct AccountManageView: View {
                 viewModel.changePw()
             }, label: {
                 Text("변경하기")
-            }, boxColor: viewModel.email.isEmpty &&
-                       viewModel.id.isEmpty &&
-                       (viewModel.pwd.isEmpty || viewModel.newPwd.isEmpty || viewModel.rePwd.isEmpty) ? .gray400 : .key)
-            .disabled(viewModel.email.isEmpty &&
-                      viewModel.id.isEmpty &&
-                      (viewModel.pwd.isEmpty || viewModel.newPwd.isEmpty || viewModel.rePwd.isEmpty) )
+            }, boxColor: (viewModel.pwd.isEmpty || viewModel.newPwd.isEmpty || viewModel.rePwd.isEmpty) ? .gray400 : .key)
++           .disabled(viewModel.pwd.isEmpty || viewModel.newPwd.isEmpty || viewModel.rePwd.isEmpty)
             .onChange(of: viewModel.changeSuccess, {
                 if viewModel.changeSuccess {
                     dismiss()
