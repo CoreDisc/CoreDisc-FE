@@ -20,6 +20,7 @@ struct QuestionBasicView: View {
     // 질문 선택/저장 용도
     let order: Int
     @State private var selectedQuestionId: Int? = nil
+    @State private var selectedQuestionType: String? = nil
     
     // 열려있는 카테고리
     @State private var expandedCategoryIDs: Set<UUID> = []
@@ -55,23 +56,33 @@ struct QuestionBasicView: View {
             if showSelectModal {
                 ModalView {
                     VStack(spacing: 6) {
-                        Text("고정질문으로 선택할까요?")
+                        Text("\(selectedQuestionType == "FIXED" ? "고정" : "랜덤")질문으로 선택할까요?")
                             .textStyle(.Button)
                         
-                        Text("한번 설정한 고정질문은 30일간 변경이 불가능합니다.")
+                        Text("한번 설정한 고정질문은 \(selectedQuestionType == "FIXED" ? "30일간" : "하루동안") 변경이 불가능합니다.")
                             .textStyle(.Texting_Q)
                             .foregroundStyle(.red)
                     }
                 } leftButton: {
                     Button(action: {
-                        if let questionId = selectedQuestionId {
+                        guard let questionId = selectedQuestionId,
+                              let type = selectedQuestionType else { return }
+                        
+                        if type == "FIXED" {
                             let data = FixedData(
                                 selectedQuestionType: .DEFAULT,
                                 questionOrder: order,
                                 questionId: questionId
                             )
                             viewModel.fetchFixedBasic(fixedData: data)
+                        } else {
+                            let data = RandomData(
+                                selectedQuestionType: .DEFAULT,
+                                questionId: questionId
+                            )
+                            viewModel.fetchRandomBasic(randomData: data)
                         }
+                        
                         showSelectModal.toggle() // 모달 제거
                         dismiss()
                     }) {
@@ -241,8 +252,10 @@ struct QuestionBasicView: View {
                                         startColor: item.startColor,
                                         endColor: item.endColor,
                                         questionId: question.id,
-                                        onSelect: { id in
+                                        questionType: question.questionType,
+                                        onSelect: { id, type in
                                             selectedQuestionId = id
+                                            selectedQuestionType = type
                                         }
                                     )
                                     .task {
@@ -356,7 +369,8 @@ struct QuestionBasicDetailItem: View {
     var endColor: Color
     
     var questionId: Int
-    var onSelect: (Int) -> Void
+    var questionType: String
+    var onSelect: (Int, String) -> Void
     
     @State private var isShifted: Bool = false
     
@@ -397,18 +411,18 @@ struct QuestionBasicDetailItem: View {
             HStack(spacing: 3) {
                 Button {
                     showSelectModal.toggle()
-                    onSelect(questionId)
+                    onSelect(questionId, questionType)
                 } label: {
                     Image(isSelected ? .iconBasicSelected : .iconBasicSelect)
                 }
-
+                
                 Button {
                     showSaveModal.toggle()
-                    onSelect(questionId)
+                    onSelect(questionId, questionType)
                 } label: {
                     Image(isFavorite ? .iconBasicSaved : .iconBasicSave)
                 }
-
+                
                 Spacer().frame(width: 13)
             }
             .offset(x: isShifted ? 0 : -131)
