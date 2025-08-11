@@ -128,25 +128,30 @@ struct QuestionBasicView: View {
     
     // 상단 타이틀
     private var TopGroup: some View {
-        VStack(alignment: .leading, spacing: 9) {
-            Button(action: {
-                dismiss()
-            }) {
-                Image(.iconBack)
+        ZStack(alignment: .top) {
+            Image(.imgLogoOneline)
+                .padding(.top, 19)
+            
+            VStack(alignment: .leading, spacing: 9) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(.iconBack)
+                }
+                
+                Text("Select your own disc")
+                    .textStyle(.Title_Text_Eng)
+                    .foregroundStyle(.key)
+                    .padding(.leading, 9)
+                
+                Text("한 달동안 함께할 질문을 설정하세요.")
+                    .textStyle(.Sub_Text_Ko)
+                    .foregroundStyle(.white)
+                    .padding(.leading, 9)
             }
-            
-            Text("Select your own disc")
-                .textStyle(.Title_Text_Eng)
-                .foregroundStyle(.key)
-                .padding(.leading, 9)
-            
-            Text("한 달동안 함께할 질문을 설정하세요.")
-                .textStyle(.Sub_Text_Ko)
-                .foregroundStyle(.white)
-                .padding(.leading, 9)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 17)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 17)
     }
     
     // 검색창
