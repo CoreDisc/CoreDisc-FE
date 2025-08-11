@@ -11,3 +11,11 @@ struct ChangeMyPwResponse: Decodable {
     let message: String
     let result: String?
 }
+
+struct resignResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: String
+}
+

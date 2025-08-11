@@ -17,44 +17,48 @@ struct AccountManageView: View {
     @State var WithdrawModal = false
     
     var body: some View {
-        ZStack {
-            Image(.imgShortBackground2)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack{
-                TopMenuGroup
-                Spacer().frame(height: 13)
-                MainGroup
-                Spacer()
-            }
-            
-            if WithdrawModal {
-                ModalView {
-                    VStack(spacing: 10) {
-                        Text("계정 탈퇴시 지금까지의 모든 데이터가 삭제됩니다.")
-                            .textStyle(.Button_s)
-                        
-                        Text("탈퇴하시겠습니까?")
-                            .textStyle(.Button_s)
-                    }
-                } leftButton: {
-                    Button(action: {
-                        WithdrawModal.toggle()
-                    }) {
-                        Text("취소하기")
-                    }
-                } rightButton: {
-                    Button(action: {
-                        WithdrawModal.toggle()
-                    }) {
-                        Text("탈퇴하기")
-                            .foregroundStyle(.red)
+        NavigationStack{
+            ZStack {
+                Image(.imgShortBackground2)
+                    .resizable()
+                    .ignoresSafeArea()
+                
+                VStack{
+                    TopMenuGroup
+                    Spacer().frame(height: 13)
+                    MainGroup
+                    Spacer()
+                }
+                
+                if WithdrawModal {
+                    ModalView {
+                        VStack(spacing: 10) {
+                            Text("계정 탈퇴시 지금까지의 모든 데이터가 삭제됩니다.")
+                                .textStyle(.Button_s)
+                            
+                            Text("탈퇴하시겠습니까?")
+                                .textStyle(.Button_s)
+                        }
+                    } leftButton: {
+                        Button(action: {
+                            WithdrawModal.toggle()
+                        }) {
+                            Text("취소하기")
+                        }
+                    } rightButton: {
+                        Button(action: {
+                            WithdrawModal.toggle()
+                            viewModel.resign()
+                        }) {
+                            Text("탈퇴하기")
+                                .foregroundStyle(.red)
+                        }
                     }
                 }
             }
         }
         .navigationBarBackButtonHidden()
+        .navigationDestination(isPresented: $viewModel.resignSuccess) {LoginView()}
     }
     
     private var TopMenuGroup: some View {
