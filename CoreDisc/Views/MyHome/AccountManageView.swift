@@ -88,58 +88,7 @@ struct AccountManageView: View {
     }
     
     private var MainGroup: some View {
-        VStack(alignment: .leading){
-            Text("이메일 변경")
-                .textStyle(.A_Main)
-                .foregroundStyle(.white)
-            ZStack{
-                InputView{
-                    TextField("새로운 이메일을 입력해주세요.", text: $viewModel.email)
-                }
-                HStack{
-                    Spacer()
-                    Button(action: {
-                        print("중복확인")
-                    }, label: {
-                        ZStack{
-                            Capsule()
-                                .frame(width: 63, height: 25)
-                                .foregroundStyle(.key)
-                            Text("중복확인")
-                                .textStyle(.Q_pick)
-                                .foregroundStyle(.black000)
-                        }
-                        .padding(.horizontal)
-                    })
-                }
-            }
-            Spacer().frame(height:10)
-            
-            Text("아이디 변경")
-                .textStyle(.A_Main)
-                .foregroundStyle(.white)
-            ZStack{
-                InputView{
-                    TextField("새로운 아이디를 입력해주세요.", text: $viewModel.id)
-                }
-                HStack{
-                    Spacer()
-                    Button(action: {
-                        print("중복확인")
-                    }, label: {
-                        ZStack{
-                            Capsule()
-                                .frame(width: 63, height: 25)
-                                .foregroundStyle(.key)
-                            Text("중복확인")
-                                .textStyle(.Q_pick)
-                                .foregroundStyle(.black000)
-                        }
-                        .padding(.horizontal)
-                    })
-                }
-            }
-            Spacer().frame(height:35)
+        VStack(alignment: .leading) {
             
             Text("비밀번호 변경")
                 .textStyle(.A_Main)
