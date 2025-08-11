@@ -14,6 +14,8 @@ struct EditProfileView: View {
     @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused: Bool
     
+    @State private var showEditButton: Bool = false
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground2)
@@ -38,7 +40,7 @@ struct EditProfileView: View {
             }
         }
         .task {
-            viewModel.fetchMyHome()
+//            viewModel.fetchMyHome()
         }
         .toolbarVisibility(.hidden, for: .navigationBar)
     }
@@ -91,9 +93,14 @@ struct EditProfileView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 124, height: 124)
                     .clipShape(Circle())
+            } else {
+                Circle()
+                    .frame(width: 124, height: 124)
             }
             
-            Button(action: {}) { // TODO: profile edit
+            Button(action: {
+                showEditButton.toggle()
+            }) { // TODO: profile edit
                 Image(.iconEdit)
                     .frame(width: 38, height: 38)
                     .background(
@@ -102,6 +109,35 @@ struct EditProfileView: View {
                     )
             }
             .buttonStyle(.plain)
+            
+            if showEditButton {
+                VStack(spacing: 12) {
+                    Button(action: {}) { // TODO: 기본 이미지 설정
+                        Text("기본 이미지")
+                            .textStyle(.Q_pick)
+                            .foregroundStyle(.black000)
+                            .frame(width: 84, height: 25)
+                            .background(
+                                RoundedRectangle(cornerRadius: 24)
+                                    .fill(.key)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    
+                    Button(action: {}) { // TODO: 사진 불러오기
+                        Text("사진 불러오기")
+                            .textStyle(.Q_pick)
+                            .foregroundStyle(.black000)
+                            .frame(width: 84, height: 25)
+                            .background(
+                                RoundedRectangle(cornerRadius: 24)
+                                    .fill(.key)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+                .offset(x: 94)
+            }
         }
     }
     
@@ -153,20 +189,31 @@ struct ProfileEditTextField: View {
                     .textInputAutocapitalization(.never)
                     .frame(height: 28)
                     .frame(maxWidth: 200)
-                    .padding(.vertical, 2)
                     .padding(.horizontal, 10)
                 
                 Divider()
                     .background(.gray200)
                     .frame(maxWidth: 200)
                 
-                if type == "User Name", duplicated {
+                if type == "User Name", duplicated { // 타입이 유저네임이고, 중복인 경우
                     Text("이미 존재하는 아이디입니다.")
                         .textStyle(.login_alert)
                         .foregroundStyle(.warning)
                         .padding(.top, 2)
-                } else if type == "User Name", !duplicated {
+                } else if type == "User Name", !duplicated { // 타입이 유저네임이고, 중복이 아닌 경우
                     Text("사용 가능한 아이디입니다.")
+                        .textStyle(.login_alert)
+                        .foregroundStyle(.white)
+                        .padding(.top, 2)
+                }
+                
+                if type == "Nick Name", duplicated { // TODO: duplicated는 닉네임용으로 다시 만들기
+                    Text("이미 존재하는 닉네임입니다.")
+                        .textStyle(.login_alert)
+                        .foregroundStyle(.warning)
+                        .padding(.top, 2)
+                } else if type == "Nick Name", !duplicated { // TODO: duplicated는 닉네임용으로 다시 만들기
+                    Text("사용 가능한 닉네임입니다.")
                         .textStyle(.login_alert)
                         .foregroundStyle(.white)
                         .padding(.top, 2)
@@ -175,23 +222,23 @@ struct ProfileEditTextField: View {
             
             Spacer().frame(width: 5)
             
-            if type == "User Name" {
-                Button(action: {
+            Button(action: {
+                if type == "User Name" {
                     viewModel.fetchIdCheck(username: text)
-                }) {
-                    Text("중복확인")
-                        .textStyle(.Q_pick)
-                        .foregroundStyle(.black000)
-                        .frame(width: 63, height: 24)
-                        .background(
-                            RoundedRectangle(cornerRadius: 30)
-                                .fill(.key)
-                        )
+                } else {
+                    // TODO: nickname 중복확인 API
                 }
-            } else {
-                Spacer()
+            }) {
+                Text("중복확인")
+                    .textStyle(.Q_pick)
+                    .foregroundStyle(.black000)
                     .frame(width: 63, height: 24)
+                    .background(
+                        RoundedRectangle(cornerRadius: 30)
+                            .fill(.key)
+                    )
             }
+            .padding(.top, 3)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 17)
