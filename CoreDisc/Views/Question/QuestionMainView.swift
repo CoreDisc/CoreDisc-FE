@@ -18,19 +18,21 @@ struct QuestionMainView: View {
     let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        ZStack {
-            Image(.imgShortBackground)
-                .resizable()
-                .ignoresSafeArea()
-                
-            VStack {
-                TitleGroup
-                
-                Spacer().frame(height: 36)
-                
-                MainCDGroup
-                
-                Spacer()
+        NavigationStack {
+            ZStack {
+                Image(.imgShortBackground)
+                    .resizable()
+                    .ignoresSafeArea()
+                    
+                VStack {
+                    TitleGroup
+                    
+                    Spacer().frame(height: 36)
+                    
+                    MainCDGroup
+                    
+                    Spacer()
+                }
             }
         }
         .task {
@@ -180,7 +182,6 @@ struct QuestionSelectButton<Destination: View>: View {
             NavigationLink(destination: destination()) {
                 buttonContent
             }
-            .buttonStyle(.plain)
         } else {
             buttonContent
         }
