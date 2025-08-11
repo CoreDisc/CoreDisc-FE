@@ -219,4 +219,25 @@ class QuestionBasicViewModel: ObservableObject {
             }
         }
     }
+    
+    func fetchOfficialSave(questionId: Int) {
+        basicProvider.request(.postOfficialSave(questionId: questionId)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    _ = try JSONDecoder().decode(QuestionFixedResponse.self, from: response.data)
+                } catch {
+                    print("PostOfficialSave 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("질문을 저장하지 못했습니다.")
+                    }
+                }
+            case .failure(let error):
+                print("PostOfficialSave 디코더 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("질문을 저장하지 못했습니다.")
+                }
+            }
+        }
+    }
 }

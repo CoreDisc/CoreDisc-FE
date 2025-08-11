@@ -14,9 +14,10 @@ struct QuestionBasicView: View {
     @FocusState private var isFocused: Bool
     private let topAnchorID = "top" // 스크롤 초기화 용도
     
-    @State var showModal: Bool = false
+    @State var showSelectModal: Bool = false
+    @State var showSaveModal: Bool = false
     
-    // 질문 선택 용도
+    // 질문 선택/저장 용도
     let order: Int
     @State private var selectedQuestionId: Int? = nil
     
@@ -51,14 +52,14 @@ struct QuestionBasicView: View {
             }
             
             // 선택 확인 모달
-            if showModal {
+            if showSelectModal {
                 ModalView {
-                    VStack(spacing: 10) {
+                    VStack(spacing: 6) {
                         Text("고정질문으로 선택할까요?")
-                            .textStyle(.Q_Main)
+                            .textStyle(.Button)
                         
                         Text("한번 설정한 고정질문은 30일간 변경이 불가능합니다.")
-                            .textStyle(.Button_s)
+                            .textStyle(.Texting_Q)
                             .foregroundStyle(.red)
                     }
                 } leftButton: {
@@ -71,14 +72,41 @@ struct QuestionBasicView: View {
                             )
                             viewModel.fetchFixedBasic(fixedData: data)
                         }
-                        showModal.toggle() // 모달 제거
+                        showSelectModal.toggle() // 모달 제거
                         dismiss()
                     }) {
                         Text("설정하기")
                     }
                 } rightButton: {
                     Button(action: {
-                        showModal.toggle() // 모달 제거
+                        showSelectModal.toggle() // 모달 제거
+                    }) {
+                        Text("뒤로가기")
+                    }
+                }
+            }
+            
+            // 저장 확인 모달
+            if showSaveModal {
+                ModalView {
+                    VStack(spacing: 6) {
+                        Text("해당 질문을 저장할까요?")
+                            .textStyle(.Button)
+                        
+                        Text("저장한 질문은 저장한 공유질문 보기에서 확인할 수 있습니다.")
+                            .textStyle(.Texting_Q)
+                            .foregroundStyle(.gray600)
+                    }
+                } leftButton: {
+                    Button(action: {
+                        viewModel.fetchOfficialSave(questionId: selectedQuestionId!)
+                        showSaveModal.toggle() // 모달 제거
+                    }) {
+                        Text("저장하기")
+                    }
+                } rightButton: {
+                    Button(action: {
+                        showSaveModal.toggle() // 모달 제거
                     }) {
                         Text("뒤로가기")
                     }
@@ -200,9 +228,10 @@ struct QuestionBasicView: View {
                                 
                                 ForEach(Array(questionList.enumerated()), id: \.element.id) { index, question in
                                     QuestionBasicDetailItem(
-                                        showModal: $showModal,
-                                        isSelected: false,
-                                        isSaved: false,
+                                        showSelectModal: $showSelectModal,
+                                        showSaveModal: $showSaveModal,
+                                        isSelected: question.isSelected,
+                                        isFavorite: question.isFavorite,
                                         title: question.question,
                                         startColor: item.startColor,
                                         endColor: item.endColor,
@@ -315,9 +344,11 @@ struct QuestionBasicCategoryItem: View {
 
 // 질문 상세
 struct QuestionBasicDetailItem: View {
-    @Binding var showModal: Bool
-    @State var isSelected: Bool
-    @State var isSaved: Bool
+    @Binding var showSelectModal: Bool
+    @Binding var showSaveModal: Bool
+    
+    var isSelected: Bool
+    var isFavorite: Bool
     
     var title: String
     var startColor: Color
@@ -364,18 +395,17 @@ struct QuestionBasicDetailItem: View {
         .overlay(alignment: .leading) {
             HStack(spacing: 3) {
                 Button {
-                    isSelected.toggle()
-                    showModal.toggle()
+                    showSelectModal.toggle()
                     onSelect(questionId)
                 } label: {
                     Image(isSelected ? .iconBasicSelected : .iconBasicSelect)
                 }
 
                 Button {
-                    isSaved.toggle()
-                    // TODO: Question Save
+                    showSaveModal.toggle()
+                    onSelect(questionId)
                 } label: {
-                    Image(isSaved ? .iconBasicSaved : .iconBasicSave)
+                    Image(isFavorite ? .iconBasicSaved : .iconBasicSave)
                 }
 
                 Spacer().frame(width: 13)
