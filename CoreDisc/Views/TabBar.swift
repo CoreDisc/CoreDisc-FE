@@ -44,6 +44,9 @@ struct TabBar: View {
             tabBarStyle = tabBarStyle(for: selectedTab)
         }
         .navigationBarBackButtonHidden()
+        .overlay(alignment: .bottom) {
+            GlobalToastView()
+        }
     }
     
     private func tabBarStyle(for tab: Tab) -> TabBarStyle {
