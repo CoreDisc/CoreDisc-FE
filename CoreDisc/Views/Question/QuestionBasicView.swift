@@ -259,8 +259,12 @@ struct QuestionBasicView: View {
                         .listRowSeparator(.hidden) // 구분선 제거
                         .listRowBackground(Color.clear) // 리스트 기본 색상 제거
                         .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 21))
-                    } header: {
                         
+                        Color.clear
+                            .frame(height: 40)
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                    } header: {
                         // 스크롤 초기화용 뷰 (최상단 기준)
                         EmptyView()
                             .frame(height: 0)
@@ -280,6 +284,7 @@ struct QuestionBasicView: View {
                 }) {
                     Image(.iconUp)
                 }
+                .padding(.bottom, 60)
             }
         }
     }
