@@ -21,7 +21,6 @@ class AccountManageViewModel: ObservableObject {
     
     @Published var changeSuccess: Bool = false
     @Published var resignSuccess: Bool = false
-
     
     private let memberProvider = APIManager.shared.createProvider(for: MemberRouter.self)
     

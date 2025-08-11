@@ -92,8 +92,7 @@ struct AccountManageView: View {
     }
     
     private var MainGroup: some View {
-        VStack(alignment: .leading) {
-            
+        VStack(alignment: .leading){
             Text("비밀번호 변경")
                 .textStyle(.A_Main)
                 .foregroundStyle(.white)

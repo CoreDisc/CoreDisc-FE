@@ -21,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		238562CE2E0F0E2E008F25B1 /* CoreDisc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDisc.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		441FBD7F2E3CD86200B45DD0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		44A53F8B2E43DDF000EB41C9 /* Secret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secret.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -69,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				44A53F8B2E43DDF000EB41C9 /* Secret.xcconfig */,
+				441FBD7F2E3CD86200B45DD0 /* GoogleService-Info.plist */,
 				238562D02E0F0E2E008F25B1 /* CoreDisc */,
 				238562CF2E0F0E2E008F25B1 /* Products */,
 			);
@@ -163,6 +165,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				44A53F8C2E43DDF000EB41C9 /* Secret.xcconfig in Resources */,
+				441FBD802E3CD86200B45DD0 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

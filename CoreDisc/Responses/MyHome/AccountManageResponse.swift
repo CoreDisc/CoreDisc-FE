@@ -18,4 +18,3 @@ struct resignResponse: Decodable {
     let message: String
     let result: String
 }
-
