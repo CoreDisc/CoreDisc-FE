@@ -335,15 +335,6 @@ struct QuestionBasicCategoryItem: View {
             }
             .padding(.horizontal, 23)
         }
-        .swipeActions(edge: .leading) {
-            Button(action: { // TODO: action
-                print("More menu tapped")
-            }) {
-                Image(.imgMoreButton)
-            }
-            .tint(.clear) // 기본 배경 제거
-        }
-        .navigationBarBackButtonHidden()
     }
 }
 
