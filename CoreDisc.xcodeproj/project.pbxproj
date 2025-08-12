@@ -177,8 +177,10 @@
 /* Begin XCBuildConfiguration section */
 		238562D72E0F0E2F008F25B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+
 			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
 			baseConfigurationReferenceRelativePath = Secret.xcconfig;
+
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -304,12 +306,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
 			baseConfigurationReferenceRelativePath = Secret.xcconfig;
+
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G8X4BWGTSS;
+				DEVELOPMENT_TEAM = 5LD89ZVN7H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CoreDisc/Info.plist;
@@ -345,7 +348,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G8X4BWGTSS;
+				DEVELOPMENT_TEAM = 5LD89ZVN7H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CoreDisc/Info.plist;
