@@ -15,7 +15,6 @@ class SignupViewModel: ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
     @Published var passwordCheck: String = ""
-    @Published var agreedTermsIds: String = ""
     @Published var code: String = ""
     
     @Published var emailErrorMessage: String = ""
@@ -30,10 +29,21 @@ class SignupViewModel: ObservableObject {
     @Published var nicknameError: Bool = false
     @Published var nameDuplicate: Bool = false
     @Published var signupError: Bool = false
-    @Published var terms1: Bool = false
-    @Published var terms2: Bool = false
-    @Published var terms3: Bool = false
-    @Published var terms4: Bool = false
+    @Published var terms1: Bool = false { didSet { updateAgreedTermsIds() } }
+    @Published var terms2: Bool = false { didSet { updateAgreedTermsIds() } }
+    @Published var terms3: Bool = false { didSet { updateAgreedTermsIds() } }
+    @Published var terms4: Bool = false { didSet { updateAgreedTermsIds() } }
+    
+    @Published private(set) var agreedTermsIds: [Int] = []
+    
+    private func updateAgreedTermsIds() {
+        var ids: [Int] = []
+        if terms1 { ids.append(1) }
+        if terms2 { ids.append(2) }
+        if terms3 { ids.append(3) }
+        if terms4 { ids.append(4) }
+        agreedTermsIds = ids
+    }
     
     private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
     
@@ -134,7 +144,7 @@ class SignupViewModel: ObservableObject {
                 username: username,
                 password: password,
                 passwordCheck: passwordCheck,
-                agreedTermsIds: [1,2,3]
+                agreedTermsIds: agreedTermsIds
             )
         )){ result in
             switch result {

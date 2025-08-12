@@ -270,11 +270,67 @@ struct SignupView: View {
             Divider()
                 .frame(maxWidth: .infinity)
                 .background(Color.white)
+            
+            Spacer().frame(height: 12)
+            
             VStack{
                 HStack{
+                    Button(action: {
+                        let newValue = !(viewModel.terms1 && viewModel.terms2 && viewModel.terms3 && viewModel.terms4)
+                        viewModel.terms1 = newValue
+                        viewModel.terms2 = newValue
+                        viewModel.terms3 = newValue
+                        viewModel.terms4 = newValue
+                    }, label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 5)
+                                .strokeBorder(Color.white, lineWidth: 1)
+                                .background(RoundedRectangle(cornerRadius: 5).fill(Color.white))
+                                .frame(width: 24, height: 24)
+                            
+                            if viewModel.terms1 && viewModel.terms2 && viewModel.terms3 && viewModel.terms4 {
+                                Image(.iconChecking)
+                            }
+                        }
+                    })
+                    Text("전체 동의")
+                        .textStyle(.Button_s)
+                        .foregroundStyle(.white)
                     
+                    Spacer()
                 }
+                TermsView(
+                    essential: true,
+                    text: "서비스 이용약관",
+                    isChecked: viewModel.terms1,
+                    toggle: { viewModel.terms1.toggle() },
+                    action: {print("1")}
+                )
+                TermsView(
+                    essential: true,
+                    text: "개인정보 수집 및 이용 동의",
+                    isChecked: viewModel.terms2,
+                    toggle: { viewModel.terms2.toggle() },
+                    action: {print("1")}
+                )
+                TermsView(
+                    essential: true,
+                    text: "만 14세 이상 여부 확인",
+                    isChecked: viewModel.terms3,
+                    toggle: { viewModel.terms3.toggle() },
+                    action: {print("1")}
+                )
+                TermsView(
+                    essential: false,
+                    text: "마케팅 활용 및 광고 수신 동의",
+                    isChecked: viewModel.terms4,
+                    toggle: { viewModel.terms4.toggle() },
+                    action: {print("1")}
+                )
             }
+            
+            Spacer().frame(height: 12)
+            
             Divider()
                 .frame(maxWidth: .infinity)
                 .background(Color.white)
