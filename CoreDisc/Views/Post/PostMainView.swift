@@ -9,9 +9,7 @@ import SwiftUI
 
 enum postCategoryTap : String, CaseIterable {
     case all = "All"
-    case followers = "Followers"
     case core = "Core"
-    case privatePost = "Private"
 }
 
 struct PostMainView: View {
@@ -25,7 +23,7 @@ struct PostMainView: View {
                     .resizable()
                     .ignoresSafeArea()
                 
-                VStack {
+                VStack(spacing: 0) {
                     TitleGroup
                     
                     CategoryGroup
@@ -41,20 +39,43 @@ struct PostMainView: View {
     
     // 로고 타이틀 섹션
     private var TitleGroup: some View {
-        HStack{
-            // TODO: 로고 디자인 완료 시 추가 예정
-            Text("logo 추가 예정")
+        HStack(alignment: .center, spacing: 4){
+            Image(.imgLogoOneline)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 116)
+                .foregroundStyle(.black)
+                .padding(.leading, 6)
             
             Spacer()
             
+            Button(action: {
+                // TODO: 검색 뷰
+            }) {
+                ZStack {
+                    Color.clear
+                        .frame(width: 48, height: 48)
+                    
+                    Image(.iconSearch)
+                        .resizable()
+                        .frame(width:20, height: 20)
+                        .foregroundStyle(.black000)
+                }
+            }
+            
             NavigationLink(destination: NotificationView()) {
-                Image(.iconAlert)
-                    .resizable()
-                    .frame(width:40, height: 48)
-                    .foregroundStyle(.black000)
+                ZStack {
+                    Color.clear
+                        .frame(width: 48, height: 48)
+                    
+                    Image(.iconAlert)
+                        .resizable()
+                        .frame(width:40, height: 48)
+                        .foregroundStyle(.black000)
+                }
             }
         }
-        .padding(.horizontal,19)
+        .padding(.horizontal,13.5)
     }
     
     // 카테고리 메뉴바 섹션
@@ -66,31 +87,17 @@ struct PostMainView: View {
     
     // 게시글 섹션
     private var PostGroup: some View {
-        VStack(spacing: 16){
-            Spacer().frame(height: 25)
-            
-            switch selectedTab {
-            case .all:
-                postSection()
-                postSection()
-                postSection()
-                postSection()
-            case .followers:
-                Text("Followers")
-            case .core:
-                Text("Core")
-            case .privatePost:
-                Text("Private")
+        let columns = Array(repeating: GridItem(.flexible()), count: 2)
+
+        return ScrollView {
+            LazyVGrid(columns: columns, spacing: 16) {
+                ForEach(1..<10, id: \.self) { item in
+                    PostCard(Thumbnail_text: "계절마다 떠오르는 음식이 있나요? 요즘 생각나는 건 뭐예요?", userID: "@coredisc.ko")
+                }
             }
+            .padding(.top, 16)
         }
-        .padding(.horizontal, 19)
-    }
-    
-    private func postSection() -> some View {
-        HStack (alignment: .center, spacing: 36) {
-            PostCard(Thumbnail_text: "계절마다 떠오르는 음식이 있나요? 요즘 생각나는 건 뭐예요?", userID: "@coredisc.ko")
-            PostCard(Thumbnail_text: "계절마다 떠오르는 음식이 있나요? 요즘 생각나는 건 뭐예요?", userID: "@coredisc.ko" )
-        }
+        .padding(.horizontal, 21)
     }
 }
 
@@ -101,77 +108,56 @@ struct PostCard: View {
     
     var body: some View {
         NavigationLink(destination: PostDetailView()) { // TODO: 게시글 id 사용해서 화면 전환
-            ZStack{
+            ZStack(alignment: .top) {
                 Rectangle()
+                    .frame(width: 164)
                     .foregroundStyle(.white)
-                    .cornerRadius(12)
-                    .frame(width: 164, height: 271)
                 
                 VStack(spacing: 8){
                     Rectangle() // TODO: 추후 게시물 사진으로 변경
-                        .frame(width: 164.25, height: 219)
-                        .cornerRadius(12, corners: [.topLeft, .topRight])
+                        .frame(width: 164, height: 195)
                         .foregroundStyle(.gray200)
                     
-                    HStack(spacing: 3) {
+                    HStack(alignment: .top, spacing: 3) {
                         Circle() // TODO: 추후 프로필 사진으로 변경
                             .frame(width: 24, height: 24)
+                            .padding(.top, 5)
                         
                         VStack(alignment: .leading, spacing: 2) {
                             Text("\(Thumbnail_text)")
-                                .textStyle(.Post_Thumbnail_text)
+                                .textStyle(.Button_s)
                                 .foregroundStyle(.black000)
-                                .lineLimit(2)
+                                .lineLimit(3)
                                 .multilineTextAlignment(.leading) // 두줄 이상일 때 왼쪽 정렬
-                                .padding(.leading,1)
+                                .padding(.leading, 1)
                                 .padding(.trailing, 3)
                             
-                            Text("\(userID)")
-                                .textStyle(.Post_UserID)
-                                .foregroundStyle(.gray200)
+                            Spacer()
+                            
+                            HStack {
+                                Text("\(userID)")
+                                    .textStyle(.login_alert)
+                                    .foregroundStyle(.gray800)
+                                    .padding(.bottom, 1)
+                                
+                                Spacer()
+                                
+                                Image(.iconGlobe)
+                                    .resizable()
+                                    .frame(width: 10, height: 10)
+                                    .foregroundStyle(.gray800)
+                            }
                         }
-                        .frame(width: 120)
-                        
+                        .frame(width: 124)
                     }
-                    .padding(.horizontal, 6.5)
-                    .padding(.bottom,9)
-                    
-                    // Spacer()
-                }
-                VStack{
-                    Spacer()
-                    
-                    HStack {
-                        Spacer()
-                        
-                        Image(.iconGlobe)
-                            .resizable()
-                            .frame(width: 10, height: 10)
-                            .foregroundStyle(.gray800)
-                    }
-                    .padding(.trailing, 7)
-                    .padding(.bottom, 8)
+                    .padding(.horizontal, 6)
+                    .padding(.bottom, 10)
                 }
             }
+            .clipShape(
+                RoundedRectangle(cornerRadius: 12)
+            )
         }
-    }
-}
-
-// 특정 모서리 둥글게
-extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape(RoundedCorner(radius: radius, corners: corners))
-    }
-}
-
-struct RoundedCorner: Shape {
-    var radius: CGFloat = .infinity
-    var corners: UIRectCorner = .allCorners
-    
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-        
-        return Path(path.cgPath)
     }
 }
 
@@ -182,32 +168,32 @@ struct PostTopTabView: View {
     var animation: Namespace.ID
     
     var body: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 0) {
             ForEach(postCategoryTap.allCases, id: \.self) { item in
-                VStack(spacing: 4) {
-                    Text(item.rawValue)
-                        .font(.system(size: 14, weight: selectedTab == item ? .bold : .regular))
-                        .foregroundColor(.black)
-                    
-                    if selectedTab == item {
-                        Capsule()
-                            .fill(Color.black)
-                            .frame(height: 3)
-                            .matchedGeometryEffect(id: "tabIndicator", in: animation)
-                    } else {
-                        Color.clear.frame(height: 3)
+                let isSelected = (selectedTab == item)
+
+                Text(item.rawValue)
+                    .textStyle(.category_bar)
+                    .foregroundColor(.black000)
+                    .frame(width: 55, height: 42)
+                    .contentShape(Rectangle())
+                    .overlay(alignment: .bottom) {
+                        if isSelected {
+                            Capsule()
+                                .fill(Color.black000)
+                                .frame(height: 4)
+                                .matchedGeometryEffect(id: "tabIndicator", in: animation)
+                        }
                     }
-                }
-                .onTapGesture {
-                    withAnimation(.easeInOut) {
-                        selectedTab = item
+                    .onTapGesture {
+                        withAnimation(.easeInOut) {
+                            selectedTab = item
+                        }
                     }
-                }
-                .frame(maxWidth: .infinity)
             }
+            Spacer()
         }
-        .padding(.horizontal, 19)
-        .padding(.vertical, 10)
+        .padding(.horizontal, 16)
         .background(Color.white)
     }
 }
