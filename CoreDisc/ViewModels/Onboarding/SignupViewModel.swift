@@ -29,6 +29,7 @@ class SignupViewModel: ObservableObject {
     @Published var nicknameError: Bool = false
     @Published var nameDuplicate: Bool = false
     @Published var signupError: Bool = false
+    @Published var termsList: [TermsData] = []
     @Published var terms1: Bool = false { didSet { updateAgreedTermsIds() } }
     @Published var terms2: Bool = false { didSet { updateAgreedTermsIds() } }
     @Published var terms3: Bool = false { didSet { updateAgreedTermsIds() } }
@@ -46,6 +47,32 @@ class SignupViewModel: ObservableObject {
     }
     
     private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
+    
+    func getTerms() {
+        authProvider.request(.getTerms) { result in
+            switch result {
+            case .success(let response):
+                if let decodedResponse = try? JSONDecoder().decode(TermsResponse.self, from: response.data) {
+                    self.termsList = decodedResponse.result
+                    print("성공: \(decodedResponse.message)")
+                }
+            case .failure(let error):
+                if let response = error.response {
+                    do {
+                        let decodedResponse = try JSONDecoder().decode(TermsResponse.self, from: response.data)
+                        DispatchQueue.main.async {
+                            self.termsList = decodedResponse.result
+                        }
+                    } catch {
+                        print("디코딩 실패 : \(error.localizedDescription)")
+                    }
+                } else {
+                    print("네트워크 오류: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
     
     func sendCode() {
         authProvider.request(.postSendCode(email: email)) { result in

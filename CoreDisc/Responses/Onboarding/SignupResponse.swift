@@ -56,3 +56,18 @@ struct SignupResult: Decodable {
     let id: Int
     let createdAt: String
 }
+
+struct TermsResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: [TermsData]
+}
+
+struct TermsData: Decodable {
+    let termsId: Int
+    let title: String
+    let content: String
+    let version: Int
+    let isRequired: Bool
+}
