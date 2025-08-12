@@ -445,7 +445,6 @@ struct SignupView: View {
                 viewModel.rePwdError = false
                 viewModel.idError = false
                 viewModel.nicknameError = false
-                viewModel.signupError = false
                 viewModel.signup()
             }, label: {
                 Text("가입하기")

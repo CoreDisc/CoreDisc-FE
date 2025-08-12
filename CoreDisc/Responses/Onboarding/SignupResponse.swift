@@ -53,8 +53,11 @@ struct SignupResponse: Decodable {
 }
 
 struct SignupResult: Decodable {
-    let id: Int
-    let createdAt: String
+    let id: Int?
+    let createdAt: String?
+    let name: String?
+    let username: String?
+    let password: String?
 }
 
 struct TermsResponse: Decodable {

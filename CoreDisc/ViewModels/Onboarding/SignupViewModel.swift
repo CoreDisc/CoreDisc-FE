@@ -21,6 +21,7 @@ class SignupViewModel: ObservableObject {
     @Published var CodeVerified: Bool = false
     @Published var codeErrorMessage: String = ""
     @Published var isSignedUp: Bool = false
+    @Published var nicknameError: Bool = false
     @Published var pwdError: Bool = false
     @Published var rePwdError: Bool = false
     @Published var idError: Bool = false
@@ -29,10 +30,8 @@ class SignupViewModel: ObservableObject {
     @Published var emailDuplicate: Bool = false
     @Published var emailSuccess: Bool = false
     @Published var emailBoxColor: Bool = false
-    @Published var nicknameError: Bool = false
     @Published var nameDuplicate: Bool = false
     @Published var nameSuccess: Bool = false
-    @Published var signupError: Bool = false
     @Published var termsList: [TermsData] = []
     @Published var terms1: Bool = false { didSet { updateAgreedTermsIds() } }
     @Published var terms2: Bool = false { didSet { updateAgreedTermsIds() } }
@@ -233,32 +232,30 @@ class SignupViewModel: ObservableObject {
             case .failure(let error):
                 if let response = error.response {
                     do {
-                        let decodedResponse = try JSONDecoder().decode(SendCodeResponse.self, from: response.data)
-                        let signupErrorMsg: String
-                        switch decodedResponse.result {
-                        case .error(let validationError):
-                            signupErrorMsg = validationError.email
-                        case .success(_), .none:
-                            signupErrorMsg = decodedResponse.message
-                        }
-                        print("실패 : \(signupErrorMsg)")
+                        let decodedResponse = try JSONDecoder().decode(SignupResponse.self, from: response.data)
+
+                        print("실패 : \(error.localizedDescription)")
                         
                         switch decodedResponse.code {
                         case "COMMON400":
-                            self.pwdError = true
+                            if let result = decodedResponse.result {
+                                if result.name != nil {
+                                    self.nicknameError = true
+                                }
+                                if result.username != nil {
+                                    self.idError = true
+                                }
+                                if result.password != nil {
+                                    self.pwdError = true
+                                }
+                            }
                         case "AUTH4001":
                             self.rePwdError = true
-                        case "AUTH4005":
-                            self.nicknameError = true
-                        case "AUTH4004":
-                            self.idError = true
                         default:
                             break
                         }
                     } catch {
-                        print("디코딩 실패 : \(error.localizedDescription)")
-                        self.signupError = true
-                    }
+                        print("디코딩 실패 : \(error.localizedDescription)")                    }
                 } else {
                     print("네트워크 오류: \(error.localizedDescription)")
                 }
