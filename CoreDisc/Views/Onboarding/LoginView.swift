@@ -44,10 +44,10 @@ struct LoginView: View {
                     Spacer().frame(height: 43)
                     SocialLoginGroup
                 }
-                .navigationDestination(isPresented: $isLoginSuccess) {
-                    TabBar()
-                }
             }
+        }
+        .fullScreenCover(isPresented: $isLoginSuccess) {
+            TabBar()
         }
         .navigationBarBackButtonHidden()
     }

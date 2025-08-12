@@ -38,7 +38,7 @@ struct SearchResultView: View {
             
         }
         .navigationBarBackButtonHidden()
-        .onAppear {
+        .task {
             isSearch = false
         }
     }
