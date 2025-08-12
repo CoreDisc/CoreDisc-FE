@@ -15,7 +15,7 @@ struct SignupView: View {
 
     @State private var pwdShown = false
     @State private var rePwdShown = false
-    @State private var TermsModal: Int? = 1
+    @State private var TermsModal: Int? = 0
     
     var body: some View {
         NavigationStack{
@@ -84,11 +84,30 @@ struct SignupView: View {
                 .textStyle(.Q_Main)
                 .foregroundStyle(.white)
                 .padding(.leading, 10)
-            InputView{
-                TextField("이메일을 입력해주세요.", text: $viewModel.email)
-                    .textInputAutocapitalization(.never)
-                    .focused($isFocused)
+            ZStack{
+                InputView{
+                    TextField("이메일을 입력해주세요.", text: $viewModel.email)
+                        .textInputAutocapitalization(.never)
+                        .focused($isFocused)
+                }
+                HStack{
+                    Spacer()
+                    Button(action: {
+                        print("중복확인")
+                    }, label: {
+                        ZStack{
+                            Capsule()
+                                .frame(width: 63, height: 25)
+                                .foregroundStyle(viewModel.email.isEmpty ? .gray400 : .highlight)
+                            Text("중복확인")
+                                .textStyle(.Q_pick)
+                                .foregroundStyle(.black000)
+                        }
+                        .padding(.horizontal)
+                    })
+                }
             }
+
             
             ButtonView(action:{viewModel.sendCode()}, label: {
                 Text("인증 번호 전송")
@@ -141,10 +160,29 @@ struct SignupView: View {
                 .textStyle(.Q_Main)
                 .foregroundStyle(.white)
                 .padding(.leading, 10)
-            InputView{
-                TextField("아이디를 입력해주세요.", text: $viewModel.username)
-                    .textInputAutocapitalization(.never)
-                    .focused($isFocused)
+            
+            ZStack{
+                InputView{
+                    TextField("아이디를 입력해주세요.", text: $viewModel.username)
+                        .textInputAutocapitalization(.never)
+                        .focused($isFocused)
+                }
+                HStack{
+                    Spacer()
+                    Button(action: {
+                        print("중복확인")
+                    }, label: {
+                        ZStack{
+                            Capsule()
+                                .frame(width: 63, height: 25)
+                                .foregroundStyle(viewModel.username.isEmpty ? .gray400 : .highlight)
+                            Text("중복확인")
+                                .textStyle(.Q_pick)
+                                .foregroundStyle(.black000)
+                        }
+                        .padding(.horizontal)
+                    })
+                }
             }
             
             if viewModel.idError {
@@ -256,10 +294,30 @@ struct SignupView: View {
                 .foregroundStyle(.white)
                 .padding(.leading, 10)
             
-            InputView{
-                TextField("이름을 입력해주세요.", text: $viewModel.name)
-                    .focused($isFocused)
+            ZStack{
+                InputView{
+                    TextField("이름을 입력해주세요.", text: $viewModel.name)
+                        .textInputAutocapitalization(.never)
+                        .focused($isFocused)
+                }
+                HStack{
+                    Spacer()
+                    Button(action: {
+                        print("중복확인")
+                    }, label: {
+                        ZStack{
+                            Capsule()
+                                .frame(width: 63, height: 25)
+                                .foregroundStyle(viewModel.name.isEmpty ? .gray400 : .highlight)
+                            Text("중복확인")
+                                .textStyle(.Q_pick)
+                                .foregroundStyle(.black000)
+                        }
+                        .padding(.horizontal)
+                    })
+                }
             }
+
             
             if viewModel.nicknameError {
                 Text("16자 이내 영문,한글만 사용 가능합니다.")
