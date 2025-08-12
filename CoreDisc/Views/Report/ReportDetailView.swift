@@ -81,6 +81,7 @@ struct ReportDetailView: View {
             }
         }
         .navigationBarBackButtonHidden()
+        .tabBarHidden(true) // 커스텀 탭바 숨기기
     }
     
     //디스크 애니메이션

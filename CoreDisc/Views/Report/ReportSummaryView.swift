@@ -31,6 +31,7 @@ struct ReportSummaryView: View {
             }
         }
         .navigationBarBackButtonHidden()
+        .tabBarHidden(true) // 커스텀 탭바 숨기기
     }
     
     private var HeaderGroup : some View{

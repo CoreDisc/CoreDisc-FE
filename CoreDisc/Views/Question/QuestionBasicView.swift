@@ -14,11 +14,13 @@ struct QuestionBasicView: View {
     @FocusState private var isFocused: Bool
     private let topAnchorID = "top" // 스크롤 초기화 용도
     
-    @State var showModal: Bool = false
+    @State var showSelectModal: Bool = false
+    @State var showSaveModal: Bool = false
     
-    // 질문 선택 용도
+    // 질문 선택/저장 용도
     let order: Int
     @State private var selectedQuestionId: Int? = nil
+    @State private var selectedQuestionType: String? = nil
     
     // 열려있는 카테고리
     @State private var expandedCategoryIDs: Set<UUID> = []
@@ -51,34 +53,71 @@ struct QuestionBasicView: View {
             }
             
             // 선택 확인 모달
-            if showModal {
+            if showSelectModal {
                 ModalView {
-                    VStack(spacing: 10) {
-                        Text("고정질문으로 선택할까요?")
-                            .textStyle(.Q_Main)
+                    VStack(spacing: 6) {
+                        Text("\(selectedQuestionType == "FIXED" ? "고정" : "랜덤")질문으로 선택할까요?")
+                            .textStyle(.Button)
                         
-                        Text("한번 설정한 고정질문은 30일간 변경이 불가능합니다.")
-                            .textStyle(.Button_s)
+                        Text("한번 설정한 고정질문은 \(selectedQuestionType == "FIXED" ? "30일간" : "하루동안") 변경이 불가능합니다.")
+                            .textStyle(.Texting_Q)
                             .foregroundStyle(.red)
                     }
                 } leftButton: {
                     Button(action: {
-                        if let questionId = selectedQuestionId {
+                        guard let questionId = selectedQuestionId,
+                              let type = selectedQuestionType else { return }
+                        
+                        if type == "FIXED" {
                             let data = FixedData(
                                 selectedQuestionType: .DEFAULT,
                                 questionOrder: order,
                                 questionId: questionId
                             )
                             viewModel.fetchFixedBasic(fixedData: data)
+                        } else {
+                            let data = RandomData(
+                                selectedQuestionType: .DEFAULT,
+                                questionId: questionId
+                            )
+                            viewModel.fetchRandomBasic(randomData: data)
                         }
-                        showModal.toggle() // 모달 제거
+                        
+                        showSelectModal.toggle() // 모달 제거
                         dismiss()
                     }) {
                         Text("설정하기")
                     }
                 } rightButton: {
                     Button(action: {
-                        showModal.toggle() // 모달 제거
+                        showSelectModal.toggle() // 모달 제거
+                    }) {
+                        Text("뒤로가기")
+                    }
+                }
+            }
+            
+            // 저장 확인 모달
+            if showSaveModal {
+                ModalView {
+                    VStack(spacing: 6) {
+                        Text("해당 질문을 저장할까요?")
+                            .textStyle(.Button)
+                        
+                        Text("저장한 질문은 저장한 공유질문 보기에서 확인할 수 있습니다.")
+                            .textStyle(.Texting_Q)
+                            .foregroundStyle(.gray600)
+                    }
+                } leftButton: {
+                    Button(action: {
+                        viewModel.fetchOfficialSave(questionId: selectedQuestionId!)
+                        showSaveModal.toggle() // 모달 제거
+                    }) {
+                        Text("저장하기")
+                    }
+                } rightButton: {
+                    Button(action: {
+                        showSaveModal.toggle() // 모달 제거
                     }) {
                         Text("뒤로가기")
                     }
@@ -100,25 +139,30 @@ struct QuestionBasicView: View {
     
     // 상단 타이틀
     private var TopGroup: some View {
-        VStack(alignment: .leading, spacing: 9) {
-            Button(action: {
-                dismiss()
-            }) {
-                Image(.iconBack)
+        ZStack(alignment: .top) {
+            Image(.imgLogoOneline)
+                .padding(.top, 19)
+            
+            VStack(alignment: .leading, spacing: 9) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(.iconBack)
+                }
+                
+                Text("Select your own disc")
+                    .textStyle(.Title_Text_Eng)
+                    .foregroundStyle(.key)
+                    .padding(.leading, 9)
+                
+                Text("한 달동안 함께할 질문을 설정하세요.")
+                    .textStyle(.Sub_Text_Ko)
+                    .foregroundStyle(.white)
+                    .padding(.leading, 9)
             }
-            
-            Text("Select your own disc")
-                .textStyle(.Title_Text_Eng)
-                .foregroundStyle(.key)
-                .padding(.leading, 9)
-            
-            Text("한 달동안 함께할 질문을 설정하세요.")
-                .textStyle(.Sub_Text_Ko)
-                .foregroundStyle(.white)
-                .padding(.leading, 9)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 17)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 17)
     }
     
     // 검색창
@@ -200,15 +244,18 @@ struct QuestionBasicView: View {
                                 
                                 ForEach(Array(questionList.enumerated()), id: \.element.id) { index, question in
                                     QuestionBasicDetailItem(
-                                        showModal: $showModal,
-                                        isSelected: false,
-                                        isSaved: false,
+                                        showSelectModal: $showSelectModal,
+                                        showSaveModal: $showSaveModal,
+                                        isSelected: question.isSelected,
+                                        isFavorite: question.isFavorite,
                                         title: question.question,
                                         startColor: item.startColor,
                                         endColor: item.endColor,
                                         questionId: question.id,
-                                        onSelect: { id in
+                                        questionType: question.questionType,
+                                        onSelect: { id, type in
                                             selectedQuestionId = id
+                                            selectedQuestionType = type
                                         }
                                     )
                                     .task {
@@ -230,8 +277,12 @@ struct QuestionBasicView: View {
                         .listRowSeparator(.hidden) // 구분선 제거
                         .listRowBackground(Color.clear) // 리스트 기본 색상 제거
                         .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 21))
-                    } header: {
                         
+                        Color.clear
+                            .frame(height: 40)
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                    } header: {
                         // 스크롤 초기화용 뷰 (최상단 기준)
                         EmptyView()
                             .frame(height: 0)
@@ -251,6 +302,7 @@ struct QuestionBasicView: View {
                 }) {
                     Image(.iconUp)
                 }
+                .padding(.bottom, 60)
             }
         }
     }
@@ -301,30 +353,24 @@ struct QuestionBasicCategoryItem: View {
             }
             .padding(.horizontal, 23)
         }
-        .swipeActions(edge: .leading) {
-            Button(action: { // TODO: action
-                print("More menu tapped")
-            }) {
-                Image(.imgMoreButton)
-            }
-            .tint(.clear) // 기본 배경 제거
-        }
-        .navigationBarBackButtonHidden()
     }
 }
 
 // 질문 상세
 struct QuestionBasicDetailItem: View {
-    @Binding var showModal: Bool
-    @State var isSelected: Bool
-    @State var isSaved: Bool
+    @Binding var showSelectModal: Bool
+    @Binding var showSaveModal: Bool
+    
+    var isSelected: Bool
+    var isFavorite: Bool
     
     var title: String
     var startColor: Color
     var endColor: Color
     
     var questionId: Int
-    var onSelect: (Int) -> Void
+    var questionType: String
+    var onSelect: (Int, String) -> Void
     
     @State private var isShifted: Bool = false
     
@@ -364,20 +410,19 @@ struct QuestionBasicDetailItem: View {
         .overlay(alignment: .leading) {
             HStack(spacing: 3) {
                 Button {
-                    isSelected.toggle()
-                    showModal.toggle()
-                    onSelect(questionId)
+                    showSelectModal.toggle()
+                    onSelect(questionId, questionType)
                 } label: {
                     Image(isSelected ? .iconBasicSelected : .iconBasicSelect)
                 }
-
+                
                 Button {
-                    isSaved.toggle()
-                    // TODO: Question Save
+                    showSaveModal.toggle()
+                    onSelect(questionId, questionType)
                 } label: {
-                    Image(isSaved ? .iconBasicSaved : .iconBasicSave)
+                    Image(isFavorite ? .iconBasicSaved : .iconBasicSave)
                 }
-
+                
                 Spacer().frame(width: 13)
             }
             .offset(x: isShifted ? 0 : -131)
