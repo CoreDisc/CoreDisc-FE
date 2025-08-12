@@ -18,6 +18,7 @@ enum TabBarStyle {
 struct TabBar: View {
     @State private var selectedTab: Tab = .home
     @State private var tabBarStyle: TabBarStyle = .dark
+    @StateObject private var tabBarVisibility = TabBarVisibility()
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -35,13 +36,18 @@ struct TabBar: View {
                     MyHomeView()
                 }
             }
+            .environmentObject(tabBarVisibility)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            CustomTabBar(selectedTab: $selectedTab, tabBarStyle: tabBarStyle)
+            // 탭바 숨김
+            if !tabBarVisibility.isHidden {
+                CustomTabBar(selectedTab: $selectedTab, tabBarStyle: tabBarStyle)
+            }
         }
         .ignoresSafeArea(.keyboard)
         .onChange(of: selectedTab) {
             tabBarStyle = tabBarStyle(for: selectedTab)
+            tabBarVisibility.reset()
         }
         .navigationBarBackButtonHidden()
         .overlay(alignment: .bottom) {
