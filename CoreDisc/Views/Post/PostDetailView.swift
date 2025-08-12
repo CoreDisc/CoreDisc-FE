@@ -10,6 +10,8 @@ import SwiftUI
 struct PostDetailView: View {
     @Environment(\.dismiss) private var dismiss
     
+    @State var showCommentSheet: Bool = false
+    
     var body: some View {
         ZStack {
             Image(.imgPostDetailBg)
@@ -54,6 +56,12 @@ struct PostDetailView: View {
             }
         }
         .navigationBarBackButtonHidden() // 기본 뒤로가기 버튼 제거
+        .sheet(isPresented: $showCommentSheet) {
+            CommentSheetView(showSheet: $showCommentSheet)
+                .presentationBackground(.clear)
+                .presentationDetents([.height(600)])
+                .presentationDragIndicator(.hidden)
+        }
     }
     
     // 뒤로가기 버튼 섹션
@@ -101,6 +109,7 @@ struct PostDetailView: View {
                 }
                 
                 Button(action: {
+                    showCommentSheet = true
                 }){
                     Image(.iconMessage)
                         .resizable()

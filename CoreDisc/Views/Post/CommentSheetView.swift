@@ -13,11 +13,18 @@ struct CommentSheetView: View {
     // 열려있는 댓글
     @State private var expandedCommentIDs: Set<Int> = []
     
+    // 댓글
+    @State private var commentText: String = ""
+    @FocusState private var isFocused: Bool
+    
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             RoundedRectangle(cornerRadius: 12)
                 .fill(.white)
                 .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 0)
+                .onTapGesture { // 키보드 내리기 용도
+                    isFocused = false
+                }
             
             VStack {
                 Spacer().frame(height: 13)
@@ -28,58 +35,101 @@ struct CommentSheetView: View {
                 
                 Spacer().frame(height: 30)
                 
-                List {
-                    ForEach(1..<6, id: \.self) { item in
-                        VStack(alignment: .leading, spacing: 3) {
-                            CommentItem()
-                            
-                            VStack(alignment: .leading, spacing: 0) {
-                                Button(action: {}) {
-                                    Text("댓글 달기")
-                                        .textStyle(.Small_Text_10)
-                                        .foregroundStyle(.gray600)
-                                        .padding(.vertical, 6)
-                                }
-                                .buttonStyle(.plain)
-                                
-                                Button(action: {
-                                    withAnimation {
-                                        toggleExpanded(for: item)
-                                    }
-                                }) {
-                                    HStack {
-                                        Divider()
-                                            .frame(width: 8, height: 0.4)
-                                            .background(.gray600)
-                                        
-                                        Text(expandedCommentIDs.contains(item) ? "댓글 숨기기" : "댓글 더보기 (1)") // TODO: 댓글 개수
-                                            .textStyle(.Small_Text_10)
-                                            .foregroundStyle(.gray600)
-                                            .padding(.vertical, 4)
-                                    }
-                                }
-                                .buttonStyle(.plain)
-                            }
-                            .padding(.leading, 29)
-                        }
-                        
-                        // 댓글 더보기
-                        if expandedCommentIDs.contains(item) {
-                            CommentItem()
-                                .padding(.leading, 29)
-                        }
-                    }
-                    .listRowSeparator(.hidden) // 구분선 제거
-                    .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
-                }
-                .listStyle(.plain) // list 주변영역 제거
-                .listRowSpacing(15) // 리스트 간격
-                .scrollIndicators(.hidden)
-                .padding(.horizontal, 20)
+                CommentList
             }
         }
+        .padding(.top, 20)
         .padding(.horizontal, 27)
-        .ignoresSafeArea(.all, edges: .bottom)
+        .ignoresSafeArea()
+        .safeAreaInset(edge: .bottom) {
+            TextfieldGroup
+                .padding(.horizontal, 27)
+        }
+    }
+    
+    private var CommentList: some View {
+        List {
+            ForEach(1..<6, id: \.self) { item in
+                VStack(alignment: .leading, spacing: 3) {
+                    CommentItem()
+                    
+                    VStack(alignment: .leading, spacing: 0) {
+                        Button(action: {}) {
+                            Text("댓글 달기")
+                                .textStyle(.Small_Text_10)
+                                .foregroundStyle(.gray600)
+                                .padding(.vertical, 6)
+                        }
+                        .buttonStyle(.plain)
+                        
+                        Button(action: {
+                            withAnimation {
+                                toggleExpanded(for: item)
+                            }
+                        }) {
+                            HStack {
+                                Divider()
+                                    .frame(width: 8, height: 0.4)
+                                    .background(.gray600)
+                                
+                                Text(expandedCommentIDs.contains(item) ? "댓글 숨기기" : "댓글 더보기 (1)") // TODO: 댓글 개수
+                                    .textStyle(.Small_Text_10)
+                                    .foregroundStyle(.gray600)
+                                    .padding(.vertical, 4)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(.leading, 29)
+                }
+                
+                // 댓글 더보기
+                if expandedCommentIDs.contains(item) {
+                    CommentItem()
+                        .padding(.leading, 29)
+                }
+            }
+            .listRowSeparator(.hidden) // 구분선 제거
+            .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+        }
+        .padding(.bottom, 80)
+        .listStyle(.plain) // list 주변영역 제거
+        .listRowSpacing(15) // 리스트 간격
+        .scrollIndicators(.hidden)
+        .padding(.horizontal, 20)
+    }
+    
+    private var TextfieldGroup: some View {
+        HStack(spacing: 4) {
+            Image(.imgShortBackground) // TODO: Profile Image
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 32, height: 32)
+                .clipShape(
+                    Circle()
+                )
+            
+            TextField("댓글을 달아보세요...", text: $commentText)
+                .textStyle(.Texting_Q)
+                .foregroundStyle(.black000)
+                .padding(.vertical, 10)
+                .padding(.horizontal, 20)
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(.white)
+                        .stroke(.key, lineWidth: 0.5)
+                )
+                .focused($isFocused)
+            
+            Button(action: {
+                // TODO: comment
+            }) {
+                Image(.iconCommentUpload)
+            }
+        }
+        .padding(.vertical, 7)
+        .padding(.horizontal, 11)
+        .background(.white)
     }
     
     // MARK: - function
