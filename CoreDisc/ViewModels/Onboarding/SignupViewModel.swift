@@ -26,8 +26,14 @@ class SignupViewModel: ObservableObject {
     @Published var pwdError: Bool = false
     @Published var rePwdError: Bool = false
     @Published var idError: Bool = false
+    @Published var idDuplicate: Bool = false
     @Published var nicknameError: Bool = false
+    @Published var nameDuplicate: Bool = false
     @Published var signupError: Bool = false
+    @Published var terms1: Bool = false
+    @Published var terms2: Bool = false
+    @Published var terms3: Bool = false
+    @Published var terms4: Bool = false
     
     private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
     

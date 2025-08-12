@@ -25,23 +25,24 @@ struct SignupView: View {
                     .onTapGesture { // 키보드 내리기 용도
                         isFocused = false
                     }
-                
-                VStack{
-                    HStack{
-                        Button(action: {
-                            dismiss()
-                        }){
-                            Image(.imgGoback)
-                                .padding()
+                ScrollView{
+                    LazyVStack{
+                        HStack{
+                            Button(action: {
+                                dismiss()
+                            }){
+                                Image(.imgGoback)
+                                    .padding()
+                            }
+                            Spacer()
                         }
+                        Image(.imgLogo)
+                            .resizable()
+                            .frame(width: 60, height: 36)
+                        Spacer().frame(height: 31)
+                        MainGroup
                         Spacer()
                     }
-                    Image(.imgLogo)
-                        .resizable()
-                        .frame(width: 60, height: 36)
-                    Spacer().frame(height: 31)
-                    MainGroup
-                    Spacer()
                 }
             }
             .navigationBarBackButtonHidden()
@@ -65,6 +66,10 @@ struct SignupView: View {
             
             Spacer().frame(height: 32)
             
+            Text("이메일")
+                .textStyle(.Q_Main)
+                .foregroundStyle(.white)
+                .padding(.leading, 10)
             InputView{
                 TextField("이메일을 입력해주세요.", text: $viewModel.email)
                     .textInputAutocapitalization(.never)
@@ -87,9 +92,9 @@ struct SignupView: View {
                     .textStyle(.login_alert)
                     .foregroundStyle(.gray400)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer().frame(height: 19)
+                Spacer().frame(height: 8)
             } else {
-                Spacer().frame(height: 34)
+                Spacer().frame(height: 28)
             }
      
             InputView{
@@ -113,11 +118,46 @@ struct SignupView: View {
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer().frame(height: 19)
+                Spacer().frame(height: 20)
             } else {
-                Spacer().frame(height: 34)
+                Spacer().frame(height: 40)
             }
             
+            Text("아이디")
+                .textStyle(.Q_Main)
+                .foregroundStyle(.white)
+                .padding(.leading, 10)
+            InputView{
+                TextField("아이디를 입력해주세요.", text: $viewModel.username)
+                    .textInputAutocapitalization(.never)
+                    .focused($isFocused)
+            }
+            
+            if viewModel.idError {
+                Text("16자 이내 영문,숫자,특수문자(_,.)만 사용 가능합니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Text("16자 이내 영문,숫자,특수문자(_,.)만 사용 가능합니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.gray400)
+            }
+            
+            if viewModel.idDuplicate {
+                Text("동일한 아이디가 존재합니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 20)
+            } else {
+                Spacer().frame(height: 40)
+            }
+            
+            Text("비밀번호")
+                .textStyle(.Q_Main)
+                .foregroundStyle(.white)
+                .padding(.leading, 10)
             
             InputView{
                 if pwdShown{
@@ -191,27 +231,16 @@ struct SignupView: View {
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer().frame(height: 19)
+                Spacer().frame(height: 20)
             } else {
-                Spacer().frame(height: 34)
+                Spacer().frame(height: 40)
             }
             
-            InputView{
-                TextField("아이디를 입력해주세요.", text: $viewModel.username)
-                    .textInputAutocapitalization(.never)
-                    .focused($isFocused)
-            }
             
-            if viewModel.idError {
-                Text("16자 이내 영문,숫자,특수문자(_,.)만 사용 가능합니다.")
-                    .textStyle(.login_alert)
-                    .foregroundStyle(.warning)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            } else {
-                Text("16자 이내 영문,숫자,특수문자(_,.)만 사용 가능합니다.")
-                    .textStyle(.login_alert)
-                    .foregroundStyle(.gray400)
-            }
+            Text("이름")
+                .textStyle(.Q_Main)
+                .foregroundStyle(.white)
+                .padding(.leading, 10)
             
             InputView{
                 TextField("이름을 입력해주세요.", text: $viewModel.name)
@@ -228,16 +257,29 @@ struct SignupView: View {
                     .textStyle(.login_alert)
                     .foregroundStyle(.gray400)
             }
-            
-            if viewModel.signupError {
-                Text("입력하지 않은 값 또는 조건에 맞지 않는 값이 있습니다.")
+            if viewModel.nameDuplicate {
+                Text("동일한 이름이 존재합니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
-                Spacer().frame(height: 7)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 20)
             } else {
-                Spacer().frame(height: 22)
+                Spacer().frame(height: 40)
             }
-    
+            
+            Divider()
+                .frame(maxWidth: .infinity)
+                .background(Color.white)
+            VStack{
+                HStack{
+                    
+                }
+            }
+            Divider()
+                .frame(maxWidth: .infinity)
+                .background(Color.white)
+            
+            Spacer().frame(height: 22)
             ButtonView(action:{
                 viewModel.emailErrorMessage = ""
                 viewModel.codeErrorMessage = ""
