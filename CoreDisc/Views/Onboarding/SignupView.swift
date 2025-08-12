@@ -88,6 +88,12 @@ struct SignupView: View {
                     TextField("이메일을 입력해주세요.", text: $viewModel.email)
                         .textInputAutocapitalization(.never)
                         .focused($isFocused)
+                        .onChange(of: viewModel.email) { oldValue, newValue in
+                            if viewModel.emailSuccess {
+                                viewModel.emailSuccess = false
+                                viewModel.emailBoxColor = false
+                            }
+                        }
                 }
                 HStack{
                     Spacer()
@@ -170,6 +176,11 @@ struct SignupView: View {
                     TextField("아이디를 입력해주세요.", text: $viewModel.username)
                         .textInputAutocapitalization(.never)
                         .focused($isFocused)
+                        .onChange(of: viewModel.username) { oldValue, newValue in
+                            if viewModel.idSuccess {
+                                viewModel.idSuccess = false
+                            }
+                        }
                 }
                 HStack{
                     Spacer()
@@ -309,6 +320,11 @@ struct SignupView: View {
                     TextField("이름을 입력해주세요.", text: $viewModel.name)
                         .textInputAutocapitalization(.never)
                         .focused($isFocused)
+                        .onChange(of: viewModel.name) { oldValue, newValue in
+                            if viewModel.nameSuccess {
+                                viewModel.nameSuccess = false
+                            }
+                        }
                 }
                 HStack{
                     Spacer()
