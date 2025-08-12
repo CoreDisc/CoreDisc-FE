@@ -14,7 +14,7 @@ enum PostRouter {
     case putAnswerText(postId: Int, questionId: Int, content: String) // 글 답변 작성/수정
     case putAnswerImage(postId: Int, questionId: Int, image: String) // 이미지 답변 등록 또는 수정
     
-    case getPosts(postFeedData: PostFeedData) // 게시글 피드 조회 (Pull 모델)
+    case getPosts(feedType: String?, cursorId: Int?, size: Int?) // 게시글 피드 조회 (Pull 모델)
     case postPosts(selectedDate: String) // 게시글 생성 (임시저장)
     case getPostsDetail(postId: Int) // 게시글 상세 조회
     case deletePosts(postId: Int) // 게시글 삭제
@@ -76,12 +76,22 @@ extension PostRouter: APITargetType {
         case .putAnswerImage(_, _, let image):
             return .requestParameters(parameters: ["image": image], encoding: JSONEncoding.default)
             
-        case .getPosts(let postFeedData):
-            return .requestParameters(parameters: [
-                "feedType": postFeedData.feedType,
-                "cursor": postFeedData.cursor,
-                "size": postFeedData.size
-            ], encoding: URLEncoding.queryString)
+        case .getPosts(
+            let feedType,
+            let cursor,
+            let size
+        ):
+            var parameters: [String: Any] = [:]
+            if let feedType = feedType {
+                parameters["feedType"] = feedType
+            }
+            if let cursor = cursor {
+                parameters["cursor"] = cursor
+            }
+            if let size = size {
+                parameters["size"] = size
+            }
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
         case .postPosts(let selectedDate):
             return .requestParameters(parameters: ["selectedDate": selectedDate], encoding: JSONEncoding.default)
         case .getPostsDetail:
