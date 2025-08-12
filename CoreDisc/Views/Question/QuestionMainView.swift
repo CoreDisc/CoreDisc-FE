@@ -13,6 +13,8 @@ struct QuestionMainView: View {
     @State var isSelectView: Bool = false
     @State var currentOrder: Int = 0
     
+    @State var currentQuestionType: String = ""
+    
     // 씨디 돌아가는 애니메이션
     @State private var rotationAngle: Double = 0.0
     let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
@@ -103,6 +105,7 @@ struct QuestionMainView: View {
             
             QuestionSelectItem(
                 moveLeft: $isSelectView,
+                currentQuestionType: $currentQuestionType,
                 text: question1?.question ?? "고정질문을 선택하세요",
                 order: 1,
                 onTap: { currentOrder = $0 },
@@ -113,6 +116,7 @@ struct QuestionMainView: View {
             
             QuestionSelectItem(
                 moveLeft: $isSelectView,
+                currentQuestionType: $currentQuestionType,
                 text: question2?.question ?? "고정질문을 선택하세요",
                 order: 2,
                 onTap: { currentOrder = $0 },
@@ -123,6 +127,7 @@ struct QuestionMainView: View {
             
             QuestionSelectItem(
                 moveLeft: $isSelectView,
+                currentQuestionType: $currentQuestionType,
                 text: question3?.question ?? "고정질문을 선택하세요",
                 order: 3,
                 onTap: { currentOrder = $0 },
@@ -133,6 +138,7 @@ struct QuestionMainView: View {
             
             QuestionSelectItem(
                 moveLeft: $isSelectView,
+                currentQuestionType: $currentQuestionType,
                 text: question4?.question ?? "랜덤질문을 선택하세요",
                 order: 4,
                 onTap: { currentOrder = $0 },
@@ -154,7 +160,7 @@ struct QuestionMainView: View {
                 QuestionWriteView()
             }
             QuestionSelectButton(title: "기본 질문") {
-                QuestionBasicView(order: currentOrder)
+                QuestionBasicView(selectedQuestionType: currentQuestionType, order: currentOrder)
             }
             QuestionSelectButton(title: "인기 질문") {
                 QuestionTrendingView()
@@ -170,6 +176,7 @@ struct QuestionMainView: View {
 // 질문 선택 컴포넌트
 struct QuestionSelectItem: View {
     @Binding var moveLeft: Bool
+    @Binding var currentQuestionType: String
     
     var text: String
     var order: Int // 1, 2, 3
@@ -181,6 +188,11 @@ struct QuestionSelectItem: View {
     var body: some View {
         Button(action: {
             withAnimation(.easeInOut(duration: 0.4)) {
+                if order == 4 {
+                    currentQuestionType = "RANDOM"
+                } else {
+                    currentQuestionType = "FIXED"
+                }
                 moveLeft = true
                 onTap?(order)
             }
