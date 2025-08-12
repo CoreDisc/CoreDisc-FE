@@ -54,14 +54,14 @@ struct FindPwView: View {
         VStack{
             HStack{
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
-                Text("비밀번호 찾기")
+                Text("비밀번호 변경하기")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 26)
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
             }
             
@@ -102,14 +102,14 @@ struct FindPwView: View {
         VStack(alignment: .leading){
             HStack{
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
-                Text("비밀번호 찾기")
+                Text("비밀번호 변경하기")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 26)
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
             }
             
@@ -155,14 +155,14 @@ struct FindPwView: View {
         VStack(alignment: .leading){
             HStack{
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
-                Text("비밀번호 찾기")
+                Text("비밀번호 변경하기")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 26)
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
             }
             
