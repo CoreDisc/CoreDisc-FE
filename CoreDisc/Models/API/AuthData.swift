@@ -23,6 +23,12 @@ enum EmailRequestType: String, Codable {
     case signup = "SIGNUP"
 }
 
+struct VerifySignupCodeData: Codable {
+    let email: String
+    let code: String
+    let emailRequestType: EmailRequestType
+}
+
 struct VerifyCodeData: Codable {
     let username: String
     let code: String
@@ -43,6 +49,6 @@ struct UsernameData: Codable {
 
 // 비밀번호 변경 - 사용자 검증
 struct VerifyUserData: Codable {
-    let name: String
     let username: String
+    let email: String
 }

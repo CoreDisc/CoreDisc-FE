@@ -7,14 +7,10 @@
 
 import SwiftUI
 
-
 struct FindIdView: View {
     
     @Environment(\.dismiss) var dismiss
-    @State var name: String = ""
-    @State var email: String = ""
-    @State private var find = false
-    @State private var isError = true
+    @StateObject private var viewModel = FindIdViewModel()
     
     var body: some View {
         NavigationStack {
@@ -38,7 +34,7 @@ struct FindIdView: View {
                     
                     Spacer().frame(height: 16)
                     
-                    if find {
+                    if viewModel.findedId {
                         FindGroup
                     } else {
                         InputGroup
@@ -67,14 +63,14 @@ struct FindIdView: View {
             Spacer().frame(height: 24)
             
             InputView{
-                TextField("이름", text: $name)
+                TextField("이름", text: $viewModel.name)
             }
             
             InputView{
-                TextField("이메일", text: $email)
+                TextField("이메일", text: $viewModel.email)
             }
             
-            if isError {
+            if viewModel.isError {
                 Text("일치하는 이름 혹은 이메일이 존재하지 않습니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -85,10 +81,10 @@ struct FindIdView: View {
             }
             
             
-            ButtonView(action:{find = true}, label: {
+            ButtonView(action:{viewModel.findId()}, label: {
                 Text("아이디 찾기")
-            }, boxColor: (name.isEmpty || email.isEmpty) ? .gray400 : .key)
-            .disabled(name.isEmpty || email.isEmpty)
+            }, boxColor: (viewModel.name.isEmpty || viewModel.email.isEmpty) ? .gray400 : .key)
+            .disabled(viewModel.name.isEmpty || viewModel.email.isEmpty)
             
             Spacer().frame(height: 12)
             NavigationLink(destination: LoginView()) {
@@ -146,7 +142,7 @@ struct FindIdView: View {
             Text("아이디는")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
-            Text("coredisc_Ko")
+            Text(viewModel.id)
                 .textStyle(.Id_Find)
                 .foregroundStyle(.white)
                 .padding(.vertical, 10)

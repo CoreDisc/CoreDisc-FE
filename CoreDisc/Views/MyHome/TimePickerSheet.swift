@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TimePickerSheet: View {
     @Binding var showSheet: Bool
-    @EnvironmentObject var notificationViewModel: NotificationViewModel
+    @EnvironmentObject var notificationViewModel: NotificationSettingViewModel
     
     var timeType: TimeType
 
@@ -77,7 +77,7 @@ struct TimePickerSheet: View {
         }
         .padding(.horizontal, 18)
         .ignoresSafeArea()
-        .onAppear {
+        .task {
             switch timeType {
             case .first:
                 selectedHour = notificationViewModel.firstHour
@@ -149,5 +149,5 @@ struct TimePickerSheet: View {
 
 #Preview {
     TimePickerSheet(showSheet: .constant(true), timeType: .first)
-        .environmentObject(NotificationViewModel())
+        .environmentObject(NotificationSettingViewModel())
 }

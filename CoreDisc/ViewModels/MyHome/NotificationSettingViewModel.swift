@@ -12,7 +12,7 @@ enum TimeType {
     case second
 }
 
-class NotificationViewModel: ObservableObject {
+class NotificationSettingViewModel: ObservableObject {
     @Published var timeType: TimeType = .first
     
     @Published var firstHour: Int = 8

@@ -11,29 +11,35 @@ import SwiftUI
 enum CategoryType: CaseIterable {
     case all
     case favorite
-    case meal
-    case sleep
-    case hobby
-    case place
+    case taste
+    case lifeStyle
+    case relationship
+    case selfImprovement
+    case health
+    case culture
     case feeling
-    case leisure
+    case hobby
+    case dream
     case other
     
     static var allCases: [CategoryType] {
-        return [.all, .favorite, .meal, .sleep, .hobby, .place, .feeling, .leisure, .other]
+        return [.all, .favorite, .taste, .lifeStyle, .relationship, .selfImprovement, .health, .culture, .feeling, .hobby, .dream, .other]
     }
     
-    var title: Text {
+    var title: String {
         switch self {
-        case .all: Text("All")
-        case .favorite: Text("즐겨찾기")
-        case .meal: Text("#식사")
-        case .sleep: Text("#수면")
-        case .hobby: Text("#취미")
-        case .place: Text("#장소")
-        case .feeling: Text("#기분")
-        case .leisure: Text("#여가")
-        case .other: Text("#기타")
+        case .all: "All"
+        case .favorite: "즐겨찾기"
+        case .taste: "취향"
+        case .lifeStyle: "라이프스타일"
+        case .relationship: "인간관계"
+        case .selfImprovement: "자기계발"
+        case .health: "건강"
+        case .culture: "문화"
+        case .feeling: "감정"
+        case .hobby: "취미"
+        case .dream: "꿈"
+        case .other: "기타"
         }
     }
     
@@ -47,38 +53,53 @@ enum CategoryType: CaseIterable {
     
     var color: LinearGradient {
         switch self {
-        case .meal: LinearGradient(
+        case .taste: LinearGradient(
             colors: [.yellow1, .yellow2],
             startPoint: .leading,
             endPoint: .trailing
         )
-        case .sleep: LinearGradient(
+        case .lifeStyle: LinearGradient(
             colors: [.blue1, .blue2],
             startPoint: .leading,
             endPoint: .trailing
         )
-        case .hobby: LinearGradient(
+        case .relationship: LinearGradient(
             colors: [.purple1, .purple2],
             startPoint: .leading,
             endPoint: .trailing
         )
-        case .place: LinearGradient(
+        case .selfImprovement: LinearGradient(
             colors: [.pink1, .pink2],
             startPoint: .leading,
             endPoint: .trailing
         )
-        case .feeling: LinearGradient(
+        case .health: LinearGradient(
             colors: [.lavender1, .lavender2],
             startPoint: .leading,
             endPoint: .trailing
         )
-        case .leisure: LinearGradient(
+        case .culture: LinearGradient(
             colors: [.mint1, .mint2],
             startPoint: .leading,
             endPoint: .trailing
         )
-        case .other: LinearGradient(
+        case .feeling: LinearGradient(
             colors: [.orange1, .orange2],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        case .hobby: LinearGradient(
+            colors: [.red1, .red2],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        case .dream: LinearGradient(
+            colors: [.navy1, .navy2],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        case .other: LinearGradient(
+            colors: [.gray700, .gray700],
             startPoint: .leading,
             endPoint: .trailing
         )
