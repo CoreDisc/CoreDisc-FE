@@ -13,6 +13,8 @@ enum postCategoryTap : String, CaseIterable {
 }
 
 struct PostMainView: View {
+    @StateObject private var viewModel = PostMainViewModel()
+    
     @State private var selectedTab: postCategoryTap = .all
     @Namespace private var animation
     
@@ -91,8 +93,8 @@ struct PostMainView: View {
 
         return ScrollView {
             LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(1..<10, id: \.self) { item in
-                    PostCard(Thumbnail_text: "계절마다 떠오르는 음식이 있나요? 요즘 생각나는 건 뭐예요?", userID: "@coredisc.ko")
+                ForEach(viewModel.postList, id: \.postId) { item in
+                    PostCard(item: item)
                 }
             }
             .padding(.top, 16)
@@ -103,8 +105,7 @@ struct PostMainView: View {
 
 // 게시물 카드
 struct PostCard: View {
-    var Thumbnail_text: String
-    var userID: String
+    var item: PostMain
     
     var body: some View {
         NavigationLink(destination: PostDetailView()) { // TODO: 게시글 id 사용해서 화면 전환
@@ -124,7 +125,7 @@ struct PostCard: View {
                             .padding(.top, 5)
                         
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("\(Thumbnail_text)")
+                            Text("") // TODO: 게시글 질문
                                 .textStyle(.Button_s)
                                 .foregroundStyle(.black000)
                                 .lineLimit(3)
@@ -135,7 +136,7 @@ struct PostCard: View {
                             Spacer()
                             
                             HStack {
-                                Text("\(userID)")
+                                Text("") // TODO: 유저 아이디
                                     .textStyle(.login_alert)
                                     .foregroundStyle(.gray800)
                                     .padding(.bottom, 1)
