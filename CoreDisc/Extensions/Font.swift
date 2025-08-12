@@ -206,6 +206,12 @@ extension TextStyle {
         lineSpacing: 4
     )
     
+    static var Calendar_text = TextStyle(
+        font: .pretendard(type: .medium, size: 20),
+        kerning: -1,
+        lineSpacing: 4
+    )
+    
     
     // regular 400
     static var Sub_Text_Ko = TextStyle(

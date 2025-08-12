@@ -122,7 +122,6 @@ struct QuestionWriteView: View {
             (.dream, 0.3), (.other, 0.7)
         ]
         
-        // 🔧 사전에 쌍을 미리 계산해둠
         let pairs = stride(from: 0, to: categoryPairs.count, by: 2).map { i in
             (
                 left: (categoryPairs[i].0.title, categoryPairs[i].1),
