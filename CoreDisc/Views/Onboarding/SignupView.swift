@@ -62,7 +62,6 @@ struct SignupView: View {
         }
     }
     
-    
     private var MainGroup : some View{
         VStack(alignment: .leading){
             HStack{
@@ -93,12 +92,12 @@ struct SignupView: View {
                 HStack{
                     Spacer()
                     Button(action: {
-                        print("중복확인")
+                        viewModel.CkeckEmail()
                     }, label: {
                         ZStack{
                             Capsule()
                                 .frame(width: 63, height: 25)
-                                .foregroundStyle(viewModel.email.isEmpty ? .gray400 : .highlight)
+                                .foregroundStyle((viewModel.email.isEmpty || viewModel.emailSuccess) ? .gray400 : .highlight)
                             Text("중복확인")
                                 .textStyle(.Q_pick)
                                 .foregroundStyle(.black000)
@@ -107,21 +106,26 @@ struct SignupView: View {
                     })
                 }
             }
-
             
             ButtonView(action:{viewModel.sendCode()}, label: {
                 Text("인증 번호 전송")
-            }, boxColor: (viewModel.email.isEmpty || viewModel.EmailVerified) ? .gray400 : .key)
-            .disabled(viewModel.email.isEmpty || viewModel.EmailVerified)
+            }, boxColor: (viewModel.email.isEmpty || !viewModel.emailBoxColor || viewModel.EmailVerified) ? .gray400 : .key)
+            .disabled(viewModel.email.isEmpty || !viewModel.emailBoxColor || viewModel.EmailVerified)
             
-            if !viewModel.emailErrorMessage.isEmpty {
-                Text(viewModel.emailErrorMessage)
+            if viewModel.emailDuplicate {
+                Text("이미 사용 중인 이메일입니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer().frame(height: 19)
+                Spacer().frame(height: 20)
             } else if viewModel.EmailVerified {
                 Text("인증번호가 전송되었습니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.gray400)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 8)
+            } else if viewModel.emailSuccess {
+                Text("사용 가능한 이메일입니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.gray400)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -170,12 +174,12 @@ struct SignupView: View {
                 HStack{
                     Spacer()
                     Button(action: {
-                        print("중복확인")
+                        viewModel.CkeckUsername()
                     }, label: {
                         ZStack{
                             Capsule()
                                 .frame(width: 63, height: 25)
-                                .foregroundStyle(viewModel.username.isEmpty ? .gray400 : .highlight)
+                                .foregroundStyle((viewModel.username.isEmpty || viewModel.idSuccess) ? .gray400 : .highlight)
                             Text("중복확인")
                                 .textStyle(.Q_pick)
                                 .foregroundStyle(.black000)
@@ -202,7 +206,13 @@ struct SignupView: View {
                     .foregroundStyle(.warning)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer().frame(height: 20)
-            } else {
+            } else if viewModel.idSuccess {
+                Text("사용 가능한 아이디입니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.gray400)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 20)
+            }else {
                 Spacer().frame(height: 40)
             }
             
@@ -303,12 +313,12 @@ struct SignupView: View {
                 HStack{
                     Spacer()
                     Button(action: {
-                        print("중복확인")
+                        viewModel.CkeckName()
                     }, label: {
                         ZStack{
                             Capsule()
                                 .frame(width: 63, height: 25)
-                                .foregroundStyle(viewModel.name.isEmpty ? .gray400 : .highlight)
+                                .foregroundStyle((viewModel.name.isEmpty || viewModel.nameSuccess) ? .gray400 : .highlight)
                             Text("중복확인")
                                 .textStyle(.Q_pick)
                                 .foregroundStyle(.black000)
@@ -317,7 +327,6 @@ struct SignupView: View {
                     })
                 }
             }
-
             
             if viewModel.nicknameError {
                 Text("16자 이내 영문,한글만 사용 가능합니다.")
@@ -333,6 +342,12 @@ struct SignupView: View {
                 Text("동일한 이름이 존재합니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(height: 20)
+            } else if viewModel.nameSuccess {
+                Text("사용 가능한 이름입니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.gray400)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer().frame(height: 20)
             } else {
@@ -409,7 +424,6 @@ struct SignupView: View {
             
             Spacer().frame(height: 22)
             ButtonView(action:{
-                viewModel.emailErrorMessage = ""
                 viewModel.codeErrorMessage = ""
                 viewModel.pwdError = false
                 viewModel.rePwdError = false

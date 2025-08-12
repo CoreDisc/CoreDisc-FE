@@ -71,3 +71,36 @@ struct TermsData: Decodable {
     let version: Int
     let isRequired: Bool
 }
+
+struct EmailCheckResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: EmailResult
+}
+
+struct EmailResult: Decodable {
+    let duplicated: Bool
+}
+
+struct UsernameCheckResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: UsernameResult
+}
+
+struct UsernameResult: Decodable {
+    let duplicated: Bool
+}
+
+struct NameCheckResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: NameResult
+}
+
+struct NameResult: Decodable {
+    let duplicated: Bool
+}
