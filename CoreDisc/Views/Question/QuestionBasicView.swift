@@ -9,6 +9,9 @@ import SwiftUI
 
 struct QuestionBasicView: View {
     @StateObject private var viewModel = QuestionBasicViewModel()
+    @StateObject private var mainViewModel = QuestionMainViewModel()
+    
+    let selectedQuestionType: String
     
     @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused: Bool
@@ -20,7 +23,6 @@ struct QuestionBasicView: View {
     // 질문 선택/저장 용도
     let order: Int
     @State private var selectedQuestionId: Int? = nil
-    @State private var selectedQuestionType: String? = nil
     
     // 열려있는 카테고리
     @State private var expandedCategoryIDs: Set<UUID> = []
@@ -65,22 +67,23 @@ struct QuestionBasicView: View {
                     }
                 } leftButton: {
                     Button(action: {
-                        guard let questionId = selectedQuestionId,
-                              let type = selectedQuestionType else { return }
+                        guard let questionId = selectedQuestionId else { return }
                         
-                        if type == "FIXED" {
+                        if selectedQuestionType == "FIXED" {
                             let data = FixedData(
                                 selectedQuestionType: .DEFAULT,
                                 questionOrder: order,
                                 questionId: questionId
                             )
                             viewModel.fetchFixedBasic(fixedData: data)
+                            mainViewModel.fetchSelected()
                         } else {
                             let data = RandomData(
                                 selectedQuestionType: .DEFAULT,
                                 questionId: questionId
                             )
                             viewModel.fetchRandomBasic(randomData: data)
+                            mainViewModel.fetchSelected()
                         }
                         
                         showSelectModal.toggle() // 모달 제거
@@ -252,10 +255,8 @@ struct QuestionBasicView: View {
                                         startColor: item.startColor,
                                         endColor: item.endColor,
                                         questionId: question.id,
-                                        questionType: question.questionType,
-                                        onSelect: { id, type in
+                                        onSelect: { id in
                                             selectedQuestionId = id
-                                            selectedQuestionType = type
                                         }
                                     )
                                     .task {
@@ -369,8 +370,7 @@ struct QuestionBasicDetailItem: View {
     var endColor: Color
     
     var questionId: Int
-    var questionType: String
-    var onSelect: (Int, String) -> Void
+    var onSelect: (Int) -> Void
     
     @State private var isShifted: Bool = false
     
@@ -411,14 +411,14 @@ struct QuestionBasicDetailItem: View {
             HStack(spacing: 3) {
                 Button {
                     showSelectModal.toggle()
-                    onSelect(questionId, questionType)
+                    onSelect(questionId)
                 } label: {
                     Image(isSelected ? .iconBasicSelected : .iconBasicSelect)
                 }
                 
                 Button {
                     showSaveModal.toggle()
-                    onSelect(questionId, questionType)
+                    onSelect(questionId)
                 } label: {
                     Image(isFavorite ? .iconBasicSaved : .iconBasicSave)
                 }
@@ -432,5 +432,5 @@ struct QuestionBasicDetailItem: View {
 }
 
 #Preview {
-    QuestionBasicView(order: 1)
+    QuestionBasicView(selectedQuestionType: "FIXED", order: 1)
 }
