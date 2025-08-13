@@ -115,7 +115,7 @@ struct PostCard: View {
     var item: PostMain
     
     var body: some View {
-        NavigationLink(destination: PostDetailView()) { // TODO: 게시글 id 사용해서 화면 전환
+        NavigationLink(destination: PostDetailView(postId: item.postId)) {
             ZStack(alignment: .top) {
                 Rectangle()
                     .frame(width: 164)
@@ -180,7 +180,7 @@ struct PostCard: View {
                             
                             HStack {
                                 // 유저 아이디
-                                Text(item.member.nickname)
+                                Text(item.member.username)
                                     .textStyle(.login_alert)
                                     .foregroundStyle(.gray800)
                                     .padding(.bottom, 1)

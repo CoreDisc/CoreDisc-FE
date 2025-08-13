@@ -29,7 +29,7 @@ struct PostMain: Decodable {
 
 struct PostMainMember: Decodable {
     let memberId: Int
-    let nickname: String
+    let username: String
     let profileImg: String
 }
 
