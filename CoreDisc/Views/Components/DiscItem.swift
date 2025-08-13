@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct DiscItem: View {
-    
-    let image : Image
+    let imageUrl: String?
+    let localImageName: String?
+    let dateLabel: String
     
     var body: some View {
         ZStack(alignment: .leading){
@@ -24,11 +26,24 @@ struct DiscItem: View {
                 )
                 .cornerRadius(12, corners: [.topLeft, .bottomLeft])
             
-            image
-                .frame(width: 86, height: 86)
-                .padding(.leading, 5)
+            if let urlString = imageUrl,
+               let url = URL(string: urlString),
+               !urlString.isEmpty {
+                KFImage(url)
+                    .frame(width: 86, height: 86)
+                    .padding(.leading, 5)
+            } else if let localName = localImageName {
+                Image(localName)
+                    .resizable()
+                    .frame(width: 86, height: 86)
+                    .padding(.leading, 5)
+            } else {
+                Image(.imgBasicDisc)
+                    .frame(width: 86, height: 86)
+                    .padding(.leading, 5)
+            }
             
-            Text("2025-07")
+            Text(dateLabel)
                 .textStyle(.Small_Text_10)
                 .foregroundStyle(.white)
                 .offset(x:10, y:-35)
