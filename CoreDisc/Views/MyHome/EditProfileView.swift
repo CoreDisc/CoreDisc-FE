@@ -40,7 +40,7 @@ struct EditProfileView: View {
             }
         }
         .task {
-//            viewModel.fetchMyHome()
+            viewModel.fetchMyHome()
         }
         .toolbarVisibility(.hidden, for: .navigationBar)
     }
@@ -147,17 +147,27 @@ struct EditProfileView: View {
             ProfileEditTextField(
                 type: "Nick Name",
                 text: $viewModel.nickname,
-                duplicated: .constant(false),
+                duplicated: $viewModel.nameDuplicated,
                 viewModel: viewModel
             )
                 .focused($isFocused) // 키보드 내리기
+                .onChange(of: viewModel.nickname) { oldValue, newValue in
+                      if viewModel.nameCheckSuccess {
+                          viewModel.nameCheckSuccess = false
+                      }
+                  }
             ProfileEditTextField(
                 type: "User Name",
                 text: $viewModel.username,
-                duplicated: $viewModel.duplicated,
+                duplicated: $viewModel.idDuplicated,
                 viewModel: viewModel
             )
                 .focused($isFocused) // 키보드 내리기
+                .onChange(of: viewModel.username) { oldValue, newValue in
+                      if viewModel.idCheckSuccess {
+                          viewModel.idCheckSuccess = false
+                      }
+                  }
         }
     }
 }
@@ -200,7 +210,7 @@ struct ProfileEditTextField: View {
                         .textStyle(.login_alert)
                         .foregroundStyle(.warning)
                         .padding(.top, 2)
-                } else if type == "User Name", !duplicated { // 타입이 유저네임이고, 중복이 아닌 경우
+                } else if type == "User Name", viewModel.idCheckSuccess { // 타입이 유저네임이고, 중복이 아닌 경우
                     Text("사용 가능한 아이디입니다.")
                         .textStyle(.login_alert)
                         .foregroundStyle(.white)
@@ -212,7 +222,7 @@ struct ProfileEditTextField: View {
                         .textStyle(.login_alert)
                         .foregroundStyle(.warning)
                         .padding(.top, 2)
-                } else if type == "Nick Name", !duplicated { // TODO: duplicated는 닉네임용으로 다시 만들기
+                } else if type == "Nick Name", viewModel.nameCheckSuccess { // TODO: duplicated는 닉네임용으로 다시 만들기
                     Text("사용 가능한 닉네임입니다.")
                         .textStyle(.login_alert)
                         .foregroundStyle(.white)
@@ -226,17 +236,28 @@ struct ProfileEditTextField: View {
                 if type == "User Name" {
                     viewModel.fetchIdCheck(username: text)
                 } else {
-                    // TODO: nickname 중복확인 API
+                    viewModel.fetchNameCheck()
                 }
             }) {
-                Text("중복확인")
-                    .textStyle(.Q_pick)
-                    .foregroundStyle(.black000)
-                    .frame(width: 63, height: 24)
-                    .background(
-                        RoundedRectangle(cornerRadius: 30)
-                            .fill(.key)
-                    )
+                if type == "User Name" {
+                    Text("중복확인")
+                        .textStyle(.Q_pick)
+                        .foregroundStyle(.black000)
+                        .frame(width: 63, height: 24)
+                        .background(
+                            RoundedRectangle(cornerRadius: 30)
+                                .fill(viewModel.idCheckSuccess ? .gray400 : .key)
+                        )
+                }else{
+                    Text("중복확인")
+                        .textStyle(.Q_pick)
+                        .foregroundStyle(.black000)
+                        .frame(width: 63, height: 24)
+                        .background(
+                            RoundedRectangle(cornerRadius: 30)
+                                .fill(viewModel.nameCheckSuccess ? .gray400 : .key)
+                        )
+                }
             }
             .padding(.top, 3)
         }

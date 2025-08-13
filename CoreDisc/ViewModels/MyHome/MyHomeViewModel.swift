@@ -23,7 +23,12 @@ class MyHomeViewModel: ObservableObject {
     @Published var hasNextPage: Bool = false
     
     // fetchIdCheck
-    @Published var duplicated: Bool = false
+    @Published var idDuplicated: Bool = false
+    @Published var idCheckSuccess: Bool = false
+    
+    // fetchNameCheck
+    @Published var nameDuplicated: Bool = false
+    @Published var nameCheckSuccess: Bool = false
     
     private let memberProvider = APIManager.shared.createProvider(for: MemberRouter.self)
     private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
@@ -102,9 +107,11 @@ class MyHomeViewModel: ObservableObject {
             case .success(let response):
                 do {
                     let decodedData = try JSONDecoder().decode(EditCheckUsernameResponse.self, from: response.data)
-                    let result = decodedData.result
+                    self.idDuplicated = decodedData.result.duplicated
+                    if !self.idDuplicated {
+                        self.idCheckSuccess = true
+                    }
                     
-                    self.duplicated = result.duplicated
                 } catch {
                     print("GetCheckUsername 디코더 오류: \(error)")
                     DispatchQueue.main.async {
@@ -116,6 +123,25 @@ class MyHomeViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     ToastManager.shared.show("아이디 중복 확인을 하지 못했습니다.")
                 }
+            }
+        }
+    }
+    
+    func fetchNameCheck() {
+        authProvider.request(.getCheckNickname(nickname: nickname)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedResponse = try JSONDecoder().decode(EditCheckNameResponse.self, from: response.data)
+                    self.nameDuplicated = decodedResponse.result.duplicated
+                    if !self.nameDuplicated {
+                        self.nameCheckSuccess = true
+                    }
+                } catch {
+                    print("디코딩 실패 : \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류 : \(error)")
             }
         }
     }
