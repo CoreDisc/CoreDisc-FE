@@ -63,7 +63,7 @@ struct PostDetailView: View {
         }
         .navigationBarBackButtonHidden() // 기본 뒤로가기 버튼 제거
         .sheet(isPresented: $showCommentSheet) {
-            CommentSheetView(showSheet: $showCommentSheet, viewModel: viewModel)
+            CommentSheetView(showSheet: $showCommentSheet, postId: postId, viewModel: viewModel)
                 .presentationBackground(.clear)
                 .presentationDetents([.height(600)])
                 .presentationDragIndicator(.hidden)

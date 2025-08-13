@@ -10,6 +10,8 @@ import Kingfisher
 
 struct CommentSheetView: View {
     @Binding var showSheet: Bool
+    let postId: Int
+    
     @ObservedObject var viewModel: PostDetailViewModel
     
     // 열려있는 댓글
@@ -105,14 +107,6 @@ struct CommentSheetView: View {
     
     private var TextfieldGroup: some View {
         HStack(spacing: 4) {
-            Image(.imgShortBackground) // TODO: Profile Image
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 32, height: 32)
-                .clipShape(
-                    Circle()
-                )
-            
             TextField("댓글을 달아보세요...", text: $commentText)
                 .textStyle(.Texting_Q)
                 .foregroundStyle(.black000)
@@ -124,9 +118,14 @@ struct CommentSheetView: View {
                         .stroke(.key, lineWidth: 0.5)
                 )
                 .focused($isFocused)
+                .onSubmit {
+                    viewModel.fetchCommentWrite(postId: postId, content: commentText)
+                    commentText = ""
+                }
             
             Button(action: {
-                // TODO: comment
+                viewModel.fetchCommentWrite(postId: postId, content: commentText)
+                commentText = ""
             }) {
                 Image(.iconCommentUpload)
             }

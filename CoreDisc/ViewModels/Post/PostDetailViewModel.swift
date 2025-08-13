@@ -112,4 +112,31 @@ class PostDetailViewModel: ObservableObject {
             }
         }
     }
+    
+    func fetchCommentWrite(
+        postId: Int,
+        content: String
+    ) {
+        commentProvider.request(.postComments(
+            postId: postId, content: content
+        )) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    _ = try JSONDecoder().decode(CommentWriteResponse.self, from: response.data)
+                    self.fetchCommentList(postId: postId)
+                } catch {
+                    print("PostComments 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("댓글을 작성하지 못했습니다.")
+                    }
+                }
+            case .failure(let error):
+                print("PostComments API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("댓글을 작성하지 못했습니다.")
+                }
+            }
+        }
+    }
 }
