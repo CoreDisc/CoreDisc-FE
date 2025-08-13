@@ -20,7 +20,7 @@ enum MemberRouter {
     case getMyhome // 마이홈 본인 정보 조회
     case getMyhomeTargetUsername(targetUsername: String) // 마이홈 타사용자 정보 조회
     case getMyhomePosts(cursorId: Int?, size: Int?) // 마이홈 본인 게시글 리스트 조회
-    case getMyhomePostsTargetUsername(targetUsername: String) // 마이홈 타사용자 게시글 리스트 조회
+    case getMyhomePostsTargetUsername(targetUsername: String, cursorId: Int?, size: Int?) // 마이홈 타사용자 게시글 리스트 조회
 }
 
 extension MemberRouter: APITargetType {
@@ -48,7 +48,7 @@ extension MemberRouter: APITargetType {
             return "\(Self.myhomePath)/\(targetUsername)"
         case .getMyhomePosts:
             return "\(Self.myhomePath)/posts"
-        case .getMyhomePostsTargetUsername(let targetUsername):
+        case .getMyhomePostsTargetUsername(let targetUsername, _, _):
             return "\(Self.myhomePath)/posts/\(targetUsername)"
         }
     }
@@ -90,8 +90,15 @@ extension MemberRouter: APITargetType {
                 parameters["size"] = size
             }
             return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
-        case .getMyhomePostsTargetUsername:
-            return .requestPlain  // TODO: 수정중
+        case .getMyhomePostsTargetUsername(_, let cursorId, let size):
+            var parameters: [String: Any] = [:]
+            if let cursorId = cursorId {
+                parameters["cursorId"] = cursorId
+            }
+            if let size = size {
+                parameters["size"] = size
+            }
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
         }
     }
 }
