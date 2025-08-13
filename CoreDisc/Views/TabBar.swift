@@ -25,8 +25,7 @@ struct TabBar: View {
             Group {
                 switch selectedTab {
                 case .home:
-//                    PostMainView()
-                    PostDetailView(postId: 11)
+                    PostMainView()
                 case .disk:
                     QuestionMainView()
                 case .write:

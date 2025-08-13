@@ -187,10 +187,17 @@ struct PostCard: View {
                                 
                                 Spacer()
                                 
-                                Image(.iconGlobe)
-                                    .resizable()
-                                    .frame(width: 10, height: 10)
-                                    .foregroundStyle(.gray800)
+                                if item.publicity == "CORE" {
+                                    Image(.iconPublicityCore)
+                                        .resizable()
+                                        .frame(width: 10, height: 10)
+                                        .foregroundStyle(.gray800)
+                                } else {
+                                    Image(.iconGlobe)
+                                        .resizable()
+                                        .frame(width: 10, height: 10)
+                                        .foregroundStyle(.gray800)
+                                }
                             }
                         }
                         .frame(width: 124)

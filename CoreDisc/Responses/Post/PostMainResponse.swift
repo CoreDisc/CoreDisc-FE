@@ -25,6 +25,7 @@ struct PostMain: Decodable {
     let member: PostMainMember
     let selectedDate: String
     let answer: PostMainAnswer
+    let publicity: String
 }
 
 struct PostMainMember: Decodable {
