@@ -16,7 +16,7 @@ struct PostMainResponse: Decodable {
 
 struct PostMainResult: Decodable {
     let posts: [PostMain]
-    let nextCursor: Int
+    let nextCursor: Int?
     let hasNext: Bool
 }
 
@@ -24,7 +24,7 @@ struct PostMain: Decodable {
     let postId: Int
     let member: PostMainMember
     let selectedDate: String
-    let answers: [PostMainAnswer]
+    let answer: PostMainAnswer
 }
 
 struct PostMainMember: Decodable {
@@ -34,11 +34,11 @@ struct PostMainMember: Decodable {
 }
 
 struct PostMainAnswer: Decodable {
-    let answerId: Int
+    let answerId: Int?
     let questionContent: String
-    let answerType: String
-    let imageAnswer: PostImageAnswer
-    let textAnswer: PostTextAnswer
+    let answerType: String?
+    let imageAnswer: PostImageAnswer?
+    let textAnswer: PostTextAnswer?
 }
 
 struct PostImageAnswer: Decodable {

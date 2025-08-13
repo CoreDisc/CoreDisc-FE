@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 enum postCategoryTap : String, CaseIterable {
     case all = "All"
@@ -30,12 +31,13 @@ struct PostMainView: View {
                     
                     CategoryGroup
                     
-                    ScrollView{
-                        PostGroup
-                            .padding(.bottom, 68) // 탭바 만큼 공간 추가
-                    }
+                    PostGroup
+                        .padding(.bottom, 68) // 탭바 만큼 공간 추가
                 }
             }
+        }
+        .task {
+            viewModel.fetchPosts()
         }
     }
     
@@ -95,6 +97,11 @@ struct PostMainView: View {
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(viewModel.postList, id: \.postId) { item in
                     PostCard(item: item)
+                        .task {
+                            if item.postId == viewModel.postList.last?.postId {
+                                viewModel.fetchPosts(cursor: item.postId)
+                            }
+                        }
                 }
             }
             .padding(.top, 16)
@@ -115,17 +122,53 @@ struct PostCard: View {
                     .foregroundStyle(.white)
                 
                 VStack(spacing: 8){
-                    Rectangle() // TODO: 추후 게시물 사진으로 변경
-                        .frame(width: 164, height: 195)
-                        .foregroundStyle(.gray200)
+                    // 게시글 사진
+                    if item.answer.answerType == "IMAGE" {
+                        if let url = URL(string: item.answer.imageAnswer?.thumbnailUrl ?? "") {
+                            KFImage(url)
+                                .placeholder({
+                                    ProgressView()
+                                        .controlSize(.mini)
+                                })
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 164, height: 195)
+                        }
+                    } else {
+                        ZStack {
+                            Rectangle()
+                                .fill(.white)
+                                .frame(width: 164, height: 195)
+                            
+                            Text(item.answer.textAnswer?.content
+                                .splitCharacter() ?? ""
+                            )
+                                .textStyle(.Post_Thumbnail_text)
+                                .foregroundStyle(.black000)
+                                .padding(.horizontal, 18)
+                        }
+                    }
                     
                     HStack(alignment: .top, spacing: 3) {
-                        Circle() // TODO: 추후 프로필 사진으로 변경
-                            .frame(width: 24, height: 24)
-                            .padding(.top, 5)
+                        // 프로필 이미지
+                        if let url = URL(string: item.member.profileImg) {
+                            KFImage(url)
+                                .placeholder({
+                                    ProgressView()
+                                        .controlSize(.mini)
+                                })
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 24, height: 24)
+                                .clipShape(Circle())
+                                .padding(.top, 5)
+                        }
                         
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("") // TODO: 게시글 질문
+                            // 질문
+                            Text(item.answer.questionContent
+                                .splitCharacter()
+                            )
                                 .textStyle(.Button_s)
                                 .foregroundStyle(.black000)
                                 .lineLimit(3)
@@ -136,7 +179,8 @@ struct PostCard: View {
                             Spacer()
                             
                             HStack {
-                                Text("") // TODO: 유저 아이디
+                                // 유저 아이디
+                                Text(item.member.nickname)
                                     .textStyle(.login_alert)
                                     .foregroundStyle(.gray800)
                                     .padding(.bottom, 1)
