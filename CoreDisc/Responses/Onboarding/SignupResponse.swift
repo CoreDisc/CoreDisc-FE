@@ -71,7 +71,6 @@ struct TermsData: Decodable {
     let termsId: Int
     let title: String
     let content: String
-    let version: Int
     let isRequired: Bool
 }
 
