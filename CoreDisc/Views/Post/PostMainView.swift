@@ -19,6 +19,15 @@ struct PostMainView: View {
     @State private var selectedTab: postCategoryTap = .all
     @Namespace private var animation
     
+    private var selectedPosts: [PostMain] {
+        switch selectedTab {
+        case .all:
+            return viewModel.postList
+        case .core:
+            return viewModel.postList.filter { $0.publicity == "CORE" }
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack{
@@ -95,7 +104,7 @@ struct PostMainView: View {
 
         return ScrollView {
             LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(viewModel.postList, id: \.postId) { item in
+                ForEach(selectedPosts, id: \.postId) { item in
                     PostCard(item: item)
                         .task {
                             if item.postId == viewModel.postList.last?.postId {
@@ -209,6 +218,7 @@ struct PostCard: View {
             .clipShape(
                 RoundedRectangle(cornerRadius: 12)
             )
+            .compositingGroup()
         }
     }
 }
