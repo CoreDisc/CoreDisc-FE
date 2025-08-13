@@ -8,6 +8,7 @@
 import Foundation
 
 class PostDetailViewModel: ObservableObject {
+    // 게시글 정보
     @Published var memberInfo: PostMainMember = .init(memberId: 0, username: "", profileImg: "")
     @Published var selectedData: String = ""
     @Published var publicity: String = ""
@@ -15,7 +16,12 @@ class PostDetailViewModel: ObservableObject {
     @Published var selectiveDiary: PostSelectiveDiary = .init(who: .UNKNOWN, where: .UNKNOWN, what: .UNKNOWN, mood: "")
     @Published var isLiked: Bool = false
     
+    // 댓글
+    @Published var commentList: [Comment] = []
+    @Published var commentHasNext: Bool = false
+    
     private let provider = APIManager.shared.createProvider(for: PostRouter.self)
+    private let commentProvider = APIManager.shared.createProvider(for: CommentRouter.self)
     
     var whoText: String { selectiveDiary.who.displayName }
     var whereText: String { selectiveDiary.where.displayName }
@@ -61,6 +67,47 @@ class PostDetailViewModel: ObservableObject {
                 print("GetPostsDetail API 오류: \(error)")
                 DispatchQueue.main.async {
                     ToastManager.shared.show("게시글 정보를 불러오지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    func fetchCommentList(
+        postId: Int,
+        cursorId: Int? = nil,
+        size: Int? = 20
+    ) {
+        commentProvider.request(.getComments(
+            postId: postId,
+            cursorId: cursorId,
+            size: size
+        )) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(CommentListResponse.self, from: response.data)
+                    let result = decodedData.result
+                    
+                    DispatchQueue.main.async {
+                        if cursorId == nil {
+                            // 첫 요청 -> 전체 초기화
+                            self.commentList = result.values
+                        } else {
+                            // 다음 페이지 -> append
+                            self.commentList.append(contentsOf: result.values)
+                        }
+                        self.commentHasNext = result.hasNext
+                    }
+                } catch {
+                    print("GetComments 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("댓글을 불러오지 못했습니다.")
+                    }
+                }
+            case .failure(let error):
+                print("GetComments API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("댓글을 불러오지 못했습니다.")
                 }
             }
         }

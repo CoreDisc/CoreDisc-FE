@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct CommentSheetView: View {
     @Binding var showSheet: Bool
+    @ObservedObject var viewModel: PostDetailViewModel
     
     // 열려있는 댓글
     @State private var expandedCommentIDs: Set<Int> = []
@@ -49,9 +51,9 @@ struct CommentSheetView: View {
     
     private var CommentList: some View {
         List {
-            ForEach(1..<6, id: \.self) { item in
+            ForEach(viewModel.commentList, id: \.commentId) { item in
                 VStack(alignment: .leading, spacing: 3) {
-                    CommentItem()
+                    CommentItem(item: item)
                     
                     VStack(alignment: .leading, spacing: 0) {
                         Button(action: {}) {
@@ -64,18 +66,20 @@ struct CommentSheetView: View {
                         
                         Button(action: {
                             withAnimation {
-                                toggleExpanded(for: item)
+                                toggleExpanded(for: item.commentId)
                             }
                         }) {
-                            HStack {
-                                Divider()
-                                    .frame(width: 8, height: 0.4)
-                                    .background(.gray600)
-                                
-                                Text(expandedCommentIDs.contains(item) ? "댓글 숨기기" : "댓글 더보기 (1)") // TODO: 댓글 개수
-                                    .textStyle(.Small_Text_10)
-                                    .foregroundStyle(.gray600)
-                                    .padding(.vertical, 4)
+                            if item.hasReplies {
+                                HStack {
+                                    Divider()
+                                        .frame(width: 8, height: 0.4)
+                                        .background(.gray600)
+                                    
+                                    Text(expandedCommentIDs.contains(item.commentId) ? "댓글 숨기기" : "댓글 더보기 (1)") // TODO: 댓글 개수
+                                        .textStyle(.Small_Text_10)
+                                        .foregroundStyle(.gray600)
+                                        .padding(.vertical, 4)
+                                }
                             }
                         }
                         .buttonStyle(.plain)
@@ -84,8 +88,8 @@ struct CommentSheetView: View {
                 }
                 
                 // 댓글 더보기
-                if expandedCommentIDs.contains(item) {
-                    CommentItem()
+                if expandedCommentIDs.contains(item.commentId) {
+                    CommentItem(item: item)
                         .padding(.leading, 29)
                 }
             }
@@ -144,38 +148,42 @@ struct CommentSheetView: View {
 }
 
 struct CommentItem: View {
+    var item: Comment
+    
     var body: some View {
         VStack {
             HStack(alignment: .top, spacing: 5) {
-                Image(.imgShortBackground) // TODO: Profile Image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 24, height: 24)
-                    .clipShape(
-                        Circle()
-                    )
+                if let url = URL(string: item.member.profileImg) {
+                    KFImage(url)
+                        .placeholder({
+                            ProgressView()
+                                .controlSize(.mini)
+                        })
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 24, height: 24)
+                        .clipShape(
+                            Circle()
+                        )
+                }
                 
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 4) {
-                        Text("@coredisc.ko")
+                        Text("@\(item.member.nickname)")
                             .textStyle(.Comment_ID)
                             .foregroundStyle(.black000)
                         
-                        Text("2시간")
+                        Text("2시간") // TODO: 시간 반영
                             .textStyle(.Small_Text_10)
                             .foregroundStyle(.gray200)
                     }
                     .padding(.vertical, 1)
                     
-                    Text("감정이 흔들렸던 대사나 장면이 기억나시나요?감정이 흔들렸던 대사나 장면이 기억나시나요?감정이 흔들렸던 대사나 장면이 기억나시나요?감정이 흔들렸던 대사나 장면이 기억나시나요?"
+                    Text(item.content
                         .splitCharacter())
                     .textStyle(.Small_Text_12)
                 }
             }
         }
     }
-}
-
-#Preview {
-    CommentSheetView(showSheet: .constant(true))
 }
