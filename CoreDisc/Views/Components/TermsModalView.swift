@@ -60,10 +60,10 @@ struct TermsModalView: View {
                         RoundedRectangle(cornerRadius: 12)
                             .foregroundStyle(.white)
                         ScrollView{
-                            LazyVStack{
-                                Text(content)
-                                    .padding(10)
-                            }
+                            Text(content)
+                                .textStyle(.Small_Text_10)
+                                .foregroundStyle(.gray800)
+                                .padding(10)
                         }
                     }
                 }
