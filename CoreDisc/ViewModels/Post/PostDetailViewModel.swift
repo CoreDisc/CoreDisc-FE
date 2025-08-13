@@ -215,4 +215,47 @@ class PostDetailViewModel: ObservableObject {
             }
         }
     }
+    
+    // 좋아요
+    func fetchLike(postId: Int) {
+        provider.request(.postLikes(postId: postId)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    _ = try JSONDecoder().decode(PostLikeResponse.self, from: response.data)
+                } catch {
+                    print("PostLikes 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("좋아요를 설정하지 못했습니다.")
+                    }
+                }
+            case .failure(let error):
+                print("PostLikes API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("좋아요를 설정하지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    func fetchDislike(postId: Int) {
+        provider.request(.deleteLikes(postId: postId)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    _ = try JSONDecoder().decode(PostLikeResponse.self, from: response.data)
+                } catch {
+                    print("DeleteLikes 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("좋아요를 취소하지 못했습니다.")
+                    }
+                }
+            case .failure(let error):
+                print("DeleteLikes API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("좋아요를 취소하지 못했습니다.")
+                }
+            }
+        }
+    }
 }

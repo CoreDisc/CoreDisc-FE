@@ -13,7 +13,6 @@ struct PostDetailView: View {
     @StateObject private var viewModel = PostDetailViewModel()
     
     @State var showCommentSheet: Bool = false
-    
     @State private var currentQuestion: String = ""
     
     let postId: Int
@@ -112,8 +111,14 @@ struct PostDetailView: View {
                 Spacer()
                 
                 Button(action: {
+                    if viewModel.isLiked {
+                        viewModel.fetchDislike(postId: postId)
+                    } else {
+                        viewModel.fetchLike(postId: postId)
+                    }
+                    viewModel.fetchPostDetail(postId: postId)
                 }){
-                    Image(.iconLove)
+                    Image(viewModel.isLiked ? .iconLoveFill : .iconLove)
                         .resizable()
                         .frame(width: 25.08, height: 25.08)
                         .foregroundStyle(.gray800)
