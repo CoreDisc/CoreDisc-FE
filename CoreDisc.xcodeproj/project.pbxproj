@@ -12,6 +12,7 @@
 		200939F12E3BE2500005A541 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 200939F02E3BE2500005A541 /* KakaoSDKAuth */; };
 		200939F32E3BE2500005A541 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 200939F22E3BE2500005A541 /* KakaoSDKCommon */; };
 		2016672F2E470C8B003A59E2 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2016672E2E470C8B003A59E2 /* FirebaseCore */; };
+		20B0FE662E4B4E97009DD84F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 20B0FE652E4B4E97009DD84F /* GoogleService-Info.plist */; };
 		20CCA2612E3C66FA00F87128 /* KakaoSDKCert in Frameworks */ = {isa = PBXBuildFile; productRef = 20CCA2602E3C66FA00F87128 /* KakaoSDKCert */; };
 		20CCA2632E3C66FA00F87128 /* KakaoSDKCertCore in Frameworks */ = {isa = PBXBuildFile; productRef = 20CCA2622E3C66FA00F87128 /* KakaoSDKCertCore */; };
 		238BB8142E16CEA100E7C5B8 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 238BB8132E16CEA100E7C5B8 /* Alamofire */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		20B0FE652E4B4E97009DD84F /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		238562CE2E0F0E2E008F25B1 /* CoreDisc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDisc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -66,6 +68,7 @@
 		238562C52E0F0E2E008F25B1 = {
 			isa = PBXGroup;
 			children = (
+				20B0FE652E4B4E97009DD84F /* GoogleService-Info.plist */,
 				238562D02E0F0E2E008F25B1 /* CoreDisc */,
 				238562CF2E0F0E2E008F25B1 /* Products */,
 			);
@@ -159,6 +162,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20B0FE662E4B4E97009DD84F /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
