@@ -124,7 +124,8 @@ class PostDetailViewModel: ObservableObject {
         content: String
     ) {
         commentProvider.request(.postComments(
-            postId: postId, content: content
+            postId: postId,
+            content: content
         )) { result in
             switch result {
             case .success(let response):
@@ -182,6 +183,34 @@ class PostDetailViewModel: ObservableObject {
                 print("GetReplies API 오류: \(error)")
                 DispatchQueue.main.async {
                     ToastManager.shared.show("덧글을 불러오지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    func fetchReplyWrite(
+        commentId: Int,
+        content: String
+    ) {
+        commentProvider.request(.postReplies(
+            commentId: commentId,
+            content: content
+        )) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    _ = try JSONDecoder().decode(CommentWriteResponse.self, from: response.data)
+                    self.fetchReplyList(commentId: commentId)
+                } catch {
+                    print("PostReplies 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("덧글을 작성하지 못했습니다.")
+                    }
+                }
+            case .failure(let error):
+                print("PostReplies API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("덧글을 작성하지 못했습니다.")
                 }
             }
         }

@@ -21,6 +21,9 @@ struct CommentSheetView: View {
     @State private var commentText: String = ""
     @FocusState private var isFocused: Bool
     
+    @State private var currentCommentId: Int = 0
+    @State private var isReply: Bool = false
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             RoundedRectangle(cornerRadius: 12)
@@ -58,7 +61,11 @@ struct CommentSheetView: View {
                     CommentItem(item: item)
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        Button(action: {}) {
+                        Button(action: {
+                            currentCommentId = item.commentId
+                            isReply = true
+                            isFocused = true
+                        }) {
                             Text("댓글 달기")
                                 .textStyle(.Small_Text_10)
                                 .foregroundStyle(.gray600)
@@ -122,13 +129,11 @@ struct CommentSheetView: View {
                 )
                 .focused($isFocused)
                 .onSubmit {
-                    viewModel.fetchCommentWrite(postId: postId, content: commentText)
-                    commentText = ""
+                    writeComment()
                 }
             
             Button(action: {
-                viewModel.fetchCommentWrite(postId: postId, content: commentText)
-                commentText = ""
+                writeComment()
             }) {
                 Image(.iconCommentUpload)
             }
@@ -145,6 +150,17 @@ struct CommentSheetView: View {
             expandedCommentIDs.remove(id)
         } else {
             expandedCommentIDs.insert(id)
+        }
+    }
+    
+    private func writeComment() {
+        if isReply {
+            viewModel.fetchReplyWrite(commentId: currentCommentId, content: commentText)
+            commentText = ""
+            isReply = false
+        } else {
+            viewModel.fetchCommentWrite(postId: postId, content: commentText)
+            commentText = ""
         }
     }
 }
