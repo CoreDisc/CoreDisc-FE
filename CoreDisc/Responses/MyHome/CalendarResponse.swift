@@ -20,7 +20,6 @@ struct CalendarMonthResult: Decodable {
     let startDay: String
     let days: [CalendarDayDTO]
     let totalDays: Int
-    let continuesDays: Int?
     let hasPrevMonth: Bool?
     let hasNextMonth: Bool?
 }
@@ -30,4 +29,11 @@ struct CalendarDayDTO: Decodable {
     let postId: Int?
     let recorded: Bool
     let today: Bool
+}
+
+struct ContinuousDaysAPIResponse: Decodable {
+    let isSuccess: Bool
+    let code: String?
+    let message: String?
+    let result: Int
 }

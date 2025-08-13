@@ -7,24 +7,32 @@
 
 import SwiftUI
 import Moya
+import Combine
+import UIKit
 
+// MARK: - ViewModel
 
-class CalendarContentsViewModel: ObservableObject {
+final class CalendarContentsViewModel: ObservableObject {
 
+    // MARK: - Published States
     @Published var currentMonth: Date
     @Published var selectedDate: Date
-    let calendar: Calendar
 
-    private let calendarProvider = APIManager.shared.createProvider(for: CalendarRouter.self)
-
-    @Published var continuesDays: Int = 0
-    @Published var totalDays: Int = 0
+    @Published var continuesDays: Int = 0           // ✅ 월과 무관하게 이어지는 연속 일수
+    @Published var totalDays: Int = 0               // 해당 월의 총 기록 일수
     @Published var hasPrevMonth: Bool = false
     @Published var hasNextMonth: Bool = false
-
     @Published var selectedPostId: Int? = nil
+
+    /// day 키(yyyy-MM-dd) -> DTO
     @Published private var dtoMap: [String: CalendarDayDTO] = [:]
 
+    // MARK: - Dependencies
+    let calendar: Calendar
+    private let calendarProvider = APIManager.shared.createProvider(for: CalendarRouter.self)
+    private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Derived
     var currentMonthYear: Int { calendar.component(.year, from: currentMonth) }
     var currentMonthNumber: Int { calendar.component(.month, from: currentMonth) } // 1-based
 
@@ -42,16 +50,29 @@ class CalendarContentsViewModel: ObservableObject {
         self.currentMonth = currentMonth
         self.selectedDate = selectedDate
         self.calendar = calendar
-        // 현재 month 기준으로 fetch (1-based 그대로)
+
+        // 초기 로딩
         fetchCalendar(year: currentMonthYear, month: currentMonthNumber)
+        fetchContinuousDays()
+
+        // 날짜 변경/앱 포그라운드 복귀 시 연속 일수 갱신 (월과 무관)
+        observeDayChange()
+        observeAppActive()
+    }
+
+    deinit {
+        cancellables.removeAll()
     }
 
     // MARK: - Public API
+
+    /// 월 전환 (연속 일수는 월과 무관하므로 여기서 호출하지 않음)
     func changeMonth(by value: Int) {
-        if let newMonth = calendar.date(byAdding: .month, value: value, to: currentMonth) {
-            currentMonth = newMonth
-            fetchCalendar(year: currentMonthYear, month: currentMonthNumber)
-        }
+        guard let newMonth = calendar.date(byAdding: .month, value: value, to: currentMonth) else { return }
+        currentMonth = newMonth
+        fetchCalendar(year: currentMonthYear, month: currentMonthNumber)
+        // 필요 시 정책 변경에 따라 아래 주석 해제 가능
+        // fetchContinuousDays()
     }
 
     func handleTap(on date: Date) {
@@ -71,10 +92,11 @@ class CalendarContentsViewModel: ObservableObject {
     }
 
     // MARK: - Networking
+
+    /// 월간 캘린더 조회
     func fetchCalendar(year: Int, month: Int) {
-        // print("📤 Requesting calendar:", year, month)
         calendarProvider.request(.getCalendar(year: year, month: month)) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let response):
                 do {
@@ -83,7 +105,7 @@ class CalendarContentsViewModel: ObservableObject {
 
                     var map: [String: CalendarDayDTO] = [:]
                     for d in r.days {
-                        if let k = self.key(year: r.year, month: r.month, day: d.day) { // 1-based 그대로 사용
+                        if let k = self.key(year: r.year, month: r.month, day: d.day) {
                             map[k] = d
                         }
                     }
@@ -91,19 +113,13 @@ class CalendarContentsViewModel: ObservableObject {
                     DispatchQueue.main.async {
                         self.dtoMap        = map
                         self.totalDays     = r.totalDays
-                        self.continuesDays = r.continuesDays ?? 0
                         self.hasPrevMonth  = r.hasPrevMonth ?? false
                         self.hasNextMonth  = r.hasNextMonth ?? false
-
-                        // 디버그: 오늘 DTO 존재 확인
-                        // let todayKey = self.key(for: Date())
-                        // print("🔎 today dto exists?", map[todayKey] != nil, map[todayKey] as Any)
                     }
                 } catch {
                     print("Calendar decode error:", error)
                     DispatchQueue.main.async {
                         self.dtoMap = [:]
-                        self.continuesDays = 0
                         self.totalDays = 0
                         self.hasPrevMonth = false
                         self.hasNextMonth = false
@@ -114,7 +130,6 @@ class CalendarContentsViewModel: ObservableObject {
                 print("Calendar API error:", err)
                 DispatchQueue.main.async {
                     self.dtoMap = [:]
-                    self.continuesDays = 0
                     self.totalDays = 0
                     self.hasPrevMonth = false
                     self.hasNextMonth = false
@@ -123,7 +138,46 @@ class CalendarContentsViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Grid
+    /// 연속 일수 조회 (/api/reports/calendar/continuous)
+    func fetchContinuousDays() {
+        calendarProvider.request(.getContinuousDays) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(ContinuousDaysAPIResponse.self, from: response.data)
+                    DispatchQueue.main.async { self.continuesDays = decoded.result }
+                } catch {
+                    print("ContinuousDays decode error:", error)
+                    DispatchQueue.main.async { self.continuesDays = 0 }
+                }
+            case .failure(let err):
+                print("ContinuousDays API error:", err)
+                DispatchQueue.main.async { self.continuesDays = 0 }
+            }
+        }
+    }
+
+    // MARK: - Observers (streak은 월과 무관: 날짜 경계/앱 재진입 시 갱신)
+
+    private func observeDayChange() {
+        NotificationCenter.default.publisher(for: .NSCalendarDayChanged)
+            .sink { [weak self] _ in
+                self?.fetchContinuousDays()
+            }
+            .store(in: &cancellables)
+    }
+
+    private func observeAppActive() {
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in
+                self?.fetchContinuousDays()
+            }
+            .store(in: &cancellables)
+    }
+
+    // MARK: - Grid (UI 계산용)
+
     func daysForCurrentGrid() -> [CalendarDayModel] {
         let cal = calendar
         let firstDay = firstDayOfMonth()
@@ -175,13 +229,18 @@ class CalendarContentsViewModel: ObservableObject {
     }
 
     // MARK: - Key Helpers
-    private func key(for date: Date) -> String {
+
+    private static let keyFormatter: DateFormatter = {
         let f = DateFormatter()
-        f.calendar = calendar
-        f.timeZone = calendar.timeZone
-        f.locale = calendar.locale
+        f.calendar = Calendar(identifier: .gregorian)
+        f.timeZone = .current
+        f.locale = Locale(identifier: "ko_KR")
         f.dateFormat = "yyyy-MM-dd"
-        return f.string(from: date)
+        return f
+    }()
+
+    private func key(for date: Date) -> String {
+        Self.keyFormatter.string(from: date)
     }
 
     private func key(year: Int, month: Int, day: Int) -> String? {
