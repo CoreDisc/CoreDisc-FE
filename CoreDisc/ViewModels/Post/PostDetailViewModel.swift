@@ -19,6 +19,8 @@ class PostDetailViewModel: ObservableObject {
     // 댓글
     @Published var commentList: [Comment] = []
     @Published var commentHasNext: Bool = false
+    @Published var replyList: [Int: [Comment]] = [:]
+    @Published var replyHasNext: [Int: Bool] = [:]
     
     private let provider = APIManager.shared.createProvider(for: PostRouter.self)
     private let commentProvider = APIManager.shared.createProvider(for: CommentRouter.self)
@@ -98,6 +100,10 @@ class PostDetailViewModel: ObservableObject {
                         }
                         self.commentHasNext = result.hasNext
                     }
+                    
+                    self.commentList.forEach { comment in
+                        self.fetchReplyList(commentId: comment.commentId)
+                    }
                 } catch {
                     print("GetComments 디코더 오류: \(error)")
                     DispatchQueue.main.async {
@@ -135,6 +141,47 @@ class PostDetailViewModel: ObservableObject {
                 print("PostComments API 오류: \(error)")
                 DispatchQueue.main.async {
                     ToastManager.shared.show("댓글을 작성하지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    func fetchReplyList(
+        commentId: Int,
+        cursorId: Int? = nil,
+        size: Int? = 20
+    ) {
+        commentProvider.request(.getReplies(
+            commentId: commentId,
+            cursorId: cursorId,
+            size: size
+        )) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(CommentListResponse.self, from: response.data)
+                    let result = decodedData.result
+                    
+                    DispatchQueue.main.async {
+                        if cursorId == nil {
+                            // 첫 요청 -> 전체 초기화
+                            self.replyList[commentId] = result.values
+                        } else {
+                            // 다음 페이지 -> append
+                            self.replyList[commentId]?.append(contentsOf: result.values)
+                        }
+                        self.replyHasNext[commentId] = result.hasNext
+                    }
+                } catch {
+                    print("GetReplies 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("덧글을 불러오지 못했습니다.")
+                    }
+                }
+            case .failure(let error):
+                print("GetReplies API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("덧글을 불러오지 못했습니다.")
                 }
             }
         }

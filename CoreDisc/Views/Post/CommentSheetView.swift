@@ -66,12 +66,13 @@ struct CommentSheetView: View {
                         }
                         .buttonStyle(.plain)
                         
-                        Button(action: {
-                            withAnimation {
-                                toggleExpanded(for: item.commentId)
-                            }
-                        }) {
-                            if item.hasReplies {
+                        if item.hasReplies {
+                            Button(action: {
+                                withAnimation {
+                                    toggleExpanded(for: item.commentId)
+                                    viewModel.fetchReplyList(commentId: item.commentId)
+                                }
+                            }) {
                                 HStack {
                                     Divider()
                                         .frame(width: 8, height: 0.4)
@@ -83,16 +84,18 @@ struct CommentSheetView: View {
                                         .padding(.vertical, 4)
                                 }
                             }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                     .padding(.leading, 29)
                 }
                 
                 // 댓글 더보기
                 if expandedCommentIDs.contains(item.commentId) {
-                    CommentItem(item: item)
-                        .padding(.leading, 29)
+                    ForEach(viewModel.replyList[item.commentId] ?? [], id: \.commentId) { reply in
+                        CommentItem(item: reply)
+                            .padding(.leading, 29)
+                    }
                 }
             }
             .listRowSeparator(.hidden) // 구분선 제거
