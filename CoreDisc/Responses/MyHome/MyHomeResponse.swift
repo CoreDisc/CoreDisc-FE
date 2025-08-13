@@ -28,3 +28,10 @@ struct ProfileImgDTO: Decodable {
     let profileImgId: Int
     let imageUrl: String
 }
+
+struct ProfileResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: String?
+}

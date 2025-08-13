@@ -68,6 +68,8 @@ extension MemberRouter: APITargetType {
             return .requestPlain
         case .patchProfile(let profilePatchData):
             return .requestJSONEncodable(profilePatchData)
+            
+            
         case .patchPassword(let passwordPatchData):
             return .requestJSONEncodable(passwordPatchData)
         case .patchMyhomeUsername(let newUsername):
@@ -99,6 +101,18 @@ extension MemberRouter: APITargetType {
                 parameters["size"] = size
             }
             return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
+        }
+    }
+    
+    var headers: [String: String]? {
+        switch self {
+        case .patchProfile:
+            if let token = TokenProvider.shared.accessToken {
+                return ["accessToken": token]
+            }
+            return nil
+        default:
+            return nil
         }
     }
 }

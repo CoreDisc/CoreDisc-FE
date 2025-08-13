@@ -14,6 +14,7 @@ import Moya
 // 갱신된 토큰 Keychain에 저장
 
 class TokenProvider: TokenProviding {
+    static let shared = TokenProvider() 
     private let userSession = "appNameUser"
     private let keyChain = KeychainManager.standard
     private let provider = MoyaProvider<AuthRouter>()
