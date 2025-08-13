@@ -71,12 +71,20 @@ struct EditProfileView: View {
                     
                     Spacer()
                     
-                    Button(action: {}) { // TODO: complete action
+                    Button(action: {
+                        viewModel.validateAndSubmit()
+                    }) {
                         Text("완료")
                             .textStyle(.Q_Main)
                             .foregroundStyle(.highlight)
                             .underline()
                     }
+                    .onChange(of: viewModel.changeSuccess) { oldValue, newValue in
+                        if newValue {
+                            dismiss()
+                        }
+                    }
+                    .navigationDestination(isPresented: $viewModel.logoutSuccess) {LoginView()}
                 }
                 .padding(.leading, 17)
                 .padding(.trailing, 22)
@@ -155,6 +163,7 @@ struct EditProfileView: View {
                       if viewModel.nameCheckSuccess {
                           viewModel.nameCheckSuccess = false
                       }
+                    viewModel.nextErrorNickname = false
                   }
             ProfileEditTextField(
                 type: "User Name",
@@ -167,6 +176,7 @@ struct EditProfileView: View {
                       if viewModel.idCheckSuccess {
                           viewModel.idCheckSuccess = false
                       }
+                    viewModel.nextErrorUsername = false
                   }
         }
     }
@@ -194,77 +204,97 @@ struct ProfileEditTextField: View {
                     text: $text,
                     prompt: Text(type).foregroundStyle(.gray600)
                 )
-                    .textStyle(.Pick_Q_Eng)
-                    .foregroundStyle(.white)
-                    .textInputAutocapitalization(.never)
-                    .frame(height: 28)
-                    .frame(maxWidth: 200)
-                    .padding(.horizontal, 10)
+                .textStyle(.Pick_Q_Eng)
+                .foregroundStyle(.white)
+                .textInputAutocapitalization(.never)
+                .frame(height: 28)
+                .frame(maxWidth: 200)
+                .padding(.horizontal, 10)
                 
                 Divider()
                     .background(.gray200)
                     .frame(maxWidth: 200)
                 
-                if type == "User Name", duplicated { // 타입이 유저네임이고, 중복인 경우
-                    Text("이미 존재하는 아이디입니다.")
-                        .textStyle(.login_alert)
-                        .foregroundStyle(.warning)
-                        .padding(.top, 2)
-                } else if type == "User Name", viewModel.idCheckSuccess { // 타입이 유저네임이고, 중복이 아닌 경우
-                    Text("사용 가능한 아이디입니다.")
-                        .textStyle(.login_alert)
-                        .foregroundStyle(.white)
-                        .padding(.top, 2)
+                if type == "User Name" {
+                    if viewModel.nextErrorUsername {
+                        Text("중복 확인을 해주세요.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.warning)
+                            .padding(.top, 2)
+                    } else if duplicated {
+                        Text("이미 존재하는 아이디입니다.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.warning)
+                            .padding(.top, 2)
+                    } else if viewModel.idCheckSuccess {
+                        Text("사용 가능한 아이디입니다.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.white)
+                            .padding(.top, 2)
+                    }
                 }
                 
-                if type == "Nick Name", duplicated { // TODO: duplicated는 닉네임용으로 다시 만들기
-                    Text("이미 존재하는 닉네임입니다.")
-                        .textStyle(.login_alert)
-                        .foregroundStyle(.warning)
-                        .padding(.top, 2)
-                } else if type == "Nick Name", viewModel.nameCheckSuccess { // TODO: duplicated는 닉네임용으로 다시 만들기
-                    Text("사용 가능한 닉네임입니다.")
-                        .textStyle(.login_alert)
-                        .foregroundStyle(.white)
-                        .padding(.top, 2)
+                if type == "Nick Name" {
+                    if viewModel.nextErrorNickname {
+                        Text("중복 확인을 해주세요.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.warning)
+                            .padding(.top, 2)
+                    } else if duplicated {
+                        Text("이미 존재하는 닉네임입니다.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.warning)
+                            .padding(.top, 2)
+                    } else if viewModel.nameCheckSuccess {
+                        Text("사용 가능한 닉네임입니다.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.white)
+                            .padding(.top, 2)
+                    }
+                    
                 }
-            }
             
-            Spacer().frame(width: 5)
-            
-            Button(action: {
-                if type == "User Name" {
-                    viewModel.fetchIdCheck(username: text)
-                } else {
-                    viewModel.fetchNameCheck()
-                }
-            }) {
-                if type == "User Name" {
-                    Text("중복확인")
-                        .textStyle(.Q_pick)
-                        .foregroundStyle(.black000)
-                        .frame(width: 63, height: 24)
-                        .background(
-                            RoundedRectangle(cornerRadius: 30)
-                                .fill(viewModel.idCheckSuccess ? .gray400 : .key)
-                        )
-                }else{
-                    Text("중복확인")
-                        .textStyle(.Q_pick)
-                        .foregroundStyle(.black000)
-                        .frame(width: 63, height: 24)
-                        .background(
-                            RoundedRectangle(cornerRadius: 30)
-                                .fill(viewModel.nameCheckSuccess ? .gray400 : .key)
-                        )
-                }
-            }
-            .padding(.top, 3)
         }
+        
+        Spacer().frame(width: 5)
+        
+        Button(action: {
+            if type == "User Name" {
+                viewModel.fetchIdCheck(username: text)
+                viewModel.nextErrorUsername = false
+            } else {
+                viewModel.fetchNameCheck()
+                viewModel.nextErrorNickname = false
+            }
+        }) {
+            if type == "User Name" {
+                Text("중복확인")
+                    .textStyle(.Q_pick)
+                    .foregroundStyle(.black000)
+                    .frame(width: 63, height: 24)
+                    .background(
+                        RoundedRectangle(cornerRadius: 30)
+                            .fill(viewModel.idCheckSuccess ? .gray400 : .key)
+                    )
+            } else{
+                Text("중복확인")
+                    .textStyle(.Q_pick)
+                    .foregroundStyle(.black000)
+                    .frame(width: 63, height: 24)
+                    .background(
+                        RoundedRectangle(cornerRadius: 30)
+                            .fill(viewModel.nameCheckSuccess ? .gray400 : .key)
+                    )
+            }
+        }
+        .padding(.top, 3)
+    }
+
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 17)
     }
 }
+
 
 #Preview {
     EditProfileView()
