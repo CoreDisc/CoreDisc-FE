@@ -27,23 +27,26 @@ struct PostWriteDiaryView: View {
 
     
     var body: some View {
-        ZStack {
-            Image(.imgPostDetailMainBg)
-                .resizable()
-                .ignoresSafeArea()
-            
-            ScrollView (showsIndicators: false) {
-                VStack {
-                    Spacer().frame(height: 25)
-                    
-                    TitleGroup
-                    
-                    Spacer().frame(height: 18)
-                    
-                    DiaryGroup
+        NavigationStack {
+            ZStack {
+                Image(.imgPostDetailMainBg)
+                    .resizable()
+                    .ignoresSafeArea()
+                
+                ScrollView (showsIndicators: false) {
+                    VStack {
+                        Spacer().frame(height: 25)
+                        
+                        TitleGroup
+                        
+                        Spacer().frame(height: 18)
+                        
+                        DiaryGroup
+                    }
                 }
             }
         }
+        .navigationBarBackButtonHidden()
         .onAppear {
             for i in 0..<4 {
                 let delay = 0.1 + Double(i) * 0.12
@@ -333,8 +336,7 @@ struct PostWriteDiaryView: View {
                         
                         Spacer().frame(width: 8)
                         
-                        Button(action: {
-                        }){
+                        NavigationLink(destination: PostDiaryCheckView()) {
                             ZStack {
                                 Circle()
                                     .frame(width: 32, height: 32)

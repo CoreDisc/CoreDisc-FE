@@ -12,6 +12,7 @@ struct PostDiaryCheckView: View {
     @State private var isShareButtonTapped = false
     
     var body: some View {
+        NavigationStack {
             ZStack {
                 Image(.imgDiaryCheckBg)
                     .resizable()
@@ -27,9 +28,10 @@ struct PostDiaryCheckView: View {
                     ButtonGroup
                     
                     DiaryGroup
-                
+                }
             }
         }
+        .navigationBarBackButtonHidden()
     }
     
     // 타이틀
@@ -54,59 +56,50 @@ struct PostDiaryCheckView: View {
         VStack {
             HStack (spacing: 165){
                 ZStack {
-                    Button(action: {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            isWriteButtonTapped = true
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                isWriteButtonTapped = false
-                            }
-                        }
-                    }) {
+                    // Write버튼(수정)
+                    NavigationLink(destination: PostWriteDiaryView()) {
                         EllipticalGradient(stops: [
                             .init(color: .gray.opacity(0.0), location: 0.2692),
-                            .init(color: .white, location: 0.8125)],
-                                           center: .center,
-                                           startRadiusFraction: 0,
-                                           endRadiusFraction: 0.7431)
-                        
+                            .init(color: .white, location: 0.8125)
+                        ], center: .center, startRadiusFraction: 0, endRadiusFraction: 0.7431)
                         .frame(width: 152, height: 152)
                         .cornerRadius(152)
+                        .scaleEffect(isWriteButtonTapped ? 1.2 : 1.0)
                     }
-                    .scaleEffect(isWriteButtonTapped ? 1.2 : 1.0)
+                    .simultaneousGesture(TapGesture().onEnded {
+                        withAnimation(.easeInOut(duration: 0.2)) { isWriteButtonTapped = true }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            withAnimation(.easeInOut(duration: 0.2)) { isWriteButtonTapped = false }
+                        }
+                    })
                     
                     Image(.iconWrite)
                 }
                 
+                // Share버튼
                 ZStack {
-                    Button(action: {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            isShareButtonTapped = true
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                isShareButtonTapped = false
-                            }
-                        }
-                    }) {
+                    NavigationLink(destination: PostWriteView()) {
                         EllipticalGradient(stops: [
                             .init(color: .gray.opacity(0.0), location: 0.2692),
-                            .init(color: .white, location: 0.8125)],
-                                           center: .center,
-                                           startRadiusFraction: 0,
-                                           endRadiusFraction: 0.7431)
-                        
+                            .init(color: .white, location: 0.8125)
+                        ], center: .center, startRadiusFraction: 0, endRadiusFraction: 0.7431)
                         .frame(width: 152, height: 152)
                         .cornerRadius(152)
+                        .scaleEffect(isShareButtonTapped ? 1.2 : 1.0)
                     }
-                    .scaleEffect(isShareButtonTapped ? 1.2 : 1.0)
+                    .simultaneousGesture(TapGesture().onEnded {
+                        withAnimation(.easeInOut(duration: 0.2)) { isShareButtonTapped = true }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            withAnimation(.easeInOut(duration: 0.2)) { isShareButtonTapped = false }
+                        }
+                    })
                     
                     Image(.iconShareWhite)
                 }
             }
         }
     }
+
     
     
     // 선택일기 요약
@@ -142,7 +135,7 @@ struct PostDiaryCheckView: View {
                     .textStyle(.Q_Main)
                     .foregroundStyle(.black000)
                 
-                Text("친구")
+                Text("가족")
                     .textStyle(.Texting_Q)
                     .foregroundStyle(.black000)
                     .multilineTextAlignment(.center)
@@ -154,7 +147,7 @@ struct PostDiaryCheckView: View {
                     .textStyle(.Q_Main)
                     .foregroundStyle(.black000)
                 
-                Text("우리집")
+                Text("집")
                     .textStyle(.Texting_Q)
                     .foregroundStyle(.black000)
                     .multilineTextAlignment(.center)
@@ -166,7 +159,7 @@ struct PostDiaryCheckView: View {
                     .textStyle(.Q_Main)
                     .foregroundStyle(.black000)
                 
-                Text("요리,저녁식사")
+                Text("요리")
                     .textStyle(.Texting_Q)
                     .foregroundStyle(.black000)
                     .multilineTextAlignment(.center)
@@ -178,7 +171,7 @@ struct PostDiaryCheckView: View {
                     .textStyle(.Q_Main)
                     .foregroundStyle(.black000)
                 
-                Text("오늘 오랜만에 친구랑 저녁 먹었는데 진짜 별 얘기 안 했는데도 \n 너무 편하고 좋았어. 같이 웃고, 먹고, 걷고 그런 게 뭐 대단한 건 \n아닌데 괜히 마음이 따뜻해지더라.")
+                Text("오늘 오랜만에 친구랑 저녁 먹었는데 진짜 별 얘기 안 했는데도 너무 편하고 좋았어. 같이 웃고, 먹고, 걷고 그런 게 뭐 대단한 건 아닌데 괜히 마음이 따뜻해지더라.")
                     .textStyle(.Texting_Q)
                     .foregroundStyle(.black000)
                     .multilineTextAlignment(.center)
