@@ -9,7 +9,7 @@ import SwiftUI
 
 struct QuestionBasicView: View {
     @StateObject private var viewModel = QuestionBasicViewModel()
-    @StateObject private var mainViewModel = QuestionMainViewModel()
+    @ObservedObject var mainViewModel: QuestionMainViewModel
     
     let selectedQuestionType: String
     
@@ -58,10 +58,10 @@ struct QuestionBasicView: View {
             if showSelectModal {
                 ModalView {
                     VStack(spacing: 6) {
-                        Text("\(selectedQuestionType == "FIXED" ? "고정" : "랜덤")질문으로 선택할까요?")
+                        Text("\(selectedQuestionType == "FIXED" ? "한달" : "하루")질문으로 선택할까요?")
                             .textStyle(.Button)
                         
-                        Text("한번 설정한 고정질문은 \(selectedQuestionType == "FIXED" ? "30일간" : "하루동안") 변경이 불가능합니다.")
+                        Text("한번 설정한 \(selectedQuestionType == "FIXED" ? "한달" : "하루")질문은 \(selectedQuestionType == "FIXED" ? "30일간" : "하루동안") 변경이 불가능합니다.")
                             .textStyle(.Texting_Q)
                             .foregroundStyle(.red)
                     }
@@ -160,7 +160,7 @@ struct QuestionBasicView: View {
                     .foregroundStyle(.key)
                     .padding(.leading, 9)
                 
-                Text("한 달동안 함께할 질문을 설정하세요.")
+                Text("\(selectedQuestionType == "FIXED" ? "한 달동안" : "오늘") 함께할 질문을 설정하세요.")
                     .textStyle(.Sub_Text_Ko)
                     .foregroundStyle(.white)
                     .padding(.leading, 9)
@@ -433,8 +433,4 @@ struct QuestionBasicDetailItem: View {
             .buttonStyle(.plain)
         }
     }
-}
-
-#Preview {
-    QuestionBasicView(selectedQuestionType: "FIXED", order: 1)
 }
