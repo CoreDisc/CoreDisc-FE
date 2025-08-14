@@ -73,12 +73,12 @@ struct ToastModifier: ViewModifier {
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
                         .foregroundColor(.white)
-                        .padding(.bottom, 40)
-                        .background(
+                        .clipShape(
                             RoundedRectangle(cornerRadius: 30)
-                                .background(.gray700.opacity(0.8))
-                                .shadow(radius: 4)
                         )
+                        .background(.gray700.opacity(0.8))
+                        .shadow(radius: 4)
+                        .padding(.bottom, 40)
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .animation(.easeInOut(duration: 1), value: isPresented)
