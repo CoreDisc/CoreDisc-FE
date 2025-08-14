@@ -37,7 +37,7 @@ class PostDetailViewModel: ObservableObject {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
         guard let dateString = dateFormatter.date(from: date) else {
-            return ""
+            return date
         }
         
         dateFormatter.dateFormat = "yy : MM : dd"
