@@ -11,6 +11,8 @@ struct PostDiaryCheckView: View {
     @State private var isWriteButtonTapped = false
     @State private var isShareButtonTapped = false
     
+    @State private var goToWriteDiary = false
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -78,7 +80,7 @@ struct PostDiaryCheckView: View {
                 
                 // Share버튼
                 ZStack {
-                    NavigationLink(destination: PostWriteView()) {
+                    NavigationLink(destination: PostMainView()) {
                         EllipticalGradient(stops: [
                             .init(color: .gray.opacity(0.0), location: 0.2692),
                             .init(color: .white, location: 0.8125)
