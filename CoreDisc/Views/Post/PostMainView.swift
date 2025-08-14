@@ -8,7 +8,7 @@
 import SwiftUI
 import Kingfisher
 
-enum postCategoryTap : String, CaseIterable {
+enum PostCategoryTap : String, CaseIterable {
     case all = "All"
     case core = "Core"
 }
@@ -16,7 +16,7 @@ enum postCategoryTap : String, CaseIterable {
 struct PostMainView: View {
     @StateObject private var viewModel = PostMainViewModel()
     
-    @State private var selectedTab: postCategoryTap = .all
+    @State private var selectedTab: PostCategoryTap = .all
     @Namespace private var animation
     
     private var selectedPosts: [PostMain] {
@@ -226,12 +226,12 @@ struct PostCard: View {
 // 카테고리 메뉴바 커스텀
 // TODO: 메뉴바 디자인 완료시 수정 예정
 struct PostTopTabView: View {
-    @Binding var selectedTab: postCategoryTap
+    @Binding var selectedTab: PostCategoryTap
     var animation: Namespace.ID
     
     var body: some View {
         HStack(spacing: 0) {
-            ForEach(postCategoryTap.allCases, id: \.self) { item in
+            ForEach(PostCategoryTap.allCases, id: \.self) { item in
                 let isSelected = (selectedTab == item)
 
                 Text(item.rawValue)
