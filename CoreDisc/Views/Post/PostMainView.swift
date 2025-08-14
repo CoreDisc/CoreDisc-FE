@@ -46,7 +46,7 @@ struct PostMainView: View {
                 }
             }
         }
-        .task {
+        .onAppear {
             viewModel.fetchPosts()
             notiViewModel.fetchUnRead()
         }

@@ -20,7 +20,7 @@ struct NotificationResult: Decodable {
     let hasNext: Bool
 }
 
-struct NotificationValues: Decodable {
+struct NotificationValues: Decodable, Identifiable, Hashable {
     let notificationId: Int
     let type: String
     let content: String
@@ -31,6 +31,13 @@ struct NotificationValues: Decodable {
     let isRead: Bool
     let createdAt: String
     let timeStamp: String
+
+    // Identifiable
+    var id: Int { notificationId }
+
+    // Hashable
+    func hash(into hasher: inout Hasher) { hasher.combine(notificationId) }
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.notificationId == rhs.notificationId }
 }
 
 struct NotificationProfileImgDTO: Decodable {
