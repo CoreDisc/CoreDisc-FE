@@ -43,6 +43,10 @@ struct PostWriteView: View {
                     
                     PostGroup
                     
+                    Spacer().frame(height: 49)
+                    
+                    QuestionGroup
+                    
                     Spacer().frame(height: 19)
                     
                     BottomGroup
@@ -127,56 +131,43 @@ struct PostWriteView: View {
             // 게시물 작성란
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
-                    VStack {
-                        ZStack {
-                            Rectangle()
-                                .fill(Color.gray400)
-                                .frame(width: 308, height: 409)
-                                .cornerRadius(20.83)
-                            
-                            
-                            VStack (alignment: .leading, spacing: 20) {
-                                Button(action: {
-                                    // TODO:
-                                }) {
-                                    ZStack {
-                                        Circle()
-                                            .fill(Color.white)
-                                            .frame(width: 60, height: 60)
-                                        
-                                        Image(.iconPhoto)
-                                            .renderingMode(.original)
-                                    }
-                                }
-                                
-                                
-                                Button(action: {
-                                    // TODO:
-                                }) {
-                                    ZStack {
-                                        Circle()
-                                            .fill(Color.white)
-                                            .frame(width: 60, height: 60)
-                                        
-                                        Image(.iconWriting)
-                                            .renderingMode(.original)
-                                    }
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.gray400)
+                            .frame(width: 308, height: 409)
+                            .cornerRadius(20.83)
+                        
+                        
+                        VStack (alignment: .leading, spacing: 20) {
+                            Button(action: {
+                                // TODO:
+                            }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.white)
+                                        .frame(width: 60, height: 60)
+                                    
+                                    Image(.iconPhoto)
+                                        .renderingMode(.original)
                                 }
                             }
-                            .padding(.top, 240)
-                            .padding(.leading, 225)
-                    }
-                        
-                        Spacer().frame(height: 49)
-                        
-                        // 질문
-                        Text("계절마다 떠오르는 음식이 있나요? 요즘 생각나는 건 뭐예요?")
-                            .textStyle(.Q_Main)
-                            .foregroundStyle(.highlight)
-                            .multilineTextAlignment(.center)
-                            .frame(width: 348, height: 68)
-                            .background(.black000)
-                            .cornerRadius(12)
+                            
+                            
+                            Button(action: {
+                                // TODO:
+                            }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.white)
+                                        .frame(width: 60, height: 60)
+                                    
+                                    Image(.iconWriting)
+                                        .renderingMode(.original)
+                                }
+                            }
+                        }
+                        .padding(.top, 240)
+                        .padding(.leading, 225)
                     }
                     
                     ForEach(0..<3, id: \.self) { _ in
@@ -186,21 +177,24 @@ struct PostWriteView: View {
                                 .frame(width: 308, height: 409)
                                 .cornerRadius(20.83)
                             
-                            Spacer().frame(height: 49)
-                            
-                            // 질문
-                            Text("계절마다 떠오르는 음식이 있나요? 요즘 생각나는 건 뭐예요?")
-                                .textStyle(.Q_Main)
-                                .foregroundStyle(.highlight)
-                                .multilineTextAlignment(.center)
-                                .frame(width: 348, height: 68)
-                                .background(.black000)
-                                .cornerRadius(12)
                         }
                     }
                 }
                 .padding(.horizontal, 47)
             }
+        }
+    }
+    
+    // 질문 섹션
+    private var QuestionGroup: some View {
+        VStack (alignment: .center){
+            Text("계절마다 떠오르는 음식이 있나요? 요즘 생각나는 건 뭐예요?")
+                .textStyle(.Q_Main)
+                .foregroundStyle(.highlight)
+                .multilineTextAlignment(.center)
+                .frame(width: 348, height: 68)
+                .background(.black000)
+                .cornerRadius(12)
         }
     }
     
