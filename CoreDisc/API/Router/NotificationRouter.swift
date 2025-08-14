@@ -14,6 +14,9 @@ enum NotificationRouter {
     case patchNotificationReadAll // 전체 알림 읽음 처리
     case getNotification(cursorId: Int?, size: Int?) // 알림 목록 조회
     case getNotificationUnread // 안읽은 알림 존재 여부
+    
+    // device
+    case postDeviceToken(token: String) // 디바이스 토큰 설정
 }
 
 extension NotificationRouter: APITargetType {
@@ -29,6 +32,9 @@ extension NotificationRouter: APITargetType {
             return "\(Self.notificationPath)"
         case .getNotificationUnread:
             return "\(Self.notificationPath)/unread"
+            
+        case .postDeviceToken:
+            return "/api/device-token"
         }
     }
     
@@ -38,6 +44,8 @@ extension NotificationRouter: APITargetType {
                 .patch
         case .getNotification, .getNotificationUnread:
                 .get
+        case .postDeviceToken:
+                .post
         }
     }
     
@@ -58,6 +66,12 @@ extension NotificationRouter: APITargetType {
             return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
         case .getNotificationUnread:
             return .requestPlain
+            
+        case .postDeviceToken(let token):
+            return .requestParameters(
+                parameters: ["token": token, "deviceType": "iOS"],
+                encoding: JSONEncoding.default
+            )
         }
     }
 }
