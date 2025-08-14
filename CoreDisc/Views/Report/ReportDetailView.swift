@@ -166,7 +166,7 @@ struct ReportDetailView: View {
     
     private var RandomGroup: some View {
         VStack(alignment: .trailing) {
-            Text("5월에")
+            Text("\(month)월에")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.bottom, 2)
@@ -178,7 +178,7 @@ struct ReportDetailView: View {
                 .padding(.trailing, 36)
             
             HStack(spacing: 16) {
-                ForEach(viewModel.RandomQuestion.indices, id: \.self) { index in
+                ForEach(viewModel.MostQuestionItem.indices, id: \.self) { index in
                     let isCurrent = index == nowIndex
                     let isNextOrPrevious = abs(index - nowIndex) == 1
                     
@@ -203,17 +203,22 @@ struct ReportDetailView: View {
                                 .cornerRadius(12)
                             
                             VStack{
-                                Text(viewModel.RandomQuestion[index].question)
-                                    .foregroundColor(.black000)
-                                    .multilineTextAlignment(.center)
-                                    .textStyle(.Texting_Q)
-                                    .padding()
-                                Text(viewModel.RandomQuestion[index].freq)
-                                    .textStyle(.Title2_Text_Ko)
-                                    .foregroundColor(.black000)
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
-                                    .offset(y:30)
-                                    .padding()
+                                if !viewModel.MostQuestionItem[index].questionContent.isEmpty {
+                                    VStack {
+                                        Text(viewModel.MostQuestionItem[index].questionContent)
+                                            .foregroundColor(.black000)
+                                            .multilineTextAlignment(.center) .textStyle(.Texting_Q)
+                                            .padding()
+                                        if let count = viewModel.MostQuestionItem[index].selectedCount {
+                                            Text("총 \(count)회")
+                                                .textStyle(.Title2_Text_Ko)
+                                                .foregroundColor(.black000)
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                                .offset(y:30)
+                                                .padding()
+                                        }
+                                    }
+                                }
                             }
                         }
                         .scaleEffect(isCurrent ? 1.0 : 0.85)
@@ -235,8 +240,8 @@ struct ReportDetailView: View {
                             }
                             nowIndex -= 1
                         }
-                        else if value.translation.width < -50 && nowIndex < viewModel.RandomQuestion.count - 1 {
-                            if nowIndex == viewModel.RandomQuestion.count - 2 {
+                        else if value.translation.width < -50 && nowIndex < viewModel.MostQuestionItem.count - 1 {
+                            if nowIndex == viewModel.MostQuestionItem.count - 2 {
                                 return
                             }
                             nowIndex += 1

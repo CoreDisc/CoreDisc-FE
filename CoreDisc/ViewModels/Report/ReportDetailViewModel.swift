@@ -11,6 +11,7 @@ import Moya
 class ReportDetailViewModel: ObservableObject {
     
     @Published var TotalDiscItem: [TotalDiscModel] = []
+    @Published var MostQuestionItem: [MostSelectedQuestion] = []
     
     private let ReportProvider = APIManager.shared.createProvider(for: ReportRouter.self)
     
@@ -32,9 +33,25 @@ class ReportDetailViewModel: ObservableObject {
                         
                         DispatchQueue.main.async {
                             self.TotalDiscItem = (fixedModels + randomModels).shuffled()
+                            
+                            if !resultData.allOneCount {
+                                var list = resultData.mostSelectedQuestions ?? []
+                                list.insert(MostSelectedQuestion(questionContent: "", selectedCount: nil), at: 0)
+                                list.append(MostSelectedQuestion(questionContent: "", selectedCount: nil))
+                                self.MostQuestionItem = list
+                            } else {
+                                self.MostQuestionItem = [
+                                    MostSelectedQuestion(questionContent: "", selectedCount: nil),
+                                    MostSelectedQuestion(
+                                        questionContent: "매일 다른 랜덤 질문과 함께했습니다.",
+                                        selectedCount: nil
+                                    ),
+                                    MostSelectedQuestion(questionContent: "", selectedCount: nil)
+                                ]
+                            }
                         }
                     }
-
+                    
                 } catch {
                     print("디코딩 실패 : \(error)")
                 }
@@ -43,18 +60,6 @@ class ReportDetailViewModel: ObservableObject {
             }
         }
     }
-    
-    
-    var RandomQuestion: [RandomQuestionModel] = [
-        .init(question: "", freq: ""),
-        .init(question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", freq: "총 18회"),
-        .init(question: "오늘 하루 중에서 가장 기억에 남는 순간은 언제였어? 왜 그랬는지도 궁금해.", freq: "총 16회"),
-        .init(question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 히 말해줘.", freq: "총 14회"),
-        .init(question: "오늘 먹은 것 중에 제일 맛있었어? 그 음식에 대해 자세히 말해줘.", freq: "총 13회"),
-        .init(question: "오늘 하루 중에서  남는 순간은 언제였어? 왜 그랬는지도 궁금해.", freq: "총 10회"),
-        .init(question: "오늘 먹은 것 에 제일 맛있었던 건 뭐였어? 히 말해줘.", freq: "총 9회"),
-        .init(question: "", freq: ""),
-    ]
 }
 
 class DiscViewModel: ObservableObject {

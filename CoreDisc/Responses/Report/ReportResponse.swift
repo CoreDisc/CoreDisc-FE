@@ -30,7 +30,7 @@ struct Question: Decodable {
 
 struct MostSelectedQuestion: Decodable {
     let questionContent: String
-    let selectedCount: Int
+    let selectedCount: Int?
 }
 
 struct TotalDiscModel: Identifiable {
