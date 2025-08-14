@@ -175,6 +175,7 @@ struct PostDiaryCheckView: View {
                     .textStyle(.Texting_Q)
                     .foregroundStyle(.black000)
                     .multilineTextAlignment(.center)
+                    .padding(.horizontal, 14.5)
                     .frame(width: 297, height: 83)
                     .background(.gray100)
                     .cornerRadius(12)
