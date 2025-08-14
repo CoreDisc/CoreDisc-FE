@@ -80,7 +80,7 @@ struct ReportMainView: View {
                             }
                         }
                     } else {
-                        NavigationLink(destination: ReportDetailView(discId: item.id)){
+                        NavigationLink(destination: ReportDetailView(year: item.year, month: item.month)){
                             DiscItem(
                                 imageUrl: item.imageUrl,
                                 localImageName: item.localImageName,

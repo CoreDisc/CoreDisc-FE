@@ -28,6 +28,8 @@ struct DiscData: Decodable {
 
 struct DiscItemData: Identifiable {
     let id: Int
+    let year: Int
+    let month: Int
     let dateLabel: String
     let imageUrl: String?
     let localImageName: String?

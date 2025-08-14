@@ -6,9 +6,45 @@
 //
 
 import SwiftUI
+import Moya
 
-@Observable
 class ReportDetailViewModel: ObservableObject {
+    
+    @Published var TotalDiscItem: [TotalDiscModel] = []
+    
+    private let ReportProvider = APIManager.shared.createProvider(for: ReportRouter.self)
+    
+    func getReport(year: Int, month: Int) {
+        ReportProvider.request(.getMonthlyReport(year: year, month: month)){ result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedResponse = try JSONDecoder().decode(ReportResponse.self, from: response.data)
+                    print("성공: \(decodedResponse)")
+                    if let resultData = decodedResponse.result {
+                        let fixedModels = resultData.fixedQuestions.map {
+                            TotalDiscModel(question: $0.questionContent, category: "fixed")
+                        }
+                        
+                        let randomModels = resultData.randomQuestions.map {
+                            TotalDiscModel(question: $0.questionContent, category: "random")
+                        }
+                        
+                        DispatchQueue.main.async {
+                            self.TotalDiscItem = (fixedModels + randomModels).shuffled()
+                        }
+                    }
+
+                } catch {
+                    print("디코딩 실패 : \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류 : \(error)")
+            }
+        }
+    }
+    
+    
     var RandomQuestion: [RandomQuestionModel] = [
         .init(question: "", freq: ""),
         .init(question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", freq: "총 18회"),
@@ -19,41 +55,20 @@ class ReportDetailViewModel: ObservableObject {
         .init(question: "오늘 먹은 것 에 제일 맛있었던 건 뭐였어? 히 말해줘.", freq: "총 9회"),
         .init(question: "", freq: ""),
     ]
-    
-    var TotalDiscItem: [TotalDiscModel] = [
-        .init(question: "1오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "fixed"),
-        .init(question: "오2늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "random"),
-        .init(question: "오늘3 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "fixed"),
-        .init(question: "오늘 4먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "random"),
-        .init(question: "오늘 먹5은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "random"),
-        .init(question: "오늘 먹은6 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "fixed"),
-        .init(question: "오늘 먹은 7것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "fixed"),
-        .init(question: "오늘 먹은 것89 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "random"),
-        .init(question: "오늘 먹은 것 중0에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "fixed"),
-        .init(question: "오늘 먹은 것 중에0 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "random"),
-        .init(question: "오늘 먹은 것 중에 3제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "fixed"),
-        .init(question: "오늘 먹은 것 중에 제25일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "fixed"),
-        .init(question: "오늘 먹은 것 중에 제일 7맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "random"),
-        .init(question: "오늘 먹은 것 중에 제일 맛58있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "random"),
-        .init(question: "오늘 먹은 것 중에 제일 맛있4었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.ㄴㅇ눈", category: "random"),
-        .init(question: "오늘 먹은 것 중에 제일 맛있었23던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "fixed"),
-        .init(question: "오늘 먹은 것 중에 제일 맛있었던 14건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "fixed"),
-        .init(question: "오늘 먹은 것 중에 제일 맛있었던 건 21뭐였어? 그 음식에 대해 자세히 말해줘..", category: "fixed"),
-        .init(question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐14였어? 그 음식에 대해 자세히 말해줘.", category: "random"),
-        .init(question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였52어? 그 음식에 대해 자세히 말해줘.", category: "fixed"),
-        .init(question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.", category: "fixed"),
-        .init(question: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어?65 그 음식에 대해 자세히 말해줘.", category: "random"),
-    ]
 }
 
 class DiscViewModel: ObservableObject {
     @Published var currentPage: Int = 0
     
     let itemsPerPage = 6
-    private let reportVM = ReportDetailViewModel()
+    @ObservedObject var viewModel = ReportDetailViewModel()
+    
+    init(reportVM: ReportDetailViewModel) {
+        self.viewModel = reportVM
+    }
     
     var discItems: [TotalDiscModel] {
-        reportVM.TotalDiscItem
+        viewModel.TotalDiscItem
     }
     
     var pagedItems: [TotalDiscModel] {

@@ -33,6 +33,8 @@ class ReportMainViewModel: ObservableObject {
                         if raw.hasCoverImage, let url = raw.coverImageUrl {
                             return DiscItemData(
                                 id: raw.id,
+                                year: raw.year,
+                                month: raw.month,
                                 dateLabel: dateLabel,
                                 imageUrl: url,
                                 localImageName: nil
@@ -40,6 +42,8 @@ class ReportMainViewModel: ObservableObject {
                         } else {
                             return DiscItemData(
                                 id: raw.id,
+                                year: raw.year,
+                                month: raw.month,
                                 dateLabel: dateLabel,
                                 imageUrl: nil,
                                 localImageName: self.imageNameForColor(raw.coverColor)

@@ -11,12 +11,23 @@ struct ReportDetailView: View {
     
     @Environment(\.dismiss) var dismiss
     @State private var nowIndex: Int = 1
+    
     @StateObject private var viewModel = ReportDetailViewModel()
-    @StateObject private var DiscQuestionViewModel = DiscViewModel()
+    @StateObject private var DiscQuestionViewModel: DiscViewModel
+    
+    init(year: Int, month: Int) {
+        let reportVM = ReportDetailViewModel()
+        _viewModel = StateObject(wrappedValue: reportVM)
+        _DiscQuestionViewModel = StateObject(wrappedValue: DiscViewModel(reportVM: reportVM))
+        self.year = year
+        self.month = month
+    }
+    
     @State private var rotate = false
     @State private var questionsOpacity: Double = 1.0
     
-    let discId: Int
+    let year: Int
+    let month: Int
     
     let sixItemPositions: [CGPoint] = [
         CGPoint(x: 213, y: 55),
@@ -81,6 +92,9 @@ struct ReportDetailView: View {
                     PresentGroup
                 }
             }
+            .onAppear {
+                viewModel.getReport(year: year, month: month)
+            }
         }
         .navigationBarBackButtonHidden()
     }
@@ -108,14 +122,13 @@ struct ReportDetailView: View {
             }){
                 Image(.imgGoback)
             }
-                
             Spacer()
         }
     }
     
     private var TotalDiscGroup: some View {
         VStack(alignment: .leading) {
-            Text("5월에는 총")
+            Text("\(month)월에는 총")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.bottom, 2)
@@ -339,5 +352,5 @@ struct ReportDetailView: View {
 }
 
 #Preview {
-    ReportDetailView(discId: 1)
+    ReportDetailView(year: 2025, month: 7)
 }

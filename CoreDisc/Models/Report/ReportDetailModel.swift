@@ -13,8 +13,3 @@ struct RandomQuestionModel : Identifiable {
     let freq: String
 }
 
-struct TotalDiscModel : Identifiable {
-    let id = UUID()
-    let question: String
-    let category: String
-}
