@@ -40,12 +40,33 @@ struct TimePickerSheet: View {
                     
                     // 설정 버튼
                     Button(action: {
-                        // TODO: Setting API
-                        
                         withAnimation {
+                            let data: NotificationData
+                            switch timeType {
+                            case .first:
+                                data = NotificationData(
+                                    dailyReminderEnabled: viewModel.data.dailyReminderEnabled,
+                                    dailyReminderHour: selectedHour,
+                                    dailyReminderMinute: selectedMinute,
+                                    unansweredReminderEnabled: viewModel.data.unansweredReminderEnabled,
+                                    unansweredReminderHour: viewModel.data.unansweredReminderHour,
+                                    unansweredReminderMinute: viewModel.data.unansweredReminderMinute
+                                )
+                            case .second:
+                                data = NotificationData(
+                                    dailyReminderEnabled: viewModel.data.dailyReminderEnabled,
+                                    dailyReminderHour: viewModel.data.dailyReminderHour,
+                                    dailyReminderMinute: viewModel.data.dailyReminderMinute,
+                                    unansweredReminderEnabled: viewModel.data.unansweredReminderEnabled,
+                                    unansweredReminderHour: selectedHour,
+                                    unansweredReminderMinute: selectedMinute
+                                )
+                            }
+                            viewModel.fetchSetReminder(notificationData: data)
+                            
                             showSheet = false
                         }
-                    }) { // TODO: time setting
+                    }) {
                         ZStack {
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(.key)
