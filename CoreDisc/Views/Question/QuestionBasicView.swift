@@ -145,6 +145,7 @@ struct QuestionBasicView: View {
     private var TopGroup: some View {
         ZStack(alignment: .top) {
             Image(.imgLogoOneline)
+                .foregroundStyle(.white)
                 .padding(.top, 19)
             
             VStack(alignment: .leading, spacing: 9) {
