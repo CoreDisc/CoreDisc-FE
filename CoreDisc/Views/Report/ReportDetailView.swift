@@ -254,7 +254,7 @@ struct ReportDetailView: View {
     
     private var TimeReportGroup: some View {
         VStack(alignment: .leading) {
-            Text("5월의 DISC는")
+            Text("\(month)월의 DISC는")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.bottom, 2)
@@ -264,7 +264,7 @@ struct ReportDetailView: View {
                 .foregroundStyle(.white)
             
             Spacer().frame(height: 19)
-//            Image(.iconTimePink)
+            Image(viewModel.PeakTimeImage)
         }
     }
     
@@ -299,7 +299,7 @@ struct ReportDetailView: View {
             ZStack {
                 Image(.imgSpeechbubble)
                 
-                Text("5월은 누구와 가장 많이 함께했을까요?")
+                Text("\(month)월은 누구와 가장 많이 함께했을까요?")
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.black000)
                     .padding(.top, 10)
@@ -323,7 +323,7 @@ struct ReportDetailView: View {
                 Spacer().frame(width: 21)
                 
                 VStack(alignment: .leading) {
-                    Text("2025 - 07")
+                    Text("\(String(year)) - \(String(format: "%02d", month))")
                         .textStyle(.Button)
                         .foregroundStyle(.black)
                     

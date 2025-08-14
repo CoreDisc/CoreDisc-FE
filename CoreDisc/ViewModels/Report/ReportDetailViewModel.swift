@@ -12,6 +12,7 @@ class ReportDetailViewModel: ObservableObject {
     
     @Published var TotalDiscItem: [TotalDiscModel] = []
     @Published var MostQuestionItem: [MostSelectedQuestion] = []
+    @Published var PeakTimeImage: String = ""
     
     private let ReportProvider = APIManager.shared.createProvider(for: ReportRouter.self)
     
@@ -48,6 +49,16 @@ class ReportDetailViewModel: ObservableObject {
                                     ),
                                     MostSelectedQuestion(questionContent: "", selectedCount: nil)
                                 ]
+                            }
+                            
+                            switch resultData.peakTimeZone{
+                            case "DAWN" : self.PeakTimeImage = "img_dawn"
+                            case "MORNING" : self.PeakTimeImage = "img_morning"
+                            case "DAY" : self.PeakTimeImage = "img_day"
+                            case "AFTERNOON" : self.PeakTimeImage = "img_afternoon"
+                            case "EVENING" : self.PeakTimeImage = "img_evening"
+                            default:
+                                self.PeakTimeImage = "img_day"
                             }
                         }
                     }
