@@ -23,7 +23,22 @@ class MyHomeViewModel: ObservableObject {
     @Published var hasNextPage: Bool = false
     
     // fetchIdCheck
-    @Published var duplicated: Bool = false
+    @Published var idDuplicated: Bool = false
+    @Published var idCheckSuccess: Bool = false
+    
+    // fetchNameCheck
+    @Published var nameDuplicated: Bool = false
+    @Published var nameCheckSuccess: Bool = false
+    
+    // fetchProfile
+    @Published var logoutSuccess : Bool = false
+    @Published var changeSuccess : Bool = false
+    
+    // 중복 확인 여부
+    private var originalUsername: String = ""
+    private var originalNickname: String = ""
+    @Published var nextErrorUsername : Bool = false
+    @Published var nextErrorNickname : Bool = false
     
     private let memberProvider = APIManager.shared.createProvider(for: MemberRouter.self)
     private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
@@ -43,6 +58,9 @@ class MyHomeViewModel: ObservableObject {
                     self.followingCount = result.followingCount
                     self.postCount = result.postCount
                     self.profileImageURL = result.profileImgDTO.imageUrl
+                    
+                    self.originalUsername = result.username
+                    self.originalNickname = result.nickname
                 } catch {
                     print("GetMyHome 디코더 오류: \(error)")
                     DispatchQueue.main.async {
@@ -102,9 +120,13 @@ class MyHomeViewModel: ObservableObject {
             case .success(let response):
                 do {
                     let decodedData = try JSONDecoder().decode(EditCheckUsernameResponse.self, from: response.data)
-                    let result = decodedData.result
+                    self.idDuplicated = decodedData.result.duplicated
+                    if !self.idDuplicated {
+                        self.idCheckSuccess = true
+                        self.nextErrorUsername = false
+                        
+                    }
                     
-                    self.duplicated = result.duplicated
                 } catch {
                     print("GetCheckUsername 디코더 오류: \(error)")
                     DispatchQueue.main.async {
@@ -117,6 +139,81 @@ class MyHomeViewModel: ObservableObject {
                     ToastManager.shared.show("아이디 중복 확인을 하지 못했습니다.")
                 }
             }
+        }
+    }
+    
+    func fetchNameCheck() {
+        authProvider.request(.getCheckNickname(nickname: nickname)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedResponse = try JSONDecoder().decode(EditCheckNameResponse.self, from: response.data)
+                    self.nameDuplicated = decodedResponse.result.duplicated
+                    if !self.nameDuplicated {
+                        self.nameCheckSuccess = true
+                        self.nextErrorNickname = false
+                        
+                    }
+                } catch {
+                    print("디코딩 실패 : \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류 : \(error)")
+            }
+        }
+    }
+    
+    func fetchProfile() {
+        memberProvider.request(.patchProfile(
+            profilePatchData: ProfilePatchData(
+                newNickname: nickname,
+                newUsername: username,
+            )
+        )) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedResponse = try JSONDecoder().decode(ProfileResponse.self, from: response.data)
+                    print(decodedResponse.code)
+                    if decodedResponse.code == "MEMBER2001" {
+                        KeychainManager.standard.deleteSession(for: "appNameUser")
+                        DispatchQueue.main.async {
+                            self.logoutSuccess = true
+                        }
+                    } else if decodedResponse.code == "MEMBER2002" {
+                        DispatchQueue.main.async {
+                            self.changeSuccess = true
+                        }
+                    }
+                    
+                } catch {
+                    print("디코딩 실패 : \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류 : \(error)")
+            }
+        }
+    }
+    
+    func validateAndSubmit() {
+        let usernameChanged = username != originalUsername
+        let nicknameChanged = nickname != originalNickname
+        
+        // 변경된 항목에 대해서만 중복확인 체크
+        var hasError = false
+        
+        if usernameChanged && !idCheckSuccess {
+            nextErrorUsername = true
+            hasError = true
+        }
+        
+        if nicknameChanged && !nameCheckSuccess {
+            nextErrorNickname = true
+            hasError = true
+        }
+        
+        if !hasError {
+            fetchProfile()
         }
     }
 }

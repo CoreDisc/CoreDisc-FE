@@ -9,26 +9,54 @@ import SwiftUI
 
 struct SettingView: View {
     @Environment(\.dismiss) var dismiss
+    @State var LogoutModal = false
+    @StateObject private var viewModel = AccountManageViewModel()
     
     var body: some View {
-        ZStack {
-            Image(.imgShortBackground2)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack(spacing: 0) {
-                Spacer().frame(height: 3)
+        NavigationStack{
+            ZStack {
+                Image(.imgShortBackground2)
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                TopMenuGroup
-                
-                Spacer().frame(height: 34)
-                
-                ButtonGroup
-                
-                Spacer()
+                VStack(spacing: 0) {
+                    Spacer().frame(height: 3)
+                    
+                    TopMenuGroup
+                    
+                    Spacer().frame(height: 34)
+                    
+                    ButtonGroup
+                    
+                    Spacer()
+                }
+                if LogoutModal {
+                    ModalView {
+                        VStack {
+                            Text("로그아웃 하시겠습니까?")
+                                .textStyle(.Button_s)
+                        }
+                    } leftButton: {
+                        Button(action: {
+                            LogoutModal.toggle()
+                        }) {
+                            Text("돌아가기")
+                        }
+                    } rightButton: {
+                        Button(action: {
+                            LogoutModal.toggle()
+                            viewModel.logout()
+                        }) {
+                            Text("로그아웃")
+                                .foregroundStyle(.red)
+                        }
+                    }
+                }
             }
         }
         .toolbarVisibility(.hidden, for: .navigationBar)
+        .navigationBarBackButtonHidden()
+        .navigationDestination(isPresented: $viewModel.logoutSuccess) {LoginView()}
     }
     
     // 상단 메뉴
@@ -39,7 +67,6 @@ struct SettingView: View {
                     .fill(.highlight)
                     .frame(width: 28, height: 55)
                     .offset(x: -14)
-                
                 Spacer()
             }
             
@@ -54,7 +81,6 @@ struct SettingView: View {
                     }) {
                         Image(.iconBack)
                     }
-                    
                     Spacer()
                 }
                 .padding(.leading, 17)
@@ -69,7 +95,7 @@ struct SettingView: View {
             SettingButton(title: "계정 관리", destination: { AnyView(AccountManageView()) })
             SettingButton(title: "차단 유저 목록", destination: { AnyView(BlockListView()) })
             SettingButton(title: "알림 설정", destination: { AnyView(NotificationView()) })
-            SettingButton(title: "로그아웃") // TODO: 로그아웃 모달
+            SettingButton(title: "로그아웃", onClick: { LogoutModal = true })
         }
     }
 }
@@ -78,6 +104,7 @@ struct SettingView: View {
 struct SettingButton: View {
     var title: String
     var destination: (() -> AnyView)?
+    var onClick: (() -> Void)?
     
     var body: some View {
         if let destination = destination {
@@ -85,7 +112,11 @@ struct SettingButton: View {
                 buttonContent
             }
         } else {
-            buttonContent
+            Button(action: {
+                onClick?()
+            }) {
+                buttonContent
+            }
         }
     }
     

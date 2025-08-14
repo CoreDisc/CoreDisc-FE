@@ -15,21 +15,125 @@ class SignupViewModel: ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
     @Published var passwordCheck: String = ""
-    @Published var agreedTermsIds: String = ""
     @Published var code: String = ""
     
-    @Published var emailErrorMessage: String = ""
     @Published var EmailVerified: Bool = false
     @Published var CodeVerified: Bool = false
     @Published var codeErrorMessage: String = ""
     @Published var isSignedUp: Bool = false
+    @Published var nicknameError: Bool = false
     @Published var pwdError: Bool = false
     @Published var rePwdError: Bool = false
     @Published var idError: Bool = false
-    @Published var nicknameError: Bool = false
-    @Published var signupError: Bool = false
+    @Published var idDuplicate: Bool = false
+    @Published var idSuccess: Bool = false
+    @Published var emailDuplicate: Bool = false
+    @Published var emailSuccess: Bool = false
+    @Published var emailBoxColor: Bool = false
+    @Published var nameDuplicate: Bool = false
+    @Published var nameSuccess: Bool = false
+    @Published var termsList: [TermsData] = []
+    @Published var terms1: Bool = false { didSet { updateAgreedTermsIds() } }
+    @Published var terms2: Bool = false { didSet { updateAgreedTermsIds() } }
+    @Published var terms3: Bool = false { didSet { updateAgreedTermsIds() } }
+    @Published var terms4: Bool = false { didSet { updateAgreedTermsIds() } }
+    
+    @Published private(set) var agreedTermsIds: [Int] = []
+    
+    private func updateAgreedTermsIds() {
+        var ids: [Int] = []
+        if terms1 { ids.append(1) }
+        if terms2 { ids.append(2) }
+        if terms3 { ids.append(3) }
+        if terms4 { ids.append(4) }
+        agreedTermsIds = ids
+    }
     
     private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
+    
+    func getTerms() {
+        authProvider.request(.getTerms) { result in
+            switch result {
+            case .success(let response):
+                if let decodedResponse = try? JSONDecoder().decode(TermsResponse.self, from: response.data) {
+                    self.termsList = decodedResponse.result
+                    print("성공: \(decodedResponse.message)")
+                }
+            case .failure(let error):
+                if let response = error.response {
+                    do {
+                        let decodedResponse = try JSONDecoder().decode(TermsResponse.self, from: response.data)
+                        DispatchQueue.main.async {
+                            self.termsList = decodedResponse.result
+                        }
+                    } catch {
+                        print("디코딩 실패 : \(error.localizedDescription)")
+                    }
+                } else {
+                    print("네트워크 오류: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    func CkeckEmail() {
+        authProvider.request(.getCheckEmail(email: email)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedResponse = try JSONDecoder().decode(EmailCheckResponse.self, from: response.data)
+                    self.emailDuplicate = decodedResponse.result.duplicated
+                    if !self.emailDuplicate {
+                        self.emailBoxColor = true
+                        self.emailSuccess = true
+                    }
+                } catch {
+                    print("디코딩 실패 : \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류 : \(error)")
+            }
+        }
+    }
+    
+    func CkeckUsername() {
+        authProvider.request(.getCheckUsername(username: username)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedResponse = try JSONDecoder().decode(UsernameCheckResponse.self, from: response.data)
+                    self.idDuplicate = decodedResponse.result.duplicated
+                    if !self.idDuplicate {
+                        self.idSuccess = true
+                    }
+                } catch {
+                    print("디코딩 실패 : \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류 : \(error)")
+            }
+        }
+    }
+    
+    func CkeckName() {
+        authProvider.request(.getCheckNickname(nickname: name)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedResponse = try JSONDecoder().decode(NameCheckResponse.self, from: response.data)
+                    self.nameDuplicate = decodedResponse.result.duplicated
+                    if !self.nameDuplicate {
+                        self.nameSuccess = true
+                    }
+                } catch {
+                    print("디코딩 실패 : \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류 : \(error)")
+            }
+        }
+    }
+
     
     func sendCode() {
         authProvider.request(.postSendCode(email: email)) { result in
@@ -38,30 +142,18 @@ class SignupViewModel: ObservableObject {
                 if let decodedResponse = try? JSONDecoder().decode(SendCodeResponse.self, from: response.data) {
                     print("성공: \(decodedResponse.message)")
                     self.EmailVerified = true
-                    self.emailErrorMessage = ""
                 }
             case .failure(let error):
                 if let response = error.response {
                     do {
                         let decodedResponse = try JSONDecoder().decode(SendCodeResponse.self, from: response.data)
-                        let sendCodeErrorMsg: String
-                        switch decodedResponse.result {
-                        case .error(let validationError):
-                            sendCodeErrorMsg = validationError.email
-                        case .success(_), .none:
-                            sendCodeErrorMsg = decodedResponse.message
-                        }
-                        print("실패 : \(sendCodeErrorMsg)")
-                        self.emailErrorMessage = sendCodeErrorMsg
+                        print("실패 : \(decodedResponse.message)")
                     } catch {
                         print("디코딩 실패 : \(error.localizedDescription)")
-                        self.emailErrorMessage = "오류가 발생했습니다."
                     }
                     self.EmailVerified = false
                 } else {
                     print("네트워크 오류: \(error.localizedDescription)")
-                    self.EmailVerified = false
-                    self.emailErrorMessage = "네트워크 오류가 발생했습니다."
                 }
             }
         }
@@ -128,7 +220,7 @@ class SignupViewModel: ObservableObject {
                 username: username,
                 password: password,
                 passwordCheck: passwordCheck,
-                agreedTermsIds: [1,2,3]
+                agreedTermsIds: agreedTermsIds
             )
         )){ result in
             switch result {
@@ -140,32 +232,30 @@ class SignupViewModel: ObservableObject {
             case .failure(let error):
                 if let response = error.response {
                     do {
-                        let decodedResponse = try JSONDecoder().decode(SendCodeResponse.self, from: response.data)
-                        let signupErrorMsg: String
-                        switch decodedResponse.result {
-                        case .error(let validationError):
-                            signupErrorMsg = validationError.email
-                        case .success(_), .none:
-                            signupErrorMsg = decodedResponse.message
-                        }
-                        print("실패 : \(signupErrorMsg)")
+                        let decodedResponse = try JSONDecoder().decode(SignupResponse.self, from: response.data)
+
+                        print("실패 : \(error.localizedDescription)")
                         
                         switch decodedResponse.code {
                         case "COMMON400":
-                            self.pwdError = true
+                            if let result = decodedResponse.result {
+                                if result.name != nil {
+                                    self.nicknameError = true
+                                }
+                                if result.username != nil {
+                                    self.idError = true
+                                }
+                                if result.password != nil {
+                                    self.pwdError = true
+                                }
+                            }
                         case "AUTH4001":
                             self.rePwdError = true
-                        case "AUTH4005":
-                            self.nicknameError = true
-                        case "AUTH4004":
-                            self.idError = true
                         default:
                             break
                         }
                     } catch {
-                        print("디코딩 실패 : \(error.localizedDescription)")
-                        self.signupError = true
-                    }
+                        print("디코딩 실패 : \(error.localizedDescription)")                    }
                 } else {
                     print("네트워크 오류: \(error.localizedDescription)")
                 }

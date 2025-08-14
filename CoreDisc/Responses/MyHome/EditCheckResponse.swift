@@ -17,3 +17,15 @@ struct EditCheckUsernameResponse: Decodable {
 struct EditCheckUsernameResult: Decodable {
     let duplicated: Bool
 }
+
+
+struct EditCheckNameResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: EditNameResult
+}
+
+struct EditNameResult: Decodable {
+    let duplicated: Bool
+}

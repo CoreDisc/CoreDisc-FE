@@ -18,3 +18,10 @@ struct resignResponse: Decodable {
     let message: String
     let result: String
 }
+
+struct logoutResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: String
+}

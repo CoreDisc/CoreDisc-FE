@@ -14,6 +14,8 @@ struct EditProfileView: View {
     @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused: Bool
     
+    @State private var showEditButton: Bool = false
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground2)
@@ -69,12 +71,20 @@ struct EditProfileView: View {
                     
                     Spacer()
                     
-                    Button(action: {}) { // TODO: complete action
+                    Button(action: {
+                        viewModel.validateAndSubmit()
+                    }) {
                         Text("완료")
                             .textStyle(.Q_Main)
                             .foregroundStyle(.highlight)
                             .underline()
                     }
+                    .onChange(of: viewModel.changeSuccess) { oldValue, newValue in
+                        if newValue {
+                            dismiss()
+                        }
+                    }
+                    .navigationDestination(isPresented: $viewModel.logoutSuccess) {LoginView()}
                 }
                 .padding(.leading, 17)
                 .padding(.trailing, 22)
@@ -91,9 +101,14 @@ struct EditProfileView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 124, height: 124)
                     .clipShape(Circle())
+            } else {
+                Circle()
+                    .frame(width: 124, height: 124)
             }
             
-            Button(action: {}) { // TODO: profile edit
+            Button(action: {
+                showEditButton.toggle()
+            }) { // TODO: profile edit
                 Image(.iconEdit)
                     .frame(width: 38, height: 38)
                     .background(
@@ -102,6 +117,35 @@ struct EditProfileView: View {
                     )
             }
             .buttonStyle(.plain)
+            
+            if showEditButton {
+                VStack(spacing: 12) {
+                    Button(action: {}) { // TODO: 기본 이미지 설정
+                        Text("기본 이미지")
+                            .textStyle(.Q_pick)
+                            .foregroundStyle(.black000)
+                            .frame(width: 84, height: 25)
+                            .background(
+                                RoundedRectangle(cornerRadius: 24)
+                                    .fill(.key)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    
+                    Button(action: {}) { // TODO: 사진 불러오기
+                        Text("사진 불러오기")
+                            .textStyle(.Q_pick)
+                            .foregroundStyle(.black000)
+                            .frame(width: 84, height: 25)
+                            .background(
+                                RoundedRectangle(cornerRadius: 24)
+                                    .fill(.key)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+                .offset(x: 94)
+            }
         }
     }
     
@@ -111,17 +155,29 @@ struct EditProfileView: View {
             ProfileEditTextField(
                 type: "Nick Name",
                 text: $viewModel.nickname,
-                duplicated: .constant(false),
+                duplicated: $viewModel.nameDuplicated,
                 viewModel: viewModel
             )
                 .focused($isFocused) // 키보드 내리기
+                .onChange(of: viewModel.nickname) { oldValue, newValue in
+                      if viewModel.nameCheckSuccess {
+                          viewModel.nameCheckSuccess = false
+                      }
+                    viewModel.nextErrorNickname = false
+                  }
             ProfileEditTextField(
                 type: "User Name",
                 text: $viewModel.username,
-                duplicated: $viewModel.duplicated,
+                duplicated: $viewModel.idDuplicated,
                 viewModel: viewModel
             )
                 .focused($isFocused) // 키보드 내리기
+                .onChange(of: viewModel.username) { oldValue, newValue in
+                      if viewModel.idCheckSuccess {
+                          viewModel.idCheckSuccess = false
+                      }
+                    viewModel.nextErrorUsername = false
+                  }
         }
     }
 }
@@ -148,55 +204,97 @@ struct ProfileEditTextField: View {
                     text: $text,
                     prompt: Text(type).foregroundStyle(.gray600)
                 )
-                    .textStyle(.Pick_Q_Eng)
-                    .foregroundStyle(.white)
-                    .textInputAutocapitalization(.never)
-                    .frame(height: 28)
-                    .frame(maxWidth: 200)
-                    .padding(.vertical, 2)
-                    .padding(.horizontal, 10)
+                .textStyle(.Pick_Q_Eng)
+                .foregroundStyle(.white)
+                .textInputAutocapitalization(.never)
+                .frame(height: 28)
+                .frame(maxWidth: 200)
+                .padding(.horizontal, 10)
                 
                 Divider()
                     .background(.gray200)
                     .frame(maxWidth: 200)
                 
-                if type == "User Name", duplicated {
-                    Text("이미 존재하는 아이디입니다.")
-                        .textStyle(.login_alert)
-                        .foregroundStyle(.warning)
-                        .padding(.top, 2)
-                } else if type == "User Name", !duplicated {
-                    Text("사용 가능한 아이디입니다.")
-                        .textStyle(.login_alert)
-                        .foregroundStyle(.white)
-                        .padding(.top, 2)
+                if type == "User Name" {
+                    if viewModel.nextErrorUsername {
+                        Text("중복 확인을 해주세요.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.warning)
+                            .padding(.top, 2)
+                    } else if duplicated {
+                        Text("이미 존재하는 아이디입니다.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.warning)
+                            .padding(.top, 2)
+                    } else if viewModel.idCheckSuccess {
+                        Text("사용 가능한 아이디입니다.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.white)
+                            .padding(.top, 2)
+                    }
                 }
-            }
+                
+                if type == "Nick Name" {
+                    if viewModel.nextErrorNickname {
+                        Text("중복 확인을 해주세요.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.warning)
+                            .padding(.top, 2)
+                    } else if duplicated {
+                        Text("이미 존재하는 닉네임입니다.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.warning)
+                            .padding(.top, 2)
+                    } else if viewModel.nameCheckSuccess {
+                        Text("사용 가능한 닉네임입니다.")
+                            .textStyle(.login_alert)
+                            .foregroundStyle(.white)
+                            .padding(.top, 2)
+                    }
+                    
+                }
             
-            Spacer().frame(width: 5)
-            
+        }
+        
+        Spacer().frame(width: 5)
+        
+        Button(action: {
             if type == "User Name" {
-                Button(action: {
-                    viewModel.fetchIdCheck(username: text)
-                }) {
-                    Text("중복확인")
-                        .textStyle(.Q_pick)
-                        .foregroundStyle(.black000)
-                        .frame(width: 63, height: 24)
-                        .background(
-                            RoundedRectangle(cornerRadius: 30)
-                                .fill(.key)
-                        )
-                }
+                viewModel.fetchIdCheck(username: text)
+                viewModel.nextErrorUsername = false
             } else {
-                Spacer()
+                viewModel.fetchNameCheck()
+                viewModel.nextErrorNickname = false
+            }
+        }) {
+            if type == "User Name" {
+                Text("중복확인")
+                    .textStyle(.Q_pick)
+                    .foregroundStyle(.black000)
                     .frame(width: 63, height: 24)
+                    .background(
+                        RoundedRectangle(cornerRadius: 30)
+                            .fill(viewModel.idCheckSuccess ? .gray400 : .key)
+                    )
+            } else{
+                Text("중복확인")
+                    .textStyle(.Q_pick)
+                    .foregroundStyle(.black000)
+                    .frame(width: 63, height: 24)
+                    .background(
+                        RoundedRectangle(cornerRadius: 30)
+                            .fill(viewModel.nameCheckSuccess ? .gray400 : .key)
+                    )
             }
         }
+        .padding(.top, 3)
+    }
+
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 17)
     }
 }
+
 
 #Preview {
     EditProfileView()
