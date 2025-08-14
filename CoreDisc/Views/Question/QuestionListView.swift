@@ -83,6 +83,7 @@ struct QuestionListView: View {
                         category: "감정,마음",
                         content: "맛있는 음식을 먹을 때 어떤 기분이 드나요? 표현해본다면요? 맛있는 음식을 먹을 때 어떤",
                         date: "26년 7월 4일",
+                        sharedCount: 1,
                         index: index + 1
                     )
                     .padding(.horizontal, 31)

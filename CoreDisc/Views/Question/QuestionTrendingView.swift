@@ -29,6 +29,7 @@ struct QuestionTrendingView: View {
                 Spacer()
             }
         }
+        .navigationBarBackButtonHidden()
         
     }
     
@@ -145,16 +146,6 @@ struct TrendingQuestionItem: View {
                     Image(isChecked ? .iconChecked : .iconCheck)
                         .resizable()
                         .frame(width: 32, height: 32)
-                }
-                
-                Button(action: {
-                    isFavorite.toggle()
-                }) {
-                    Image(.iconLove)
-                        .renderingMode(.template)
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundStyle(.gray400)
                 }
             }
         }

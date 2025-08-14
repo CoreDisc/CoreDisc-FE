@@ -26,6 +26,22 @@ enum CategoryType: CaseIterable {
         return [.all, .favorite, .taste, .lifeStyle, .relationship, .selfImprovement, .health, .culture, .feeling, .hobby, .dream, .other]
     }
     
+    var id: Int {
+        switch self {
+        case .taste: return 1
+        case .lifeStyle: return 2
+        case .relationship: return 3
+        case .selfImprovement: return 4
+        case .health: return 5
+        case .culture: return 6
+        case .feeling: return 7
+        case .hobby: return 8
+        case .dream: return 9
+        case .other: return 10
+        case .all, .favorite: return 0
+        }
+    }
+    
     var title: String {
         switch self {
         case .all: "All"

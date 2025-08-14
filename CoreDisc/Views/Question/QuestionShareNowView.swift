@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct QuestionShareNowView: View {
-    let items = Array(0..<17)
+    @StateObject private var viewModel = SharedQuestionViewModel()
     private let spacingAngle: Double = 19
     @State private var hiddenCount = 0
     @Environment(\.dismiss) var dismiss
@@ -22,7 +22,6 @@ struct QuestionShareNowView: View {
             VStack {
                 InfoGroup
                 Spacer()
-                
                 CircularScrollView
             }
             
@@ -35,6 +34,9 @@ struct QuestionShareNowView: View {
             }
         }
         .navigationBarBackButtonHidden()
+        .task {
+            viewModel.fetchMySharedQuestions()
+        }
     }
     
     private var InfoGroup: some View {
@@ -42,7 +44,7 @@ struct QuestionShareNowView: View {
             HStack {
                 Button(action: {
                     dismiss()
-                }){ // TODO: 액션 추가
+                }) {
                     Image(.iconBack)
                 }
                 .padding(.leading, 17)
@@ -61,7 +63,7 @@ struct QuestionShareNowView: View {
                 .padding(.leading, 17)
             
             HStack(spacing: 6) {
-                Text("17")
+                Text("\(viewModel.mySharedQuestionCnt)")
                     .textStyle(.Title_Text_Ko)
                     .foregroundStyle(.white)
                 Text("개")
@@ -69,7 +71,6 @@ struct QuestionShareNowView: View {
                     .foregroundStyle(.white)
             }
             .padding(.leading, 17)
-            
             
             Text("사용자들과 공유한 질문들을 확인해보세요!")
                 .textStyle(.Sub_Text_Ko)
@@ -81,10 +82,11 @@ struct QuestionShareNowView: View {
     private var CircularScrollView: some View {
         GeometryReader { geometry in
             let radius = geometry.size.height / 1.2
-            let center = CGPoint(x: geometry.size.width - radius * 1.4, y: geometry.size.height / 7)
+            let center = CGPoint(x: geometry.size.width - radius * 1.4,
+                                 y: geometry.size.height / 7)
             
             ZStack {
-                ForEach(items.indices, id: \.self) { index in
+                ForEach(viewModel.mySharedQuestions.indices, id: \.self) { index in
                     if index >= hiddenCount {
                         let visibleIndex = index - hiddenCount
                         let itemAngle = Angle(degrees: Double(visibleIndex) * spacingAngle)
@@ -93,12 +95,15 @@ struct QuestionShareNowView: View {
                         let x = center.x + radius * CGFloat(cos(totalAngle.radians))
                         let y = center.y + radius * CGFloat(sin(totalAngle.radians))
                         
+                        let question = viewModel.mySharedQuestions[index]
+                        
                         QuestionShareItem(
                             type: "share",
-                            category: "카테고리1",
-                            content: "맛있는 음식을 먹을 때 어떤 기분이 드나요? 표현해본다면요? 맛있는 음식을 먹을 때 어떤 ",
-                            date: "25년 8월 1일",
-                            index: 1
+                            category: question.categories.first?.categoryName ?? "",
+                            content: question.question,
+                            date: question.createdAt,
+                            sharedCount: question.sharedCount,
+                            index: index + 1
                         )
                         .padding(.horizontal, 24)
                         .rotationEffect(totalAngle)
@@ -114,7 +119,7 @@ struct QuestionShareNowView: View {
                         let threshold: CGFloat = 50
                         
                         if value.translation.height < -threshold {
-                            if hiddenCount < items.count - 1 {
+                            if hiddenCount < viewModel.mySharedQuestions.count - 1 {
                                 withAnimation(.spring()) {
                                     hiddenCount += 1
                                 }
@@ -129,16 +134,9 @@ struct QuestionShareNowView: View {
                     }
             )
             .frame(height: 636)
-            
         }
-        
     }
-    
-    
-    
 }
-
-
 
 #Preview {
     QuestionShareNowView()

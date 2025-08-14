@@ -8,27 +8,17 @@
 import SwiftUI
 
 struct QuestionWriteView: View {
-    let bubbleGradient = EllipticalGradient(
-        stops: [
-            .init(color: .gray400.opacity(0.0), location: 0.2692),
-            .init(color: .white, location: 0.8125)
-        ],
-        center: .center,
-        startRadiusFraction: 0,
-        endRadiusFraction: 0.7431
-    )
-    
     @Environment(\.dismiss) var dismiss
     
-    @State var selectedCategory: String? = nil
+    @State var selectedCategory: CategoryType? = nil
     @State var text: String = ""
     @State var isDone: Bool = false
+    @FocusState private var isFocused: Bool
     
     
     var body: some View {
         ScrollView {
             ZStack {
-                
                 VStack {
                     WriteSuggestion
                     Spacer().frame(height: 43)
@@ -38,15 +28,37 @@ struct QuestionWriteView: View {
                     Spacer().frame(height: 15)
                     QuestionCaution
                     Spacer().frame(height: 43)
-                    Button(action: {
-                        
-                    }) {
-                        PrimaryActionButton(title:"확인 및 저장", isFinished: .constant(!text.isEmpty && selectedCategory != nil))
+                    if let selectedCategory = selectedCategory {
+                        NavigationLink(
+                            destination: QuestionSummaryView(
+                                category: selectedCategory,
+                                question: text
+                            ),
+                            label: {
+                                PrimaryActionButton(
+                                    title: "확인 및 저장",
+                                    isFinished: .constant(!text.isEmpty)
+                                )
+                            }
+                        )
+                        .disabled(text.isEmpty)
+                        .padding(.horizontal, 21)
+                    } else {
+                        PrimaryActionButton(
+                            title: "확인 및 저장",
+                            isFinished: .constant(false)
+                        )
+                        .padding(.horizontal, 21)
                     }
-                    .padding(.horizontal, 21)
+                    
+                    Spacer().frame(height: 43)
+
                 }
             }
             .frame(maxWidth: .infinity)
+            .onTapGesture {
+                isFocused = false
+            }
         }
         .background(
             Image(.imgLongBackground)
@@ -122,8 +134,7 @@ struct QuestionWriteView: View {
             (.dream, 0.3), (.other, 0.7)
         ]
         
-        // 🔧 사전에 쌍을 미리 계산해둠
-        let pairs = stride(from: 0, to: categoryPairs.count, by: 2).map { i in
+        _ = stride(from: 0, to: categoryPairs.count, by: 2).map { i in
             (
                 left: (categoryPairs[i].0.title, categoryPairs[i].1),
                 right: (categoryPairs[i + 1].0.title, categoryPairs[i + 1].1)
@@ -175,6 +186,7 @@ struct QuestionWriteView: View {
     //질문 내용 작성 부분
     var QuestionInput: some View {
         ZStack(alignment: .topLeading) {
+            
             UnevenRoundedRectangle(cornerRadii:
                     .init(
                         topLeading: 0,
@@ -203,6 +215,7 @@ struct QuestionWriteView: View {
                             .background(Color.white)
                             .textStyle(.Texting_Q)
                             .cornerRadius(12)
+                            .focused($isFocused)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled(true)
                             .onChange(of: text, initial: false) {

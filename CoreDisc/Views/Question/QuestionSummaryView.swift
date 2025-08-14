@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct QuestionSummaryView: View {
+    @Environment(\.dismiss) var dismiss
+    @StateObject private var viewModel = QuestionSummaryViewModel()
+    
+    let category: CategoryType
+    let question: String
+    
     
     var body: some View {
         ZStack {
@@ -15,22 +21,33 @@ struct QuestionSummaryView: View {
                 .resizable()
                 .ignoresSafeArea()
             VStack {
-                QuestionSummaryGroup
-                Spacer().frame(height: 14)
-                ButtonGroup
+                HStack {
+                    Button(action: {
+                        dismiss()
+                    }){
+                        Image(.iconBack)
+                    }
+                    .padding(.leading, 17)
+                    Spacer()
+                }
+                ScrollView {
+                    VStack {
+                        QuestionSummaryGroup
+                        Spacer().frame(height: 14)
+                        ButtonGroup
+                        Spacer().frame(height: 60)
+                    }
+                }
+                .scrollIndicators(.hidden)
             }
+            
+            
         }
+        .navigationBarBackButtonHidden()
     }
     
     var QuestionSummaryGroup: some View {
         VStack {
-            HStack {
-                Button(action: {}){
-                    Image(.iconBack)
-                }
-                .padding(.leading, 17)
-                Spacer()
-            }
             
             Spacer().frame(height: 23)
             
@@ -67,15 +84,8 @@ struct QuestionSummaryView: View {
                         Rectangle()
                             .padding(.horizontal, 21)
                             .frame(height: 60)
-                            .foregroundStyle(.key)
-                            .overlay(
-                                VStack(spacing: 0) {
-                                    Color.black000.frame(height: 1)
-                                    Spacer()
-                                    Color.black000.frame(height: 1)
-                                }
-                            )
-                        Text("선택1")
+                            .foregroundStyle(category.color)
+                        Text(category.title)
                             .textStyle(.Q_Main)
                             .foregroundStyle(.black000)
                             .padding(.leading, 48)
@@ -92,7 +102,8 @@ struct QuestionSummaryView: View {
                         RoundedRectangle(cornerRadius: 12)
                             .foregroundStyle(.white)
                             .padding(.horizontal, 21)
-                        Text("하루 중에 가장 에너지가 나는 시간대는 언제야?")
+                            .frame(height: 180)
+                        Text(question)
                             .textStyle(.Texting_Q)
                             .padding(.leading, 40)
                             .padding([.top, .bottom, .trailing], 20)
@@ -109,28 +120,41 @@ struct QuestionSummaryView: View {
     
     var ButtonGroup: some View{
         VStack (spacing: 12) {
-            Button(action: {
-                
-            }) {
-                PrimaryActionButton(title: "저장하기", isFinished: .constant(true))
+            NavigationLink(
+                destination: QuestionShareNowView()
+            ) {
+                PrimaryActionButton(title: "작성한 질문 저장하기", isFinished: .constant(true))
             }
-            Button(action: {
-                
-            }) {
-                PrimaryActionButton(title: "수정하기", isFinished: .constant(true))
+            .simultaneousGesture(TapGesture().onEnded {
+                // 이동 전에 저장 로직 실행
+                viewModel.savePersonalQuestion(
+                    categoryIds: [category.id],
+                    question: question
+                )
+            })
+            NavigationLink(destination: QuestionShareNowView()) {
+                PrimaryActionButton(title: "작성한 질문 공유하기", isFinished: .constant(true))
             }
+            .simultaneousGesture(
+                TapGesture().onEnded {
+                    viewModel.shareOfficialQuestion(
+                        categoryIds: [category.id],
+                        question: question
+                    ) { success in
+                        if !success {
+                            ToastManager.shared.show("질문 공유에 실패했습니다. 다시 시도해주세요.")
+                        }
+                    }
+                })
+            
             Button(action: {
                 
             }) {
-                PrimaryActionButton(title: "공유하기", isFinished: .constant(true))
+                PrimaryActionButton(title: "질문 재작성하기", isFinished: .constant(false))
             }
             
         }
         .padding(.horizontal, 21)
         
     }
-}
-
-#Preview {
-    QuestionSummaryView()
 }

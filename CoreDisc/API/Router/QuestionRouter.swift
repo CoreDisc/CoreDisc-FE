@@ -17,7 +17,7 @@ enum QuestionRouter {
     case postFixed(fixedData: FixedData) // 고정 질문 선택
     
     case getSelected // 선택한 고정&랜덤 질문 조회
-    case getOfficialMine // 내가 발행한 공유질문 리스트 조회
+    case getOfficialMine(cursorId: Int?, size: Int?) // 내가 발행한 공유질문 리스트 조회
     case getCategories // 질문 카테고리 리스트 조회
     case getCategoriesSearch(keyword: String) // 질문 카테고리 리스트 조회 (검색)
     case getBasic(
@@ -102,8 +102,15 @@ extension QuestionRouter: APITargetType {
             
         case .getSelected:
             return .requestPlain
-        case .getOfficialMine:
-            return .requestPlain // TODO: 쿼리
+        case .getOfficialMine(let cursorId, let size):
+            var params: [String: Any] = [:]
+            if let cursorId = cursorId {
+                params["cursorId"] = cursorId
+            }
+            if let size = size {
+                params["size"] = size
+            }
+            return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
         case .getCategories:
             return .requestPlain
         case .getCategoriesSearch(let keyword):
