@@ -16,6 +16,8 @@ struct ReportDetailView: View {
     @State private var rotate = false
     @State private var questionsOpacity: Double = 1.0
     
+    let discId: Int
+    
     let sixItemPositions: [CGPoint] = [
         CGPoint(x: 213, y: 55),
         CGPoint(x: 250, y: 103),
@@ -337,5 +339,5 @@ struct ReportDetailView: View {
 }
 
 #Preview {
-    ReportDetailView()
+    ReportDetailView(discId: 1)
 }

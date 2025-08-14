@@ -11,6 +11,12 @@ import Moya
 class ReportMainViewModel: ObservableObject {
     
     @Published var DiscList: [DiscItemData] = []
+    let colors = [
+        "YELLOW", "BLUE", "PURPLE", "PINK",
+        "LAVENDER", "MINT", "ORANGE", "GREEN",
+        "VIOLET", "WHITE"
+    ]
+    @Published var colorChangeSuccess: Bool = false
     
     private let DiscProvider = APIManager.shared.createProvider(for: DiscRouter.self)
     
@@ -59,19 +65,39 @@ class ReportMainViewModel: ObservableObject {
             }
         }
     }
-    private func imageNameForColor(_ color: String) -> String {
+    
+    func imageNameForColor(_ color: String) -> String {
         switch color.uppercased() {
         case "WHITE": return "img_gray_cover"
         case "PINK": return "img_pink_cover"
-        case "Yellow": return "img_yellow_cover"
-        case "Blue": return "img_blue_cover"
+        case "YELLOW": return "img_yellow_cover"
+        case "BLUE": return "img_blue_cover"
         case "PURPLE": return "img_purple_cover"
         case "MINT": return "img_mint_cover"
         case "LAVENDER": return "img_lavender_cover"
-        case "RED": return "img_red_cover"
+        case "GREEN": return "img_red_cover"
         case "VIOLET": return "img_violet_cover"
         case "ORANGE": return "img_orange_cover"
-        default: return "img_pink_cover"
+        default: return "img_blue_cover"
+        }
+    }
+    
+    func ChangeCover(discId: Int, coverColor: String) {
+        DiscProvider.request(.patchCoverColor(discId: discId, coverColor: coverColor)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedResponse = try JSONDecoder().decode(ColorChangeResponse.self, from: response.data)
+                    print("성공: \(decodedResponse)")
+                    DispatchQueue.main.async {
+                        self.colorChangeSuccess = true
+                    }
+                } catch {
+                    print("디코딩 실패 : \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류 : \(error)")
+            }
         }
     }
 }

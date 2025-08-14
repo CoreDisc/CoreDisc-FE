@@ -32,3 +32,21 @@ struct DiscItemData: Identifiable {
     let imageUrl: String?
     let localImageName: String?
 }
+
+struct ColorChangeResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: ColorChangeResult?
+}
+
+struct ColorChangeResult: Decodable {
+    let id: Int
+    let year: Int
+    let month: Int
+    let coverColor: String
+    let hasCoverImage: Bool
+    let coverImageUrl: String?
+}
+
+

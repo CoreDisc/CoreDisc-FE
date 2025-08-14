@@ -68,7 +68,7 @@ struct ReportMainView: View {
             LazyVGrid(columns: columns){
                 ForEach(viewModel.DiscList){ item in
                     if edit {
-                        NavigationLink(destination: ChangeCoverView()){
+                        NavigationLink(destination: ChangeCoverView(discId: item.id)){
                             ZStack{
                                 DiscItem(
                                     imageUrl: item.imageUrl,
@@ -80,7 +80,7 @@ struct ReportMainView: View {
                             }
                         }
                     } else {
-                        NavigationLink(destination: ReportDetailView()){
+                        NavigationLink(destination: ReportDetailView(discId: item.id)){
                             DiscItem(
                                 imageUrl: item.imageUrl,
                                 localImageName: item.localImageName,
