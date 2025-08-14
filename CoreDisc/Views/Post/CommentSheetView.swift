@@ -85,7 +85,7 @@ struct CommentSheetView: View {
                                         .frame(width: 8, height: 0.4)
                                         .background(.gray600)
                                     
-                                    Text(expandedCommentIDs.contains(item.commentId) ? "댓글 숨기기" : "댓글 더보기 (1)") // TODO: 댓글 개수
+                                    Text(expandedCommentIDs.contains(item.commentId) ? "댓글 숨기기" : "댓글 더보기 (\(item.replyCount ?? 0))")
                                         .textStyle(.Small_Text_10)
                                         .foregroundStyle(.gray600)
                                         .padding(.vertical, 4)
@@ -187,11 +187,11 @@ struct CommentItem: View {
                 
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 4) {
-                        Text("@\(item.member.nickname)")
+                        Text("@\(item.member.username)")
                             .textStyle(.Comment_ID)
                             .foregroundStyle(.black000)
                         
-                        Text("2시간") // TODO: 시간 반영
+                        Text(item.timeStamp ?? "")
                             .textStyle(.Small_Text_10)
                             .foregroundStyle(.gray200)
                     }
