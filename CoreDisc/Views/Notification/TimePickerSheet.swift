@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TimePickerSheet: View {
     @Binding var showSheet: Bool
-    @EnvironmentObject var notificationViewModel: NotificationSettingViewModel
+    @EnvironmentObject var viewModel: NotificationSettingViewModel
     
     var timeType: TimeType
 
@@ -40,14 +40,7 @@ struct TimePickerSheet: View {
                     
                     // 설정 버튼
                     Button(action: {
-                        switch timeType {
-                        case .first:
-                            notificationViewModel.firstHour = selectedHour
-                            notificationViewModel.firstMinute = selectedMinute
-                        case .second:
-                            notificationViewModel.secondHour = selectedHour
-                            notificationViewModel.secondMinute = selectedMinute
-                        }
+                        // TODO: Setting API
                         
                         withAnimation {
                             showSheet = false
@@ -80,11 +73,11 @@ struct TimePickerSheet: View {
         .task {
             switch timeType {
             case .first:
-                selectedHour = notificationViewModel.firstHour
-                selectedMinute = notificationViewModel.firstMinute
+                selectedHour = viewModel.data.dailyReminderHour
+                selectedMinute = viewModel.data.dailyReminderMinute
             case .second:
-                selectedHour = notificationViewModel.secondHour
-                selectedMinute = notificationViewModel.secondMinute
+                selectedHour = viewModel.data.unansweredReminderHour
+                selectedMinute = viewModel.data.unansweredReminderMinute
             }
         }
     }
