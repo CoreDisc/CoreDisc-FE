@@ -8,50 +8,72 @@
 import SwiftUI
 
 struct PostWriteView: View {
-    @Environment(\.dismiss) private var dismiss
+    //@Environment(\.dismiss) private var dismiss
     @State private var isCorelist: Bool = false
     
+    private let questions = [
+        "오늘 아침은 무엇을 먹었나요?",
+        "오늘 가장 행복했던 순간은?",
+        "오늘 만난 사람은?",
+        "오늘의 날씨는 어땠나요?"
+    ]
+    
+    // 현재 슬라이드 인덱스
+    @State private var pageIndex: Int = 0
+    
+    // 슬라이드별 답변 상태
+    //@State private var answers: [SlideAnswer] = Array(repeating: .init(), count: 4)
+    
+    
     var body: some View {
-        ZStack {
-            Image(.imgShortBackground)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack {
-                BackButtonGroup
+        NavigationStack{
+            ZStack {
+                Image(.imgShortBackground)
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                Spacer().frame(height: 4)
-                
-                PostGroup
-                
-                Spacer().frame(height: 42)
-                
-                BottomGroup
-                
-                Spacer()
+                VStack {
+                    //BackButtonGroup
+                    
+                    Spacer().frame(height: 22)
+                    
+                    UserGroup
+                    
+                    Spacer().frame(height: 33)
+                    
+                    PostGroup
+                    
+                    Spacer().frame(height: 19)
+                    
+                    BottomGroup
+                    
+                    Spacer()
+                }
             }
         }
         .navigationBarBackButtonHidden()
     }
     
-    // 뒤로가기 버튼 섹션
-    private var BackButtonGroup: some View {
-        HStack{
-            Button(action: {
-                dismiss()
-            }){
-                Image(.iconBack)
-                    .resizable()
-                    .frame(width: 42, height: 42)
-            }
-            
-            Spacer()
-        }
-        .padding(.leading, 17)
-    }
+    /*
+     // 뒤로가기 버튼 섹션
+     private var BackButtonGroup: some View {
+     HStack{
+     Button(action: {
+     dismiss()
+     }){
+     Image(.iconBack)
+     .resizable()
+     .frame(width: 42, height: 42)
+     }
+     
+     Spacer()
+     }
+     .padding(.leading, 17)
+     }
+     */
     
-    // 게시물 작성 섹션
-    private var PostGroup: some View {
+    // 사용자 정보 및 저장버튼 섹션
+    private var UserGroup: some View {
         VStack (alignment: .center){
             // 개인정보, 저장버튼
             HStack {
@@ -94,56 +116,87 @@ struct PostWriteView: View {
                 }
             }
             .padding(.horizontal,16)
-            
-            Spacer().frame(height: 33)
-            
+        }
+    }
+    
+    
+    // 게시물 작성 섹션
+    // TODO: 게시글과 질문섹션 분리 예정
+    private var PostGroup: some View {
+        VStack (alignment: .center){
             // 게시물 작성란
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
-                    ZStack {
-                        Rectangle()
-                            .fill(Color.gray400)
-                            .frame(width: 308, height: 409)
-                            .cornerRadius(20.83)
-                        
-                        VStack (alignment: .leading, spacing: 20) {
-                            Button(action: {
-                                // TODO:
-                            }) {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.white)
-                                        .frame(width: 60, height: 60)
-                                    
-                                    Image(.iconPhoto)
-                                        .renderingMode(.original)
-                                }
-                            }
+                    VStack {
+                        ZStack {
+                            Rectangle()
+                                .fill(Color.gray400)
+                                .frame(width: 308, height: 409)
+                                .cornerRadius(20.83)
                             
                             
-                            Button(action: {
-                                // TODO:
-                            }) {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.white)
-                                        .frame(width: 60, height: 60)
-                                    
-                                    Image(.iconWriting)
-                                        .renderingMode(.original)
+                            VStack (alignment: .leading, spacing: 20) {
+                                Button(action: {
+                                    // TODO:
+                                }) {
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color.white)
+                                            .frame(width: 60, height: 60)
+                                        
+                                        Image(.iconPhoto)
+                                            .renderingMode(.original)
+                                    }
+                                }
+                                
+                                
+                                Button(action: {
+                                    // TODO:
+                                }) {
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color.white)
+                                            .frame(width: 60, height: 60)
+                                        
+                                        Image(.iconWriting)
+                                            .renderingMode(.original)
+                                    }
                                 }
                             }
-                        }
-                        .padding(.top, 240)
-                        .padding(.leading, 225)
+                            .padding(.top, 240)
+                            .padding(.leading, 225)
+                    }
                         
+                        Spacer().frame(height: 49)
+                        
+                        // 질문
+                        Text("계절마다 떠오르는 음식이 있나요? 요즘 생각나는 건 뭐예요?")
+                            .textStyle(.Q_Main)
+                            .foregroundStyle(.highlight)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 348, height: 68)
+                            .background(.black000)
+                            .cornerRadius(12)
                     }
                     
                     ForEach(0..<3, id: \.self) { _ in
-                        Rectangle()
-                            .fill(Color.gray400)
-                            .frame(width: 308, height: 409)
-                            .cornerRadius(20.83)
+                        VStack {
+                            Rectangle()
+                                .fill(Color.gray400)
+                                .frame(width: 308, height: 409)
+                                .cornerRadius(20.83)
+                            
+                            Spacer().frame(height: 49)
+                            
+                            // 질문
+                            Text("계절마다 떠오르는 음식이 있나요? 요즘 생각나는 건 뭐예요?")
+                                .textStyle(.Q_Main)
+                                .foregroundStyle(.highlight)
+                                .multilineTextAlignment(.center)
+                                .frame(width: 348, height: 68)
+                                .background(.black000)
+                                .cornerRadius(12)
+                        }
                     }
                 }
                 .padding(.horizontal, 47)
@@ -153,16 +206,13 @@ struct PostWriteView: View {
     
     // 하단섹션
     private var BottomGroup: some View {
-        VStack (alignment: .center, spacing: 26){
-            // 질문
-            Text("계절마다 떠오르는 음식이 있나요? 요즘 생각나는 건 뭐예요?")
-                .textStyle(.Q_Main)
-                .foregroundStyle(.highlight)
-                .multilineTextAlignment(.center)
-                .frame(width: 348, height: 68)
-                .background(.black000)
-                .cornerRadius(12)
-            
+        let toggleWidth: CGFloat = 123
+        let toggleHeight: CGFloat = 50
+        let nextDiameter: CGFloat = 50
+        let spacing: CGFloat = 16
+        let offsetX: CGFloat = (toggleWidth / 2) + spacing + (nextDiameter / 2)
+        
+        return ZStack {
             // 공개범위 버튼
             Button(action: {
                 withAnimation(.easeInOut(duration: 0.2)) {
@@ -176,7 +226,7 @@ struct PostWriteView: View {
                     
                     RoundedRectangle(cornerRadius: 30)
                         .fill(isCorelist ? .gray600 : .black000)
-                        .frame(width: 123, height: 50)
+                        .frame(width: toggleWidth, height: toggleHeight)
                         .overlay(
                             RoundedRectangle(cornerRadius: 30)
                                 .stroke(.gray400, lineWidth: 2)
@@ -184,51 +234,64 @@ struct PostWriteView: View {
                         .padding(.horizontal, 2)
                     
                     HStack(spacing: 17) {
-                                if isCorelist {
-                                    // Circle 상태 (오른쪽)
-                                    Text("Circle")
-                                        .textStyle(.login_info)
-                                        .foregroundColor(.white)
-
-                                    ZStack {
-                                        Circle()
-                                            .fill(.key)
-                                            .frame(width: 42, height: 42)
-
-                                        Image(.iconCore)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 23, height: 16)
-                                            .foregroundStyle(.gray600)
-                                    }
-                                    .padding(.vertical, 6)
-                                    .padding(.trailing, 8)
-                                    
-                                } else {
-                                    // Public 상태 (왼쪽)
-                                    ZStack {
-                                        Circle()
-                                            .fill(.gray100)
-                                            .frame(width: 42, height: 42)
-
-                                        Image(systemName: "globe")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 20, height:20)
-                                            .foregroundStyle(.black000)
-                                    }
-                                    .padding(.vertical, 6)
-                                    .padding(.leading, 8)
-
-                                    Text("Public")
-                                        .textStyle(.login_info)
-                                        .foregroundColor(.white)
-                                }
+                        if isCorelist {
+                            // Circle 상태 (오른쪽)
+                            Text("Circle")
+                                .textStyle(.login_info)
+                                .foregroundColor(.white)
+                            ZStack {
+                                Circle()
+                                    .fill(.key)
+                                    .frame(width: 42, height: 42)
+                                
+                                Image(.iconCore)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 23, height: 16)
+                                    .foregroundStyle(.gray600)
                             }
+                            .padding(.vertical, 6)
+                            .padding(.trailing, -16)
+                            
+                        } else {
+                            // Public 상태 (왼쪽)
+                            ZStack {
+                                Circle()
+                                    .fill(.gray100)
+                                    .frame(width: 42, height: 42)
+                                
+                                Image(systemName: "globe")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height:20)
+                                    .foregroundStyle(.black000)
+                            }
+                            .padding(.vertical, 6)
+                            .padding(.leading, -16)
+                            
+                            Text("Public")
+                                .textStyle(.login_info)
+                                .foregroundColor(.white)
+                        }
+                        
+                    }
+                    .frame(width: toggleWidth, height: toggleHeight)
+                }
+                .buttonStyle(.plain)
+            }
+            
+            // 넘어가기 버튼
+            NavigationLink(destination: PostWriteDiaryView()) {
+                ZStack {
+                    Circle()
+                        .frame(width: nextDiameter, height: nextDiameter)
+                        .foregroundStyle(.gray200)
+                    Image(.iconArrow)
                 }
             }
-            .buttonStyle(.plain)
+            .offset(x: offsetX)
         }
+        .frame(maxWidth: .infinity, minHeight: 50)
     }
 }
 

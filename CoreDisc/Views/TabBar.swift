@@ -29,7 +29,7 @@ struct TabBar: View {
                 case .disk:
                     QuestionMainView()
                 case .write:
-                    PostWriteDiaryView()
+                    PostWriteView()
                 case .report:
                     ReportMainView()
                 case .mypage:
