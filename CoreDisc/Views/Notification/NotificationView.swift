@@ -27,7 +27,10 @@ struct NotificationView: View {
         }
         .navigationBarBackButtonHidden()
         .task {
-            viewModel.fetchNotifications()
+            viewModel.refresh()
+        }
+        .refreshable { // 당겨서 새로고침
+            viewModel.refresh()
         }
     }
     
@@ -62,6 +65,9 @@ struct NotificationView: View {
                     
                     ForEach(group.values, id: \.notificationId) { item in
                         NotificationListItem(item: item, viewModel: viewModel)
+                            .task {
+                                viewModel.loadNextPageIfNeeded(currentItem: item)
+                            }
                     }
                 }
             }

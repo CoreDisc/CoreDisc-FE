@@ -45,3 +45,11 @@ struct NotificationReadResponse: Decodable {
     let message: String
     let result: String
 }
+
+// 안 읽은 알림
+struct NotificationUnreadResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: Bool
+}
