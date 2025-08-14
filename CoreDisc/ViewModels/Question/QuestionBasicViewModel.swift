@@ -226,6 +226,32 @@ class QuestionBasicViewModel: ObservableObject {
             case .success(let response):
                 do {
                     _ = try JSONDecoder().decode(QuestionFixedResponse.self, from: response.data)
+                    
+                    // questionListMap 수정
+                    for key in self.questionListMap.keys {
+                        if let arr = self.questionListMap[key] {
+                            self.questionListMap[key] = arr.map { item in
+                                var newItem = item
+                                if item.id == questionId {
+                                    newItem.savedStatus = "SAVED"
+                                }
+                                return newItem
+                            }
+                        }
+                    }
+                    
+                    // searchQuestionListMap 수정
+                    for key in self.searchQuestionListMap.keys {
+                        if let arr = self.searchQuestionListMap[key] {
+                            self.searchQuestionListMap[key] = arr.map { item in
+                                var newItem = item
+                                if item.id == questionId {
+                                    newItem.savedStatus = "SAVED"
+                                }
+                                return newItem
+                            }
+                        }
+                    }
                 } catch {
                     print("PostOfficialSave 디코더 오류: \(error)")
                     DispatchQueue.main.async {

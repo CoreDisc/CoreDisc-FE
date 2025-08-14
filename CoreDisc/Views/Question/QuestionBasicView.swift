@@ -115,6 +115,7 @@ struct QuestionBasicView: View {
                     Button(action: {
                         viewModel.fetchOfficialSave(questionId: selectedQuestionId!)
                         showSaveModal.toggle() // 모달 제거
+                        
                     }) {
                         Text("저장하기")
                     }
@@ -249,12 +250,9 @@ struct QuestionBasicView: View {
                                     QuestionBasicDetailItem(
                                         showSelectModal: $showSelectModal,
                                         showSaveModal: $showSaveModal,
-                                        isSelected: question.isSelected,
-                                        isFavorite: question.isFavorite,
-                                        title: question.question,
+                                        question: question,
                                         startColor: item.startColor,
                                         endColor: item.endColor,
-                                        questionId: question.id,
                                         onSelect: { id in
                                             selectedQuestionId = id
                                         }
@@ -362,17 +360,18 @@ struct QuestionBasicDetailItem: View {
     @Binding var showSelectModal: Bool
     @Binding var showSaveModal: Bool
     
-    var isSelected: Bool
-    var isFavorite: Bool
-    
-    var title: String
+    var question: QuestionBasicListValue
     var startColor: Color
     var endColor: Color
-    
-    var questionId: Int
     var onSelect: (Int) -> Void
     
     @State private var isShifted: Bool = false
+    
+    private var hasSaveButton: Bool {
+        question.savedStatus == "SAVED" || question.savedStatus == "NOT_SAVED"
+    }
+    
+    private var slideWidth: CGFloat { hasSaveButton ? 131 : 68 }
     
     var body: some View {
         Button(action: {
@@ -396,14 +395,14 @@ struct QuestionBasicDetailItem: View {
                     )
                     .frame(minHeight: 64)
                 
-                Text(title.splitCharacter())
+                Text(question.question.splitCharacter())
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 23)
                     .padding(.vertical, 14)
             }
-            .offset(x: isShifted ? 131 : 0)
+            .offset(x: isShifted ? slideWidth : 0)
         }
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)
@@ -411,21 +410,25 @@ struct QuestionBasicDetailItem: View {
             HStack(spacing: 3) {
                 Button {
                     showSelectModal.toggle()
-                    onSelect(questionId)
+                    onSelect(question.id)
                 } label: {
-                    Image(isSelected ? .iconBasicSelected : .iconBasicSelect)
+                    Image(question.isSelected ? .iconBasicSelected : .iconBasicSelect)
                 }
                 
-                Button {
-                    showSaveModal.toggle()
-                    onSelect(questionId)
-                } label: {
-                    Image(isFavorite ? .iconBasicSaved : .iconBasicSave)
+                if hasSaveButton {
+                    Button {
+                        if question.savedStatus == "NOT_SAVED" {
+                            showSaveModal.toggle()
+                            onSelect(question.id)
+                        }
+                    } label: {
+                        Image(question.savedStatus == "SAVED" ? .iconBasicSaved : .iconBasicSave)
+                    }
                 }
                 
                 Spacer().frame(width: 13)
             }
-            .offset(x: isShifted ? 0 : -131)
+            .offset(x: isShifted ? 0 : -slideWidth)
             .buttonStyle(.plain)
         }
     }
