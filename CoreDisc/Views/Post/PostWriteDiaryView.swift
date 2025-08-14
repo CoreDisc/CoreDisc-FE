@@ -16,10 +16,13 @@ struct PostWriteDiaryView: View {
     let optionsWho = ["나혼자", "친구", "운동", "직장동료", "연인", "반려동물"]
     let optionsWhere = ["집", "학교", "직장", "카페"]
     let optionsWhat = ["일", "공부", "운동", "휴식", "수면", "취미생활", "여행"]
-    let optionsMore = ["직접입력"]
     
     // 슬라이스 상태
     @State private var showSlices = [false, false, false, false]
+    
+    // 더 기록하고 싶은 내용
+    @State private var moreChoice: Bool? = nil
+    @State private var moreText: String = ""
     
     var body: some View {
         ZStack {
@@ -72,19 +75,19 @@ struct PostWriteDiaryView: View {
             Spacer().frame(height: 12)
             
             slice(index: 0, fromLeft: true) {
-                diarySectionLeft(title: "누구와 함께했나요?", subTitle: "who?", startColor: .orange1, endColor: .orange2, options: optionsWho)
+                diarySectionLeft(title: "누구와 함께했나요?", subTitle: "Who?", startColor: .orange1, endColor: .orange2, options: optionsWho)
             }
             
             slice(index: 1, fromLeft: false) {
-                diarySectionRight(title: "어디에 있었나요?", subTitle: "where?",startColor: .blue1, endColor: .blue2, options: optionsWhere)
+                diarySectionRight(title: "어디에 있었나요?", subTitle: "Where?",startColor: .blue1, endColor: .blue2, options: optionsWhere)
             }
             
             slice(index: 2, fromLeft: true) {
-                diarySectionLeft(title: "무엇을 했나요??", subTitle: "what?",startColor: .purple1, endColor: .purple2, options: optionsWhat)
+                diarySectionLeft(title: "무엇을 했나요??", subTitle: "What?",startColor: .purple1, endColor: .purple2, options: optionsWhat)
             }
             
             slice(index: 3, fromLeft: false) {
-                diarySectionRight(title: "더 기록하고 싶은 내용이 있나요??", subTitle: "who?", startColor: .pink1, endColor: .pink2, options: optionsMore)
+                diarySectionMore(title: "더 기록하고 싶은 내용이 있나요??", subTitle: "More?", startColor: .pink1, endColor: .pink2)
             }
         }
     }
@@ -222,6 +225,104 @@ struct PostWriteDiaryView: View {
         }
     }
     
+    // 선택일기 More
+    private func diarySectionMore(title: String, subTitle: String, startColor: UIColor, endColor: UIColor) -> some View {
+        HStack(alignment: .top, spacing: 15) {
+            ZStack {
+                Rectangle()
+                    .frame(width: 105, height: 204)
+                    .cornerRadius(12, corners: [.topRight, .bottomRight])
+                    .linearGradient(startColor: Color(startColor), endColor: Color(endColor))
+                
+                VStack {
+                    Spacer()
+                    
+                    Text(subTitle)
+                        .textStyle(.Q_Main)
+                        .foregroundStyle(.white)
+                        .frame(height: 43, alignment: .center)
+                        .multilineTextAlignment(.center)
+                    
+                }
+            }
+            
+            ZStack {
+                EllipticalGradient(stops: [
+                    .init(color: .gray.opacity(0.0), location: 0.2692),
+                    .init(color: .white, location: 0.8125)],
+                                   center: .center,
+                                   startRadiusFraction: 0,
+                                   endRadiusFraction: 0.7431)
+                
+                .frame(width: 282, height: 204)
+                .cornerRadius(12, corners: [.topLeft, .bottomLeft])
+                
+                VStack(alignment: .center){
+                    Spacer().frame(height: 28)
+                    
+                    Text(title)
+                        .textStyle(.Q_Main)
+                        .foregroundStyle(.black)
+                        //.padding(.leading, 36)
+                    
+                    Spacer().frame(height: 10)
+                    
+                    HStack (spacing: 16){
+                        Text("네, 직접 넣을래요.")
+                            .textStyle(.Small_Text)
+                            .foregroundStyle(.black)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 106, height: 28 )
+                            .background(Color(red: 0.949, green: 0.949, blue: 0.949))
+                            .cornerRadius(30)
+                        
+                        Text("아니요")
+                            .textStyle(.Small_Text)
+                            .foregroundStyle(.black)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 57, height: 28 )
+                            .background(Color(red: 0.949, green: 0.949, blue: 0.949))
+                            .cornerRadius(30)
+                    }
+                    
+                    Spacer().frame(height: 12)
+                    
+                    HStack{
+                        Spacer().frame(width: 18)
+                        
+                        TextField("내용을 입력해 주세요", text: $moreText)
+                            .foregroundStyle(.gray400)
+                            .font(.system(size: 12))
+                            .padding(.all, 10)
+                            .multilineTextAlignment(.leading)
+                            .frame(width: 212, height: 88, alignment: .topLeading)
+                            .background(.white)
+                            .cornerRadius(12)
+                        
+                        Spacer().frame(width: 8)
+                        
+                        Button(action: {
+                        }){
+                            ZStack {
+                                Circle()
+                                    .frame(width: 32, height: 32)
+                                    .foregroundStyle(.white)
+                                
+                                Image(.iconArrow)
+                            }
+                        }
+                        
+                        Spacer().frame(width: 12)
+                    }
+                    Spacer()
+                }
+            }
+        }
+        .frame(width: 282, height: 204)
+    }
+
+    
+
     @ViewBuilder
     private func slice<Content: View>(index: Int, fromLeft: Bool, @ViewBuilder content: () -> Content) -> some View {
         content()
