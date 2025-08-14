@@ -18,6 +18,9 @@ struct PostWriteDiaryView: View {
     let optionsWhat = ["일", "공부", "운동", "휴식", "수면", "취미생활", "여행"]
     let optionsMore = ["직접입력"]
     
+    // 슬라이스 상태
+    @State private var showSlices = [false, false, false, false]
+    
     var body: some View {
         ZStack {
             Image(.imgPostDetailMainBg)
@@ -33,6 +36,16 @@ struct PostWriteDiaryView: View {
                     Spacer().frame(height: 18)
                     
                     DiaryGroup
+                }
+            }
+        }
+        .onAppear {
+            for i in 0..<4 {
+                let delay = 0.1 + Double(i) * 0.12
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                    withAnimation(.spring(response: 0.45, dampingFraction: 0.85, blendDuration: 0.2)) {
+                        showSlices[i] = true
+                    }
                 }
             }
         }
@@ -58,10 +71,21 @@ struct PostWriteDiaryView: View {
         VStack(alignment: .center, spacing: 8) {
             Spacer().frame(height: 12)
             
-            diarySectionLeft(title: "누구와 함께했나요?", subTitle: "who?", startColor: .orange1, endColor: .orange2, options: optionsWho)
-            diarySectionRight(title: "어디에 있었나요?", subTitle: "where?",startColor: .blue1, endColor: .blue2, options: optionsWhere)
-            diarySectionLeft(title: "무엇을 했나요??", subTitle: "what?",startColor: .purple1, endColor: .purple2, options: optionsWhat)
-            diarySectionRight(title: "더 기록하고 싶은 내용이 있나요??", subTitle: "who?", startColor: .pink1, endColor: .pink2, options: optionsMore)
+            slice(index: 0, fromLeft: true) {
+                diarySectionLeft(title: "누구와 함께했나요?", subTitle: "who?", startColor: .orange1, endColor: .orange2, options: optionsWho)
+            }
+            
+            slice(index: 1, fromLeft: false) {
+                diarySectionRight(title: "어디에 있었나요?", subTitle: "where?",startColor: .blue1, endColor: .blue2, options: optionsWhere)
+            }
+            
+            slice(index: 2, fromLeft: true) {
+                diarySectionLeft(title: "무엇을 했나요??", subTitle: "what?",startColor: .purple1, endColor: .purple2, options: optionsWhat)
+            }
+            
+            slice(index: 3, fromLeft: false) {
+                diarySectionRight(title: "더 기록하고 싶은 내용이 있나요??", subTitle: "who?", startColor: .pink1, endColor: .pink2, options: optionsMore)
+            }
         }
     }
     
@@ -196,6 +220,14 @@ struct PostWriteDiaryView: View {
                 .frame(width: 282, height: 181)
             }
         }
+    }
+    
+    @ViewBuilder
+    private func slice<Content: View>(index: Int, fromLeft: Bool, @ViewBuilder content: () -> Content) -> some View {
+        content()
+            .opacity(showSlices[index] ? 1 : 0)
+            .offset(x: showSlices[index] ? 0 : (fromLeft ? -40 : 40))
+            .animation(.spring(response: 0.45, dampingFraction: 0.85), value: showSlices[index])
     }
 }
 
