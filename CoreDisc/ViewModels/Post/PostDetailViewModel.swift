@@ -222,7 +222,8 @@ class PostDetailViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    _ = try JSONDecoder().decode(PostLikeResponse.self, from: response.data)
+                    let decodedData = try JSONDecoder().decode(PostLikeResponse.self, from: response.data)
+                    self.isLiked = decodedData.result.liked
                 } catch {
                     print("PostLikes 디코더 오류: \(error)")
                     DispatchQueue.main.async {
@@ -243,7 +244,8 @@ class PostDetailViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    _ = try JSONDecoder().decode(PostLikeResponse.self, from: response.data)
+                    let decodedData = try JSONDecoder().decode(PostLikeResponse.self, from: response.data)
+                    self.isLiked = decodedData.result.liked
                 } catch {
                     print("DeleteLikes 디코더 오류: \(error)")
                     DispatchQueue.main.async {

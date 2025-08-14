@@ -116,7 +116,7 @@ struct PostDetailView: View {
                     } else {
                         viewModel.fetchLike(postId: postId)
                     }
-                    viewModel.fetchPostDetail(postId: postId)
+                    viewModel.isLiked.toggle()
                 }){
                     Image(viewModel.isLiked ? .iconLoveFill : .iconLove)
                         .resizable()
