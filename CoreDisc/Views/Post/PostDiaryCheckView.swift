@@ -8,22 +8,26 @@
 import SwiftUI
 
 struct PostDiaryCheckView: View {
+    @State private var isWriteButtonTapped = false
+    @State private var isShareButtonTapped = false
+    
     var body: some View {
-        ZStack {
-            Image(.imgDiaryCheckBg)
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack {
-                Spacer().frame(height: 65)
+            ZStack {
+                Image(.imgDiaryCheckBg)
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                TitleGroup
+                VStack {
+                    Spacer().frame(height: 65)
+                    
+                    TitleGroup
+                    
+                    Spacer().frame(height: 56)
+                    
+                    ButtonGroup
+                    
+                    DiaryGroup
                 
-                Spacer().frame(height: 56)
-                
-                ButtonGroup
-                
-                DiaryGroup
             }
         }
     }
@@ -45,12 +49,21 @@ struct PostDiaryCheckView: View {
     }
     
     // 버튼
-    // TODO: 버튼 애니메이션 추가 예정
+    // TODO: 버튼 화면 연결
     private var ButtonGroup: some View {
         VStack {
             HStack (spacing: 165){
                 ZStack {
-                    Button(action: {}) {
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            isWriteButtonTapped = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                isWriteButtonTapped = false
+                            }
+                        }
+                    }) {
                         EllipticalGradient(stops: [
                             .init(color: .gray.opacity(0.0), location: 0.2692),
                             .init(color: .white, location: 0.8125)],
@@ -61,11 +74,22 @@ struct PostDiaryCheckView: View {
                         .frame(width: 152, height: 152)
                         .cornerRadius(152)
                     }
+                    .scaleEffect(isWriteButtonTapped ? 1.2 : 1.0)
+                    
                     Image(.iconWrite)
                 }
                 
                 ZStack {
-                    Button(action: {}) {
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            isShareButtonTapped = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                isShareButtonTapped = false
+                            }
+                        }
+                    }) {
                         EllipticalGradient(stops: [
                             .init(color: .gray.opacity(0.0), location: 0.2692),
                             .init(color: .white, location: 0.8125)],
@@ -76,6 +100,8 @@ struct PostDiaryCheckView: View {
                         .frame(width: 152, height: 152)
                         .cornerRadius(152)
                     }
+                    .scaleEffect(isShareButtonTapped ? 1.2 : 1.0)
+                    
                     Image(.iconShareWhite)
                 }
             }
