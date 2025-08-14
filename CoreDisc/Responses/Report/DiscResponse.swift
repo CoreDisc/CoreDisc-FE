@@ -14,9 +14,6 @@ struct GetDiscResponse: Decodable {
 
 struct GetDiscResult: Decodable {
     let totalDiscCount: Int
-    let totalPages: Int
-    let currentPage: Int
-    let hasNext: Bool
     let discs: [DiscData]
 }
 

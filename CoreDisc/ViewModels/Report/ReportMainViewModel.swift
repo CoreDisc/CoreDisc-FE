@@ -15,7 +15,7 @@ class ReportMainViewModel: ObservableObject {
     private let DiscProvider = APIManager.shared.createProvider(for: DiscRouter.self)
     
     func getDiscs() {
-        DiscProvider.request(.getDiscsList(page: 0)) { result in
+        DiscProvider.request(.getDiscsList) { result in
             switch result {
             case .success(let response):
                 if let decodedResponse = try? JSONDecoder().decode(GetDiscResponse.self, from: response.data) {
