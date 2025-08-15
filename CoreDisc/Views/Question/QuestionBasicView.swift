@@ -14,6 +14,8 @@ struct QuestionBasicView: View {
     let selectedQuestionType: String
     
     @Environment(\.dismiss) var dismiss
+    @State var goToMain: Bool = false
+    
     @FocusState private var isFocused: Bool
     private let topAnchorID = "top" // 스크롤 초기화 용도
     
@@ -57,12 +59,14 @@ struct QuestionBasicView: View {
             // 선택 확인 모달
             if showSelectModal {
                 QuestionSelectModalView(
-                    selectedQuestionType: selectedQuestionType,
+                    isMonth: selectedQuestionType,
                     selectedQuestionId: $selectedQuestionId,
                     order: order,
+                    selectedQuestionType: .DEFAULT,
                     viewModel: viewModel,
                     mainViewModel: mainViewModel,
-                    showSelectModal: $showSelectModal
+                    showSelectModal: $showSelectModal,
+                    goToMain: $goToMain
                 )
             }
             
@@ -103,6 +107,7 @@ struct QuestionBasicView: View {
             let keyword = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
             viewModel.fetchSearchCategories(keyword: keyword)
         }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
     }
     
     // MARK: - group

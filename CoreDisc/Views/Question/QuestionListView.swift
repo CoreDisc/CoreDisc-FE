@@ -21,6 +21,8 @@ struct QuestionListView: View {
 
     @State var showSelectModal: Bool = false
     
+    @State private var goToMain = false
+    
     // 질문 선택/저장 용도
     let order: Int
     @State private var selectedQuestionId: Int? = nil
@@ -56,12 +58,14 @@ struct QuestionListView: View {
             // 선택 확인 모달
             if showSelectModal {
                 QuestionSelectModalView(
-                    selectedQuestionType: selectedQuestionType,
+                    isMonth: selectedQuestionType,
                     selectedQuestionId: $selectedQuestionId,
                     order: order,
+                    selectedQuestionType: .OFFICIAL,
                     viewModel: selectViewModel,
                     mainViewModel: mainViewModel,
-                    showSelectModal: $showSelectModal
+                    showSelectModal: $showSelectModal,
+                    goToMain: $goToMain
                 )
             }
         }
@@ -69,6 +73,7 @@ struct QuestionListView: View {
             fetchQuestions(reset: true)
         }
         .navigationBarBackButtonHidden()
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
     }
 
     private var TopGroup: some View {
@@ -121,6 +126,7 @@ struct QuestionListView: View {
                             index: index + 1,
                             onTap: {
                                 showSelectModal = true
+                                selectedQuestionId = item.id
                             },
                             selectViewModel: selectViewModel
                         )

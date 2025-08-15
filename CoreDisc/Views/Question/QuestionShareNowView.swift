@@ -21,6 +21,9 @@ struct QuestionShareNowView: View {
     
     @State var showSelectModal: Bool = false
     
+    // 질문 선택/저장 용도
+    @State private var selectedQuestionId: Int? = nil
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground)
@@ -125,6 +128,7 @@ struct QuestionShareNowView: View {
                             index: index + 1,
                             onTap: {
                                 showSelectModal = true
+                                selectedQuestionId = question.id
                             },
                             selectViewModel: selectViewModel
                         )

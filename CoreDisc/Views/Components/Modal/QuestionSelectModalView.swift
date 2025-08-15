@@ -8,24 +8,25 @@
 import SwiftUI
 
 struct QuestionSelectModalView: View {
-    @Environment(\.dismiss) var dismiss
-    
-    let selectedQuestionType: String
+    let isMonth: String
     @Binding var selectedQuestionId: Int?
     let order: Int
+    let selectedQuestionType: SelectedQuestionType
     
     @ObservedObject var viewModel: QuestionBasicViewModel
     @ObservedObject var mainViewModel: QuestionMainViewModel
     
     @Binding var showSelectModal: Bool
     
+    @Binding var goToMain: Bool
+    
     var body: some View {
         ModalView {
             VStack(spacing: 6) {
-                Text("\(selectedQuestionType == "FIXED" ? "한달" : "하루")질문으로 선택할까요?")
+                Text("\(isMonth == "FIXED" ? "한달" : "하루")질문으로 선택할까요?")
                     .textStyle(.Button)
                 
-                Text("한번 설정한 \(selectedQuestionType == "FIXED" ? "한달" : "하루")질문은 \(selectedQuestionType == "FIXED" ? "30일간" : "하루동안") 변경이 불가능합니다.")
+                Text("한번 설정한 \(isMonth == "FIXED" ? "한달" : "하루")질문은 \(isMonth == "FIXED" ? "30일간" : "하루동안") 변경이 불가능합니다.")
                     .textStyle(.Texting_Q)
                     .foregroundStyle(.red)
             }
@@ -33,9 +34,9 @@ struct QuestionSelectModalView: View {
             Button(action: {
                 guard let questionId = selectedQuestionId else { return }
                 
-                if selectedQuestionType == "FIXED" {
+                if isMonth == "FIXED" {
                     let data = FixedData(
-                        selectedQuestionType: .DEFAULT,
+                        selectedQuestionType: selectedQuestionType,
                         questionOrder: order,
                         questionId: questionId
                     )
@@ -43,7 +44,7 @@ struct QuestionSelectModalView: View {
                     mainViewModel.fetchSelected()
                 } else {
                     let data = RandomData(
-                        selectedQuestionType: .DEFAULT,
+                        selectedQuestionType: selectedQuestionType,
                         questionId: questionId
                     )
                     viewModel.fetchRandomBasic(randomData: data)
@@ -51,7 +52,7 @@ struct QuestionSelectModalView: View {
                 }
                 
                 showSelectModal.toggle() // 모달 제거
-                dismiss()
+                goToMain = true
             }) {
                 Text("설정하기")
             }

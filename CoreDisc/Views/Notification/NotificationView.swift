@@ -12,6 +12,7 @@ struct NotificationView: View {
     @Environment(\.dismiss) private var dismiss
     
     @StateObject private var viewModel = NotificationViewModel()
+    @StateObject var mainViewModel = QuestionMainViewModel()
     
     @State private var selectedItem: NotificationValues?
     
@@ -39,7 +40,8 @@ struct NotificationView: View {
             case "FOLLOW":
                 UserHomeView(userName: item.senderNickname)
             case "SHARED_SAVED":
-                QuestionShareNowView()
+                EmptyView()
+//                QuestionShareNowView()
             case "COMMEND", "COMMENT_REPLY", "LIKE":
                 PostDetailView(postId: item.targetId)
             case "TEMP_POSTS":
