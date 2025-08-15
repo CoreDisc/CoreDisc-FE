@@ -5,7 +5,7 @@
 //  Created by 김미주 on 7/24/25.
 //
 
-import Foundation
+import SwiftUI
 import Moya
 
 // /api/members API 연결
@@ -21,6 +21,8 @@ enum MemberRouter {
     case getMyhomeTargetUsername(targetUsername: String) // 마이홈 타사용자 정보 조회
     case getMyhomePosts(cursorId: Int?, size: Int?) // 마이홈 본인 게시글 리스트 조회
     case getMyhomePostsTargetUsername(targetUsername: String, cursorId: Int?, size: Int?) // 마이홈 타사용자 게시글 리스트 조회
+    
+    case patchProfileImage(image: Data)
 }
 
 extension MemberRouter: APITargetType {
@@ -50,12 +52,15 @@ extension MemberRouter: APITargetType {
             return "\(Self.myhomePath)/posts"
         case .getMyhomePostsTargetUsername(let targetUsername, _, _):
             return "\(Self.myhomePath)/posts/\(targetUsername)"
+            
+        case .patchProfileImage:
+            return "\(Self.memberPath)/profile-image"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .patchResign, .patchProfile, .patchPassword, .patchMyhomeUsername, .patchMyhomePassword, .patchMyhomeEmail:
+        case .patchResign, .patchProfile, .patchPassword, .patchMyhomeUsername, .patchMyhomePassword, .patchMyhomeEmail, .patchProfileImage:
                 .patch
         case .getMyhome, .getMyhomeTargetUsername, .getMyhomePosts, .getMyhomePostsTargetUsername:
                 .get
@@ -78,7 +83,7 @@ extension MemberRouter: APITargetType {
             return .requestJSONEncodable(myhomePasswordPatchData)
         case .patchMyhomeEmail(let email):
             return .requestParameters(parameters: ["email": email], encoding: JSONEncoding.default)
-        
+            
         case .getMyhome:
             return .requestPlain // TODO: 수정중
         case .getMyhomeTargetUsername:
@@ -101,8 +106,19 @@ extension MemberRouter: APITargetType {
                 parameters["size"] = size
             }
             return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
+            
+            
+            
+        case .patchProfileImage(let imageData):
+                let formData = MultipartFormData(
+                    provider: .data(imageData),
+                    name: "image",
+                    fileName: "profile.jpg",
+                    mimeType: "image/jpeg"
+                )
+                return .uploadMultipart([formData])
         }
-    }
+     }
     
     var headers: [String: String]? {
         switch self {

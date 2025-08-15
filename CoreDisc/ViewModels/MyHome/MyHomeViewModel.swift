@@ -5,8 +5,9 @@
 //  Created by 김미주 on 7/27/25.
 //
 
-import Foundation
+import SwiftUI
 import Moya
+import PhotosUI
 
 class MyHomeViewModel: ObservableObject {
     // MARK: - Properties
@@ -42,6 +43,11 @@ class MyHomeViewModel: ObservableObject {
     
     private let memberProvider = APIManager.shared.createProvider(for: MemberRouter.self)
     private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
+    
+    //fetchProfileImage
+    @Published var imageUrl: String = ""
+    @Published var selectedItems: [PhotosPickerItem] = []
+    @Published var profileUIImage: UIImage?
     
     // MARK: - Functions
     func fetchMyHome() {
@@ -199,7 +205,6 @@ class MyHomeViewModel: ObservableObject {
         let usernameChanged = username != originalUsername
         let nicknameChanged = nickname != originalNickname
         
-        // 변경된 항목에 대해서만 중복확인 체크
         var hasError = false
         
         if usernameChanged && !idCheckSuccess {
@@ -214,6 +219,23 @@ class MyHomeViewModel: ObservableObject {
         
         if !hasError {
             fetchProfile()
+        }
+    }
+    
+    func fetchProfileImage(imageData: Data) {
+        memberProvider.request(.patchProfileImage(image: imageData)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(ImageResponse.self, from: response.data)
+                    print("이미지 성공 : \(decoded)")
+                    self.fetchMyHome()
+                } catch {
+                    print("디코딩 실패: \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류: \(error)")
+            }
         }
     }
 }
