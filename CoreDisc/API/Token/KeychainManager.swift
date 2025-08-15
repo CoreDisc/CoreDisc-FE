@@ -90,4 +90,20 @@ final class KeychainManager: @unchecked Sendable {
 
         return status == errSecSuccess
     }
+    
+    @discardableResult
+    func saveString(_ value: String, for key: String) -> Bool {
+        guard let data = value.data(using: .utf8) else { return false }
+        return save(data, for: key)
+    }
+
+    func loadString(for key: String) -> String? {
+        guard let data = load(key: key) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+
+    @discardableResult
+    func deleteString(for key: String) -> Bool {
+        return delete(key: key)
+    }
 }

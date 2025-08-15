@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TimePickerSheet: View {
     @Binding var showSheet: Bool
-    @EnvironmentObject var notificationViewModel: NotificationSettingViewModel
+    @EnvironmentObject var viewModel: NotificationSettingViewModel
     
     var timeType: TimeType
 
@@ -40,19 +40,33 @@ struct TimePickerSheet: View {
                     
                     // 설정 버튼
                     Button(action: {
-                        switch timeType {
-                        case .first:
-                            notificationViewModel.firstHour = selectedHour
-                            notificationViewModel.firstMinute = selectedMinute
-                        case .second:
-                            notificationViewModel.secondHour = selectedHour
-                            notificationViewModel.secondMinute = selectedMinute
-                        }
-                        
                         withAnimation {
+                            let data: NotificationData
+                            switch timeType {
+                            case .first:
+                                data = NotificationData(
+                                    dailyReminderEnabled: viewModel.data.dailyReminderEnabled,
+                                    dailyReminderHour: selectedHour,
+                                    dailyReminderMinute: selectedMinute,
+                                    unansweredReminderEnabled: viewModel.data.unansweredReminderEnabled,
+                                    unansweredReminderHour: viewModel.data.unansweredReminderHour,
+                                    unansweredReminderMinute: viewModel.data.unansweredReminderMinute
+                                )
+                            case .second:
+                                data = NotificationData(
+                                    dailyReminderEnabled: viewModel.data.dailyReminderEnabled,
+                                    dailyReminderHour: viewModel.data.dailyReminderHour,
+                                    dailyReminderMinute: viewModel.data.dailyReminderMinute,
+                                    unansweredReminderEnabled: viewModel.data.unansweredReminderEnabled,
+                                    unansweredReminderHour: selectedHour,
+                                    unansweredReminderMinute: selectedMinute
+                                )
+                            }
+                            viewModel.fetchSetReminder(notificationData: data)
+                            
                             showSheet = false
                         }
-                    }) { // TODO: time setting
+                    }) {
                         ZStack {
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(.key)
@@ -80,11 +94,11 @@ struct TimePickerSheet: View {
         .task {
             switch timeType {
             case .first:
-                selectedHour = notificationViewModel.firstHour
-                selectedMinute = notificationViewModel.firstMinute
+                selectedHour = viewModel.data.dailyReminderHour
+                selectedMinute = viewModel.data.dailyReminderMinute
             case .second:
-                selectedHour = notificationViewModel.secondHour
-                selectedMinute = notificationViewModel.secondMinute
+                selectedHour = viewModel.data.unansweredReminderHour
+                selectedMinute = viewModel.data.unansweredReminderMinute
             }
         }
     }

@@ -13,6 +13,8 @@ struct NotificationView: View {
     
     @StateObject private var viewModel = NotificationViewModel()
     
+    @State private var selectedItem: NotificationValues?
+    
     var body: some View {
         ZStack{
             Image(.imgPostDetailMainBg)
@@ -27,7 +29,28 @@ struct NotificationView: View {
         }
         .navigationBarBackButtonHidden()
         .task {
-            viewModel.fetchNotifications()
+            viewModel.refresh()
+        }
+        .refreshable { // 당겨서 새로고침
+            viewModel.refresh()
+        }
+        .navigationDestination(item: $selectedItem) { item in
+            switch item.type {
+            case "FOLLOW":
+                UserHomeView(userName: item.senderNickname)
+            case "SHARED_SAVED":
+                QuestionShareNowView()
+            case "COMMEND", "COMMENT_REPLY", "LIKE":
+                PostDetailView(postId: item.targetId)
+            case "TEMP_POSTS":
+                EmptyView() // 임시
+            case "DAILY_REMINDER", "UNANSWERED_REMINDER":
+                QuestionMainView()
+            case "DAILY_REMINDER_ANSWER", "UNANSWERED_REMINDER_ANSWER":
+                PostWriteView()
+            default:
+                EmptyView()
+            }
         }
     }
     
@@ -61,7 +84,15 @@ struct NotificationView: View {
                     NotificationDate(date: group.date)
                     
                     ForEach(group.values, id: \.notificationId) { item in
-                        NotificationListItem(item: item, viewModel: viewModel)
+                        NotificationListItem(viewModel: viewModel, item: item) {
+                            selectedItem = item
+                            if !item.isRead {
+                                viewModel.fetchRead(notificationId: item.notificationId)
+                            }
+                        }
+                        .task {
+                            viewModel.loadNextPageIfNeeded(currentItem: item)
+                        }
                     }
                 }
             }
@@ -93,15 +124,17 @@ struct NotificationDate: View {
 
 // 알림 리스트 아이템
 struct NotificationListItem: View {
-    var item: NotificationValues
-    
     @ObservedObject var viewModel: NotificationViewModel
+    
+    var item: NotificationValues
+    var onTap: () -> Void
     
     var body: some View {
         Button(action: {
             if !item.isRead {
                 viewModel.fetchRead(notificationId: item.notificationId)
             }
+            onTap()
         }) {
             ZStack(alignment: .leading) {
                 Rectangle()

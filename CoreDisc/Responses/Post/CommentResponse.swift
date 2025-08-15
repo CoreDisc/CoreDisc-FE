@@ -13,16 +13,10 @@ struct Comment: Decodable {
     let content: String
     let parentId: Int?
     let depth: Int
-//    let member: PostMainMember
-    let member: Member
-    let hasReplies: Bool
-}
-
-// api 수정전 임시
-struct Member: Decodable {
-    let memberId: Int
-    let nickname: String
-    let profileImg: String
+    let member: PostMainMember
+    var hasReplies: Bool
+    let timeStamp: String?
+    var replyCount: Int?
 }
 
 // 댓글 조회
