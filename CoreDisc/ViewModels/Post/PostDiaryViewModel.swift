@@ -9,6 +9,6 @@ import Foundation
 import SwiftUI
 
 class PostDiaryViewModel: ObservableObject {
-    private let provider = APIManager.shared.createProvider(for: PostRouter.self)
+    private let postProvider = APIManager.shared.createProvider(for: PostRouter.self)
 }
 

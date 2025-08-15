@@ -45,6 +45,23 @@ public enum PostDiaryWhat: String, Codable, CaseIterable {
     case HOBBY // 취미
 }
 
+enum PostStatus: String, Codable {
+    case TEMP
+    case PUBLISHED
+}
+
+// 오늘의 질문 타입(랜덤, 선택)
+enum TodayQuestionType: Codable {
+    case FIXED
+    case RANDOM
+}
+
+// 게시글 타입
+enum QuestionType: String, Decodable {
+    case PERSONAL
+    case OFFICIAL
+}
+
 
 // 게시글 발행
 struct PostPublishData: Codable {

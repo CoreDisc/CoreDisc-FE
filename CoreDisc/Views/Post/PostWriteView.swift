@@ -15,6 +15,9 @@ struct CardContent {
 }
 
 struct PostWriteView: View {
+    @StateObject private var viewModel = PostpostsViewModel()
+    @State private var selectedDate = Date()
+    
     @State private var isCorelist: Bool = false
     
     private let questions = [
@@ -256,6 +259,9 @@ struct PostWriteView: View {
                 }
             }
             .offset(x: offsetX)
+            .simultaneousGesture(TapGesture().onEnded {
+                viewModel.postPosts(selectedDate: ymd(selectedDate))
+            })
         }
         .frame(maxWidth: .infinity, minHeight: 50)
     }
@@ -359,6 +365,13 @@ struct PostWriteView: View {
                 }
             }
         }
+    }
+    
+    private func ymd(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.calendar = Calendar(identifier: .gregorian)
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: date)
     }
 }
 
