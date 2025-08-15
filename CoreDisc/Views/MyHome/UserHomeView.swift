@@ -179,6 +179,10 @@ struct UserHomeView: View {
         VStack(spacing: 8) {
             if let url = URL(string: viewModel.profileImageURL) {
                 KFImage(url)
+                    .placeholder({
+                        ProgressView()
+                            .controlSize(.mini)
+                    })
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 124, height: 124)
@@ -282,28 +286,34 @@ struct UserHomeView: View {
         
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(viewModel.postList, id: \.postId) { post in
-                if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
-                   !url.absoluteString.isEmpty { // 이미지
-                    KFImage(url)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 154)
-                        .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                } else if let text = post.postTextThumbnailDTO?.content { // 텍스트
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(.gray100)
-                            .stroke(.gray200, lineWidth: 0.3)
+                NavigationLink(destination: PostDetailView(postId: post.postId)) {
+                    if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
+                       !url.absoluteString.isEmpty { // 이미지
+                        KFImage(url)
+                            .placeholder({
+                                ProgressView()
+                                    .controlSize(.mini)
+                            })
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
                             .frame(height: 154)
-                        
-                        Text(text)
-                            .textStyle(.Q_pick)
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(.black000)
-                            .padding(22)
+                            .frame(maxWidth: .infinity)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    } else if let text = post.postTextThumbnailDTO?.content { // 텍스트
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(.gray100)
+                                .stroke(.gray200, lineWidth: 0.3)
+                                .frame(height: 154)
+                            
+                            Text(text)
+                                .textStyle(.Q_pick)
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.black000)
+                                .padding(22)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
                 }
             }
         }

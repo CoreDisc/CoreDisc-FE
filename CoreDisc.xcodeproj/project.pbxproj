@@ -185,7 +185,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
 			baseConfigurationReferenceRelativePath = Secret.xcconfig;
-
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -252,7 +251,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
 			baseConfigurationReferenceRelativePath = Secret.xcconfig;
-
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
