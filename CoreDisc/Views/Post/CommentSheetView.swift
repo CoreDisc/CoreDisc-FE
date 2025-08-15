@@ -111,8 +111,8 @@ struct CommentSheetView: View {
                 if expandedCommentIDs.contains(item.commentId) {
                     ForEach(viewModel.replyList[item.commentId] ?? [], id: \.commentId) { reply in
                         CommentItem(item: reply, onTap: {
-                            self.isOwner = item.isOwner ?? false
-                            self.commentUsername = item.member.username
+                            self.isOwner = reply.isOwner ?? false
+                            self.commentUsername = reply.member.username
                             
                             self.showSheet = false
                             self.showUserHome = true
