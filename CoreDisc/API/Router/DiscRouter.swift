@@ -12,7 +12,7 @@ import Moya
 enum DiscRouter {
     case patchCoverImage(discId: Int, coverImageUrl: String) // 디스크 커버 이미지 변경
     case patchCoverColor(discId: Int, coverColor: String) // 디스크 커버 색깔 변경
-    case getDiscsList(page: Int) // 디스크 목록 조회
+    case getDiscsList // 디스크 목록 조회
     case getDiscs(discId: Int) // 디스크 조회
 }
 
@@ -47,8 +47,8 @@ extension DiscRouter: APITargetType {
             return .requestParameters(parameters: ["coverImageUrl": coverImageUrl], encoding: JSONEncoding.default)
         case .patchCoverColor(_, let coverColor):
             return .requestParameters(parameters: ["coverColor": coverColor], encoding: JSONEncoding.default)
-        case .getDiscsList(let page):
-            return .requestParameters(parameters: ["page": page], encoding: URLEncoding.queryString)
+        case .getDiscsList:
+            return .requestPlain
         case .getDiscs:
             return .requestPlain
         }

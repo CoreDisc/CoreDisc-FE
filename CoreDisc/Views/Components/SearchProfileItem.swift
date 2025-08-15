@@ -5,24 +5,43 @@
 //  Created by 이채은 on 7/23/25.
 //
 import SwiftUI
+import Kingfisher
 
 struct SearchProfileItem: View {
     var nickname: String
-    var id: String
+    var username: String
+    var imageURL: String? = nil
     
     var body: some View {
-        HStack {
-            Circle()
-                .frame(width: 32, height: 32)
-            Spacer().frame(width: 11.84)
+        HStack(spacing: 12) {
+            if let url = URL(string: imageURL ?? "") {
+                KFImage(url)
+                    .downsampling(size: CGSize(width: 64, height: 64))
+                    .cacheOriginalImage()
+                    .retry(maxCount: 2, interval: .seconds(2))
+                    .cancelOnDisappear(true)
+                    .placeholder {
+                        Circle()
+                            .fill(Color.gray.opacity(0.3))
+                    }
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 32, height: 32)
+                    .clipShape(Circle())
+            } else {
+                Circle()
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(width: 32, height: 32)
+            }
+            
             VStack(alignment: .leading, spacing: 0) {
-                HStack{
-                    Text("\(nickname)")
+                HStack {
+                    Text(nickname)
                         .textStyle(.Button_s)
                     Spacer()
                 }
-                HStack{
-                    Text("\(id)")
+                HStack {
+                    Text(username)
                         .textStyle(.Pick_Q_Eng)
                     Spacer()
                 }
@@ -31,11 +50,14 @@ struct SearchProfileItem: View {
             .padding(.vertical, 16)
         }
         .padding(.horizontal, 16)
-        
     }
 }
 
-
 #Preview {
-    SearchProfileItem(nickname: "뮤직사마", id: "@music_sama")
+    SearchProfileItem(
+        nickname: "뮤직사마",
+        username: "@music_sama",
+        imageURL: "https://picsum.photos/80"
+    )
 }
+

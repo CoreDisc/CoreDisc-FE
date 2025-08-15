@@ -19,6 +19,8 @@ struct PostMainView: View {
     
     @State private var selectedTab: PostCategoryTap = .all
     @Namespace private var animation
+    @State private var searchQuery: String = ""
+    @State private var isSearch: Bool = false
     
     private var selectedPosts: [PostMain] {
         switch selectedTab {
@@ -63,6 +65,16 @@ struct PostMainView: View {
                 .padding(.leading, 6)
             
             Spacer()
+            NavigationLink(destination: SearchView(query: $searchQuery, isSearch: $isSearch)) {
+                Image(.iconSearch)
+                    .resizable()
+                    .padding(28)
+                    .frame(width: 48, height: 48)
+                    .foregroundStyle(.black000)
+            }
+            .border(Color.red, width: 1)
+            
+            Spacer().frame(width: 4)
             
             Button(action: {
                 // TODO: 검색 뷰

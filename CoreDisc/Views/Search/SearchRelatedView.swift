@@ -14,14 +14,15 @@ struct SearchRelatedView: View {
             RoundedRectangle(cornerRadius: 12)
                 .foregroundStyle(.gray600)
             ScrollView {
-                VStack {
+                VStack(spacing: 0) {
                     Spacer().frame(height: 6)
                     
-                    ForEach(items.indices, id: \.self) {index in
-                        Spacer().frame(height: 0)
-                        SearchProfileItem(nickname: "뮤직사마", id:
-                                            "music_sama")
-                        Spacer().frame(height: 0)
+                    ForEach(items, id: \.self) { index in
+                        SearchProfileItem(
+                            nickname: "뮤직사마",
+                            username: "@music_sama",
+                            imageURL: nil
+                        )
                         Rectangle()
                             .frame(height: 0.5)
                             .foregroundStyle(.black000)
@@ -35,3 +36,4 @@ struct SearchRelatedView: View {
         .frame(height: 274)
     }
 }
+
