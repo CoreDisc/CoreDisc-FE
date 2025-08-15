@@ -6,6 +6,13 @@
 //
 
 import SwiftUI
+import PhotosUI
+
+struct CardContent {
+    var image: UIImage? = nil
+    var text: String = ""
+    var isTextMode: Bool = false
+}
 
 struct PostWriteView: View {
     //@Environment(\.dismiss) private var dismiss
@@ -20,6 +27,13 @@ struct PostWriteView: View {
     
     // 현재 슬라이드 인덱스
     @State private var pageIndex: Int = 0
+    
+    // 모든 페이지에 대한 이미지/텍스트 답변 상태
+    @State private var cards: [CardContent] = Array(repeating: CardContent(), count: 4)
+    
+    // 사진/텍스트 입력 표시 상태
+    @State private var showPhotoPicker: Bool = false
+    @State private var selectedPhotoItem: PhotosPickerItem? = nil
     
     var body: some View {
         NavigationStack{
@@ -52,6 +66,19 @@ struct PostWriteView: View {
             }
         }
         .navigationBarBackButtonHidden()
+        
+        .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
+        .onChange(of: selectedPhotoItem) { newItem in
+            guard let newItem else { return }
+            Task {
+                if let data = try? await newItem.loadTransferable(type: Data.self),
+                   let uiImage = UIImage(data: data) {
+                    cards[pageIndex].image = uiImage
+                    cards[pageIndex].isTextMode = false
+                }
+                selectedPhotoItem = nil
+            }
+        }
     }
     
     /*
@@ -75,7 +102,7 @@ struct PostWriteView: View {
     // 사용자 정보 및 저장버튼 섹션
     private var UserGroup: some View {
         VStack (alignment: .center){
-
+            
             // 개인정보, 저장버튼
             HStack {
                 Circle() // TODO: 추후 프로필 사진으로 변경
@@ -122,60 +149,23 @@ struct PostWriteView: View {
     
     
     // 게시물 작성 섹션
-    // TODO: 게시글과 질문섹션 분리 예정
     private var PostGroup: some View {
         VStack (alignment: .center){
             // 게시물 작성란
             TabView(selection: $pageIndex) {
-                //HStack(spacing: 16) {
-                ZStack {
-                    Rectangle()
-                        .fill(Color.gray400)
-                        .frame(width: 308, height: 409)
-                        .cornerRadius(20.83)
-                    
-                    
-                    VStack (alignment: .leading, spacing: 20) {
-                        Button(action: {
-                            // TODO:
-                        }) {
-                            ZStack {
-                                Circle()
-                                    .fill(Color.white)
-                                    .frame(width: 60, height: 60)
-                                
-                                Image(.iconPhoto)
-                                    .renderingMode(.original)
-                            }
+                ForEach(0..<4, id: \.self) { idx in
+                    CardPageView(
+                        card: $cards[idx],
+                        onTapPhoto: {
+                            pageIndex = idx
+                            showPhotoPicker = true
+                        },
+                        onTapWrite: {
+                            pageIndex = idx
+                            cards[idx].isTextMode = true
+                            cards[idx].image = nil
                         }
-                        
-                        
-                        Button(action: {
-                            // TODO:
-                        }) {
-                            ZStack {
-                                Circle()
-                                    .fill(Color.white)
-                                    .frame(width: 60, height: 60)
-                                
-                                Image(.iconWriting)
-                                    .renderingMode(.original)
-                            }
-                        }
-                    }
-                    .padding(.top, 240)
-                    .padding(.leading, 225)
-                }
-                .tag(0)
-                
-                ForEach(1..<4, id: \.self) { idx in
-                    VStack {
-                        Rectangle()
-                            .fill(Color.gray400)
-                            .frame(width: 308, height: 409)
-                            .cornerRadius(20.83)
-                        
-                    }
+                    )
                     .tag(idx)
                 }
             }
@@ -184,6 +174,8 @@ struct PostWriteView: View {
             //.padding(.horizontal, 47)
         }
     }
+    
+    
     
     // 질문 섹션
     private var QuestionGroup: some View {
@@ -288,11 +280,107 @@ struct PostWriteView: View {
         .frame(maxWidth: .infinity, minHeight: 50)
     }
     
+    
     // 슬라이딩 시 질문 변경
     private var currentQuestion: String {
-            (0..<questions.count).contains(pageIndex) ? questions[pageIndex] : (questions.first ?? "")
+        (0..<questions.count).contains(pageIndex) ? questions[pageIndex] : (questions.first ?? "")
+    }
+    
+    // 게시글 작성 답변 카드
+    private struct CardPageView: View {
+        @Binding var card: CardContent
+        let onTapPhoto: () -> Void
+        let onTapWrite: () -> Void
+        
+        
+        // 버튼 클릭 전에만 버튼 표시
+        private var showButtons: Bool { card.image == nil && !card.isTextMode && card.text.isEmpty }
+        
+        var body: some View {
+            ZStack {
+                // 배경 카드
+                Rectangle()
+                    .fill(Color.gray400)
+                    .frame(width: 308, height: 409)
+                    .cornerRadius(20.83)
+                
+                // 사진 표시
+                if let image = card.image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 308, height: 409)
+                        .clipped()
+                        .cornerRadius(20.83)
+                }
+                
+                // 텍스트 표시
+                if card.isTextMode {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.white)
+                            .frame(width: 308 - 24, height: 409 - 24)
+                        
+                        ZStack (alignment: .top){
+                            if card.text.isEmpty {
+                                Text("내용을 입력하세요")
+                                    .foregroundColor(.gray)
+                                    .padding(.all, 18)
+                            }
+                            TextEditor(text: $card.text)
+                                .multilineTextAlignment(.center)
+                                .padding(.all, 10)
+                                .foregroundColor(.black)
+                                .scrollContentBackground(.hidden)
+                                .frame(width: 263)
+                                .frame(maxHeight: 356) 
+                        }
+                    }
+                    .padding(.all, 18)
+                    
+                    
+                } else if !card.text.isEmpty {
+                    // 텍스트 미리보기
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.white)
+                        .frame(width: 308 - 24, height: 409 - 24)
+                        .overlay(
+                            ScrollView {
+                                Text(card.text)
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.black)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(12)
+                            }
+                        )
+                }
+                
+                // 사진/글 버튼
+                if showButtons {
+                    VStack (alignment: .leading, spacing: 20) {
+                        Button(action: onTapPhoto) {
+                            ZStack {
+                                Circle().fill(Color.white).frame(width: 60, height: 60)
+                                Image(.iconPhoto).renderingMode(.original)
+                            }
+                        }
+                        
+                        Button(action: onTapWrite) {
+                            ZStack {
+                                Circle().fill(Color.white).frame(width: 60, height: 60)
+                                Image(.iconWriting).renderingMode(.original)
+                            }
+                        }
+                    }
+                    .padding(.top, 240)
+                    .padding(.leading, 225)
+                    .transition(.opacity)
+                }
+            }
         }
+    }
 }
+
 
 #Preview {
     PostWriteView()
