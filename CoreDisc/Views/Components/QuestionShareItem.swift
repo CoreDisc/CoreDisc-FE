@@ -62,6 +62,7 @@ struct QuestionShareItem: View {
                         
                         Text("\(sharedCount)")
                             .font(.pretendard(type: .regular, size: 12))
+                            .foregroundStyle(.black000)
                             .padding(.trailing, 17)
                             .padding(.top, 11)
                     } else {
@@ -94,12 +95,14 @@ struct QuestionShareItem: View {
                     Text(category) // 디자인 시스템 없음
                         .font(.pretendard(type: .regular, size: 8))
                         .kerning(-0.7)
+                        .foregroundStyle(.black000)
                         .padding(.bottom, 5)
         
                     
                     Text(formatDate(date)) // 디자인 시스템 없음
                         .font(.pretendard(type: .regular, size: 8))
                         .kerning(-0.7)
+                        .foregroundStyle(.black000)
                         .padding(.trailing, 17)
                         .padding(.bottom, 5)
                 }
