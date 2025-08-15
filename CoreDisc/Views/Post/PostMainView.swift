@@ -197,7 +197,7 @@ struct PostCard: View {
                             
                             HStack {
                                 // 유저 아이디
-                                Text(item.member.username)
+                                Text("@\(item.member.username)")
                                     .textStyle(.login_alert)
                                     .foregroundStyle(.gray800)
                                     .padding(.bottom, 1)
