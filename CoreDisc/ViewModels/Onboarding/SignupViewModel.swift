@@ -42,10 +42,10 @@ class SignupViewModel: ObservableObject {
     
     private func updateAgreedTermsIds() {
         var ids: [Int] = []
-        if terms1 { ids.append(1) }
-        if terms2 { ids.append(2) }
-        if terms3 { ids.append(3) }
-        if terms4 { ids.append(4) }
+        if terms1 { ids.append(5) }
+        if terms2 { ids.append(6) }
+        if terms3 { ids.append(7) }
+        if terms4 { ids.append(8) }
         agreedTermsIds = ids
     }
     
