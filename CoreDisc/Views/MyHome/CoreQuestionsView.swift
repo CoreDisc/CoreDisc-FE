@@ -20,15 +20,12 @@ struct CoreQuestionsView: View {
                 Spacer().frame(height: 3)
                 
                 TopMenuGroup
-                
-                
-                Spacer().frame(height: 16)
                     
                 TitleGroup
                 
                 ScrollView {
                     QuestionGroup
-                        .padding(.top, 38)
+                        .padding(.top, 25)
                 }
             }
         }
@@ -39,6 +36,7 @@ struct CoreQuestionsView: View {
     private var TopMenuGroup: some View {
         ZStack(alignment: .top) {
             Image(.imgLogoOneline)
+                .foregroundStyle(.white)
                 .padding(.top, 16)
             
             HStack(alignment: .top, spacing: 0) {
@@ -61,26 +59,29 @@ struct CoreQuestionsView: View {
     
     // 타이틀
     private var TitleGroup: some View {
-        VStack(spacing: 8) {
-            HStack {
-                Text("My Core Questions")
-                    .textStyle(.Title_Text_Eng)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 25)
-                
-                Spacer()
-            }
+        VStack(alignment: .leading, spacing: 0) {
+            Text("My Core Questions")
+                .textStyle(.Title_Text_Eng)
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(height: 63)
+            
+            Text("작성하고 공유한 질문들을 확인해보세요.")
+                .textStyle(.Sub_Text_Ko)
+                .foregroundStyle(.white)
+            
+            Spacer().frame(height: 20)
             
             Divider()
                 .frame(height: 0.5)
                 .background(.white)
-                .padding(.horizontal, 14)
         }
+        .padding(.horizontal, 15)
     }
     
     // 질문 리스트
     private var QuestionGroup: some View {
-        VStack(spacing: 68) {
+        VStack(spacing: 50) {
             CoreQuestionList(layout: .right, category: .취향)
             CoreQuestionList(layout: .left, category: .건강)
         }
@@ -98,6 +99,10 @@ struct CoreQuestionList: View {
     let layout: CoreQuestionLayout
     let category: QuestionCategoryType
     
+    // 씨디 돌아가는 애니메이션
+    @State private var rotationAngle: Double = 0.0
+    let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
+    
     var body: some View {
         HStack(spacing: 22) {
             if layout == .right {
@@ -112,10 +117,18 @@ struct CoreQuestionList: View {
     
     // CD
     private var cdImage: some View {
-        Image(uiImage: category.cdImage)
+        let size: CGFloat = 201
+        
+        return Image(uiImage: category.cdImage)
             .resizable()
-            .frame(width: 201, height: 201)
+            .frame(width: size, height: size)
+            .rotationEffect(.degrees(-rotationAngle), anchor: .center)
             .padding(layout == .right ? .leading : .trailing, -100)
+            .onReceive(timer) { _ in
+                withAnimation {
+                    rotationAngle += 3 // 회전 속도 조절
+                }
+            }
     }
     
     // 리스트
@@ -128,6 +141,8 @@ struct CoreQuestionList: View {
             }
         }
         .scrollIndicators(.hidden)
+        .scrollTargetLayout()
+        .scrollTargetBehavior(.paging)
         .padding(layout == .right ? .trailing : .leading, 14)
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 190)
