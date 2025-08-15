@@ -8,7 +8,7 @@
 import Foundation
 import Moya
 
-final class SharedQuestionViewModel: ObservableObject {
+class SharedQuestionViewModel: ObservableObject {
     @Published var mySharedQuestionCnt: Int = 0
     @Published var mySharedQuestions: [SharedQuestion] = []
     @Published var hasNext: Bool = false

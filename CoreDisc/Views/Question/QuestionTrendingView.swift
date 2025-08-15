@@ -10,7 +10,7 @@ import SwiftUI
 
 struct QuestionTrendingView: View {
     @Environment(\.dismiss) var dismiss
-    let items = Array(0..<5)
+    @StateObject private var viewModel = PopularQuestionViewModel()
     
     var body: some View {
         
@@ -57,7 +57,7 @@ struct QuestionTrendingView: View {
             
             Spacer().frame(height: 4)
             
-            Text("2025.07.01. - 2025.07.31.")
+            Text("\(viewModel.startDate) - \(viewModel.endDate)")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.leading, 20)
@@ -74,14 +74,15 @@ struct QuestionTrendingView: View {
     
     var RankingGroup: some View {
         VStack {
-            ForEach(items, id: \.self){index in
+            ForEach(viewModel.questions.indices, id: \.self){index in
+                let question = viewModel.questions[index]
                 VStack {
                     TrendingQuestionItem(
-                        index: index+1,
-                        content: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.헤헤헤헤헤헿헤",
-                        nickname: "coredisc.ko",
-                        sharing: 522,
-                        isChecked: false,
+                        index: index + 1,
+                        content: question.question,
+                        nickname: question.username,
+                        sharing: question.sharedCount,
+                        isChecked: question.isSelected,
                         isFavorite: false
                     )
                     .padding(.leading, 43)

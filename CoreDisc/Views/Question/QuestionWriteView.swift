@@ -10,55 +10,49 @@ import SwiftUI
 struct QuestionWriteView: View {
     @Environment(\.dismiss) var dismiss
     
+    @State var questionId: Int? = nil
     @State var selectedCategory: CategoryType? = nil
     @State var text: String = ""
-    @State var isDone: Bool = false
     @FocusState private var isFocused: Bool
-    
     
     var body: some View {
         ScrollView {
-            ZStack {
-                VStack {
-                    WriteSuggestion
-                    Spacer().frame(height: 43)
-                    QuestionCategory
-                    Spacer().frame(height: 43)
-                    QuestionInput
-                    Spacer().frame(height: 15)
-                    QuestionCaution
-                    Spacer().frame(height: 43)
-                    if let selectedCategory = selectedCategory {
-                        NavigationLink(
-                            destination: QuestionSummaryView(
-                                category: selectedCategory,
-                                question: text
-                            ),
-                            label: {
-                                PrimaryActionButton(
-                                    title: "확인 및 저장",
-                                    isFinished: .constant(!text.isEmpty)
-                                )
-                            }
-                        )
-                        .disabled(text.isEmpty)
-                        .padding(.horizontal, 21)
-                    } else {
-                        PrimaryActionButton(
-                            title: "확인 및 저장",
-                            isFinished: .constant(false)
-                        )
-                        .padding(.horizontal, 21)
-                    }
-                    
-                    Spacer().frame(height: 43)
-
+            VStack {
+                WriteSuggestion
+                Spacer().frame(height: 43)
+                QuestionCategory
+                Spacer().frame(height: 43)
+                QuestionInput
+                Spacer().frame(height: 15)
+                QuestionCaution
+                Spacer().frame(height: 43)
+                
+                if let selectedCategory = selectedCategory {
+                    NavigationLink(
+                        destination: QuestionSummaryView(
+                            questionId: $questionId,
+                            selectedCategory: $selectedCategory,
+                            text: $text
+                        ),
+                        label: {
+                            PrimaryActionButton(
+                                title: "확인 및 저장",
+                                isFinished: .constant(!text.isEmpty)
+                            )
+                        }
+                    )
+                    .disabled(text.isEmpty)
+                    .padding(.horizontal, 21)
+                } else {
+                    PrimaryActionButton(
+                        title: "확인 및 저장",
+                        isFinished: .constant(false)
+                    )
+                    .padding(.horizontal, 21)
                 }
             }
-            .frame(maxWidth: .infinity)
-            .onTapGesture {
-                isFocused = false
-            }
+            .onTapGesture { isFocused = false }
+            Spacer().frame(height: 43)
         }
         .background(
             Image(.imgLongBackground)
@@ -68,6 +62,8 @@ struct QuestionWriteView: View {
         )
         .navigationBarBackButtonHidden()
     }
+
+
     
     
     // 상단 타이틀

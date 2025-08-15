@@ -38,6 +38,9 @@ enum QuestionRouter {
     
     case deletePersonal(questionId: Int) // 작성하여 저장한 질문 삭제하기 (커스텀 질문 삭제)
     case deleteOfficial(questionId: Int) // 저장한 공유질문 삭제
+    case getPopular(selectedQuestionType: String) // 인기 질문 조회
+    case patchPersonal(questionId: Int, categoryIdList: [Int], question: String) // 작성 질문 재작성
+    
 }
 
 extension QuestionRouter: APITargetType {
@@ -73,6 +76,10 @@ extension QuestionRouter: APITargetType {
             return "\(Self.questionPath)/personal/\(questionId)"
         case .deleteOfficial(let questionId):
             return "\(Self.questionPath)/official/saved/\(questionId)"
+        case .getPopular:
+            return "\(Self.questionPath)/popular"
+        case .patchPersonal(let questionId, _, _):
+            return "\(Self.questionPath)/personal/\(questionId)"
         }
     }
     
@@ -80,10 +87,12 @@ extension QuestionRouter: APITargetType {
         switch self {
         case .postRandom, .postPersonal, .postOfficial, .postOfficialSave, .postFixed:
             return .post
-        case .getSelected, .getOfficialMine, .getCategories, .getCategoriesSearch, .getBasic, .getBasicSearch:
+        case .getSelected, .getOfficialMine, .getCategories, .getCategoriesSearch, .getBasic, .getBasicSearch, .getPopular:
             return .get
         case .deletePersonal, .deleteOfficial:
             return .delete
+        case .patchPersonal:
+            return .patch
         }
     }
     
@@ -168,6 +177,17 @@ extension QuestionRouter: APITargetType {
             return .requestPlain
         case .deleteOfficial:
             return .requestPlain
+        case .getPopular(let selectedQuestionType):
+            return .requestParameters(
+                parameters: ["selectedQuestionType": selectedQuestionType],
+                encoding: URLEncoding.queryString
+            )
+        case .patchPersonal(_, let categoryIdList, let question):
+            let params: [String: Any] = [
+                "categoryIdList": categoryIdList,
+                "question": question
+            ]
+            return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         }
     }
 }

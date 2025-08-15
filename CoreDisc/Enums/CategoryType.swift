@@ -42,6 +42,22 @@ enum CategoryType: CaseIterable {
         }
     }
     
+    static func fromId(_ id: Int) -> CategoryType? {
+            switch id {
+            case 1: return .taste
+            case 2: return .lifeStyle
+            case 3: return .relationship
+            case 4: return .selfImprovement
+            case 5: return .health
+            case 6: return .culture
+            case 7: return .feeling
+            case 8: return .hobby
+            case 9: return .dream
+            case 10: return .other
+            default: return nil
+            }
+        }
+    
     var title: String {
         switch self {
         case .all: "All"
