@@ -110,4 +110,16 @@ extension AuthRouter: APITargetType {
             return .requestPlain
         }
     }
+    
+    var headers: [String: String]? {
+        switch self {
+        case .postLogout:
+            if let token = TokenProvider.shared.accessToken {
+                return ["accessToken": token]
+            }
+            return nil
+        default:
+            return nil
+        }
+    }
 }

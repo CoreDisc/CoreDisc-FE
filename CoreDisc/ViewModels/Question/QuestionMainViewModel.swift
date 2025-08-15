@@ -27,9 +27,15 @@ class QuestionMainViewModel: ObservableObject {
                     self.selectedQuestions = result
                 } catch {
                     print("GetSelected 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("선택된 질문을 불러오지 못했습니다.")
+                    }
                 }
             case .failure(let error):
                 print("GetSelected API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("선택된 질문을 불러오지 못했습니다.")
+                }
             }
         }
     }

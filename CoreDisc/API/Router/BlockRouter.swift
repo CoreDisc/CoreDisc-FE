@@ -12,7 +12,7 @@ import Moya
 enum BlockRouter {
     case postBlock(targetId: Int) // 차단
     case deleteBlock(targetId: Int) // 차단 취소
-    case getBlock(cursorId: Int, size: Int) // 차단한 유저 목록 조회
+    case getBlock(cursorId: Int?, size: Int?) // 차단한 유저 목록 조회
 }
 
 extension BlockRouter: APITargetType {
@@ -25,7 +25,7 @@ extension BlockRouter: APITargetType {
         case .deleteBlock(let targetId):
             return "\(Self.blockPath)/\(targetId)"
         case .getBlock:
-            return Self.blockPath
+            return "\(Self.blockPath)s"
         }
     }
     
@@ -45,10 +45,14 @@ extension BlockRouter: APITargetType {
         case .postBlock, .deleteBlock:
             return .requestPlain
         case .getBlock(let cursorId, let size):
-            return .requestParameters(parameters: [
-                "cursorId": cursorId,
-                "size": size
-            ], encoding: URLEncoding.queryString)
+            var parameters: [String: Any] = [:]
+            if let cursorId = cursorId {
+                parameters["cursorId"] = cursorId
+            }
+            if let size = size {
+                parameters["size"] = size
+            }
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
         }
     }
 }

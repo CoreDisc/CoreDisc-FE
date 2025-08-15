@@ -12,7 +12,9 @@ import Moya
 enum FollowRouter {
     case postFollow(targetId: Int) // 팔로우
     case getFollowings(cursorId: Int?, size: Int?) // 팔로잉 목록 조회
+    case getFollowingsTarget(targetUsername: String, cursorId: Int?, size: Int?) // 타사용자의 팔로잉 목록 조회
     case getFollowers(cursorId: Int?, size: Int?) // 팔로워 목록 조회
+    case getFollowersTarget(targetUsername: String, cursorId: Int?, size: Int?) // 타사용자의 팔로워 목록 조회
     case deleteFollowings(targetId: Int) // 팔로우 취소
 }
 
@@ -23,8 +25,12 @@ extension FollowRouter: APITargetType {
             return "/api/follow/\(targetId)"
         case .getFollowings:
             return "/api/followings"
+        case .getFollowingsTarget(let targetUsername, _, _):
+            return "/api/followings/\(targetUsername)"
         case .getFollowers:
             return "/api/followers"
+        case .getFollowersTarget(let targetUsername, _, _):
+            return "/api/followers/\(targetUsername)"
         case .deleteFollowings(let targetId):
             return "/api/followings/\(targetId)"
         }
@@ -34,7 +40,7 @@ extension FollowRouter: APITargetType {
         switch self {
         case .postFollow:
             return .post
-        case .getFollowers, .getFollowings:
+        case .getFollowers, .getFollowersTarget, .getFollowings, .getFollowingsTarget:
             return .get
         case .deleteFollowings:
             return .delete
@@ -43,7 +49,7 @@ extension FollowRouter: APITargetType {
     
     var task: Task {
         switch self {
-        case .postFollow, .getFollowers, .getFollowings, .deleteFollowings:
+        case .postFollow, .getFollowers, .getFollowersTarget, .getFollowings, .getFollowingsTarget, .deleteFollowings:
             return .requestPlain
         }
     }

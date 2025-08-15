@@ -10,17 +10,10 @@ import SwiftUI
 struct FindPwView: View {
     
     @Environment(\.dismiss) var dismiss
-    @State var name: String = ""
-    @State var id: String = ""
-    @State var auth: String = ""
-    @State var pwd: String = ""
-    @State var rePwd: String = ""
-    @State private var state = "input"
+    @StateObject private var viewModel = FindPwViewModel()
     
     @State private var pwdShown = false
-    @State private var pwdError = true
     @State private var rePwdShown = false
-    @State private var rePwdError = true
     
     var body: some View {
         NavigationStack{
@@ -44,9 +37,9 @@ struct FindPwView: View {
                     
                     Spacer().frame(height: 16)
                     
-                    if state == "input" {
+                    if viewModel.state == "input" {
                         InputGroup
-                    } else if state == "auth" {
+                    } else if viewModel.state == "auth" {
                         AuthGroup
                     } else {
                         ChangeGroup
@@ -61,33 +54,33 @@ struct FindPwView: View {
         VStack{
             HStack{
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
-                Text("비밀번호 찾기")
+                Text("비밀번호 변경하기")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 26)
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
             }
             
             Spacer().frame(height: 24)
             
             InputView{
-                TextField("이름", text: $name)
+                TextField("아이디", text: $viewModel.username)
             }
             
             InputView{
-                TextField("아이디", text: $id)
+                TextField("이메일", text: $viewModel.email)
             }
             
             Spacer().frame(height: 36)
-
-            ButtonView(action:{state = "auth"}, label: {
+            
+            ButtonView(action:{viewModel.state = "auth"; viewModel.sendCode()}, label: {
                 Text("인증번호 발송하기")
-            }, boxColor: (name.isEmpty || id.isEmpty) ? .gray400 : .key)
-            .disabled(name.isEmpty || id.isEmpty)
+            }, boxColor: (viewModel.username.isEmpty || viewModel.email.isEmpty) ? .gray400 : .key)
+            .disabled(viewModel.username.isEmpty || viewModel.email.isEmpty)
             
             Spacer().frame(height: 12)
             
@@ -109,33 +102,38 @@ struct FindPwView: View {
         VStack(alignment: .leading){
             HStack{
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
-                Text("비밀번호 찾기")
+                Text("비밀번호 변경하기")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 26)
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
             }
             
             Spacer().frame(height: 24)
 
             InputView{
-                TextField("인증번호 6자리", text: $auth)
+                TextField("인증번호 6자리", text: $viewModel.code)
             }
             
-            Text("계정에 등록된 이메일로 인증번호가 전송되었습니다.")
-                .textStyle(.login_alert)
-                .foregroundStyle(.white)
-            
+            if viewModel.codeErrorMessage.isEmpty {
+                Text("계정정보가 확인되면, 해당 이메일로 인증번호를 전송해드립니다.")
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.white)
+            } else{
+                Text(viewModel.codeErrorMessage)
+                    .textStyle(.login_alert)
+                    .foregroundStyle(.warning)
+            }
             Spacer().frame(height: 72)
 
-            ButtonView(action:{state = "changePw"}, label: {
+            ButtonView(action:{ viewModel.verifyCode() }, label: {
                 Text("인증하기")
-            }, boxColor: (auth.isEmpty) ? .gray400 : .key)
-            .disabled(auth.isEmpty)
+            }, boxColor: (viewModel.code.isEmpty) ? .gray400 : .key)
+            .disabled(viewModel.code.isEmpty)
 
             Spacer().frame(height: 12)
             
@@ -157,14 +155,14 @@ struct FindPwView: View {
         VStack(alignment: .leading){
             HStack{
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
-                Text("비밀번호 찾기")
+                Text("비밀번호 변경하기")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 26)
                 Divider()
-                    .frame(width: 92, height: 1)
+                    .frame(width: 80, height: 1)
                     .background(Color.white)
             }
             
@@ -173,30 +171,30 @@ struct FindPwView: View {
             InputView{
                 if pwdShown{
                     HStack{
-                        TextField("비밀번호를 입력해주세요.", text: $pwd)
+                        TextField("비밀번호를 입력해주세요.", text: $viewModel.pwd)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
                         }, label: {
-//                            Image(.iconShown)
-//                                .padding(.horizontal)
+                            Image(.iconShown)
+                                .padding(.horizontal)
                         })
                     }
                 } else{
                     HStack{
-                        SecureField("비밀번호를 입력해주세요.", text: $pwd)
+                        SecureField("비밀번호를 입력해주세요.", text: $viewModel.pwd)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
                         }, label: {
-//                            Image(.iconNotShown)
-//                                .padding(.horizontal)
+                            Image(.iconNotShown)
+                                .padding(.horizontal)
                         })
                     }
                 }
             }
             
-            if pwdError {
+            if viewModel.pwdError {
                 Text("영문/숫자/특수문자(공백제외), 10~16자로 입력해주세요.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -210,30 +208,30 @@ struct FindPwView: View {
             InputView{
                 if rePwdShown{
                     HStack{
-                        TextField("비밀번호를 한 번 더 입력해주세요.", text: $rePwd)
+                        TextField("비밀번호를 한 번 더 입력해주세요.", text: $viewModel.rePwd)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
                         }, label: {
-//                            Image(.iconShown)
-//                                .padding(.horizontal)
+                            Image(.iconShown)
+                                .padding(.horizontal)
                         })
                     }
                 } else{
                     HStack{
-                        SecureField("비밀번호를 한 번 더 입력해주세요.", text: $rePwd)
+                        SecureField("비밀번호를 한 번 더 입력해주세요.", text: $viewModel.rePwd)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
                         }, label: {
-//                            Image(.iconNotShown)
-//                                .padding(.horizontal)
+                            Image(.iconNotShown)
+                                .padding(.horizontal)
                         })
                     }
                 }
             }
             
-            if rePwdError {
+            if viewModel.rePwdError {
                 Text("비밀번호가 일치하지 않습니다.")
                     .textStyle(.login_alert)
                     .foregroundStyle(.warning)
@@ -245,10 +243,15 @@ struct FindPwView: View {
             
             Spacer().frame(height: 36)
             
-            ButtonView(action:{}, label: {
+            ButtonView(action:{
+                viewModel.pwdError = false
+                viewModel.rePwdError = false
+                viewModel.changePw()
+            }, label: {
                 Text("변경하기")
-            }, boxColor: (pwd.isEmpty || rePwd.isEmpty) ? .gray400 : .key)
-            .disabled(pwd.isEmpty || rePwd.isEmpty)
+            }, boxColor: (viewModel.pwd.isEmpty || viewModel.rePwd.isEmpty) ? .gray400 : .key)
+            .disabled(viewModel.pwd.isEmpty || viewModel.rePwd.isEmpty)
+            .navigationDestination(isPresented: $viewModel.changeSuccess) {LoginView()}
             
             Spacer().frame(height: 12)
             
