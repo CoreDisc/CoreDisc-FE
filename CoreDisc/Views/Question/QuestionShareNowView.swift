@@ -130,6 +130,7 @@ struct QuestionShareNowView: View {
                                 showSelectModal = true
                                 selectedQuestionId = question.id
                             },
+                            isSelected: question.isSelected,
                             selectViewModel: selectViewModel
                         )
                         .padding(.horizontal, 24)

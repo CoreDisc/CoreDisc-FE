@@ -128,6 +128,7 @@ struct QuestionListView: View {
                                 showSelectModal = true
                                 selectedQuestionId = item.id
                             },
+                            isSelected: item.isSelected,
                             selectViewModel: selectViewModel
                         )
                         .padding(.horizontal, 31)

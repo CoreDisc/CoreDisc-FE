@@ -15,7 +15,7 @@ struct QuestionShareItem: View {
     var index: Int
     var onDelete: (() -> Void)? = nil
     var onTap: (() -> Void)
-    @State var isChecked: Bool = false
+    var isSelected: Bool
     
     @ObservedObject var selectViewModel: QuestionBasicViewModel
     
@@ -39,10 +39,10 @@ struct QuestionShareItem: View {
                         .padding(.leading, 10)
                         .padding(.top, 11)
                     
-                    Image(isChecked ? .iconChecked : .iconCheck)
+                    Image(isSelected ? .iconChecked : .iconCheck)
                         .resizable()
-                        .renderingMode(isChecked ? .template : .original)
-                        .foregroundColor(isChecked ? .key : nil)
+                        .renderingMode(isSelected ? .template : .original)
+                        .foregroundColor(isSelected ? .key : nil)
                         .frame(width: 18, height: 18)
                         .padding(.top, 11)
                     
