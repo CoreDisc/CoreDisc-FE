@@ -11,7 +11,6 @@
 		200939EF2E3BE2500005A541 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 200939EE2E3BE2500005A541 /* KakaoSDK */; };
 		200939F12E3BE2500005A541 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 200939F02E3BE2500005A541 /* KakaoSDKAuth */; };
 		200939F32E3BE2500005A541 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 200939F22E3BE2500005A541 /* KakaoSDKCommon */; };
-		20B7EB712E4DC75900D8F9DF /* Secret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 20B7EB682E4DC75900D8F9DF /* Secret.xcconfig */; };
 		20CCA2612E3C66FA00F87128 /* KakaoSDKCert in Frameworks */ = {isa = PBXBuildFile; productRef = 20CCA2602E3C66FA00F87128 /* KakaoSDKCert */; };
 		20CCA2632E3C66FA00F87128 /* KakaoSDKCertCore in Frameworks */ = {isa = PBXBuildFile; productRef = 20CCA2622E3C66FA00F87128 /* KakaoSDKCertCore */; };
 		238BB8142E16CEA100E7C5B8 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 238BB8132E16CEA100E7C5B8 /* Alamofire */; };
@@ -20,7 +19,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		20B7EB682E4DC75900D8F9DF /* Secret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secret.xcconfig; sourceTree = "<group>"; };
 		238562CE2E0F0E2E008F25B1 /* CoreDisc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDisc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 
 
@@ -189,6 +187,8 @@
 			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
 			baseConfigurationReferenceRelativePath = Secret.xcconfig;
 
+			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
+			baseConfigurationReferenceRelativePath = Secret.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -257,6 +257,8 @@
 			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
 			baseConfigurationReferenceRelativePath = Secret.xcconfig;
 
+			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
+			baseConfigurationReferenceRelativePath = Secret.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

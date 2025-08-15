@@ -36,7 +36,7 @@ struct QuestionShareNowView: View {
         }
         .navigationBarBackButtonHidden()
         .task {
-            viewModel.fetchMySharedQuestions()
+            await viewModel.fetchMySharedQuestions()
         }
     }
     
