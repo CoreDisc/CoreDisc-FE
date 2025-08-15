@@ -44,7 +44,6 @@ struct PostMainView: View {
                     CategoryGroup
                     
                     PostGroup
-                        .padding(.bottom, 68) // 탭바 만큼 공간 추가
                 }
             }
         }
@@ -120,9 +119,11 @@ struct PostMainView: View {
                         }
                 }
             }
-            .padding(.top, 16)
+            .padding(.top, 25)
+            .padding(.bottom, 75) // 탭바 만큼 공간 추가
         }
         .padding(.horizontal, 21)
+        .scrollIndicators(.hidden)
     }
 }
 
@@ -196,7 +197,7 @@ struct PostCard: View {
                             
                             HStack {
                                 // 유저 아이디
-                                Text(item.member.username)
+                                Text("@\(item.member.username)")
                                     .textStyle(.login_alert)
                                     .foregroundStyle(.gray800)
                                     .padding(.bottom, 1)
