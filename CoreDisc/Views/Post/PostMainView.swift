@@ -44,7 +44,6 @@ struct PostMainView: View {
                     CategoryGroup
                     
                     PostGroup
-                        .padding(.bottom, 68) // 탭바 만큼 공간 추가
                 }
             }
         }
@@ -65,20 +64,8 @@ struct PostMainView: View {
                 .padding(.leading, 6)
             
             Spacer()
+            
             NavigationLink(destination: SearchView(query: $searchQuery, isSearch: $isSearch)) {
-                Image(.iconSearch)
-                    .resizable()
-                    .padding(28)
-                    .frame(width: 48, height: 48)
-                    .foregroundStyle(.black000)
-            }
-            .border(Color.red, width: 1)
-            
-            Spacer().frame(width: 4)
-            
-            Button(action: {
-                // TODO: 검색 뷰
-            }) {
                 ZStack {
                     Color.clear
                         .frame(width: 48, height: 48)
@@ -132,9 +119,11 @@ struct PostMainView: View {
                         }
                 }
             }
-            .padding(.top, 16)
+            .padding(.top, 25)
+            .padding(.bottom, 75) // 탭바 만큼 공간 추가
         }
         .padding(.horizontal, 21)
+        .scrollIndicators(.hidden)
     }
 }
 
