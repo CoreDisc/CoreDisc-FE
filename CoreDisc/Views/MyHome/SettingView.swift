@@ -56,7 +56,7 @@ struct SettingView: View {
         }
         .toolbarVisibility(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden()
-        .navigationDestination(isPresented: $viewModel.logoutSuccess) {LoginView()}
+        .fullScreenCover(isPresented: $viewModel.logoutSuccess) {LoginView()}
     }
     
     // 상단 메뉴
