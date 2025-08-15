@@ -97,6 +97,7 @@ struct ReportDetailView: View {
             }
         }
         .navigationBarBackButtonHidden()
+        .tabBarHidden(true) // 커스텀 탭바 숨기기
     }
     
     //디스크 애니메이션
@@ -146,7 +147,7 @@ struct ReportDetailView: View {
                     .rotationEffect(.degrees(rotate ? 360 : 0))
                     .animation(Animation.linear(duration: 5).repeatForever(autoreverses: false), value: rotate)
                     .offset(x: -220)
-                    .onAppear {
+                    .task {
                         rotate = true
                     }
                 

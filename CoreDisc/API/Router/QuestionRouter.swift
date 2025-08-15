@@ -19,7 +19,7 @@ enum QuestionRouter {
     case getSelected // 선택한 고정&랜덤 질문 조회
     case getOfficialMine // 내가 발행한 공유질문 리스트 조회
     case getCategories // 질문 카테고리 리스트 조회
-    case getBasicSearch // 기본 질문 리스트 검색
+    case getCategoriesSearch(keyword: String) // 질문 카테고리 리스트 조회 (검색)
     case getBasic(
         categoryId: Int,
         cursorCreatedAt: String?,
@@ -27,6 +27,14 @@ enum QuestionRouter {
         cursorId: Int?,
         size: Int?
     ) // 기본 질문 리스트 조회
+    case getBasicSearch(
+        categoryId: Int,
+        keyword: String,
+        cursorCreatedAt: String?,
+        cursorQuestionType: String?,
+        cursorId: Int?,
+        size: Int?
+    ) // 기본 질문 리스트 조회 (검색)
     
     case deletePersonal(questionId: Int) // 작성하여 저장한 질문 삭제하기 (커스텀 질문 삭제)
     case deleteOfficial(questionId: Int) // 저장한 공유질문 삭제
@@ -54,10 +62,12 @@ extension QuestionRouter: APITargetType {
             return "\(Self.questionPath)/official/mine"
         case .getCategories:
             return "\(Self.questionPath)/categories"
-        case .getBasicSearch:
-            return "\(Self.questionPath)/basic/search"
+        case .getCategoriesSearch:
+            return "\(Self.questionPath)/categories/search"
         case .getBasic:
             return "\(Self.questionPath)/basic"
+        case .getBasicSearch:
+            return "\(Self.questionPath)/basic/search"
             
         case .deletePersonal(let questionId):
             return "\(Self.questionPath)/personal/\(questionId)"
@@ -70,7 +80,7 @@ extension QuestionRouter: APITargetType {
         switch self {
         case .postRandom, .postPersonal, .postOfficial, .postOfficialSave, .postFixed:
             return .post
-        case .getSelected, .getOfficialMine, .getCategories, .getBasicSearch, .getBasic:
+        case .getSelected, .getOfficialMine, .getCategories, .getCategoriesSearch, .getBasic, .getBasicSearch:
             return .get
         case .deletePersonal, .deleteOfficial:
             return .delete
@@ -96,8 +106,8 @@ extension QuestionRouter: APITargetType {
             return .requestPlain // TODO: 쿼리
         case .getCategories:
             return .requestPlain
-        case .getBasicSearch:
-            return .requestPlain // TODO: 쿼리
+        case .getCategoriesSearch(let keyword):
+            return .requestParameters(parameters: ["keyword": keyword], encoding: URLEncoding.queryString)
         case .getBasic(
             let categoryId,
             let cursorCreatedAt,
@@ -121,6 +131,32 @@ extension QuestionRouter: APITargetType {
                 parameters["size"] = size
             }
             return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
+        case .getBasicSearch(
+            let categoryId,
+            let keyword,
+            let cursorCreatedAt,
+            let cursorQuestionType,
+            let cursorId,
+            let size
+        ):
+            var parameters: [String: Any] = [
+                "categoryId": categoryId,
+                "keyword": keyword
+            ]
+            if let createdAt = cursorCreatedAt {
+                parameters["cursorCreatedAt"] = createdAt
+            }
+            if let type = cursorQuestionType {
+                parameters["cursorQuestionType"] = type
+            }
+            if let id = cursorId {
+                parameters["cursorId"] = id
+            }
+            if let size = size {
+                parameters["size"] = size
+            }
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
+            
         case .deletePersonal:
             return .requestPlain
         case .deleteOfficial:

@@ -38,6 +38,7 @@ struct ReportSummaryView: View {
             viewModel.getSummaryTop(year: SummaryYear, month: SummaryMonth)
             viewModel.getSummaryDetails(year: SummaryYear, month: SummaryMonth)
         }
+        .tabBarHidden(true) // 커스텀 탭바 숨기기
     }
     
     private var HeaderGroup : some View{

@@ -13,27 +13,31 @@ struct QuestionMainView: View {
     @State var isSelectView: Bool = false
     @State var currentOrder: Int = 0
     
+    @State var currentQuestionType: String = ""
+    
     // 씨디 돌아가는 애니메이션
     @State private var rotationAngle: Double = 0.0
     let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        ZStack {
-            Image(.imgShortBackground)
-                .resizable()
-                .ignoresSafeArea()
-                
-            VStack {
-                TitleGroup
-                
-                Spacer().frame(height: 36)
-                
-                MainCDGroup
-                
-                Spacer()
+        NavigationStack {
+            ZStack {
+                Image(.imgShortBackground)
+                    .resizable()
+                    .ignoresSafeArea()
+                    
+                VStack {
+                    TitleGroup
+                    
+                    Spacer().frame(height: 36)
+                    
+                    MainCDGroup
+                    
+                    Spacer()
+                }
             }
         }
-        .onAppear {
+        .task {
             viewModel.fetchSelected()
         }
     }
@@ -57,7 +61,7 @@ struct QuestionMainView: View {
                 .padding(.leading, 6)
                 .padding(.bottom, 5)
             
-            Text(isSelectView ? "한달동안 함께 할 질문을 선택하세요" : "오늘의 코어디스크를 기록해보세요")
+            Text(isSelectView ? "\(currentQuestionType == "FIXED" ? "한 달동안" : "오늘") 함께 할 질문을 선택하세요" : "오늘의 코어디스크를 기록해보세요")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.leading, 11)
@@ -69,11 +73,23 @@ struct QuestionMainView: View {
     // CD, QuestionSelectItem
     // TODO: CD 애니메이션 적용
     private var MainCDGroup: some View {
+        // 색상 설정
+        func colors(for type: String?) -> (Color, Color) {
+            switch type {
+            case "FIXED":
+                return (.key, .gray600)
+            case "RANDOM":
+                return (.warning, .gray100)
+            default:
+                return (.gray400, .gray400)
+            }
+        }
+        
         // 질문 리스트
-        let question1 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 1 })?.question ?? "고정질문을 선택하세요"
-        let question2 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 2 })?.question ?? "고정질문을 선택하세요"
-        let question3 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 3 })?.question ?? "고정질문을 선택하세요"
-        let question4 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 4 })?.question ?? "랜덤질문을 선택하세요"
+        let question1 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 1 })
+        let question2 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 2 })
+        let question3 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 3 })
+        let question4 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 4 })
         
         return ZStack {
             Image(.imgCd)
@@ -87,22 +103,48 @@ struct QuestionMainView: View {
                 }
                 .offset(x: 172)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: question1, order: 1, onTap: { order in
-                currentOrder = order
-            })
+            QuestionSelectItem(
+                moveLeft: $isSelectView,
+                currentQuestionType: $currentQuestionType,
+                text: question1?.question ?? "한달질문을 선택하세요",
+                order: 1,
+                onTap: { currentOrder = $0 },
+                startColor: colors(for: question1?.questionType).0,
+                endColor: colors(for: question1?.questionType).1
+            )
                 .position(x: 150+79, y: 97)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: question2, order: 2, onTap: { order in
-                currentOrder = order
-            })
+            QuestionSelectItem(
+                moveLeft: $isSelectView,
+                currentQuestionType: $currentQuestionType,
+                text: question2?.question ?? "한달질문을 선택하세요",
+                order: 2,
+                onTap: { currentOrder = $0 },
+                startColor: colors(for: question2?.questionType).0,
+                endColor: colors(for: question2?.questionType).1
+            )
                 .position(x: 150+34, y: 196)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: question3, order: 3, onTap: { order in
-                currentOrder = order
-            })
+            QuestionSelectItem(
+                moveLeft: $isSelectView,
+                currentQuestionType: $currentQuestionType,
+                text: question3?.question ?? "한달질문을 선택하세요",
+                order: 3,
+                onTap: { currentOrder = $0 },
+                startColor: colors(for: question3?.questionType).0,
+                endColor: colors(for: question3?.questionType).1
+            )
                 .position(x: 150+42, y: 295)
             
-            QuestionSelectItem(moveLeft: $isSelectView, text: question4, order: 4)
+            QuestionSelectItem(
+                moveLeft: $isSelectView,
+                currentQuestionType: $currentQuestionType,
+                text: question4?.question ?? "하루질문을 선택하세요",
+                order: 4,
+                onTap: { currentOrder = $0 },
+                startColor: colors(for: question4?.questionType).0,
+                endColor: colors(for: question4?.questionType).1
+            )
                 .position(x: 150+79, y: 394)
             
             SelectCDGroup
@@ -118,12 +160,12 @@ struct QuestionMainView: View {
                 QuestionWriteView()
             }
             QuestionSelectButton(title: "기본 질문") {
-                QuestionBasicView(order: currentOrder)
+                QuestionBasicView(mainViewModel: viewModel, selectedQuestionType: currentQuestionType, order: currentOrder)
             }
             QuestionSelectButton(title: "인기 질문") {
                 QuestionTrendingView()
             }
-            QuestionSelectButton(title: "공유 질문") {
+            QuestionSelectButton(title: "공유/저장\n질문") {
                 QuestionShareNowView()
             }
         }
@@ -134,17 +176,23 @@ struct QuestionMainView: View {
 // 질문 선택 컴포넌트
 struct QuestionSelectItem: View {
     @Binding var moveLeft: Bool
+    @Binding var currentQuestionType: String
     
     var text: String
     var order: Int // 1, 2, 3
     var onTap: ((Int) -> Void)? = nil
     
-    var startColor: Color = .gray400
-    var endColor: Color = .gray400
+    var startColor: Color
+    var endColor: Color
     
     var body: some View {
         Button(action: {
             withAnimation(.easeInOut(duration: 0.4)) {
+                if order == 4 {
+                    currentQuestionType = "RANDOM"
+                } else {
+                    currentQuestionType = "FIXED"
+                }
                 moveLeft = true
                 onTap?(order)
             }
@@ -156,7 +204,7 @@ struct QuestionSelectItem: View {
                 
                 HStack(spacing: 8) {
                     Circle()
-                        .linearGradient(startColor: startColor, endColor: endColor)
+                        .horizontalLinearGradient(startColor: startColor, endColor: endColor)
                         .frame(width: 27)
                     
                     Text(text)
@@ -180,7 +228,6 @@ struct QuestionSelectButton<Destination: View>: View {
             NavigationLink(destination: destination()) {
                 buttonContent
             }
-            .buttonStyle(.plain)
         } else {
             buttonContent
         }
@@ -202,6 +249,7 @@ struct QuestionSelectButton<Destination: View>: View {
                 Text(title)
                     .textStyle(.Q_Main)
                     .foregroundStyle(.black000)
+                    .multilineTextAlignment(.leading)
                     .padding(.top, 10)
                     .padding(.leading, 9)
             }

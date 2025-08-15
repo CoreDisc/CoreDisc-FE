@@ -45,8 +45,9 @@ struct MyHomeView: View {
                 
                 sheetView
             }
-            .onAppear {
+            .task {
                 viewModel.fetchMyHome()
+                viewModel.fetchMyPosts()
             }
             .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
             .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
@@ -150,7 +151,7 @@ struct MyHomeView: View {
     // 버튼
     private var ButtonGroup: some View {
         VStack(spacing: 12) {
-            Button(action: {}) {
+            NavigationLink(destination: CoreQuestionsView()) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
                         .fill(.key)
@@ -186,22 +187,22 @@ struct MyHomeView: View {
 
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(viewModel.postList, id: \.postId) { post in
-                if let url = URL(string: post.postImageThumbnailDTO.thumbnailUrl),
-                   !post.postImageThumbnailDTO.thumbnailUrl.isEmpty { // 이미지
+                if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
+                   !url.absoluteString.isEmpty { // 이미지
                     KFImage(url)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(height: 154)
                         .frame(maxWidth: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                } else { // 텍스트
+                } else if let text = post.postTextThumbnailDTO?.content { // 텍스트
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
                             .fill(.gray100)
                             .stroke(.gray200, lineWidth: 0.3)
                             .frame(height: 154)
                         
-                        Text(post.postTextThumbnailDTO.content)
+                        Text(text)
                             .textStyle(.Q_pick)
                             .multilineTextAlignment(.center)
                             .foregroundStyle(.black000)
@@ -218,13 +219,13 @@ struct MyHomeView: View {
     @ViewBuilder
     private var sheetView: some View {
         if showFollowerSheet {
-            FollowSheetView(showSheet: $showFollowerSheet, followType: .follower)
+            FollowSheetView(showSheet: $showFollowerSheet, followType: .follower, targetUsrname: "")
                 .transition(.move(edge: .bottom))
                 .zIndex(1)
         }
         
         if showFollowingSheet {
-            FollowSheetView(showSheet: $showFollowingSheet, followType: .following)
+            FollowSheetView(showSheet: $showFollowingSheet, followType: .following, targetUsrname: "")
                 .transition(.move(edge: .bottom))
                 .zIndex(1)
         }
