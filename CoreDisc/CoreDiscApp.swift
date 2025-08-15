@@ -21,6 +21,7 @@ import FirebaseCore
 
 @main
 struct CoreDiscApp: App {
+    @StateObject private var tabBarVisibility = TabBarVisibility()
 //    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     init() {
@@ -39,6 +40,7 @@ struct CoreDiscApp: App {
                 .overlay(alignment: .bottom) {
                     GlobalToastView()
                 }
+                .environmentObject(TabBarVisibility())
         }
     }
 }
