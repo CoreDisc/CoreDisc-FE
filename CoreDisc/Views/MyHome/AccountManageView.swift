@@ -11,6 +11,8 @@ struct AccountManageView: View {
     
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = AccountManageViewModel()
+    @FocusState private var isFocused: Bool
+    
     @State private var pwdShown = false
     @State private var newPwdShown = false
     @State private var rePwdShown = false
@@ -22,6 +24,9 @@ struct AccountManageView: View {
                 Image(.imgShortBackground2)
                     .resizable()
                     .ignoresSafeArea()
+                    .onTapGesture { // 키보드 내리기 용도
+                        isFocused = false
+                    }
                 
                 VStack{
                     TopMenuGroup
@@ -100,6 +105,7 @@ struct AccountManageView: View {
                 if pwdShown{
                     HStack{
                         TextField("현재 비밀번호를 입력해주세요.", text: $viewModel.pwd)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
@@ -111,6 +117,7 @@ struct AccountManageView: View {
                 } else{
                     HStack{
                         SecureField("현재 비밀번호를 입력해주세요.", text: $viewModel.pwd)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
@@ -135,6 +142,7 @@ struct AccountManageView: View {
                 if newPwdShown{
                     HStack{
                         TextField("새로운 비밀번호를 입력해주세요.", text: $viewModel.newPwd)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             newPwdShown.toggle()
@@ -146,6 +154,7 @@ struct AccountManageView: View {
                 } else{
                     HStack{
                         SecureField("새로운 비밀번호를 입력해주세요.", text: $viewModel.newPwd)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             newPwdShown.toggle()
@@ -172,6 +181,7 @@ struct AccountManageView: View {
                 if rePwdShown{
                     HStack{
                         TextField("새로운 비밀번호를 한 번 더 입력해주세요.", text: $viewModel.rePwd)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
@@ -183,6 +193,7 @@ struct AccountManageView: View {
                 } else{
                     HStack{
                         SecureField("새로운 비밀번호를 한 번 더 입력해주세요.", text: $viewModel.rePwd)
+                            .focused($isFocused)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
