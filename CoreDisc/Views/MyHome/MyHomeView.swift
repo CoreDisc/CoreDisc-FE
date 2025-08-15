@@ -51,6 +51,7 @@ struct MyHomeView: View {
             }
             .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
             .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
+            .navigationBarBackButtonHidden()
         }
     }
     

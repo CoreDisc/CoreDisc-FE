@@ -26,6 +26,7 @@ struct NotificationValues: Decodable, Identifiable, Hashable {
     let content: String
     let targetId: Int
     let senderId: Int
+    let senderUsername: String
     let senderNickname: String
     let profileImgDTO: NotificationProfileImgDTO
     let isRead: Bool

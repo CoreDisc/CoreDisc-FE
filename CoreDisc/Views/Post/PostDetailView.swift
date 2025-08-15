@@ -15,6 +15,10 @@ struct PostDetailView: View {
     @State var showCommentSheet: Bool = false
     @State private var currentQuestion: String = ""
     
+    @State var showUserHome: Bool = false
+    @State var isOwner: Bool = false
+    @State var commentUsername: String = ""
+    
     let postId: Int
     
     var body: some View {
@@ -62,7 +66,14 @@ struct PostDetailView: View {
         }
         .navigationBarBackButtonHidden() // 기본 뒤로가기 버튼 제거
         .sheet(isPresented: $showCommentSheet) {
-            CommentSheetView(showSheet: $showCommentSheet, postId: postId, viewModel: viewModel)
+            CommentSheetView(
+                showSheet: $showCommentSheet,
+                postId: postId,
+                viewModel: viewModel,
+                showUserHome: $showUserHome,
+                isOwner: $isOwner,
+                commentUsername: $commentUsername
+            )
                 .presentationBackground(.clear)
                 .presentationDetents([.height(600)])
                 .presentationDragIndicator(.hidden)
@@ -73,6 +84,13 @@ struct PostDetailView: View {
         .task(id: viewModel.answersList.count) {
             currentQuestion = viewModel.cardItems.first?.question ?? ""
         }
+        .navigationDestination(isPresented: $showUserHome, destination: {
+            if isOwner {
+                MyHomeView()
+            } else {
+                UserHomeView(userName: commentUsername)
+            }
+        })
     }
     
     // 뒤로가기 버튼 섹션
