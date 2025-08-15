@@ -27,8 +27,7 @@ struct ReportMainView: View {
                         Image(.imgReportHeaderIcon)
                             .resizable()
                             .frame(width: 14, height: 55)
-                        Image(.imgGoback)
-                        
+
                         Spacer()
                     }
                     
@@ -58,7 +57,7 @@ struct ReportMainView: View {
                 }
             }
         }
-        .onAppear {
+        .task {
             viewModel.getDiscs()
         }
     }

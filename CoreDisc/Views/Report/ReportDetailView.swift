@@ -92,7 +92,7 @@ struct ReportDetailView: View {
                     PresentGroup
                 }
             }
-            .onAppear {
+            .task {
                 viewModel.getReport(year: year, month: month)
             }
         }
@@ -116,7 +116,12 @@ struct ReportDetailView: View {
     private var HeaderGroup: some View {
         HStack {
             Image(.imgReportHeaderIcon)
-
+            
+            Button(action: {
+                dismiss()
+            }){
+                Image(.imgGoback)
+            }
             Spacer()
         }
     }
