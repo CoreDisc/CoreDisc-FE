@@ -106,6 +106,7 @@ struct AccountManageView: View {
                     HStack{
                         TextField("현재 비밀번호를 입력해주세요.", text: $viewModel.pwd)
                             .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
@@ -118,6 +119,7 @@ struct AccountManageView: View {
                     HStack{
                         SecureField("현재 비밀번호를 입력해주세요.", text: $viewModel.pwd)
                             .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
@@ -143,6 +145,7 @@ struct AccountManageView: View {
                     HStack{
                         TextField("새로운 비밀번호를 입력해주세요.", text: $viewModel.newPwd)
                             .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             newPwdShown.toggle()
@@ -155,6 +158,7 @@ struct AccountManageView: View {
                     HStack{
                         SecureField("새로운 비밀번호를 입력해주세요.", text: $viewModel.newPwd)
                             .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             newPwdShown.toggle()
@@ -182,6 +186,7 @@ struct AccountManageView: View {
                     HStack{
                         TextField("새로운 비밀번호를 한 번 더 입력해주세요.", text: $viewModel.rePwd)
                             .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
@@ -194,6 +199,7 @@ struct AccountManageView: View {
                     HStack{
                         SecureField("새로운 비밀번호를 한 번 더 입력해주세요.", text: $viewModel.rePwd)
                             .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
