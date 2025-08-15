@@ -14,6 +14,7 @@ struct QuestionShareNowView: View {
     private let spacingAngle: Double = 19
     @State private var hiddenCount = 0
     @Environment(\.dismiss) var dismiss
+    @State private var goToMain = false
     
     @ObservedObject var mainViewModel: QuestionMainViewModel
     let selectedQuestionType: String
@@ -49,11 +50,26 @@ struct QuestionShareNowView: View {
                 }
                 Spacer().frame(height: 60)
             }
+            
+            // 선택 확인 모달
+            if showSelectModal {
+                QuestionSelectModalView(
+                    isMonth: selectedQuestionType,
+                    selectedQuestionId: $selectedQuestionId,
+                    order: order,
+                    selectedQuestionType: .OFFICIAL,
+                    viewModel: selectViewModel,
+                    mainViewModel: mainViewModel,
+                    showSelectModal: $showSelectModal,
+                    goToMain: $goToMain
+                )
+            }
         }
         .navigationBarBackButtonHidden()
         .task {
             await viewModel.fetchMySharedQuestions()
         }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
     }
     
     private var InfoGroup: some View {
