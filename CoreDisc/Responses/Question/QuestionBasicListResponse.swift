@@ -24,6 +24,6 @@ struct QuestionBasicListValue: Identifiable, Codable {
     let questionType: String
     let question: String
     let isSelected: Bool
-    let isFavorite: Bool
+    var savedStatus: String
     let createdAt: String
 }

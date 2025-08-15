@@ -9,9 +9,11 @@ import SwiftUI
 
 struct ChangeCoverView: View {
     @Environment(\.dismiss) var dismiss
-    let viewModel = ChangeCoverViewModel()
+    @StateObject var viewModel = ReportMainViewModel()
     private let columns: [GridItem] = Array(repeating: GridItem(.fixed(80), spacing: 26), count: 3)
     @State var cover: String = ""
+    
+    let discId: Int
     
     var body: some View {
         ZStack {
@@ -45,23 +47,22 @@ struct ChangeCoverView: View {
             Spacer().frame(height: 37)
             
             LazyVGrid(columns: columns, spacing: 35){
-                ForEach(viewModel.CoverList, id: \.color){ item in
+                ForEach(viewModel.colors, id: \.self){ color in
                     Button(action:{
-                        cover=item.color
+                        cover = color
                     }, label:{
-                        if cover == item.color{
-                            item.image
-                                .resizable()
-                                .frame(width: 76, height: 76)
-                                .overlay(
-                                    Circle().stroke(Color.white, lineWidth: 3))
-                        } else
-                        {
-                            item.image
-                                .resizable()
-                                .frame(width: 76, height: 76)
-                        }
                         
+                        let image = Image(viewModel.imageNameForColor(color))
+                            .resizable()
+                            .frame(width: 76, height: 76)
+                        
+                        if cover == color {
+                            image.overlay(
+                                Circle().stroke(Color.white, lineWidth: 3)
+                            )
+                        } else {
+                            image
+                        }
                     })
                 }
                 
@@ -74,17 +75,24 @@ struct ChangeCoverView: View {
             
             Spacer().frame(height: 43)
             
-            Button(action:{}, label:{
+            Button(action:{
+                viewModel.ChangeCover(discId: discId, coverColor: cover)
+            }, label:{
                 ZStack{
                     RoundedRectangle(cornerRadius: 12)
                         .foregroundStyle(.key)
                         .frame(height:60)
                     
-                    Text("확인 및 저장")
+                    Text("수정하기")
                         .textStyle(.Q_Main)
                         .foregroundStyle(.black000)
                 }
             })
+            .onChange(of: viewModel.colorChangeSuccess) { oldValue, newValue in
+                if newValue {
+                    dismiss()
+                }
+            }
         }
         .padding(.horizontal, 21)
     }
@@ -92,5 +100,5 @@ struct ChangeCoverView: View {
 
 
 #Preview {
-    ChangeCoverView()
+    ChangeCoverView(discId: 1)
 }

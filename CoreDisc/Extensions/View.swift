@@ -43,6 +43,18 @@ struct HorizontalLinearGradientModifier: ViewModifier {
     }
 }
 
+// MARK: - 특정 모서리 둥글게
+struct RoundedCorner: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        
+        return Path(path.cgPath)
+    }
+}
+
 // MARK: - Toast
 struct ToastModifier: ViewModifier {
     @Binding var isPresented: Bool
@@ -60,9 +72,11 @@ struct ToastModifier: ViewModifier {
                         .textStyle(.Q_Sub)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
-                        .background(.gray700.opacity(0.8))
                         .foregroundColor(.white)
-                        .cornerRadius(30)
+                        .clipShape(
+                            RoundedRectangle(cornerRadius: 30)
+                        )
+                        .background(.gray700.opacity(0.8))
                         .shadow(radius: 4)
                         .padding(.bottom, 40)
                 }
@@ -123,6 +137,10 @@ extension View {
     
     func horizontalLinearGradient(startColor: Color, endColor: Color) -> some View {
         modifier(HorizontalLinearGradientModifier(startColor: startColor, endColor: endColor))
+    }
+    
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorner(radius: radius, corners: corners))
     }
     
     func toast(isPresented: Binding<Bool>, message: String) -> some View {

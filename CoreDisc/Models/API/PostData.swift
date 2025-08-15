@@ -31,12 +31,3 @@ struct SelectiveDiaryData: Codable {
     let what: String
     let detail: String
 }
-
-// 게시글 피드 조회 (Pull 모델)
-struct PostFeedData: Codable {
-    let feedType: PostFeedType
-    let cursor: Int
-    let size: Int
-}
-
-
