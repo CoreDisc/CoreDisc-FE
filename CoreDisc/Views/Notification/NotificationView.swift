@@ -38,7 +38,7 @@ struct NotificationView: View {
         .navigationDestination(item: $selectedItem) { item in
             switch item.type {
             case "FOLLOW":
-                UserHomeView(userName: item.senderNickname)
+                UserHomeView(userName: item.senderUsername)
             case "SHARED_SAVED":
                 EmptyView()
 //                QuestionShareNowView()

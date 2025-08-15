@@ -14,9 +14,10 @@ struct Comment: Decodable {
     let parentId: Int?
     let depth: Int
     let member: PostMainMember
-    var hasReplies: Bool
+    var hasReplies: Bool?
     let timeStamp: String?
     var replyCount: Int?
+    let isOwner: Bool?
 }
 
 // 댓글 조회

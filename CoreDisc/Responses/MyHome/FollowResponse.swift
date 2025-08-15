@@ -123,7 +123,7 @@ struct UnfollowResponse: Decodable {
 }
 
 // MARK: - Common
-struct FollowDisplayModel: Identifiable {
+struct FollowDisplayModel: Identifiable, Hashable {
     let id: Int
     let nickname: String
     let username: String
