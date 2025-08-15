@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "img_morning.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
