@@ -8,17 +8,6 @@
 import SwiftUI
 import Kingfisher
 
-enum FollowType {
-    case follower, userFollower, coreList, following, userFollowing
-    
-    var title: String {
-        switch self {
-        case .follower, .userFollower, .coreList: "followers"
-        case .following, .userFollowing: "followings"
-        }
-    }
-}
-
 struct FollowSheetView: View {
     @Binding var showSheet: Bool
     @StateObject private var viewModel = FollowSheetViewModel()
