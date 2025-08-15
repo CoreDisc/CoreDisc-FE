@@ -199,8 +199,17 @@ class PostDetailViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    _ = try JSONDecoder().decode(CommentWriteResponse.self, from: response.data)
+                    let decodedData = try JSONDecoder().decode(CommentWriteResponse.self, from: response.data)
+                    
                     self.fetchReplyList(commentId: commentId)
+                    
+                    DispatchQueue.main.async {
+                        // 댓글의 hasReplies / replyCount 즉시 반영
+                        if let index = self.commentList.firstIndex(where: { $0.commentId == commentId }) {
+                            self.commentList[index].hasReplies = true
+                            self.commentList[index].replyCount = (self.commentList[index].replyCount ?? 0) + 1
+                        }
+                    }
                 } catch {
                     print("PostReplies 디코더 오류: \(error)")
                     DispatchQueue.main.async {

@@ -63,7 +63,8 @@ struct MyHomeView: View {
             
             Spacer()
             
-            Button(action: {}) { // TODO: action
+            
+            NavigationLink(destination: CalendarView()) {
                 Image(.iconCalendar)
                     .foregroundStyle(.white)
             }

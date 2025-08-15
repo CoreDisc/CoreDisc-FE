@@ -11,6 +11,7 @@ struct FindIdView: View {
     
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = FindIdViewModel()
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         NavigationStack {
@@ -18,6 +19,9 @@ struct FindIdView: View {
                 Image(.imgOnboardingBackground)
                     .resizable()
                     .ignoresSafeArea()
+                    .onTapGesture { // 키보드 내리기 용도
+                        isFocused = false
+                    }
                 
                 VStack{
                     Spacer().frame(height: 96)
@@ -64,10 +68,14 @@ struct FindIdView: View {
             
             InputView{
                 TextField("이름", text: $viewModel.name)
+                    .focused($isFocused)
+                    .textInputAutocapitalization(.never)
             }
             
             InputView{
                 TextField("이메일", text: $viewModel.email)
+                    .focused($isFocused)
+                    .textInputAutocapitalization(.never)
             }
             
             if viewModel.isError {

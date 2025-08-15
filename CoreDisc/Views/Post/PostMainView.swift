@@ -15,9 +15,12 @@ enum PostCategoryTap : String, CaseIterable {
 
 struct PostMainView: View {
     @StateObject private var viewModel = PostMainViewModel()
+    @StateObject private var notiViewModel = NotificationViewModel()
     
     @State private var selectedTab: PostCategoryTap = .all
     @Namespace private var animation
+    @State private var searchQuery: String = ""
+    @State private var isSearch: Bool = false
     
     private var selectedPosts: [PostMain] {
         switch selectedTab {
@@ -45,8 +48,9 @@ struct PostMainView: View {
                 }
             }
         }
-        .task {
+        .onAppear {
             viewModel.fetchPosts()
+            notiViewModel.fetchUnRead()
         }
     }
     
@@ -61,6 +65,16 @@ struct PostMainView: View {
                 .padding(.leading, 6)
             
             Spacer()
+            NavigationLink(destination: SearchView(query: $searchQuery, isSearch: $isSearch)) {
+                Image(.iconSearch)
+                    .resizable()
+                    .padding(28)
+                    .frame(width: 48, height: 48)
+                    .foregroundStyle(.black000)
+            }
+            .border(Color.red, width: 1)
+            
+            Spacer().frame(width: 4)
             
             Button(action: {
                 // TODO: 검색 뷰
@@ -77,14 +91,19 @@ struct PostMainView: View {
             }
             
             NavigationLink(destination: NotificationView()) {
-                ZStack {
-                    Color.clear
-                        .frame(width: 48, height: 48)
-                    
+                ZStack(alignment: .topTrailing) {
                     Image(.iconAlert)
                         .resizable()
                         .frame(width:40, height: 48)
                         .foregroundStyle(.black000)
+                    
+                    if notiViewModel.unreadResult {
+                        Circle()
+                            .fill(.key)
+                            .frame(width: 8)
+                            .padding(.top, 10)
+                            .padding(.trailing, 8)
+                    }
                 }
             }
         }
@@ -101,7 +120,7 @@ struct PostMainView: View {
     // 게시글 섹션
     private var PostGroup: some View {
         let columns = Array(repeating: GridItem(.flexible()), count: 2)
-
+        
         return ScrollView {
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(selectedPosts, id: \.postId) { item in
@@ -152,9 +171,9 @@ struct PostCard: View {
                             Text(item.answer.textAnswer?.content
                                 .splitCharacter() ?? ""
                             )
-                                .textStyle(.Post_Thumbnail_text)
-                                .foregroundStyle(.black000)
-                                .padding(.horizontal, 18)
+                            .textStyle(.Post_Thumbnail_text)
+                            .foregroundStyle(.black000)
+                            .padding(.horizontal, 18)
                         }
                     }
                     
@@ -178,12 +197,12 @@ struct PostCard: View {
                             Text(item.answer.questionContent
                                 .splitCharacter()
                             )
-                                .textStyle(.Button_s)
-                                .foregroundStyle(.black000)
-                                .lineLimit(3)
-                                .multilineTextAlignment(.leading) // 두줄 이상일 때 왼쪽 정렬
-                                .padding(.leading, 1)
-                                .padding(.trailing, 3)
+                            .textStyle(.Button_s)
+                            .foregroundStyle(.black000)
+                            .lineLimit(3)
+                            .multilineTextAlignment(.leading) // 두줄 이상일 때 왼쪽 정렬
+                            .padding(.leading, 1)
+                            .padding(.trailing, 3)
                             
                             Spacer()
                             
@@ -233,7 +252,7 @@ struct PostTopTabView: View {
         HStack(spacing: 0) {
             ForEach(PostCategoryTap.allCases, id: \.self) { item in
                 let isSelected = (selectedTab == item)
-
+                
                 Text(item.rawValue)
                     .textStyle(.category_bar)
                     .foregroundColor(.black000)

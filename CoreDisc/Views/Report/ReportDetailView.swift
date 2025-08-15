@@ -92,7 +92,7 @@ struct ReportDetailView: View {
                     PresentGroup
                 }
             }
-            .onAppear {
+            .task {
                 viewModel.getReport(year: year, month: month)
             }
         }
@@ -135,7 +135,7 @@ struct ReportDetailView: View {
                 .padding(.bottom, 2)
                 .padding(.leading, 35)
             
-            Text("22개의 DISC를 작성했어요")
+            Text("\(viewModel.DiscCount)개의 DISC를 작성했어요")
                 .textStyle(.Title2_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.leading, 35)
