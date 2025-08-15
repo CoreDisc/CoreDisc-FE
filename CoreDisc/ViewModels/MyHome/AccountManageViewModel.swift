@@ -21,8 +21,10 @@ class AccountManageViewModel: ObservableObject {
     
     @Published var changeSuccess: Bool = false
     @Published var resignSuccess: Bool = false
+    @Published var logoutSuccess: Bool = false
     
     private let memberProvider = APIManager.shared.createProvider(for: MemberRouter.self)
+    private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
     
     func changePw() {
         memberProvider.request(.patchMyhomePassword(
@@ -77,6 +79,32 @@ class AccountManageViewModel: ObservableObject {
                 if let response = error.response {
                     do {
                         let decodedResponse = try JSONDecoder().decode(resignResponse.self, from: response.data)
+                        print("실패 : \(decodedResponse.message)")
+                    } catch {
+                        print("디코딩 실패 : \(error.localizedDescription)")
+                    }
+                } else {
+                    print("네트워크 오류: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    func logout() {
+        authProvider.request(.postLogout){ result in
+            switch result{
+            case .success(let response):
+                if let decodedResponse = try? JSONDecoder().decode(logoutResponse.self, from: response.data) {
+                    print("로그아웃 성공: \(decodedResponse.message)")
+                    KeychainManager.standard.deleteSession(for: "appNameUser")
+                }
+                DispatchQueue.main.async {
+                    self.logoutSuccess = true
+                }
+            case .failure(let error):
+                if let response = error.response {
+                    do {
+                        let decodedResponse = try JSONDecoder().decode(logoutResponse.self, from: response.data)
                         print("실패 : \(decodedResponse.message)")
                     } catch {
                         print("디코딩 실패 : \(error.localizedDescription)")

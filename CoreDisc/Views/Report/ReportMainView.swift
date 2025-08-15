@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ReportMainView: View {
     
-    let viewModel = DiscItemViewModel()
+    @StateObject private var viewModel = ReportMainViewModel()
     private let columns: [GridItem] = Array(repeating: GridItem(.fixed(91), spacing: 27), count: 3)
     @State private var edit = false
     
@@ -57,26 +58,34 @@ struct ReportMainView: View {
                 }
             }
         }
+        .onAppear {
+            viewModel.getDiscs()
+        }
     }
-    
     
     private var DiscGroup : some View{
         ScrollView(.vertical){
             LazyVGrid(columns: columns){
-                ForEach(viewModel.DiscItemList, id: \.id){ item in
+                ForEach(viewModel.DiscList){ item in
                     if edit {
-                        NavigationLink(destination: ChangeCoverView()){
+                        NavigationLink(destination: ChangeCoverView(discId: item.id)){
                             ZStack{
-                                DiscItem(image: item.image)
-                                    .padding(.vertical, 10)
+                                DiscItem(
+                                    imageUrl: item.imageUrl,
+                                    localImageName: item.localImageName,
+                                    dateLabel: item.dateLabel)
+                                .padding(.vertical, 10)
                                 Image(.imgEdit)
                                     .offset(x:30, y:30)
                             }
                         }
                     } else {
-                        NavigationLink(destination: ReportDetailView()){
-                            DiscItem(image: item.image)
-                                .padding(.vertical, 10)
+                        NavigationLink(destination: ReportDetailView(year: item.year, month: item.month)){
+                            DiscItem(
+                                imageUrl: item.imageUrl,
+                                localImageName: item.localImageName,
+                                dateLabel: item.dateLabel)
+                            .padding(.vertical, 10)
                         }
                     }
                 }

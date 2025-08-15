@@ -13,6 +13,8 @@ struct QuestionMainView: View {
     @State var isSelectView: Bool = false
     @State var currentOrder: Int = 0
     
+    @State var currentQuestionType: String = ""
+    
     // 씨디 돌아가는 애니메이션
     @State private var rotationAngle: Double = 0.0
     let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
@@ -59,7 +61,7 @@ struct QuestionMainView: View {
                 .padding(.leading, 6)
                 .padding(.bottom, 5)
             
-            Text(isSelectView ? "한달동안 함께 할 질문을 선택하세요" : "오늘의 코어디스크를 기록해보세요")
+            Text(isSelectView ? "\(currentQuestionType == "FIXED" ? "한 달동안" : "오늘") 함께 할 질문을 선택하세요" : "오늘의 코어디스크를 기록해보세요")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.leading, 11)
@@ -75,11 +77,11 @@ struct QuestionMainView: View {
         func colors(for type: String?) -> (Color, Color) {
             switch type {
             case "FIXED":
-                return (.highlight, .gray600)
+                return (.key, .gray600)
             case "RANDOM":
-                return (.gray100, .gray600)
+                return (.warning, .gray100)
             default:
-                return (.black000, .black000)
+                return (.gray400, .gray400)
             }
         }
         
@@ -103,7 +105,8 @@ struct QuestionMainView: View {
             
             QuestionSelectItem(
                 moveLeft: $isSelectView,
-                text: question1?.question ?? "고정질문을 선택하세요",
+                currentQuestionType: $currentQuestionType,
+                text: question1?.question ?? "한달질문을 선택하세요",
                 order: 1,
                 onTap: { currentOrder = $0 },
                 startColor: colors(for: question1?.questionType).0,
@@ -113,7 +116,8 @@ struct QuestionMainView: View {
             
             QuestionSelectItem(
                 moveLeft: $isSelectView,
-                text: question2?.question ?? "고정질문을 선택하세요",
+                currentQuestionType: $currentQuestionType,
+                text: question2?.question ?? "한달질문을 선택하세요",
                 order: 2,
                 onTap: { currentOrder = $0 },
                 startColor: colors(for: question2?.questionType).0,
@@ -123,7 +127,8 @@ struct QuestionMainView: View {
             
             QuestionSelectItem(
                 moveLeft: $isSelectView,
-                text: question3?.question ?? "고정질문을 선택하세요",
+                currentQuestionType: $currentQuestionType,
+                text: question3?.question ?? "한달질문을 선택하세요",
                 order: 3,
                 onTap: { currentOrder = $0 },
                 startColor: colors(for: question3?.questionType).0,
@@ -133,7 +138,8 @@ struct QuestionMainView: View {
             
             QuestionSelectItem(
                 moveLeft: $isSelectView,
-                text: question4?.question ?? "랜덤질문을 선택하세요",
+                currentQuestionType: $currentQuestionType,
+                text: question4?.question ?? "하루질문을 선택하세요",
                 order: 4,
                 onTap: { currentOrder = $0 },
                 startColor: colors(for: question4?.questionType).0,
@@ -154,12 +160,12 @@ struct QuestionMainView: View {
                 QuestionWriteView()
             }
             QuestionSelectButton(title: "기본 질문") {
-                QuestionBasicView(order: currentOrder)
+                QuestionBasicView(mainViewModel: viewModel, selectedQuestionType: currentQuestionType, order: currentOrder)
             }
             QuestionSelectButton(title: "인기 질문") {
                 QuestionTrendingView()
             }
-            QuestionSelectButton(title: "공유 질문") {
+            QuestionSelectButton(title: "공유/저장\n질문") {
                 QuestionShareNowView()
             }
         }
@@ -170,6 +176,7 @@ struct QuestionMainView: View {
 // 질문 선택 컴포넌트
 struct QuestionSelectItem: View {
     @Binding var moveLeft: Bool
+    @Binding var currentQuestionType: String
     
     var text: String
     var order: Int // 1, 2, 3
@@ -181,6 +188,11 @@ struct QuestionSelectItem: View {
     var body: some View {
         Button(action: {
             withAnimation(.easeInOut(duration: 0.4)) {
+                if order == 4 {
+                    currentQuestionType = "RANDOM"
+                } else {
+                    currentQuestionType = "FIXED"
+                }
                 moveLeft = true
                 onTap?(order)
             }
@@ -237,6 +249,7 @@ struct QuestionSelectButton<Destination: View>: View {
                 Text(title)
                     .textStyle(.Q_Main)
                     .foregroundStyle(.black000)
+                    .multilineTextAlignment(.leading)
                     .padding(.top, 10)
                     .padding(.leading, 9)
             }

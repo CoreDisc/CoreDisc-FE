@@ -53,6 +53,56 @@ struct SignupResponse: Decodable {
 }
 
 struct SignupResult: Decodable {
-    let id: Int
-    let createdAt: String
+    let id: Int?
+    let createdAt: String?
+    let name: String?
+    let username: String?
+    let password: String?
+}
+
+struct TermsResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: [TermsData]
+}
+
+struct TermsData: Decodable {
+    let termsId: Int
+    let title: String
+    let content: String
+    let isRequired: Bool
+}
+
+struct EmailCheckResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: EmailResult
+}
+
+struct EmailResult: Decodable {
+    let duplicated: Bool
+}
+
+struct UsernameCheckResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: UsernameResult
+}
+
+struct UsernameResult: Decodable {
+    let duplicated: Bool
+}
+
+struct NameCheckResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: NameResult
+}
+
+struct NameResult: Decodable {
+    let duplicated: Bool
 }

@@ -17,7 +17,10 @@ enum QuestionRouter {
     case postFixed(fixedData: FixedData) // 고정 질문 선택
     
     case getSelected // 선택한 고정&랜덤 질문 조회
-    case getOfficialMine // 내가 발행한 공유질문 리스트 조회
+    case getOfficialMine(cursorId: Int?, size: Int?) // 내가 발행한 공유질문 리스트 조회 ver 발행 개수
+    case getOfficialMineByCategory(categoryId: Int, cursorId: Int?, size: Int?) // 내가 발행한 공유질문 리스트 조회 ver 카테고리 필터링
+    // 저장한 공유질문 리스트 조회
+    case getOfficialSavedMine(categoryId: Int?, cursorId: Int?, size: Int?)
     case getCategories // 질문 카테고리 리스트 조회
     case getCategoriesSearch(keyword: String) // 질문 카테고리 리스트 조회 (검색)
     case getBasic(
@@ -38,6 +41,9 @@ enum QuestionRouter {
     
     case deletePersonal(questionId: Int) // 작성하여 저장한 질문 삭제하기 (커스텀 질문 삭제)
     case deleteOfficial(questionId: Int) // 저장한 공유질문 삭제
+    case getPopular(selectedQuestionType: String) // 인기 질문 조회
+    case patchPersonal(questionId: Int, categoryIdList: [Int], question: String) // 작성 질문 재작성
+    
 }
 
 extension QuestionRouter: APITargetType {
@@ -58,8 +64,10 @@ extension QuestionRouter: APITargetType {
             
         case .getSelected:
             return "\(Self.questionPath)/selected"
-        case .getOfficialMine:
+        case .getOfficialMine, .getOfficialMineByCategory:
             return "\(Self.questionPath)/official/mine"
+        case .getOfficialSavedMine:
+            return "\(Self.questionPath)/official/saved/mine"
         case .getCategories:
             return "\(Self.questionPath)/categories"
         case .getCategoriesSearch:
@@ -73,17 +81,25 @@ extension QuestionRouter: APITargetType {
             return "\(Self.questionPath)/personal/\(questionId)"
         case .deleteOfficial(let questionId):
             return "\(Self.questionPath)/official/saved/\(questionId)"
+        case .getPopular:
+            return "\(Self.questionPath)/popular"
+        case .patchPersonal(let questionId, _, _):
+            return "\(Self.questionPath)/personal/\(questionId)"
+            
         }
+        
     }
     
     var method: Moya.Method {
         switch self {
         case .postRandom, .postPersonal, .postOfficial, .postOfficialSave, .postFixed:
             return .post
-        case .getSelected, .getOfficialMine, .getCategories, .getCategoriesSearch, .getBasic, .getBasicSearch:
+        case .getSelected, .getOfficialMine, .getCategories, .getCategoriesSearch, .getBasic, .getBasicSearch, .getPopular, .getOfficialMineByCategory, .getOfficialSavedMine:
             return .get
         case .deletePersonal, .deleteOfficial:
             return .delete
+        case .patchPersonal:
+            return .patch
         }
     }
     
@@ -102,8 +118,32 @@ extension QuestionRouter: APITargetType {
             
         case .getSelected:
             return .requestPlain
-        case .getOfficialMine:
-            return .requestPlain // TODO: 쿼리
+        case .getOfficialMine(let cursorId, let size):
+            var params: [String: Any] = [:]
+            if let cursorId = cursorId {
+                params["cursorId"] = cursorId
+            }
+            if let size = size {
+                params["size"] = size
+            }
+            return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
+        case .getOfficialMineByCategory(let categoryId, let cursorId, let size):
+            var params: [String: Any] = ["categoryId": categoryId]
+            if let cursorId = cursorId { params["cursorId"] = cursorId }
+            if let size = size { params["size"] = size }
+            return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
+        case .getOfficialSavedMine(let categoryId, let cursorId, let size):
+            var params: [String: Any] = ["selectedQuestionType": "OFFICIAL"]
+            if let categoryId = categoryId, categoryId != 0 {
+                params["categoryId"] = categoryId
+            }
+            if let cursorId = cursorId {
+                params["cursorId"] = cursorId
+            }
+            if let size = size {
+                params["size"] = size
+            }
+            return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
         case .getCategories:
             return .requestPlain
         case .getCategoriesSearch(let keyword):
@@ -161,6 +201,17 @@ extension QuestionRouter: APITargetType {
             return .requestPlain
         case .deleteOfficial:
             return .requestPlain
+        case .getPopular(let selectedQuestionType):
+            return .requestParameters(
+                parameters: ["selectedQuestionType": selectedQuestionType],
+                encoding: URLEncoding.queryString
+            )
+        case .patchPersonal(_, let categoryIdList, let question):
+            let params: [String: Any] = [
+                "categoryIdList": categoryIdList,
+                "question": question
+            ]
+            return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         }
     }
 }
