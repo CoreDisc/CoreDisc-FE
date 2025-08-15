@@ -35,3 +35,15 @@ struct ProfileResponse: Decodable {
     let message: String
     let result: String?
 }
+
+struct ImageResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: ImageResult?
+}
+
+struct ImageResult: Decodable {
+    let profileImgId: Int
+    let imageUrl: String
+}
