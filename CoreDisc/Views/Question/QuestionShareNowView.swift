@@ -31,6 +31,7 @@ struct QuestionShareNowView: View {
                     PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true))
                         .padding(.horizontal, 21)
                 }
+                Spacer().frame(height: 60)
             }
         }
         .navigationBarBackButtonHidden()

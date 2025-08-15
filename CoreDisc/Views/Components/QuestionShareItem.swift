@@ -6,8 +6,6 @@
 //
 import SwiftUI
 
-
-
 struct QuestionShareItem: View {
     var type: String
     var category: String
@@ -16,6 +14,7 @@ struct QuestionShareItem: View {
     var sharedCount: Int
     var index: Int
     var onDelete: (() -> Void)? = nil
+    @State var isChecked: Bool = false
     
     var body: some View {
         ZStack {
@@ -37,6 +36,19 @@ struct QuestionShareItem: View {
                         .padding(.leading, 10)
                         .padding(.top, 11)
                     
+                    Button(action: {
+                        isChecked.toggle()
+                    }) {
+                        Image(isChecked ? .iconChecked : .iconCheck)
+                            .resizable()
+                            .renderingMode(isChecked ? .template : .original)
+                            .foregroundColor(isChecked ? .key : nil)          
+                            .frame(width: 18, height: 18)
+                    }
+                    .padding(.top, 11)
+                    
+                        
+                    
                     Spacer()
                     if type == "share" {
                         Button(action: {}) {
@@ -53,13 +65,6 @@ struct QuestionShareItem: View {
                             .padding(.trailing, 17)
                             .padding(.top, 11)
                     } else {
-                        Button(action: {}) {
-                            Image(.iconHeart)
-                                .resizable()
-                                .frame(width: 18, height: 18)
-                        }
-                        .padding(.top, 11)
-                        
                         Button(action: {
                             onDelete?()
                         }) { // TODO: action
@@ -109,7 +114,7 @@ struct QuestionShareItem: View {
         
         let inputFormatter = DateFormatter()
         inputFormatter.locale = Locale(identifier: "en_US_POSIX")
-        inputFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS" 
+        inputFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
         
         if let date = inputFormatter.date(from: trimmed) {
             let outputFormatter = DateFormatter()

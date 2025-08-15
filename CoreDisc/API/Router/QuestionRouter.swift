@@ -17,7 +17,10 @@ enum QuestionRouter {
     case postFixed(fixedData: FixedData) // 고정 질문 선택
     
     case getSelected // 선택한 고정&랜덤 질문 조회
-    case getOfficialMine(cursorId: Int?, size: Int?) // 내가 발행한 공유질문 리스트 조회
+    case getOfficialMine(cursorId: Int?, size: Int?) // 내가 발행한 공유질문 리스트 조회 ver 발행 개수
+    case getOfficialMineByCategory(categoryId: Int, cursorId: Int?, size: Int?) // 내가 발행한 공유질문 리스트 조회 ver 카테고리 필터링
+    // 저장한 공유질문 리스트 조회
+    case getOfficialSavedMine(categoryId: Int?, cursorId: Int?, size: Int?)
     case getCategories // 질문 카테고리 리스트 조회
     case getCategoriesSearch(keyword: String) // 질문 카테고리 리스트 조회 (검색)
     case getBasic(
@@ -61,8 +64,10 @@ extension QuestionRouter: APITargetType {
             
         case .getSelected:
             return "\(Self.questionPath)/selected"
-        case .getOfficialMine:
+        case .getOfficialMine, .getOfficialMineByCategory:
             return "\(Self.questionPath)/official/mine"
+        case .getOfficialSavedMine:
+            return "\(Self.questionPath)/official/saved/mine"
         case .getCategories:
             return "\(Self.questionPath)/categories"
         case .getCategoriesSearch:
@@ -80,14 +85,16 @@ extension QuestionRouter: APITargetType {
             return "\(Self.questionPath)/popular"
         case .patchPersonal(let questionId, _, _):
             return "\(Self.questionPath)/personal/\(questionId)"
+            
         }
+        
     }
     
     var method: Moya.Method {
         switch self {
         case .postRandom, .postPersonal, .postOfficial, .postOfficialSave, .postFixed:
             return .post
-        case .getSelected, .getOfficialMine, .getCategories, .getCategoriesSearch, .getBasic, .getBasicSearch, .getPopular:
+        case .getSelected, .getOfficialMine, .getCategories, .getCategoriesSearch, .getBasic, .getBasicSearch, .getPopular, .getOfficialMineByCategory, .getOfficialSavedMine:
             return .get
         case .deletePersonal, .deleteOfficial:
             return .delete
@@ -113,6 +120,23 @@ extension QuestionRouter: APITargetType {
             return .requestPlain
         case .getOfficialMine(let cursorId, let size):
             var params: [String: Any] = [:]
+            if let cursorId = cursorId {
+                params["cursorId"] = cursorId
+            }
+            if let size = size {
+                params["size"] = size
+            }
+            return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
+        case .getOfficialMineByCategory(let categoryId, let cursorId, let size):
+            var params: [String: Any] = ["categoryId": categoryId]
+            if let cursorId = cursorId { params["cursorId"] = cursorId }
+            if let size = size { params["size"] = size }
+            return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
+        case .getOfficialSavedMine(let categoryId, let cursorId, let size):
+            var params: [String: Any] = ["selectedQuestionType": "OFFICIAL"]
+            if let categoryId = categoryId, categoryId != 0 {
+                params["categoryId"] = categoryId
+            }
             if let cursorId = cursorId {
                 params["cursorId"] = cursorId
             }

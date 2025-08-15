@@ -9,15 +9,18 @@ import SwiftUI
 
 struct CategoryButton: View {
     let type: CategoryType
-    
-    @State private var isSelected: Bool = false
-    
+    @Binding var selectedCategoryId: Int?
+    let onSelect: (Int) -> Void
+
     var body: some View {
+        let isSelected = selectedCategoryId == type.id || (type.style == .all && selectedCategoryId == 0)
+
         switch type.style {
         case .all:
             Button(action: {
-                isSelected.toggle()
-            }) { //TODO: Action 추가
+                selectedCategoryId = 0
+                onSelect(0)
+            }) {
                 ZStack {
                     EllipticalGradient(
                         stops: [
@@ -35,58 +38,36 @@ struct CategoryButton: View {
                             .stroke(.white, lineWidth: isSelected ? 3 : 0)
                     )
                     .padding(3)
-                    
+
                     Text("ALL")
                         .textStyle(.Q_Sub)
                         .foregroundStyle(.white)
                 }
-                
             }
+
         default:
             Button(action: {
-                isSelected.toggle() // TODO: action 추가
+                selectedCategoryId = type.id
+                onSelect(type.id)
             }) {
-                Text(type.title)
+                Text("#\(type.title)")
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.gray100)
                     .background(
                         Group {
-                            if type.title == "라이프스타일" {
-                                RoundedRectangle(cornerRadius: 30)
-                                    .fill(
-type.color
-                                    )
-                                    .frame(width: 90, height: 28)
-                            } else {
-                                RoundedRectangle(cornerRadius: 30)
-                                    .fill(
-                                        type.color
-                                    )
-                                    .frame(width: 75, height: 28)
-                            }
+                            RoundedRectangle(cornerRadius: 30)
+                                .fill(type.color)
+                                .frame(width: type == .lifeStyle ? 90 : 75, height: 28)
                         }
-                        
                     )
                     .overlay(
-                        Group{
-                            if type.title == "라이프스타일" {
-                                RoundedRectangle(cornerRadius: 30)
-                                    .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
-                                    .frame(width: 90, height: 28)
-                            } else {
-                                RoundedRectangle(cornerRadius: 30)
-                                    .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
-                                    .frame(width: 75, height: 28)
-                            }
-                        }
+                        RoundedRectangle(cornerRadius: 30)
+                            .stroke(Color.white, lineWidth: isSelected ? 3 : 0)
+                            .frame(width: type == .lifeStyle ? 90 : 75, height: 28)
                     )
                     .padding(3)
             }
             .frame(width: type == .lifeStyle ? 90 : 75)
         }
     }
-}
-
-#Preview {
-    CategoryButton(type: .hobby)
 }

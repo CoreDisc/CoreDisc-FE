@@ -10,7 +10,6 @@ import SwiftUI
 
 enum CategoryType: CaseIterable {
     case all
-    case favorite
     case taste
     case lifeStyle
     case relationship
@@ -23,7 +22,7 @@ enum CategoryType: CaseIterable {
     case other
     
     static var allCases: [CategoryType] {
-        return [.all, .favorite, .taste, .lifeStyle, .relationship, .selfImprovement, .health, .culture, .feeling, .hobby, .dream, .other]
+        return [.all, .taste, .lifeStyle, .relationship, .selfImprovement, .health, .culture, .feeling, .hobby, .dream, .other]
     }
     
     var id: Int {
@@ -38,7 +37,7 @@ enum CategoryType: CaseIterable {
         case .hobby: return 8
         case .dream: return 9
         case .other: return 10
-        case .all, .favorite: return 0
+        case .all: return 0
         }
     }
     
@@ -61,7 +60,6 @@ enum CategoryType: CaseIterable {
     var title: String {
         switch self {
         case .all: "All"
-        case .favorite: "즐겨찾기"
         case .taste: "취향"
         case .lifeStyle: "라이프스타일"
         case .relationship: "인간관계"
@@ -134,11 +132,6 @@ enum CategoryType: CaseIterable {
             colors: [.gray700, .gray700],
             startPoint: .leading,
             endPoint: .trailing
-        )
-        case .favorite: LinearGradient(
-            colors: [.key, .gray700],
-            startPoint: UnitPoint(x: 0, y: -0.3),
-            endPoint: UnitPoint(x: 0, y: 1.5)
         )
         case .all: LinearGradient(
             colors: [.clear, .clear],
