@@ -93,36 +93,39 @@ extension AppDelegate: MessagingDelegate {
         // 콘솔에 FCM 토큰 출력
         print("FCM 등록 토큰 수신: \(fcmToken)")
         
-        // 여기서 서버로 FCM 토큰을 전송하는 함수 호출
-        sendDeviceTokenToServer(fcmToken)
+//        // 여기서 서버로 FCM 토큰을 전송하는 함수 호출
+//        sendDeviceTokenToServer(fcmToken)
+        
+        // 토큰 저장
+        KeychainManager.standard.saveString(fcmToken, for: "FCMToken")
     }
     
-    /// 서버에 FCM 토큰 전송 (예: 사용자 로그인 후 서버에 등록)
-    private func sendDeviceTokenToServer(_ token: String) {
-        let provider = APIManager.shared.createProvider(for: NotificationRouter.self)
-        
-        provider.request(.postDeviceToken(token: token)) { result in
-            switch result {
-            case .success(let response):
-                do {
-                    _ = try JSONDecoder().decode(DeviceTokenResponse.self, from: response.data)
-                    print("디바이스 토큰 전송 성공")
-                } catch {
-                    print("PostDeviceToken 디코더 오류: \(error)")
-                    DispatchQueue.main.async {
-                        ToastManager.shared.show("FCM 토큰을 전송하지 못했습니다.")
-                    }
-                }
-            case .failure(let error):
-                print("PostDeviceToken API 오류: \(error)")
-                DispatchQueue.main.async {
-                    ToastManager.shared.show("FCM 토큰을 전송하지 못했습니다.")
-                }
-            }
-        }
-        
-        print("서버로 디바이스 토큰 전송 중: \(token)")
-    }
+//    /// 서버에 FCM 토큰 전송 (예: 사용자 로그인 후 서버에 등록)
+//    private func sendDeviceTokenToServer(_ token: String) {
+//        let provider = APIManager.shared.createProvider(for: NotificationRouter.self)
+//        
+//        provider.request(.postDeviceToken(token: token)) { result in
+//            switch result {
+//            case .success(let response):
+//                do {
+//                    _ = try JSONDecoder().decode(DeviceTokenResponse.self, from: response.data)
+//                    print("디바이스 토큰 전송 성공")
+//                } catch {
+//                    print("PostDeviceToken 디코더 오류: \(error)")
+//                    DispatchQueue.main.async {
+//                        ToastManager.shared.show("FCM 토큰을 전송하지 못했습니다.")
+//                    }
+//                }
+//            case .failure(let error):
+//                print("PostDeviceToken API 오류: \(error)")
+//                DispatchQueue.main.async {
+//                    ToastManager.shared.show("FCM 토큰을 전송하지 못했습니다.")
+//                }
+//            }
+//        }
+//        
+//        print("서버로 디바이스 토큰 전송 중: \(token)")
+//    }
 }
 
 // MARK: - NotificationCenter 알림 이름 정의

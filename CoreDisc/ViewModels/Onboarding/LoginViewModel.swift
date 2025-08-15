@@ -15,6 +15,31 @@ class LoginViewModel: ObservableObject {
     @Published var isError = false
     
     private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
+    let provider = APIManager.shared.createProvider(for: NotificationRouter.self)
+    
+    func fetchFcmToken() {
+        if let fcm = KeychainManager.standard.loadString(for: "FCMToken") {
+            provider.request(.postDeviceToken(token: fcm)) { result in
+                switch result {
+                case .success(let response):
+                    do {
+                        _ = try JSONDecoder().decode(DeviceTokenResponse.self, from: response.data)
+                        print("디바이스 토큰 전송 성공")
+                    } catch {
+                        print("PostDeviceToken 디코더 오류: \(error)")
+                        DispatchQueue.main.async {
+                            ToastManager.shared.show("FCM 토큰을 전송하지 못했습니다.")
+                        }
+                    }
+                case .failure(let error):
+                    print("PostDeviceToken API 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("FCM 토큰을 전송하지 못했습니다.")
+                    }
+                }
+            }
+        }
+    }
     
     func login() {
         authProvider.request(.postLogin(loginData: LoginData(
@@ -39,6 +64,7 @@ class LoginViewModel: ObservableObject {
                             self.isLogin = true
                             self.isError = false
                         }
+                        self.fetchFcmToken()
                     } else{
                         print("로그인 실패 : \(decodedResponse.message)")
                         self.isError = true
