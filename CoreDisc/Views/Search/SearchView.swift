@@ -93,6 +93,7 @@ struct RecentItem: View {
             Text(text)
                 .textStyle(.Q_Main)
                 .foregroundStyle(.white)
+                .padding(.leading, 30)
 
             Spacer()
 
@@ -103,8 +104,10 @@ struct RecentItem: View {
                 Button(action: onDelete) {
                     Image(.iconClose)
                         .resizable()
+                        .padding(.trailing, 36)
                         .frame(width: 24, height: 24)
                         .foregroundStyle(.white)
+                        
                 }
             }
         }
