@@ -10,35 +10,35 @@ import SwiftUI
 // 카테고리 선택 컴포넌트
 struct CategorySelectButton: View {
     let type: CategoryType
-        var width: CGFloat
-        @Binding var selectedCategory: String?
+    var width: CGFloat
+    @Binding var selectedCategory: CategoryType?
 
-        var isSelected: Bool {
-            selectedCategory == type.title
-        }
+    var isSelected: Bool {
+        selectedCategory == type
+    }
 
-        var body: some View {
-            Button(action: {
-                selectedCategory = isSelected ? nil : type.title
-            }) {
-                ZStack(alignment: .leading) {
-                    Rectangle()
-                        .fill(isSelected ? AnyShapeStyle(type.color) : AnyShapeStyle(Color.black))
-                    Text(type.title)
-                        .padding(.leading, 19)
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(isSelected ? .black : .white)
-                }
-                .frame(width: width, height: 60)
+    var body: some View {
+        Button(action: {
+            selectedCategory = isSelected ? nil : type
+        }) {
+            ZStack(alignment: .leading) {
+                Rectangle()
+                    .fill(isSelected ? AnyShapeStyle(type.color) : AnyShapeStyle(Color.black))
+                Text(type.title)
+                    .padding(.leading, 19)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(isSelected ? .black : .white)
             }
+            .frame(width: width, height: 60)
         }
+    }
 }
 
 //카테고리 선택 열
 struct ResponsiveCategoryRow: View {
     var left: (CategoryType, CGFloat)
     var right: (CategoryType, CGFloat)
-    @Binding var selectedCategory: String?
+    @Binding var selectedCategory: CategoryType?
 
     var body: some View {
         GeometryReader { geo in
@@ -54,4 +54,3 @@ struct ResponsiveCategoryRow: View {
         .frame(height: 60)
     }
 }
-
