@@ -8,12 +8,8 @@
 import SwiftUI
 
 struct NotificationSettingView: View {
-    @StateObject var notificationSettingViewModel: NotificationSettingViewModel = .init()
+    @StateObject var viewModel = NotificationSettingViewModel()
     @Environment(\.dismiss) var dismiss
-    
-    // 토글 상태
-    @State private var firstToggleOn: Bool = false
-    @State private var secondToggleOn: Bool = false
     
     // 시간
     @State var showSheet: Bool = false
@@ -44,13 +40,16 @@ struct NotificationSettingView: View {
             }
             
             if showSheet {
-                TimePickerSheet(showSheet: $showSheet, timeType: notificationSettingViewModel.timeType)
-                    .environmentObject(notificationSettingViewModel)
+                TimePickerSheet(showSheet: $showSheet, timeType: viewModel.timeType)
+                    .environmentObject(viewModel)
                     .transition(.move(edge: .bottom))
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showSheet)
         .toolbarVisibility(.hidden, for: .navigationBar)
+        .task {
+            viewModel.fetchReminderState()
+        }
     }
     
     // 상단 메뉴
@@ -95,11 +94,11 @@ struct NotificationSettingView: View {
             
             Spacer().frame(height: 8)
             
-            NotificationToggleBox(title: "첫 번째 재알림", isOn: $firstToggleOn, isActive: .constant(true))
+            NotificationToggleBox(viewModel: viewModel, title: "첫 번째 재알림", isOn: $viewModel.firstOn, isActive: true)
             
             Spacer().frame(height: 11.6)
             
-            NotificationToggleBox(title: "두 번째 재알림", isOn: $secondToggleOn, isActive: $firstToggleOn)
+            NotificationToggleBox(viewModel: viewModel, title: "두 번째 재알림", isOn: $viewModel.secondOn, isActive: viewModel.isSecondToggleActive)
         }
         .padding(.horizontal, 38)
     }
@@ -118,17 +117,19 @@ struct NotificationSettingView: View {
                 title: "첫 번째 재알림 시간",
                 timeType: .first,
                 showSheet: $showSheet,
+                isActive: viewModel.isFirstTimeActive
             )
-            .environmentObject(notificationSettingViewModel)
+            .environmentObject(viewModel)
             
             Spacer().frame(height: 11.6)
             
             NotificationTimeBox(
                 title: "두 번째 재알림 시간",
                 timeType: .second,
-                showSheet: $showSheet
+                showSheet: $showSheet,
+                isActive: viewModel.isSecondTimeActive
             )
-            .environmentObject(notificationSettingViewModel)
+            .environmentObject(viewModel)
         }
         .padding(.horizontal, 38)
     }
@@ -137,9 +138,10 @@ struct NotificationSettingView: View {
 // MARK: - components
 // 알림 토글 박스
 struct NotificationToggleBox: View {
+    @ObservedObject var viewModel: NotificationSettingViewModel
     var title: String
     @Binding var isOn: Bool
-    @Binding var isActive: Bool
+    var isActive: Bool
     
     var body: some View {
         ZStack {
@@ -158,6 +160,34 @@ struct NotificationToggleBox: View {
                 Button(action: {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         isOn.toggle()
+                        
+                        // 첫번쨰 off면 두번째도 자동 off
+                        if title == "첫 번째 재알림", isOn == false {
+                            viewModel.secondOn = false
+                        }
+                        
+                        let data: NotificationData
+                        if title == "첫 번째 재알림" {
+                            data = NotificationData(
+                                dailyReminderEnabled: isOn,
+                                dailyReminderHour: viewModel.data.dailyReminderHour,
+                                dailyReminderMinute: viewModel.data.dailyReminderMinute,
+                                unansweredReminderEnabled: viewModel.data.unansweredReminderEnabled,
+                                unansweredReminderHour: viewModel.data.unansweredReminderHour,
+                                unansweredReminderMinute: viewModel.data.unansweredReminderMinute
+                            )
+                        } else {
+                            data = NotificationData(
+                                dailyReminderEnabled: viewModel.data.dailyReminderEnabled,
+                                dailyReminderHour: viewModel.data.dailyReminderHour,
+                                dailyReminderMinute: viewModel.data.dailyReminderMinute,
+                                unansweredReminderEnabled: isOn,
+                                unansweredReminderHour: viewModel.data.unansweredReminderHour,
+                                unansweredReminderMinute: viewModel.data.unansweredReminderMinute
+                            )
+                        }
+                        viewModel.fetchSetReminder(notificationData: data)
+
                     }
                 }) {
                     ZStack(alignment: isOn ? .trailing : .leading) {
@@ -186,11 +216,12 @@ struct NotificationToggleBox: View {
 
 // 알림 시간 박스
 struct NotificationTimeBox: View {
-    @EnvironmentObject var notificationViewModel: NotificationSettingViewModel
+    @EnvironmentObject var viewModel: NotificationSettingViewModel
     
     var title: String
     var timeType: TimeType
     @Binding var showSheet: Bool
+    var isActive: Bool
     
     var body: some View {
         ZStack {
@@ -213,20 +244,21 @@ struct NotificationTimeBox: View {
                         .frame(width: 60, height: 24)
                     
                     Button(action: {
-                        notificationViewModel.timeType = timeType
+                        viewModel.timeType = timeType
                         showSheet = true
                     }) {
                         switch timeType {
                         case .first:
-                            Text("\(String(format: "%02d", notificationViewModel.firstHour)) : \(String(format: "%02d", notificationViewModel.firstMinute))")
+                            Text("\(String(format: "%02d", viewModel.data.dailyReminderHour)) : \(String(format: "%02d", viewModel.data.dailyReminderMinute))")
                                 .textStyle(.Q_Main)
-                                .foregroundStyle(.black000)
+                                .foregroundStyle(isActive ? .black000 : .gray600)
                         case .second:
-                            Text("\(String(format: "%02d", notificationViewModel.secondHour)) : \(String(format: "%02d", notificationViewModel.secondMinute))")
+                            Text("\(String(format: "%02d", viewModel.data.unansweredReminderHour)) : \(String(format: "%02d", viewModel.data.unansweredReminderMinute))")
                                 .textStyle(.Q_Main)
-                                .foregroundStyle(.black000)
+                                .foregroundStyle(isActive ? .black000 : .gray600)
                         }
                     }
+                    .disabled(!isActive)
                 }
             }
             .padding(.horizontal, 19)

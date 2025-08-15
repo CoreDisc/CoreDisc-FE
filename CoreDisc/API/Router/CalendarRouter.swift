@@ -11,6 +11,7 @@ import Moya
 // 캘린더 API 연결
 enum CalendarRouter {
     case getCalendar(year: Int, month: Int) // 월간 답변 기록 캘린더 조회
+    case getContinuousDays
 }
 
 extension CalendarRouter: APITargetType {
@@ -18,12 +19,14 @@ extension CalendarRouter: APITargetType {
         switch self {
         case .getCalendar:
             return "/api/reports/calendar"
+        case .getContinuousDays:
+            return "/api/reports/calendar/continuous"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .getCalendar:
+        case .getCalendar, .getContinuousDays:
             return .get
         }
     }
@@ -35,6 +38,10 @@ extension CalendarRouter: APITargetType {
                 "year": year,
                 "month": month
             ], encoding: URLEncoding.queryString)
+        case .getContinuousDays:
+            return .requestPlain                                
         }
     }
+    
 }
+

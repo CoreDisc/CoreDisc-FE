@@ -10,7 +10,6 @@ import SwiftUI
 
 enum CategoryType: CaseIterable {
     case all
-    case favorite
     case taste
     case lifeStyle
     case relationship
@@ -23,13 +22,44 @@ enum CategoryType: CaseIterable {
     case other
     
     static var allCases: [CategoryType] {
-        return [.all, .favorite, .taste, .lifeStyle, .relationship, .selfImprovement, .health, .culture, .feeling, .hobby, .dream, .other]
+        return [.all, .taste, .lifeStyle, .relationship, .selfImprovement, .health, .culture, .feeling, .hobby, .dream, .other]
     }
+    
+    var id: Int {
+        switch self {
+        case .taste: return 1
+        case .lifeStyle: return 2
+        case .relationship: return 3
+        case .selfImprovement: return 4
+        case .health: return 5
+        case .culture: return 6
+        case .feeling: return 7
+        case .hobby: return 8
+        case .dream: return 9
+        case .other: return 10
+        case .all: return 0
+        }
+    }
+    
+    static func fromId(_ id: Int) -> CategoryType? {
+            switch id {
+            case 1: return .taste
+            case 2: return .lifeStyle
+            case 3: return .relationship
+            case 4: return .selfImprovement
+            case 5: return .health
+            case 6: return .culture
+            case 7: return .feeling
+            case 8: return .hobby
+            case 9: return .dream
+            case 10: return .other
+            default: return nil
+            }
+        }
     
     var title: String {
         switch self {
         case .all: "All"
-        case .favorite: "즐겨찾기"
         case .taste: "취향"
         case .lifeStyle: "라이프스타일"
         case .relationship: "인간관계"
@@ -102,11 +132,6 @@ enum CategoryType: CaseIterable {
             colors: [.gray700, .gray700],
             startPoint: .leading,
             endPoint: .trailing
-        )
-        case .favorite: LinearGradient(
-            colors: [.key, .gray700],
-            startPoint: UnitPoint(x: 0, y: -0.3),
-            endPoint: UnitPoint(x: 0, y: 1.5)
         )
         case .all: LinearGradient(
             colors: [.clear, .clear],

@@ -12,32 +12,48 @@ import Moya
 enum NotificationRouter {
     case patchNotificationRead(notificationId: Int) // 개별 알림 읽음 처리
     case patchNotificationReadAll // 전체 알림 읽음 처리
+    
+    case getReminder // 리마인더 알림 설정 조회
+    case patchReminder(notificationData: NotificationData) // 리마인더 알림 설정 변경
+    
     case getNotification(cursorId: Int?, size: Int?) // 알림 목록 조회
     case getNotificationUnread // 안읽은 알림 존재 여부
+    
+    // device
+    case postDeviceToken(token: String) // 디바이스 토큰 설정
 }
 
 extension NotificationRouter: APITargetType {
-    private static let notificationPath = "/api/notifications"
+    private static let notificationPath = "/api/notification"
     
     var path: String {
         switch self {
         case .patchNotificationRead(let notificationId):
-            return "\(Self.notificationPath)/\(notificationId)/read"
+            return "\(Self.notificationPath)s/\(notificationId)/read"
         case .patchNotificationReadAll:
-            return "\(Self.notificationPath)/read-all"
+            return "\(Self.notificationPath)s/read-all"
+            
+        case .getReminder, .patchReminder:
+            return "\(Self.notificationPath)-settings/reminder"
+            
         case .getNotification:
-            return "\(Self.notificationPath)"
+            return "\(Self.notificationPath)s"
         case .getNotificationUnread:
-            return "\(Self.notificationPath)/unread"
+            return "\(Self.notificationPath)s/unread"
+            
+        case .postDeviceToken:
+            return "/api/device-token"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .patchNotificationRead, .patchNotificationReadAll:
+        case .patchNotificationRead, .patchReminder, .patchNotificationReadAll:
                 .patch
-        case .getNotification, .getNotificationUnread:
+        case .getNotification, .getReminder, .getNotificationUnread:
                 .get
+        case .postDeviceToken:
+                .post
         }
     }
     
@@ -47,6 +63,12 @@ extension NotificationRouter: APITargetType {
             return .requestPlain
         case .patchNotificationReadAll:
             return .requestPlain
+            
+        case .getReminder:
+            return .requestPlain
+        case .patchReminder(let notificationData):
+            return .requestJSONEncodable(notificationData)
+            
         case .getNotification(let cursorId, let size):
             var parameters: [String: Any] = [:]
             if let cursorId = cursorId {
@@ -58,6 +80,12 @@ extension NotificationRouter: APITargetType {
             return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
         case .getNotificationUnread:
             return .requestPlain
+            
+        case .postDeviceToken(let token):
+            return .requestParameters(
+                parameters: ["token": token, "deviceType": "iOS"],
+                encoding: JSONEncoding.default
+            )
         }
     }
 }
