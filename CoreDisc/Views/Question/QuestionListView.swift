@@ -8,26 +8,43 @@
 import SwiftUI
 
 struct QuestionListView: View {
+    @StateObject private var viewModel = QuestionListViewModel()
+    @StateObject private var selectViewModel = QuestionBasicViewModel()
+    @ObservedObject var mainViewModel: QuestionMainViewModel
+    
     @Environment(\.dismiss) var dismiss
     @State var isSaveMode: Bool
-    let items = Array(0..<17)
+    @State private var selectedCategoryId: Int? = 0 // 0 = All
+    @State private var categoryUUID = UUID()
     
+    let selectedQuestionType: String
+
+    @State var showSelectModal: Bool = false
+    
+    @State private var goToMain = false
+    
+    // 질문 선택/저장 용도
+    let order: Int
+    @State private var selectedQuestionId: Int? = nil
+
     var body: some View {
         ZStack {
             Image(.imgShortBackground)
                 .resizable()
                 .ignoresSafeArea()
-            
+
             VStack(spacing: 28) {
                 TopGroup
                 CategoryGroup
                 QuestionListGroup
+                Spacer().frame(height: 90)
             }
-            
+
             VStack {
                 Spacer()
                 Button(action:{
                     isSaveMode.toggle()
+                    fetchQuestions(reset: true)
                 }) {
                     PrimaryActionButton(
                         title: isSaveMode ? "공유한 질문 보기" : "저장한 공유질문 보기",
@@ -35,17 +52,36 @@ struct QuestionListView: View {
                     )
                 }
                 .padding(.horizontal, 21)
+                Spacer().frame(height: 60)
+            }
+            
+            // 선택 확인 모달
+            if showSelectModal {
+                QuestionSelectModalView(
+                    isMonth: selectedQuestionType,
+                    selectedQuestionId: $selectedQuestionId,
+                    order: order,
+                    selectedQuestionType: .OFFICIAL,
+                    viewModel: selectViewModel,
+                    mainViewModel: mainViewModel,
+                    showSelectModal: $showSelectModal,
+                    goToMain: $goToMain
+                )
             }
         }
+        .task {
+            fetchQuestions(reset: true)
+        }
         .navigationBarBackButtonHidden()
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
     }
-    
+
     private var TopGroup: some View {
         VStack(alignment: .leading, spacing: 7) {
             Button(action: { dismiss() }) {
                 Image(.iconBack)
             }
-            
+
             Text(isSaveMode ? "Saved Questions" : "Shared Questions")
                 .textStyle(.Title_Text_Eng)
                 .foregroundStyle(.white)
@@ -53,18 +89,19 @@ struct QuestionListView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 16)
     }
-    
-    //카테고리
+
+    // 카테고리
     private var CategoryGroup: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 11) {
-                if isSaveMode {
-                    ForEach(CategoryType.allCases, id: \.self) { category in
-                        CategoryButton(type: category)
-                    }
-                } else {
-                    ForEach(CategoryType.allCases.filter { $0 != .favorite }, id: \.self) { category in
-                        CategoryButton(type: category)
+                ForEach(CategoryType.allCases, id: \.self) { category in
+                    CategoryButton(
+                        type: category,
+                        selectedCategoryId: $selectedCategoryId
+                    ) { id in
+                        categoryUUID = UUID()
+                        print("✅ 선택한 categoryId: \(id)") // 로그로 확인
+                        fetchQuestions(reset: true)
                     }
                 }
             }
@@ -72,29 +109,67 @@ struct QuestionListView: View {
         }
         .scrollIndicators(.hidden)
     }
-    
-    //질문 목록
+
+    // 질문 목록
     private var QuestionListGroup: some View {
         ScrollView {
             LazyVStack {
-                ForEach(items.indices, id: \.self) { index in
-                    QuestionShareItem(
-                        type: isSaveMode ? "save" : "share",
-                        category: "감정,마음",
-                        content: "맛있는 음식을 먹을 때 어떤 기분이 드나요? 표현해본다면요? 맛있는 음식을 먹을 때 어떤",
-                        date: "26년 7월 4일",
-                        index: index + 1
-                    )
-                    .padding(.horizontal, 31)
-                    Spacer().frame(height: 20)
-                    
+                if let list = viewModel.questionListMap[categoryUUID], !list.isEmpty {
+                    ForEach(list.indices, id: \.self) { index in
+                        let item = list[index]
+                        QuestionShareItem(
+                            type: isSaveMode ? "save" : "share",
+                            category: item.categories.map { $0.categoryName }.joined(separator: ", "),
+                            content: item.question,
+                            date: item.createdAt,
+                            sharedCount: item.sharedCount,
+                            index: index + 1,
+                            onTap: {
+                                showSelectModal = true
+                                selectedQuestionId = item.id
+                            },
+                            isSelected: item.isSelected,
+                            selectViewModel: selectViewModel
+                        )
+                        .padding(.horizontal, 31)
+                        .onAppear {
+                            if index == list.count - 1 {
+                                fetchQuestions(cursorId: item.id)
+                            }
+                        }
+                        Spacer().frame(height: 20)
+                    }
+                } else {
+                    Text("질문이 없습니다.")
+                        .foregroundColor(.white)
+                        .padding(.top, 50)
                 }
             }
-            
         }
     }
-}
 
-#Preview {
-    QuestionListView(isSaveMode: false)
+    private func fetchQuestions(reset: Bool = false, cursorId: Int? = nil) {
+        if reset {
+            viewModel.questionListMap[categoryUUID] = []
+            viewModel.hasNextPageMap[categoryUUID] = true
+        }
+        if isSaveMode {
+            // 저장한 공유질문 API 호출
+            viewModel.fetchOfficialSavedMine(
+                categoryUUID: categoryUUID,
+                categoryId: selectedCategoryId,
+                cursorId: cursorId,
+                size: 10
+            )
+        } else {
+            // 내가 발행한 공유질문 API 호출
+            viewModel.fetchOfficialMine(
+                categoryUUID: categoryUUID,
+                categoryId: selectedCategoryId,
+                cursorId: cursorId,
+                size: 10
+            )
+        }
+    }
+
 }

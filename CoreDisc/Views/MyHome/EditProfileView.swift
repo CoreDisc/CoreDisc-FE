@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 import Kingfisher
 
 struct EditProfileView: View {
@@ -15,6 +16,7 @@ struct EditProfileView: View {
     @FocusState private var isFocused: Bool
     
     @State private var showEditButton: Bool = false
+
     
     var body: some View {
         ZStack {
@@ -120,7 +122,7 @@ struct EditProfileView: View {
             
             if showEditButton {
                 VStack(spacing: 12) {
-                    Button(action: {}) { // TODO: 기본 이미지 설정
+                    Button(action: {viewModel.fetchDefaultImage()}) { 
                         Text("기본 이미지")
                             .textStyle(.Q_pick)
                             .foregroundStyle(.black000)
@@ -132,7 +134,7 @@ struct EditProfileView: View {
                     }
                     .buttonStyle(.plain)
                     
-                    Button(action: {}) { // TODO: 사진 불러오기
+                    PhotosPicker(selection: $viewModel.selectedItems, maxSelectionCount: 1, matching: .images) {
                         Text("사진 불러오기")
                             .textStyle(.Q_pick)
                             .foregroundStyle(.black000)
@@ -143,6 +145,23 @@ struct EditProfileView: View {
                             )
                     }
                     .buttonStyle(.plain)
+                    .onChange(of: viewModel.selectedItems) {
+                        guard let item = viewModel.selectedItems.first else { return }
+
+                        Task {
+                            if let data = try? await item.loadTransferable(type: Data.self),
+                               let uiImage = UIImage(data: data) {
+
+                                let paddedImage = uiImage.resizedWithPadding(targetSize: 124)
+
+                                viewModel.profileUIImage = paddedImage
+
+                                if let resizedData = paddedImage.jpegData(compressionQuality: 0.9) {
+                                    viewModel.fetchProfileImage(imageData: resizedData)
+                                }
+                            }
+                        }
+                    }
                 }
                 .offset(x: 94)
             }
@@ -159,6 +178,7 @@ struct EditProfileView: View {
                 viewModel: viewModel
             )
                 .focused($isFocused) // 키보드 내리기
+                .textInputAutocapitalization(.never)
                 .onChange(of: viewModel.nickname) { oldValue, newValue in
                       if viewModel.nameCheckSuccess {
                           viewModel.nameCheckSuccess = false
@@ -172,6 +192,7 @@ struct EditProfileView: View {
                 viewModel: viewModel
             )
                 .focused($isFocused) // 키보드 내리기
+                .textInputAutocapitalization(.never)
                 .onChange(of: viewModel.username) { oldValue, newValue in
                       if viewModel.idCheckSuccess {
                           viewModel.idCheckSuccess = false

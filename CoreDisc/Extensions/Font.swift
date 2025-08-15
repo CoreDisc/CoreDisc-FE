@@ -206,6 +206,12 @@ extension TextStyle {
         lineSpacing: 4
     )
     
+    static var Calendar_text = TextStyle(
+        font: .pretendard(type: .medium, size: 20),
+        kerning: -1,
+        lineSpacing: 4
+    )
+    
     
     // regular 400
     static var Sub_Text_Ko = TextStyle(
@@ -239,6 +245,12 @@ extension TextStyle {
     )
     
     // light 300
+    static var Small_Text_12 = TextStyle(
+        font: .pretendard(type: .light, size: 12),
+        kerning: 0,
+        lineSpacing: 4
+    )
+    
     static var Small_Text_8 = TextStyle(
         font: .pretendard(type: .light, size: 8),
         kerning: 0,
@@ -299,9 +311,9 @@ extension TextStyle {
     )
     
     static var Comment_ID = TextStyle(
-        font: .primeform(type: .semiBold, size: 8),
+        font: .primeform(type: .semiBold, size: 10),
         kerning: -0.7,
-        lineSpacing: 2
+        lineSpacing: 0
     )
     
     // medium 500

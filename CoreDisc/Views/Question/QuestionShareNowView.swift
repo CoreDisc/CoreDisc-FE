@@ -8,10 +8,22 @@
 import SwiftUI
 
 struct QuestionShareNowView: View {
-    let items = Array(0..<17)
+    @StateObject private var viewModel = SharedQuestionViewModel()
+    @StateObject private var selectViewModel = QuestionBasicViewModel()
+    
     private let spacingAngle: Double = 19
     @State private var hiddenCount = 0
     @Environment(\.dismiss) var dismiss
+    @State private var goToMain = false
+    
+    @ObservedObject var mainViewModel: QuestionMainViewModel
+    let selectedQuestionType: String
+    let order: Int
+    
+    @State var showSelectModal: Bool = false
+    
+    // 질문 선택/저장 용도
+    @State private var selectedQuestionId: Int? = nil
     
     var body: some View {
         ZStack {
@@ -22,19 +34,42 @@ struct QuestionShareNowView: View {
             VStack {
                 InfoGroup
                 Spacer()
-                
                 CircularScrollView
             }
             
             VStack {
                 Spacer()
-                NavigationLink(destination: QuestionListView(isSaveMode: true)) {
+                NavigationLink(destination: QuestionListView(
+                    mainViewModel: mainViewModel,
+                    isSaveMode: true,
+                    selectedQuestionType: selectedQuestionType,
+                    order: order)
+                ) {
                     PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true))
                         .padding(.horizontal, 21)
                 }
+                Spacer().frame(height: 60)
+            }
+            
+            // 선택 확인 모달
+            if showSelectModal {
+                QuestionSelectModalView(
+                    isMonth: selectedQuestionType,
+                    selectedQuestionId: $selectedQuestionId,
+                    order: order,
+                    selectedQuestionType: .OFFICIAL,
+                    viewModel: selectViewModel,
+                    mainViewModel: mainViewModel,
+                    showSelectModal: $showSelectModal,
+                    goToMain: $goToMain
+                )
             }
         }
         .navigationBarBackButtonHidden()
+        .task {
+            await viewModel.fetchMySharedQuestions()
+        }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
     }
     
     private var InfoGroup: some View {
@@ -42,14 +77,19 @@ struct QuestionShareNowView: View {
             HStack {
                 Button(action: {
                     dismiss()
-                }){ // TODO: 액션 추가
+                }) {
                     Image(.iconBack)
                 }
                 .padding(.leading, 17)
                 
                 Spacer()
                 
-                NavigationLink(destination: QuestionListView(isSaveMode: false)) {
+                NavigationLink(destination: QuestionListView(
+                    mainViewModel: mainViewModel,
+                    isSaveMode: false,
+                    selectedQuestionType: selectedQuestionType,
+                    order: order)
+                ) {
                     Image(.iconList)
                 }
                 .padding(.trailing, 18)
@@ -61,7 +101,7 @@ struct QuestionShareNowView: View {
                 .padding(.leading, 17)
             
             HStack(spacing: 6) {
-                Text("17")
+                Text("\(viewModel.mySharedQuestionCnt)")
                     .textStyle(.Title_Text_Ko)
                     .foregroundStyle(.white)
                 Text("개")
@@ -69,7 +109,6 @@ struct QuestionShareNowView: View {
                     .foregroundStyle(.white)
             }
             .padding(.leading, 17)
-            
             
             Text("사용자들과 공유한 질문들을 확인해보세요!")
                 .textStyle(.Sub_Text_Ko)
@@ -81,10 +120,11 @@ struct QuestionShareNowView: View {
     private var CircularScrollView: some View {
         GeometryReader { geometry in
             let radius = geometry.size.height / 1.2
-            let center = CGPoint(x: geometry.size.width - radius * 1.4, y: geometry.size.height / 7)
+            let center = CGPoint(x: geometry.size.width - radius * 1.4,
+                                 y: geometry.size.height / 7)
             
             ZStack {
-                ForEach(items.indices, id: \.self) { index in
+                ForEach(viewModel.mySharedQuestions.indices, id: \.self) { index in
                     if index >= hiddenCount {
                         let visibleIndex = index - hiddenCount
                         let itemAngle = Angle(degrees: Double(visibleIndex) * spacingAngle)
@@ -93,12 +133,21 @@ struct QuestionShareNowView: View {
                         let x = center.x + radius * CGFloat(cos(totalAngle.radians))
                         let y = center.y + radius * CGFloat(sin(totalAngle.radians))
                         
+                        let question = viewModel.mySharedQuestions[index]
+                        
                         QuestionShareItem(
                             type: "share",
-                            category: "카테고리1",
-                            content: "맛있는 음식을 먹을 때 어떤 기분이 드나요? 표현해본다면요? 맛있는 음식을 먹을 때 어떤 ",
-                            date: "25년 8월 1일",
-                            index: 1
+                            category: question.categories.first?.categoryName ?? "",
+                            content: question.question,
+                            date: question.createdAt,
+                            sharedCount: question.sharedCount,
+                            index: index + 1,
+                            onTap: {
+                                showSelectModal = true
+                                selectedQuestionId = question.id
+                            },
+                            isSelected: question.isSelected,
+                            selectViewModel: selectViewModel
                         )
                         .padding(.horizontal, 24)
                         .rotationEffect(totalAngle)
@@ -114,7 +163,7 @@ struct QuestionShareNowView: View {
                         let threshold: CGFloat = 50
                         
                         if value.translation.height < -threshold {
-                            if hiddenCount < items.count - 1 {
+                            if hiddenCount < viewModel.mySharedQuestions.count - 1 {
                                 withAnimation(.spring()) {
                                     hiddenCount += 1
                                 }
@@ -129,17 +178,6 @@ struct QuestionShareNowView: View {
                     }
             )
             .frame(height: 636)
-            
         }
-        
     }
-    
-    
-    
-}
-
-
-
-#Preview {
-    QuestionShareNowView()
 }

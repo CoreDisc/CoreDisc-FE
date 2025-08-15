@@ -11,7 +11,7 @@ struct SearchView: View {
     @Binding var query:String
     @Binding var isSearch: Bool
     @State private var path = NavigationPath()
-    let items = Array(0..<10)
+    @StateObject private var viewModel = SearchHistoryViewModel()
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -34,29 +34,45 @@ struct SearchView: View {
                 SearchResultView(query: $query, isSearch: $isSearch, path: $path)
             }
         }
+        .task {
+            if viewModel.items.isEmpty { viewModel.refresh() }
+        }
+        .navigationBarBackButtonHidden()
     }
-    
-    
     
     private var SearchGroup: some View {
         VStack {
             if isSearch {
                 SearchRelatedView()
             } else {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 8) {
                     Text("Recent Searches")
                         .textStyle(.Pick_Q_Eng)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 30)
                     
-                    
-                    Spacer().frame(height: 8)
                     ScrollView {
-                        ForEach(items.indices, id: \.self) {index in
-                            RecentItem(text: "music")
-                            Rectangle()
-                                .frame(height: 0.5)
-                                .foregroundStyle(.gray600)
+                        LazyVStack(spacing: 0) {
+                            ForEach(viewModel.items) { item in
+                                RecentItem(
+                                    text: item.keyword,
+                                    isDeleting: viewModel.deletingIds.contains(item.id),
+                                    onDelete: { viewModel.deleteHistory(id: item.id) }
+                                )
+                                .onAppear {
+                                    viewModel.loadMoreIfNeeded(current: item)
+                                }
+                                
+                                Rectangle()
+                                    .frame(height: 0.5)
+                                    .foregroundStyle(.gray600)
+                                    .padding(.horizontal, 33)
+                            }
+                            
+                            if viewModel.isLoading {
+                                ProgressView()
+                                    .padding(.vertical, 12)
+                            }
                         }
                         .padding(.horizontal, 33)
                     }
@@ -65,29 +81,41 @@ struct SearchView: View {
             }
         }
     }
-    
 }
+
 struct RecentItem: View {
     let text: String
-    
+    var isDeleting: Bool = false
+    var onDelete: () -> Void = {}
+
     var body: some View {
-        
         HStack {
-            Text("\(text)")
+            Text(text)
                 .textStyle(.Q_Main)
                 .foregroundStyle(.white)
-            
+                .padding(.leading, 30)
+
             Spacer()
-            
-            Image(.iconClose)
-                .resizable()
-                .frame(width: 24, height: 24)
-                .foregroundStyle(.white)
+
+            if isDeleting {
+                ProgressView()
+                    .frame(width: 24, height: 24)
+            } else {
+                Button(action: onDelete) {
+                    Image(.iconClose)
+                        .resizable()
+                        .padding(.trailing, 36)
+                        .frame(width: 24, height: 24)
+                        .foregroundStyle(.white)
+                        
+                }
+            }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 6)
     }
 }
+
 
 private struct SearchViewPreviewWrapper: View {
     @State var tempQuery = ""

@@ -20,6 +20,19 @@ struct TabBar: View {
     @State private var tabBarStyle: TabBarStyle = .dark
     @StateObject private var tabBarVisibility = TabBarVisibility()
     
+    init(startTab: Tab = .home) {
+        _selectedTab = State(initialValue: startTab)
+        _tabBarStyle = State(initialValue: {
+            switch startTab {
+            case .home: return .dark
+            case .disk: return .light
+            case .write: return .dark
+            case .report: return .light
+            case .mypage: return .light
+            }
+        }())
+    }
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             Group {

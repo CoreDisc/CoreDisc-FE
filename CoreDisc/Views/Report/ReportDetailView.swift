@@ -11,10 +11,39 @@ struct ReportDetailView: View {
     
     @Environment(\.dismiss) var dismiss
     @State private var nowIndex: Int = 1
+    
     @StateObject private var viewModel = ReportDetailViewModel()
-    @StateObject private var DiscQuestionViewModel = DiscViewModel()
+    @StateObject private var DiscQuestionViewModel: DiscViewModel
+    
+    init(year: Int, month: Int) {
+        let reportVM = ReportDetailViewModel()
+        _viewModel = StateObject(wrappedValue: reportVM)
+        _DiscQuestionViewModel = StateObject(wrappedValue: DiscViewModel(reportVM: reportVM))
+        self.year = year
+        self.month = month
+    }
+    
     @State private var rotate = false
     @State private var questionsOpacity: Double = 1.0
+    
+    let year: Int
+    let month: Int
+    
+    var beforeDiscMonth: Int {
+        (month == 12) ? 1 : month + 1
+    }
+    
+    var beforeDiscYear: Int {
+        (month == 1) ? year + 1 : year
+    }
+    
+    var nextDiscMonth: Int {
+        (month == 1) ? 12 : month - 1
+    }
+    
+    var nextDiscYear: Int {
+        (month == 12) ? year - 1 : year
+    }
     
     let sixItemPositions: [CGPoint] = [
         CGPoint(x: 213, y: 55),
@@ -79,6 +108,9 @@ struct ReportDetailView: View {
                     PresentGroup
                 }
             }
+            .task {
+                viewModel.getReport(year: year, month: month)
+            }
         }
         .navigationBarBackButtonHidden()
         .tabBarHidden(true) // 커스텀 탭바 숨기기
@@ -107,20 +139,19 @@ struct ReportDetailView: View {
             }){
                 Image(.imgGoback)
             }
-                
             Spacer()
         }
     }
     
     private var TotalDiscGroup: some View {
         VStack(alignment: .leading) {
-            Text("5월에는 총")
+            Text("\(month)월에는 총")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.bottom, 2)
                 .padding(.leading, 35)
             
-            Text("22개의 DISC를 작성했어요")
+            Text("\(viewModel.DiscCount)개의 DISC를 작성했어요")
                 .textStyle(.Title2_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.leading, 35)
@@ -152,7 +183,7 @@ struct ReportDetailView: View {
     
     private var RandomGroup: some View {
         VStack(alignment: .trailing) {
-            Text("5월에")
+            Text("\(month)월에")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.bottom, 2)
@@ -164,7 +195,7 @@ struct ReportDetailView: View {
                 .padding(.trailing, 36)
             
             HStack(spacing: 16) {
-                ForEach(viewModel.RandomQuestion.indices, id: \.self) { index in
+                ForEach(viewModel.MostQuestionItem.indices, id: \.self) { index in
                     let isCurrent = index == nowIndex
                     let isNextOrPrevious = abs(index - nowIndex) == 1
                     
@@ -189,17 +220,22 @@ struct ReportDetailView: View {
                                 .cornerRadius(12)
                             
                             VStack{
-                                Text(viewModel.RandomQuestion[index].question)
-                                    .foregroundColor(.black000)
-                                    .multilineTextAlignment(.center)
-                                    .textStyle(.Texting_Q)
-                                    .padding()
-                                Text(viewModel.RandomQuestion[index].freq)
-                                    .textStyle(.Title2_Text_Ko)
-                                    .foregroundColor(.black000)
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
-                                    .offset(y:30)
-                                    .padding()
+                                if !viewModel.MostQuestionItem[index].questionContent.isEmpty {
+                                    VStack {
+                                        Text(viewModel.MostQuestionItem[index].questionContent)
+                                            .foregroundColor(.black000)
+                                            .multilineTextAlignment(.center) .textStyle(.Texting_Q)
+                                            .padding()
+                                        if let count = viewModel.MostQuestionItem[index].selectedCount {
+                                            Text("총 \(count)회")
+                                                .textStyle(.Title2_Text_Ko)
+                                                .foregroundColor(.black000)
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                                .offset(y:30)
+                                                .padding()
+                                        }
+                                    }
+                                }
                             }
                         }
                         .scaleEffect(isCurrent ? 1.0 : 0.85)
@@ -221,8 +257,8 @@ struct ReportDetailView: View {
                             }
                             nowIndex -= 1
                         }
-                        else if value.translation.width < -50 && nowIndex < viewModel.RandomQuestion.count - 1 {
-                            if nowIndex == viewModel.RandomQuestion.count - 2 {
+                        else if value.translation.width < -50 && nowIndex < viewModel.MostQuestionItem.count - 1 {
+                            if nowIndex == viewModel.MostQuestionItem.count - 2 {
                                 return
                             }
                             nowIndex += 1
@@ -235,7 +271,7 @@ struct ReportDetailView: View {
     
     private var TimeReportGroup: some View {
         VStack(alignment: .leading) {
-            Text("5월의 DISC는")
+            Text("\(month)월의 DISC는")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.bottom, 2)
@@ -245,13 +281,13 @@ struct ReportDetailView: View {
                 .foregroundStyle(.white)
             
             Spacer().frame(height: 19)
-//            Image(.iconTimePink)
+            Image(viewModel.PeakTimeImage)
         }
     }
     
     private var GoSummaryGroup: some View {
         VStack {
-            NavigationLink(destination: ReportSummaryView()){
+            NavigationLink(destination: ReportSummaryView(SummaryYear: year, SummaryMonth: month)){
                 ZStack {
                     Rectangle()
                         .cornerRadius(16)
@@ -280,7 +316,7 @@ struct ReportDetailView: View {
             ZStack {
                 Image(.imgSpeechbubble)
                 
-                Text("5월은 누구와 가장 많이 함께했을까요?")
+                Text("\(month)월은 누구와 가장 많이 함께했을까요?")
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.black000)
                     .padding(.top, 10)
@@ -304,7 +340,7 @@ struct ReportDetailView: View {
                 Spacer().frame(width: 21)
                 
                 VStack(alignment: .leading) {
-                    Text("2025 - 07")
+                    Text("\(String(year)) - \(String(format: "%02d", month))")
                         .textStyle(.Button)
                         .foregroundStyle(.black)
                     
@@ -316,19 +352,18 @@ struct ReportDetailView: View {
                 Spacer()
                 
                 HStack {
-                    Button(action: {}, label: {
+                    NavigationLink(destination: ReportDetailView(year: beforeDiscYear, month: beforeDiscMonth)){
                         Image(.iconBefore)
-                    })
+                    }
                     Spacer().frame(width: 19)
                     
-                    Button(action: {}, label: {
-                        Image(.iconPlay)
-                    })
+                    
+                    Image(.iconPlay)
                     Spacer().frame(width: 19)
                     
-                    Button(action: {}, label: {
+                    NavigationLink(destination: ReportDetailView(year: nextDiscYear, month: nextDiscMonth)){
                         Image(.iconNext)
-                    })
+                    }
                 }
             }
             .padding(.horizontal, 24)
@@ -338,5 +373,5 @@ struct ReportDetailView: View {
 }
 
 #Preview {
-    ReportDetailView()
+    ReportDetailView(year: 2025, month: 7)
 }

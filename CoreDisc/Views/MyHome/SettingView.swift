@@ -56,7 +56,7 @@ struct SettingView: View {
         }
         .toolbarVisibility(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden()
-        .navigationDestination(isPresented: $viewModel.logoutSuccess) {LoginView()}
+        .fullScreenCover(isPresented: $viewModel.logoutSuccess) {LoginView()}
     }
     
     // 상단 메뉴
@@ -94,7 +94,7 @@ struct SettingView: View {
         VStack(spacing: 18) {
             SettingButton(title: "계정 관리", destination: { AnyView(AccountManageView()) })
             SettingButton(title: "차단 유저 목록", destination: { AnyView(BlockListView()) })
-            SettingButton(title: "알림 설정", destination: { AnyView(NotificationView()) })
+            SettingButton(title: "알림 설정", destination: { AnyView(NotificationSettingView()) })
             SettingButton(title: "로그아웃", onClick: { LogoutModal = true })
         }
     }

@@ -83,6 +83,3 @@ struct PostFeedData: Codable {
     let cursor: Int
     let size: Int
 }
-
-
-

@@ -9,11 +9,13 @@ import SwiftUI
 
 struct QuestionBasicView: View {
     @StateObject private var viewModel = QuestionBasicViewModel()
-    @StateObject private var mainViewModel = QuestionMainViewModel()
+    @ObservedObject var mainViewModel: QuestionMainViewModel
     
     let selectedQuestionType: String
     
     @Environment(\.dismiss) var dismiss
+    @State var goToMain: Bool = false
+    
     @FocusState private var isFocused: Bool
     private let topAnchorID = "top" // 스크롤 초기화 용도
     
@@ -56,48 +58,16 @@ struct QuestionBasicView: View {
             
             // 선택 확인 모달
             if showSelectModal {
-                ModalView {
-                    VStack(spacing: 6) {
-                        Text("\(selectedQuestionType == "FIXED" ? "고정" : "랜덤")질문으로 선택할까요?")
-                            .textStyle(.Button)
-                        
-                        Text("한번 설정한 고정질문은 \(selectedQuestionType == "FIXED" ? "30일간" : "하루동안") 변경이 불가능합니다.")
-                            .textStyle(.Texting_Q)
-                            .foregroundStyle(.red)
-                    }
-                } leftButton: {
-                    Button(action: {
-                        guard let questionId = selectedQuestionId else { return }
-                        
-                        if selectedQuestionType == "FIXED" {
-                            let data = FixedData(
-                                selectedQuestionType: .DEFAULT,
-                                questionOrder: order,
-                                questionId: questionId
-                            )
-                            viewModel.fetchFixedBasic(fixedData: data)
-                            mainViewModel.fetchSelected()
-                        } else {
-                            let data = RandomData(
-                                selectedQuestionType: .DEFAULT,
-                                questionId: questionId
-                            )
-                            viewModel.fetchRandomBasic(randomData: data)
-                            mainViewModel.fetchSelected()
-                        }
-                        
-                        showSelectModal.toggle() // 모달 제거
-                        dismiss()
-                    }) {
-                        Text("설정하기")
-                    }
-                } rightButton: {
-                    Button(action: {
-                        showSelectModal.toggle() // 모달 제거
-                    }) {
-                        Text("뒤로가기")
-                    }
-                }
+                QuestionSelectModalView(
+                    isMonth: selectedQuestionType,
+                    selectedQuestionId: $selectedQuestionId,
+                    order: order,
+                    selectedQuestionType: .DEFAULT,
+                    viewModel: viewModel,
+                    mainViewModel: mainViewModel,
+                    showSelectModal: $showSelectModal,
+                    goToMain: $goToMain
+                )
             }
             
             // 저장 확인 모달
@@ -115,6 +85,7 @@ struct QuestionBasicView: View {
                     Button(action: {
                         viewModel.fetchOfficialSave(questionId: selectedQuestionId!)
                         showSaveModal.toggle() // 모달 제거
+                        
                     }) {
                         Text("저장하기")
                     }
@@ -136,6 +107,7 @@ struct QuestionBasicView: View {
             let keyword = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
             viewModel.fetchSearchCategories(keyword: keyword)
         }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
     }
     
     // MARK: - group
@@ -144,6 +116,7 @@ struct QuestionBasicView: View {
     private var TopGroup: some View {
         ZStack(alignment: .top) {
             Image(.imgLogoOneline)
+                .foregroundStyle(.white)
                 .padding(.top, 19)
             
             VStack(alignment: .leading, spacing: 9) {
@@ -158,7 +131,7 @@ struct QuestionBasicView: View {
                     .foregroundStyle(.key)
                     .padding(.leading, 9)
                 
-                Text("한 달동안 함께할 질문을 설정하세요.")
+                Text("\(selectedQuestionType == "FIXED" ? "한 달동안" : "오늘") 함께할 질문을 설정하세요.")
                     .textStyle(.Sub_Text_Ko)
                     .foregroundStyle(.white)
                     .padding(.leading, 9)
@@ -249,12 +222,9 @@ struct QuestionBasicView: View {
                                     QuestionBasicDetailItem(
                                         showSelectModal: $showSelectModal,
                                         showSaveModal: $showSaveModal,
-                                        isSelected: question.isSelected,
-                                        isFavorite: question.isFavorite,
-                                        title: question.question,
+                                        question: question,
                                         startColor: item.startColor,
                                         endColor: item.endColor,
-                                        questionId: question.id,
                                         onSelect: { id in
                                             selectedQuestionId = id
                                         }
@@ -362,17 +332,18 @@ struct QuestionBasicDetailItem: View {
     @Binding var showSelectModal: Bool
     @Binding var showSaveModal: Bool
     
-    var isSelected: Bool
-    var isFavorite: Bool
-    
-    var title: String
+    var question: QuestionBasicListValue
     var startColor: Color
     var endColor: Color
-    
-    var questionId: Int
     var onSelect: (Int) -> Void
     
     @State private var isShifted: Bool = false
+    
+    private var hasSaveButton: Bool {
+        question.savedStatus == "SAVED" || question.savedStatus == "NOT_SAVED"
+    }
+    
+    private var slideWidth: CGFloat { hasSaveButton ? 131 : 68 }
     
     var body: some View {
         Button(action: {
@@ -396,14 +367,14 @@ struct QuestionBasicDetailItem: View {
                     )
                     .frame(minHeight: 64)
                 
-                Text(title.splitCharacter())
+                Text(question.question.splitCharacter())
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 23)
                     .padding(.vertical, 14)
             }
-            .offset(x: isShifted ? 131 : 0)
+            .offset(x: isShifted ? slideWidth : 0)
         }
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)
@@ -411,26 +382,26 @@ struct QuestionBasicDetailItem: View {
             HStack(spacing: 3) {
                 Button {
                     showSelectModal.toggle()
-                    onSelect(questionId)
+                    onSelect(question.id)
                 } label: {
-                    Image(isSelected ? .iconBasicSelected : .iconBasicSelect)
+                    Image(question.isSelected ? .iconBasicSelected : .iconBasicSelect)
                 }
                 
-                Button {
-                    showSaveModal.toggle()
-                    onSelect(questionId)
-                } label: {
-                    Image(isFavorite ? .iconBasicSaved : .iconBasicSave)
+                if hasSaveButton {
+                    Button {
+                        if question.savedStatus == "NOT_SAVED" {
+                            showSaveModal.toggle()
+                            onSelect(question.id)
+                        }
+                    } label: {
+                        Image(question.savedStatus == "SAVED" ? .iconBasicSaved : .iconBasicSave)
+                    }
                 }
                 
                 Spacer().frame(width: 13)
             }
-            .offset(x: isShifted ? 0 : -131)
+            .offset(x: isShifted ? 0 : -slideWidth)
             .buttonStyle(.plain)
         }
     }
-}
-
-#Preview {
-    QuestionBasicView(selectedQuestionType: "FIXED", order: 1)
 }

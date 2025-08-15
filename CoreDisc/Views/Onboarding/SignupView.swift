@@ -143,6 +143,7 @@ struct SignupView: View {
             InputView{
                 TextField("인증번호를 입력해주세요.", text: $viewModel.code)
                     .focused($isFocused)
+                    .textInputAutocapitalization(.never)
             }
             
             ButtonView(action:{viewModel.verifyCode()}, label: {
@@ -237,6 +238,7 @@ struct SignupView: View {
                     HStack{
                         TextField("비밀번호를 입력해주세요.", text: $viewModel.password)
                             .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
@@ -249,6 +251,7 @@ struct SignupView: View {
                     HStack{
                         SecureField("비밀번호를 입력해주세요.", text: $viewModel.password)
                             .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
@@ -276,6 +279,7 @@ struct SignupView: View {
                     HStack{
                         TextField("비밀번호를 한 번 더 입력해주세요.", text: $viewModel.passwordCheck)
                             .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
@@ -288,6 +292,7 @@ struct SignupView: View {
                     HStack{
                         SecureField("비밀번호를 한 번 더 입력해주세요.", text: $viewModel.passwordCheck)
                             .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()

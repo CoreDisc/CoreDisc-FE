@@ -10,7 +10,7 @@ import SwiftUI
 struct SummaryQuest: View {
     let question: String
     let answer: String
-    let freq: String
+    let freq: Int
     
     var body: some View {
         VStack{
@@ -40,7 +40,7 @@ struct SummaryQuest: View {
                             Spacer()
                         }
                         HStack {
-                            Text(freq)
+                            Text("총 \(freq)회")
                                 .textStyle(.Q_Main)
                                 .foregroundStyle(.white)
                                 .offset(x: 50, y: -5)

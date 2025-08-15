@@ -10,7 +10,18 @@ import SwiftUI
 
 struct QuestionTrendingView: View {
     @Environment(\.dismiss) var dismiss
-    let items = Array(0..<5)
+    @State var goToMain: Bool = false
+    
+    @StateObject private var viewModel = PopularQuestionViewModel()
+    @StateObject private var basicviewModel = QuestionBasicViewModel()
+    @ObservedObject var mainViewModel: QuestionMainViewModel
+    
+    let selectedQuestionType: String
+    
+    // 질문 선택/저장 용도
+    let order: Int
+    @State private var selectedQuestionId: Int? = nil
+    @State var showSelectModal: Bool = false
     
     var body: some View {
         
@@ -28,8 +39,26 @@ struct QuestionTrendingView: View {
                 
                 Spacer()
             }
+            
+            // 선택 확인 모달
+            if showSelectModal {
+                QuestionSelectModalView(
+                    isMonth: selectedQuestionType,
+                    selectedQuestionId: $selectedQuestionId,
+                    order: order,
+                    selectedQuestionType: .OFFICIAL,
+                    viewModel: basicviewModel,
+                    mainViewModel: mainViewModel,
+                    showSelectModal: $showSelectModal,
+                    goToMain: $goToMain
+                )
+            }
         }
-        
+        .navigationBarBackButtonHidden()
+        .task {
+            viewModel.fetchPopularQuestions()
+        }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
     }
     
     
@@ -56,7 +85,7 @@ struct QuestionTrendingView: View {
             
             Spacer().frame(height: 4)
             
-            Text("2025.07.01. - 2025.07.31.")
+            Text("\(viewModel.startDate) - \(viewModel.endDate)")
                 .textStyle(.Sub_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.leading, 20)
@@ -73,15 +102,20 @@ struct QuestionTrendingView: View {
     
     var RankingGroup: some View {
         VStack {
-            ForEach(items, id: \.self){index in
-                VStack {
+            ForEach(viewModel.questions.indices, id: \.self){index in
+                let question = viewModel.questions[index]
+                VStack(alignment: .leading) {
                     TrendingQuestionItem(
-                        index: index+1,
-                        content: "오늘 먹은 것 중에 제일 맛있었던 건 뭐였어? 그 음식에 대해 자세히 말해줘.헤헤헤헤헤헿헤",
-                        nickname: "coredisc.ko",
-                        sharing: 522,
-                        isChecked: false,
-                        isFavorite: false
+                        index: index + 1,
+                        content: question.question,
+                        nickname: question.username,
+                        sharing: question.sharedCount,
+                        isChecked: question.isSelected,
+                        isFavorite: false,
+                        onTap: {
+                            showSelectModal = true
+                            selectedQuestionId = question.id
+                        }
                     )
                     .padding(.leading, 43)
                     .padding(.trailing, 47)
@@ -104,6 +138,7 @@ struct TrendingQuestionItem: View {
     var sharing: Int
     @State var isChecked: Bool
     @State var isFavorite: Bool
+    var onTap: (() -> Void)
     
     var body: some View {
         VStack {
@@ -116,6 +151,7 @@ struct TrendingQuestionItem: View {
                             .frame(width:24, height: 24)
                             .foregroundStyle(.gray600)
                     )
+                
                 VStack(alignment: .leading) {
                     Text("\(content.splitCharacter())")
                         .textStyle(.Texting_Q)
@@ -133,36 +169,25 @@ struct TrendingQuestionItem: View {
                             .textStyle(.Small_Text)
                             .foregroundStyle(.gray200)
                     }
-                    .padding(.leading, 16)
+                    .padding(.leading, 8)
                     .padding(.bottom, 4)
                     
                 }
                 
+                Spacer()
                 
                 Button(action:{
-                    isChecked.toggle()
+                    onTap()
                 }){
                     Image(isChecked ? .iconChecked : .iconCheck)
                         .resizable()
                         .frame(width: 32, height: 32)
                 }
-                
-                Button(action: {
-                    isFavorite.toggle()
-                }) {
-                    Image(.iconLove)
-                        .renderingMode(.template)
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundStyle(.gray400)
-                }
             }
         }
-        
-        
     }
 }
 
-#Preview {
-    QuestionTrendingView()
-}
+//#Preview {
+//    QuestionTrendingView()
+//}

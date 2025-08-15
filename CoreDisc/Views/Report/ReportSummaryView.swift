@@ -10,7 +10,27 @@ import SwiftUI
 struct ReportSummaryView: View {
     @Environment(\.dismiss) var dismiss
     @State private var currentIndex: Int = 0
-    let viewModel = ReportSummaryViewModel()
+    @StateObject private var viewModel = ReportSummaryViewModel()
+    
+    let SummaryYear: Int
+    let SummaryMonth: Int
+    
+    var beforeDiscMonth: Int {
+        (SummaryMonth == 12) ? 1 : SummaryMonth + 1
+    }
+    
+    var beforeDiscYear: Int {
+        (SummaryMonth == 1) ? SummaryYear + 1 : SummaryYear
+    }
+    
+    var nextDiscMonth: Int {
+        (SummaryMonth == 1) ? 12 : SummaryMonth - 1
+    }
+    
+    var nextDiscYear: Int {
+        (SummaryMonth == 12) ? SummaryYear - 1 : SummaryYear
+    }
+    
     
     var body: some View {
         ZStack{
@@ -31,6 +51,10 @@ struct ReportSummaryView: View {
             }
         }
         .navigationBarBackButtonHidden()
+        .task {
+            viewModel.getSummaryTop(year: SummaryYear, month: SummaryMonth)
+            viewModel.getSummaryDetails(year: SummaryYear, month: SummaryMonth)
+        }
         .tabBarHidden(true) // 커스텀 탭바 숨기기
     }
     
@@ -53,14 +77,14 @@ struct ReportSummaryView: View {
                 .foregroundStyle(.white)
                 .padding(.bottom, 2)
                 .padding(.leading, 35)
-            Text("5월의 CORE DISC")
+            Text("\(SummaryMonth)월의 CORE DISC")
                 .textStyle(.Title2_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.leading, 35)
             
-            ForEach(viewModel.SummaryQuest, id: \.question){ item in
+            ForEach(viewModel.summaryTop, id: \.dailyType){ item in
                 ZStack{
-                    SummaryQuest(question: item.question, answer: item.answer, freq: item.freq)
+                    SummaryQuest(question: item.dailyType, answer: item.optionContent, freq: item.selectionCount)
                         .padding(.vertical, 10)
                 }
             }
@@ -79,7 +103,7 @@ struct ReportSummaryView: View {
                     .cornerRadius(100)
                 Spacer().frame(width: 21)
                 VStack(alignment: .leading){
-                    Text("2025 - 07")
+                    Text("\(String(SummaryYear)) - \(String(format: "%02d", SummaryMonth))")
                         .textStyle(.Button)
                         .foregroundStyle(.black)
                     Text("뮤직사마")
@@ -87,18 +111,18 @@ struct ReportSummaryView: View {
                         .foregroundStyle(.black)
                 }
                 Spacer()
-                HStack{
-                    Button(action:{}, label:{
+                HStack {
+                    NavigationLink(destination: ReportDetailView(year: beforeDiscYear, month: beforeDiscMonth)){
                         Image(.iconBefore)
-                    })
+                    }
                     Spacer().frame(width: 19)
-                    Button(action:{}, label:{
-                        Image(.iconPlay)
-                    })
+                    
+                    Image(.iconPlay)
                     Spacer().frame(width: 19)
-                    Button(action:{}, label:{
+                    
+                    NavigationLink(destination: ReportDetailView(year: nextDiscYear, month: nextDiscMonth)){
                         Image(.iconNext)
-                    })
+                    }
                 }
             }
             .padding(.horizontal, 24)
@@ -172,5 +196,5 @@ struct ReportSummaryView: View {
 }
 
 #Preview {
-    ReportSummaryView()
+    ReportSummaryView(SummaryYear: 2025, SummaryMonth: 7)
 }
