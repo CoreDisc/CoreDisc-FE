@@ -85,7 +85,7 @@ struct ReportSummaryView: View {
                     .cornerRadius(100)
                 Spacer().frame(width: 21)
                 VStack(alignment: .leading){
-                    Text("2025 - 07")
+                    Text("\(String(SummaryYear)) - \(String(format: "%02d", SummaryMonth))")
                         .textStyle(.Button)
                         .foregroundStyle(.black)
                     Text("뮤직사마")
