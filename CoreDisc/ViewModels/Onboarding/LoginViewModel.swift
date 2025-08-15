@@ -84,9 +84,8 @@ class LoginViewModel: ObservableObject {
     }
     
     func kakaoLogin() {
-        let provider = APIManager.shared.createProvider(for: AuthRouter.self)
         func kakaoLogin(accessToken: String) {
-            provider.request(.postKakao(accessToken: accessToken)) { result in
+            authProvider.request(.postKakao(accessToken: accessToken)) { result in
                 switch result {
                 case .success(let response):
                     do {
