@@ -8,12 +8,24 @@
 import SwiftUI
 
 struct QuestionListView: View {
+    @StateObject private var viewModel = QuestionListViewModel()
+    @StateObject private var selectViewModel = QuestionBasicViewModel()
+    @ObservedObject var mainViewModel: QuestionMainViewModel
+    
     @Environment(\.dismiss) var dismiss
     @State var isSaveMode: Bool
     @State private var selectedCategoryId: Int? = 0 // 0 = All
     @State private var categoryUUID = UUID()
+    
+    let selectedQuestionType: String
 
-    @StateObject private var viewModel = QuestionListViewModel()
+    @State var showSelectModal: Bool = false
+    
+    @State private var goToMain = false
+    
+    // 질문 선택/저장 용도
+    let order: Int
+    @State private var selectedQuestionId: Int? = nil
 
     var body: some View {
         ZStack {
@@ -42,11 +54,26 @@ struct QuestionListView: View {
                 .padding(.horizontal, 21)
                 Spacer().frame(height: 60)
             }
+            
+            // 선택 확인 모달
+            if showSelectModal {
+                QuestionSelectModalView(
+                    isMonth: selectedQuestionType,
+                    selectedQuestionId: $selectedQuestionId,
+                    order: order,
+                    selectedQuestionType: .OFFICIAL,
+                    viewModel: selectViewModel,
+                    mainViewModel: mainViewModel,
+                    showSelectModal: $showSelectModal,
+                    goToMain: $goToMain
+                )
+            }
         }
         .task {
             fetchQuestions(reset: true)
         }
         .navigationBarBackButtonHidden()
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
     }
 
     private var TopGroup: some View {
@@ -96,7 +123,13 @@ struct QuestionListView: View {
                             content: item.question,
                             date: item.createdAt,
                             sharedCount: item.sharedCount,
-                            index: index + 1
+                            index: index + 1,
+                            onTap: {
+                                showSelectModal = true
+                                selectedQuestionId = item.id
+                            },
+                            isSelected: item.isSelected,
+                            selectViewModel: selectViewModel
                         )
                         .padding(.horizontal, 31)
                         .onAppear {

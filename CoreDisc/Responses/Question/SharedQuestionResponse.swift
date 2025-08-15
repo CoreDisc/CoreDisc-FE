@@ -30,6 +30,7 @@ struct SharedQuestion: Codable, Identifiable {
     let categories: [SharedCategory]
     let question: String
     let sharedCount: Int
+    let isSelected: Bool
     let createdAt: String
 }
 

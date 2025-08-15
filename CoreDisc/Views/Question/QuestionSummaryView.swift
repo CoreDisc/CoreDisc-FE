@@ -16,6 +16,8 @@ struct QuestionSummaryView: View {
     @StateObject private var viewModel = QuestionSummaryViewModel()
     @StateObject private var sharedQuestionVM = SharedQuestionViewModel()
     
+    @State var isShareSuccess: Bool = false
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground)
@@ -140,21 +142,22 @@ struct QuestionSummaryView: View {
                 }
             
             // 공유하기
-            NavigationLink(destination: QuestionShareNowView()) {
-                PrimaryActionButton(title: "작성한 질문 공유하기", isFinished: .constant(true))
-            }
-            .simultaneousGesture(
-                TapGesture().onEnded {
-                    viewModel.shareOfficialQuestion(
-                        categoryIds: [selectedCategory?.id ?? 0],
-                        question: text
-                    ) { success in
-                        if !success {
-                            ToastManager.shared.show("질문 공유에 실패했습니다. 다시 시도해주세요.")
+            PrimaryActionButton(title: "작성한 질문 공유하기", isFinished: .constant(true))
+                .fullScreenCover(isPresented: $isShareSuccess) { TabBar(startTab: .disk) }
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        viewModel.shareOfficialQuestion(
+                            categoryIds: [selectedCategory?.id ?? 0],
+                            question: text
+                        ) { success in
+                            if !success {
+                                ToastManager.shared.show("질문 공유에 실패했습니다. 다시 시도해주세요.")
+                            } else {
+                                self.isShareSuccess = true
+                            }
                         }
                     }
-                }
-            )
+                )
             
             
             Button {
