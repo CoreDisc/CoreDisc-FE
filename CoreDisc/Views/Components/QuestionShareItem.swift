@@ -14,7 +14,10 @@ struct QuestionShareItem: View {
     var sharedCount: Int
     var index: Int
     var onDelete: (() -> Void)? = nil
+    var onTap: (() -> Void)
     @State var isChecked: Bool = false
+    
+    @ObservedObject var selectViewModel: QuestionBasicViewModel
     
     var body: some View {
         ZStack {
@@ -36,16 +39,12 @@ struct QuestionShareItem: View {
                         .padding(.leading, 10)
                         .padding(.top, 11)
                     
-                    Button(action: {
-                        isChecked.toggle()
-                    }) {
-                        Image(isChecked ? .iconChecked : .iconCheck)
-                            .resizable()
-                            .renderingMode(isChecked ? .template : .original)
-                            .foregroundColor(isChecked ? .key : nil)          
-                            .frame(width: 18, height: 18)
-                    }
-                    .padding(.top, 11)
+                    Image(isChecked ? .iconChecked : .iconCheck)
+                        .resizable()
+                        .renderingMode(isChecked ? .template : .original)
+                        .foregroundColor(isChecked ? .key : nil)
+                        .frame(width: 18, height: 18)
+                        .padding(.top, 11)
                     
                         
                     
@@ -109,7 +108,9 @@ struct QuestionShareItem: View {
                 
             }
         }
-        
+        .onTapGesture {
+            onTap()
+        }
     }
     
     private func formatDate(_ isoDate: String) -> String {

@@ -166,7 +166,7 @@ struct QuestionMainView: View {
                 QuestionTrendingView()
             }
             QuestionSelectButton(title: "공유/저장\n질문") {
-                QuestionShareNowView()
+                QuestionShareNowView(mainViewModel: viewModel, selectedQuestionType: currentQuestionType, order: currentOrder)
             }
         }
         .offset(x: 0)

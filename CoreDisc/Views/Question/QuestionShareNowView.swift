@@ -9,9 +9,17 @@ import SwiftUI
 
 struct QuestionShareNowView: View {
     @StateObject private var viewModel = SharedQuestionViewModel()
+    @StateObject private var selectViewModel = QuestionBasicViewModel()
+    
     private let spacingAngle: Double = 19
     @State private var hiddenCount = 0
     @Environment(\.dismiss) var dismiss
+    
+    @ObservedObject var mainViewModel: QuestionMainViewModel
+    let selectedQuestionType: String
+    let order: Int
+    
+    @State var showSelectModal: Bool = false
     
     var body: some View {
         ZStack {
@@ -27,7 +35,12 @@ struct QuestionShareNowView: View {
             
             VStack {
                 Spacer()
-                NavigationLink(destination: QuestionListView(isSaveMode: true)) {
+                NavigationLink(destination: QuestionListView(
+                    mainViewModel: mainViewModel,
+                    isSaveMode: true,
+                    selectedQuestionType: selectedQuestionType,
+                    order: order)
+                ) {
                     PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true))
                         .padding(.horizontal, 21)
                 }
@@ -52,7 +65,12 @@ struct QuestionShareNowView: View {
                 
                 Spacer()
                 
-                NavigationLink(destination: QuestionListView(isSaveMode: false)) {
+                NavigationLink(destination: QuestionListView(
+                    mainViewModel: mainViewModel,
+                    isSaveMode: false,
+                    selectedQuestionType: selectedQuestionType,
+                    order: order)
+                ) {
                     Image(.iconList)
                 }
                 .padding(.trailing, 18)
@@ -104,7 +122,11 @@ struct QuestionShareNowView: View {
                             content: question.question,
                             date: question.createdAt,
                             sharedCount: question.sharedCount,
-                            index: index + 1
+                            index: index + 1,
+                            onTap: {
+                                showSelectModal = true
+                            },
+                            selectViewModel: selectViewModel
                         )
                         .padding(.horizontal, 24)
                         .rotationEffect(totalAngle)
@@ -137,8 +159,4 @@ struct QuestionShareNowView: View {
             .frame(height: 636)
         }
     }
-}
-
-#Preview {
-    QuestionShareNowView()
 }
