@@ -26,6 +26,17 @@ struct DailyData: Decodable {
     let selectionCount: Int
 }
 
+struct SummaryDetailsResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: SummaryDetailsResult?
+}
+
+struct SummaryDetailsResult: Decodable {
+    let dailyDetails: [String: String]
+}
+
 struct ExtraDiscModel: Identifiable {
     let id = UUID()
     let text: String

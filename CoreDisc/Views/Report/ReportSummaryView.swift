@@ -36,6 +36,7 @@ struct ReportSummaryView: View {
         .navigationBarBackButtonHidden()
         .onAppear {
             viewModel.getSummaryTop(year: SummaryYear, month: SummaryMonth)
+            viewModel.getSummaryDetails(year: SummaryYear, month: SummaryMonth)
         }
     }
     
