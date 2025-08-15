@@ -41,8 +41,8 @@ struct BackModalView: View {
                                 .frame(width: 296, height: 39)
                                 .textStyle(.Modal_Text)
                                 .foregroundStyle(.black000)
-                                .buttonStyle(.plain)
                         }
+                        .buttonStyle(.plain)
                     }
                 }
             }
