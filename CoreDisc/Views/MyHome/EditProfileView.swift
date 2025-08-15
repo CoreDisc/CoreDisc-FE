@@ -122,7 +122,7 @@ struct EditProfileView: View {
             
             if showEditButton {
                 VStack(spacing: 12) {
-                    Button(action: {}) { // TODO: 기본 이미지 설정
+                    Button(action: {viewModel.fetchDefaultImage()}) { 
                         Text("기본 이미지")
                             .textStyle(.Q_pick)
                             .foregroundStyle(.black000)

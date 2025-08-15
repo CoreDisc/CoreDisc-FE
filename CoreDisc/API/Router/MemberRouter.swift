@@ -22,7 +22,8 @@ enum MemberRouter {
     case getMyhomePosts(cursorId: Int?, size: Int?) // 마이홈 본인 게시글 리스트 조회
     case getMyhomePostsTargetUsername(targetUsername: String, cursorId: Int?, size: Int?) // 마이홈 타사용자 게시글 리스트 조회
     
-    case patchProfileImage(image: Data)
+    case patchProfileImage(image: Data) // 프로필 사진 변경
+    case patchDefaultImage // 기본 프로필 사진으로 변경
 }
 
 extension MemberRouter: APITargetType {
@@ -55,12 +56,14 @@ extension MemberRouter: APITargetType {
             
         case .patchProfileImage:
             return "\(Self.memberPath)/profile-image"
+        case .patchDefaultImage:
+            return "\(Self.memberPath)/profile-image/default"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .patchResign, .patchProfile, .patchPassword, .patchMyhomeUsername, .patchMyhomePassword, .patchMyhomeEmail, .patchProfileImage:
+        case .patchResign, .patchProfile, .patchPassword, .patchMyhomeUsername, .patchMyhomePassword, .patchMyhomeEmail, .patchProfileImage, .patchDefaultImage:
                 .patch
         case .getMyhome, .getMyhomeTargetUsername, .getMyhomePosts, .getMyhomePostsTargetUsername:
                 .get
@@ -117,6 +120,9 @@ extension MemberRouter: APITargetType {
                     mimeType: "image/jpeg"
                 )
                 return .uploadMultipart([formData])
+            
+        case .patchDefaultImage:
+            return .requestPlain
         }
      }
     

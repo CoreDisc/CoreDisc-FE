@@ -238,4 +238,21 @@ class MyHomeViewModel: ObservableObject {
             }
         }
     }
+    
+    func fetchDefaultImage() {
+        memberProvider.request(.patchDefaultImage) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(ImageResponse.self, from: response.data)
+                    print("기본 이미지 성공 : \(decoded)")
+                    self.fetchMyHome()
+                } catch {
+                    print("디코딩 실패: \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류: \(error)")
+            }
+        }
+    }
 }
