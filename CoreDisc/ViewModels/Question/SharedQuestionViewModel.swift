@@ -33,8 +33,7 @@ class SharedQuestionViewModel: ObservableObject {
                     let decoded = try JSONDecoder().decode(SharedQuestionResponse.self, from: response.data)
                     
                     DispatchQueue.main.async {
-                        self.mySharedQuestionCnt = decoded.result.mySharedQuestionCnt ?? self.mySharedQuestions.count
-                        
+                        // ✅ 먼저 배열 세팅
                         if let list = decoded.result.mySharedQuestionList {
                             if cursorId == nil {
                                 self.mySharedQuestions = list.values
@@ -51,6 +50,10 @@ class SharedQuestionViewModel: ObservableObject {
                             self.hasNext = decoded.result.hasNext ?? false
                         }
                         
+                        // ✅ 배열 세팅 후 개수 갱신 (즉시 반영)
+                        self.mySharedQuestionCnt = decoded.result.mySharedQuestionCnt ?? self.mySharedQuestions.count
+                        
+                        // 마지막 커서 ID 저장
                         self.lastCursorId = self.mySharedQuestions.last?.id
                     }
                 } catch {

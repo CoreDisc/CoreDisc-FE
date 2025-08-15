@@ -14,6 +14,7 @@ struct QuestionSummaryView: View {
     @Binding var text: String
     
     @StateObject private var viewModel = QuestionSummaryViewModel()
+    @StateObject private var sharedQuestionVM = SharedQuestionViewModel()
     
     var body: some View {
         ZStack {
