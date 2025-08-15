@@ -21,10 +21,6 @@ struct PostWriteView: View {
     // 현재 슬라이드 인덱스
     @State private var pageIndex: Int = 0
     
-    // 슬라이드별 답변 상태
-    //@State private var answers: [SlideAnswer] = Array(repeating: .init(), count: 4)
-    
-    
     var body: some View {
         NavigationStack{
             ZStack {
@@ -79,6 +75,7 @@ struct PostWriteView: View {
     // 사용자 정보 및 저장버튼 섹션
     private var UserGroup: some View {
         VStack (alignment: .center){
+
             // 개인정보, 저장버튼
             HStack {
                 Circle() // TODO: 추후 프로필 사진으로 변경
@@ -129,66 +126,69 @@ struct PostWriteView: View {
     private var PostGroup: some View {
         VStack (alignment: .center){
             // 게시물 작성란
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ZStack {
+            TabView(selection: $pageIndex) {
+                //HStack(spacing: 16) {
+                ZStack {
+                    Rectangle()
+                        .fill(Color.gray400)
+                        .frame(width: 308, height: 409)
+                        .cornerRadius(20.83)
+                    
+                    
+                    VStack (alignment: .leading, spacing: 20) {
+                        Button(action: {
+                            // TODO:
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.white)
+                                    .frame(width: 60, height: 60)
+                                
+                                Image(.iconPhoto)
+                                    .renderingMode(.original)
+                            }
+                        }
+                        
+                        
+                        Button(action: {
+                            // TODO:
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.white)
+                                    .frame(width: 60, height: 60)
+                                
+                                Image(.iconWriting)
+                                    .renderingMode(.original)
+                            }
+                        }
+                    }
+                    .padding(.top, 240)
+                    .padding(.leading, 225)
+                }
+                .tag(0)
+                
+                ForEach(1..<4, id: \.self) { idx in
+                    VStack {
                         Rectangle()
                             .fill(Color.gray400)
                             .frame(width: 308, height: 409)
                             .cornerRadius(20.83)
                         
-                        
-                        VStack (alignment: .leading, spacing: 20) {
-                            Button(action: {
-                                // TODO:
-                            }) {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.white)
-                                        .frame(width: 60, height: 60)
-                                    
-                                    Image(.iconPhoto)
-                                        .renderingMode(.original)
-                                }
-                            }
-                            
-                            
-                            Button(action: {
-                                // TODO:
-                            }) {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.white)
-                                        .frame(width: 60, height: 60)
-                                    
-                                    Image(.iconWriting)
-                                        .renderingMode(.original)
-                                }
-                            }
-                        }
-                        .padding(.top, 240)
-                        .padding(.leading, 225)
                     }
-                    
-                    ForEach(0..<3, id: \.self) { _ in
-                        VStack {
-                            Rectangle()
-                                .fill(Color.gray400)
-                                .frame(width: 308, height: 409)
-                                .cornerRadius(20.83)
-                            
-                        }
-                    }
+                    .tag(idx)
                 }
-                .padding(.horizontal, 47)
             }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(height: 409)
+            //.padding(.horizontal, 47)
         }
     }
     
     // 질문 섹션
     private var QuestionGroup: some View {
         VStack (alignment: .center){
-            Text("계절마다 떠오르는 음식이 있나요? 요즘 생각나는 건 뭐예요?")
+            Text(currentQuestion)
                 .textStyle(.Q_Main)
                 .foregroundStyle(.highlight)
                 .multilineTextAlignment(.center)
@@ -287,6 +287,11 @@ struct PostWriteView: View {
         }
         .frame(maxWidth: .infinity, minHeight: 50)
     }
+    
+    // 슬라이딩 시 질문 변경
+    private var currentQuestion: String {
+            (0..<questions.count).contains(pageIndex) ? questions[pageIndex] : (questions.first ?? "")
+        }
 }
 
 #Preview {
