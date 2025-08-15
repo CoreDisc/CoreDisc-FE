@@ -11,7 +11,6 @@ import Moya
 struct LoginView: View {
     
     @StateObject private var viewModel = LoginViewModel()
-    @State private var isLoginSuccess = false
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -43,7 +42,7 @@ struct LoginView: View {
                 }
             }
         }
-        .fullScreenCover(isPresented: $isLoginSuccess) {
+        .fullScreenCover(isPresented: $viewModel.isLogin) {
             TabBar()
         }
         .navigationBarBackButtonHidden()
