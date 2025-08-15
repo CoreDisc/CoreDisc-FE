@@ -8,9 +8,15 @@
 import SwiftUI
 import Kingfisher
 
-enum FollowType: String {
-    case follower, userFollower, coreList = "followers"
-    case following, userFollowing = "followings"
+enum FollowType {
+    case follower, userFollower, coreList, following, userFollowing
+    
+    var title: String {
+        switch self {
+        case .follower, .userFollower, .coreList: "followers"
+        case .following, .userFollowing: "followings"
+        }
+    }
 }
 
 struct FollowSheetView: View {
@@ -65,7 +71,7 @@ struct FollowSheetView: View {
     // 상단바
     private var TopGroup: some View {
         ZStack() {
-            Text(followType.rawValue)
+            Text(currentFollowType.title)
                 .textStyle(.Pick_Q_Eng)
                 .foregroundStyle(.white)
             
@@ -94,7 +100,7 @@ struct FollowSheetView: View {
                     .textStyle(.Q_Main)
                     .foregroundStyle(.white)
                 
-                Text(followType.rawValue)
+                Text(currentFollowType.title)
                     .textStyle(.Q_Sub)
                     .foregroundStyle(.gray400)
             }
