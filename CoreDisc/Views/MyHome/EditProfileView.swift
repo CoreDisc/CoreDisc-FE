@@ -178,6 +178,7 @@ struct EditProfileView: View {
                 viewModel: viewModel
             )
                 .focused($isFocused) // 키보드 내리기
+                .textInputAutocapitalization(.never)
                 .onChange(of: viewModel.nickname) { oldValue, newValue in
                       if viewModel.nameCheckSuccess {
                           viewModel.nameCheckSuccess = false
@@ -191,6 +192,7 @@ struct EditProfileView: View {
                 viewModel: viewModel
             )
                 .focused($isFocused) // 키보드 내리기
+                .textInputAutocapitalization(.never)
                 .onChange(of: viewModel.username) { oldValue, newValue in
                       if viewModel.idCheckSuccess {
                           viewModel.idCheckSuccess = false

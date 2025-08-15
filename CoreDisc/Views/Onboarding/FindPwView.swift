@@ -11,6 +11,7 @@ struct FindPwView: View {
     
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = FindPwViewModel()
+    @FocusState private var isFocused: Bool
     
     @State private var pwdShown = false
     @State private var rePwdShown = false
@@ -21,7 +22,9 @@ struct FindPwView: View {
                 Image(.imgOnboardingBackground)
                     .resizable()
                     .ignoresSafeArea()
-                
+                    .onTapGesture { // 키보드 내리기 용도
+                        isFocused = false
+                    }
                 VStack{
                     Spacer().frame(height: 96)
                     Image(.imgLogo)
@@ -69,10 +72,14 @@ struct FindPwView: View {
             
             InputView{
                 TextField("아이디", text: $viewModel.username)
+                    .focused($isFocused)
+                    .textInputAutocapitalization(.never)
             }
             
             InputView{
                 TextField("이메일", text: $viewModel.email)
+                    .focused($isFocused)
+                    .textInputAutocapitalization(.never)
             }
             
             Spacer().frame(height: 36)
@@ -117,6 +124,8 @@ struct FindPwView: View {
 
             InputView{
                 TextField("인증번호 6자리", text: $viewModel.code)
+                    .focused($isFocused)
+                    .textInputAutocapitalization(.never)
             }
             
             if viewModel.codeErrorMessage.isEmpty {
@@ -172,6 +181,8 @@ struct FindPwView: View {
                 if pwdShown{
                     HStack{
                         TextField("비밀번호를 입력해주세요.", text: $viewModel.pwd)
+                            .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
@@ -183,6 +194,8 @@ struct FindPwView: View {
                 } else{
                     HStack{
                         SecureField("비밀번호를 입력해주세요.", text: $viewModel.pwd)
+                            .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             pwdShown.toggle()
@@ -209,6 +222,8 @@ struct FindPwView: View {
                 if rePwdShown{
                     HStack{
                         TextField("비밀번호를 한 번 더 입력해주세요.", text: $viewModel.rePwd)
+                            .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()
@@ -220,6 +235,8 @@ struct FindPwView: View {
                 } else{
                     HStack{
                         SecureField("비밀번호를 한 번 더 입력해주세요.", text: $viewModel.rePwd)
+                            .focused($isFocused)
+                            .textInputAutocapitalization(.never)
                         Spacer()
                         Button(action:{
                             rePwdShown.toggle()

@@ -10,7 +10,12 @@ import Moya
 
 class ReportDetailViewModel: ObservableObject {
     
-    @Published var TotalDiscItem: [TotalDiscModel] = []
+    @Published var TotalDiscItem: [TotalDiscModel] = []{
+        didSet {
+            DiscCount = TotalDiscItem.count
+        }
+    }
+    @Published var DiscCount: Int = 0
     @Published var MostQuestionItem: [MostSelectedQuestion] = []
     @Published var PeakTimeImage: String = ""
     

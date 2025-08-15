@@ -30,6 +30,9 @@ struct QuestionTrendingView: View {
             }
         }
         .navigationBarBackButtonHidden()
+        .task {
+            viewModel.fetchPopularQuestions()
+        }
         
     }
     
@@ -76,7 +79,7 @@ struct QuestionTrendingView: View {
         VStack {
             ForEach(viewModel.questions.indices, id: \.self){index in
                 let question = viewModel.questions[index]
-                VStack {
+                VStack(alignment: .leading) {
                     TrendingQuestionItem(
                         index: index + 1,
                         content: question.question,
@@ -118,6 +121,7 @@ struct TrendingQuestionItem: View {
                             .frame(width:24, height: 24)
                             .foregroundStyle(.gray600)
                     )
+                
                 VStack(alignment: .leading) {
                     Text("\(content.splitCharacter())")
                         .textStyle(.Texting_Q)
@@ -135,11 +139,12 @@ struct TrendingQuestionItem: View {
                             .textStyle(.Small_Text)
                             .foregroundStyle(.gray200)
                     }
-                    .padding(.leading, 16)
+                    .padding(.leading, 8)
                     .padding(.bottom, 4)
                     
                 }
                 
+                Spacer()
                 
                 Button(action:{
                     isChecked.toggle()
@@ -150,7 +155,6 @@ struct TrendingQuestionItem: View {
                 }
             }
         }
-        
         
     }
 }
