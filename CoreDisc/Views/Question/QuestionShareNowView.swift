@@ -9,9 +9,21 @@ import SwiftUI
 
 struct QuestionShareNowView: View {
     @StateObject private var viewModel = SharedQuestionViewModel()
+    @StateObject private var selectViewModel = QuestionBasicViewModel()
+    
     private let spacingAngle: Double = 19
     @State private var hiddenCount = 0
     @Environment(\.dismiss) var dismiss
+    @State private var goToMain = false
+    
+    @ObservedObject var mainViewModel: QuestionMainViewModel
+    let selectedQuestionType: String
+    let order: Int
+    
+    @State var showSelectModal: Bool = false
+    
+    // 질문 선택/저장 용도
+    @State private var selectedQuestionId: Int? = nil
     
     var body: some View {
         ZStack {
@@ -27,17 +39,37 @@ struct QuestionShareNowView: View {
             
             VStack {
                 Spacer()
-                NavigationLink(destination: QuestionListView(isSaveMode: true)) {
+                NavigationLink(destination: QuestionListView(
+                    mainViewModel: mainViewModel,
+                    isSaveMode: true,
+                    selectedQuestionType: selectedQuestionType,
+                    order: order)
+                ) {
                     PrimaryActionButton(title: "저장한 공유질문 보기", isFinished: .constant(true))
                         .padding(.horizontal, 21)
                 }
                 Spacer().frame(height: 60)
+            }
+            
+            // 선택 확인 모달
+            if showSelectModal {
+                QuestionSelectModalView(
+                    isMonth: selectedQuestionType,
+                    selectedQuestionId: $selectedQuestionId,
+                    order: order,
+                    selectedQuestionType: .OFFICIAL,
+                    viewModel: selectViewModel,
+                    mainViewModel: mainViewModel,
+                    showSelectModal: $showSelectModal,
+                    goToMain: $goToMain
+                )
             }
         }
         .navigationBarBackButtonHidden()
         .task {
             await viewModel.fetchMySharedQuestions()
         }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
     }
     
     private var InfoGroup: some View {
@@ -52,7 +84,12 @@ struct QuestionShareNowView: View {
                 
                 Spacer()
                 
-                NavigationLink(destination: QuestionListView(isSaveMode: false)) {
+                NavigationLink(destination: QuestionListView(
+                    mainViewModel: mainViewModel,
+                    isSaveMode: false,
+                    selectedQuestionType: selectedQuestionType,
+                    order: order)
+                ) {
                     Image(.iconList)
                 }
                 .padding(.trailing, 18)
@@ -104,7 +141,13 @@ struct QuestionShareNowView: View {
                             content: question.question,
                             date: question.createdAt,
                             sharedCount: question.sharedCount,
-                            index: index + 1
+                            index: index + 1,
+                            onTap: {
+                                showSelectModal = true
+                                selectedQuestionId = question.id
+                            },
+                            isSelected: question.isSelected,
+                            selectViewModel: selectViewModel
                         )
                         .padding(.horizontal, 24)
                         .rotationEffect(totalAngle)
@@ -137,8 +180,4 @@ struct QuestionShareNowView: View {
             .frame(height: 636)
         }
     }
-}
-
-#Preview {
-    QuestionShareNowView()
 }

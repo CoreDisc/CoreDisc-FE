@@ -87,6 +87,7 @@ class SharedQuestionViewModel: ObservableObject {
                             categories: categoryIds.map { SharedCategory(categoryId: $0, categoryName: "") },
                             question: question,
                             sharedCount: 0,
+                            isSelected: false,
                             createdAt: decoded.result.createdAt
                         )
                         DispatchQueue.main.async {
