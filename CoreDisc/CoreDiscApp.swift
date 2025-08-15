@@ -30,6 +30,7 @@ struct CoreDiscApp: App {
                 .overlay(alignment: .bottom) {
                     GlobalToastView()
                 }
+                .environmentObject(TabBarVisibility())
         }
     }
 }

@@ -15,6 +15,23 @@ struct ReportSummaryView: View {
     let SummaryYear: Int
     let SummaryMonth: Int
     
+    var beforeDiscMonth: Int {
+        (SummaryMonth == 12) ? 1 : SummaryMonth + 1
+    }
+    
+    var beforeDiscYear: Int {
+        (SummaryMonth == 1) ? SummaryYear + 1 : SummaryYear
+    }
+    
+    var nextDiscMonth: Int {
+        (SummaryMonth == 1) ? 12 : SummaryMonth - 1
+    }
+    
+    var nextDiscYear: Int {
+        (SummaryMonth == 12) ? SummaryYear - 1 : SummaryYear
+    }
+    
+    
     var body: some View {
         ZStack{
             Image(.imgLongBackground)
@@ -94,18 +111,18 @@ struct ReportSummaryView: View {
                         .foregroundStyle(.black)
                 }
                 Spacer()
-                HStack{
-                    Button(action:{}, label:{
+                HStack {
+                    NavigationLink(destination: ReportDetailView(year: beforeDiscYear, month: beforeDiscMonth)){
                         Image(.iconBefore)
-                    })
+                    }
                     Spacer().frame(width: 19)
-                    Button(action:{}, label:{
-                        Image(.iconPlay)
-                    })
+                    
+                    Image(.iconPlay)
                     Spacer().frame(width: 19)
-                    Button(action:{}, label:{
+                    
+                    NavigationLink(destination: ReportDetailView(year: nextDiscYear, month: nextDiscMonth)){
                         Image(.iconNext)
-                    })
+                    }
                 }
             }
             .padding(.horizontal, 24)

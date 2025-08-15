@@ -28,6 +28,7 @@ class ReportDetailViewModel: ObservableObject {
                 do {
                     let decodedResponse = try JSONDecoder().decode(ReportResponse.self, from: response.data)
                     print("성공: \(decodedResponse)")
+                    
                     if let resultData = decodedResponse.result {
                         let fixedModels = resultData.fixedQuestions.map {
                             TotalDiscModel(question: $0.questionContent, category: "fixed")
