@@ -8,13 +8,50 @@
 import Foundation
 import SwiftUI
 
-@Observable
-class ReportSummaryViewModel {
-    var SummaryQuest: [ReportSummaryModel] = [
-        .init(question: "누구와 가장 많이 있었을까요?", answer: "5월은 친구와 가장 많은 시간을 보냈어요.", freq: "총 17회"),
-        .init(question: "어디에 가장 많이 있었을까요?", answer: "5월은 집에서 가장 많은 시간을 보냈어요.", freq: "총 21회"),
-        .init(question: "무엇을 가장 많이 했을까요?", answer: "5월은 여행으로 가장 많은 시간을 보냈어요.", freq: "총 14회"),
-    ]
+class ReportSummaryViewModel: ObservableObject {
+    
+    @Published var summaryTop: [DailyData] = []
+    
+    private let ReportProvider = APIManager.shared.createProvider(for: ReportRouter.self)
+    
+    func getSummaryTop(year: Int, month: Int) {
+        ReportProvider.request(.getTopSelection(year: year, month: month)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedResponse = try JSONDecoder().decode(SummaryTopResponse.self, from: response.data)
+                    print("성공: \(decodedResponse)")
+                    DispatchQueue.main.async {
+                        let monthText = "\(month)월은"
+                        let list = decodedResponse.result?.dailyList.map { item -> DailyData in
+                            
+                            let sentence: String
+                            switch item.dailyType {
+                            case "누구와 가장 많이 있었을까요?":
+                                sentence = "\(monthText) \(item.optionContent)과 가장 많은 시간을 보냈어요."
+                            case "어디에 가장 많이 있었을까요?":
+                                sentence = "\(monthText) \(item.optionContent)에서 가장 많은 시간을 보냈어요."
+                            case "무엇을 가장 많이 했을까요?":
+                                sentence = "\(monthText) \(item.optionContent)으로 가장 많은 시간을 보냈어요."
+                            default:
+                                sentence = "\(monthText) \(item.optionContent)"
+                            }
+                            return DailyData(
+                                dailyType: item.dailyType,
+                                optionContent: sentence,
+                                selectionCount: item.selectionCount
+                            )
+                        } ?? []
+                        self.summaryTop = list
+                    }
+                } catch {
+                    print("디코딩 실패 : \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류 : \(error)")
+            }
+        }
+    }
     
     var ExtraDisc: [ExtraDiscModel] = [
         .init(text: "7월은 집에서 가장 많은 시간을 보냈네요. 정말 덥고 습하고 절대 밖으로 나가지 않았네요 에어컨이 없으면 살 수가 없을 지경입니다 아이스크림을 하루에 3개씩 먹고 있어요", date: "7/1"),

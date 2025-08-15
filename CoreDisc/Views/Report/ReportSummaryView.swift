@@ -10,7 +10,10 @@ import SwiftUI
 struct ReportSummaryView: View {
     @Environment(\.dismiss) var dismiss
     @State private var currentIndex: Int = 0
-    let viewModel = ReportSummaryViewModel()
+    @StateObject private var viewModel = ReportSummaryViewModel()
+    
+    let SummaryYear: Int
+    let SummaryMonth: Int
     
     var body: some View {
         ZStack{
@@ -31,6 +34,9 @@ struct ReportSummaryView: View {
             }
         }
         .navigationBarBackButtonHidden()
+        .onAppear {
+            viewModel.getSummaryTop(year: SummaryYear, month: SummaryMonth)
+        }
     }
     
     private var HeaderGroup : some View{
@@ -52,14 +58,14 @@ struct ReportSummaryView: View {
                 .foregroundStyle(.white)
                 .padding(.bottom, 2)
                 .padding(.leading, 35)
-            Text("5월의 CORE DISC")
+            Text("\(SummaryMonth)월의 CORE DISC")
                 .textStyle(.Title2_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.leading, 35)
             
-            ForEach(viewModel.SummaryQuest, id: \.question){ item in
+            ForEach(viewModel.summaryTop, id: \.dailyType){ item in
                 ZStack{
-                    SummaryQuest(question: item.question, answer: item.answer, freq: item.freq)
+                    SummaryQuest(question: item.dailyType, answer: item.optionContent, freq: item.selectionCount)
                         .padding(.vertical, 10)
                 }
             }
@@ -171,5 +177,5 @@ struct ReportSummaryView: View {
 }
 
 #Preview {
-    ReportSummaryView()
+    ReportSummaryView(SummaryYear: 2025, SummaryMonth: 7)
 }

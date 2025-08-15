@@ -270,7 +270,7 @@ struct ReportDetailView: View {
     
     private var GoSummaryGroup: some View {
         VStack {
-            NavigationLink(destination: ReportSummaryView()){
+            NavigationLink(destination: ReportSummaryView(SummaryYear: year, SummaryMonth: month)){
                 ZStack {
                     Rectangle()
                         .cornerRadius(16)
