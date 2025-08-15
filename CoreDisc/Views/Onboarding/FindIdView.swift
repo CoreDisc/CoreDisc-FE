@@ -69,11 +69,13 @@ struct FindIdView: View {
             InputView{
                 TextField("이름", text: $viewModel.name)
                     .focused($isFocused)
+                    .textInputAutocapitalization(.never)
             }
             
             InputView{
                 TextField("이메일", text: $viewModel.email)
                     .focused($isFocused)
+                    .textInputAutocapitalization(.never)
             }
             
             if viewModel.isError {
