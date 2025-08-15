@@ -82,8 +82,8 @@ struct CoreQuestionsView: View {
     // 질문 리스트
     private var QuestionGroup: some View {
         VStack(spacing: 50) {
-            CoreQuestionList(layout: .right, category: .취향)
-            CoreQuestionList(layout: .left, category: .건강)
+            CoreQuestionList(layout: .right, category: .taste)
+            CoreQuestionList(layout: .left, category: .lifeStyle)
         }
     }
 }
@@ -97,7 +97,7 @@ enum CoreQuestionLayout {
 
 struct CoreQuestionList: View {
     let layout: CoreQuestionLayout
-    let category: QuestionCategoryType
+    let category: CategoryType
     
     // 씨디 돌아가는 애니메이션
     @State private var rotationAngle: Double = 0.0
@@ -165,11 +165,7 @@ struct CoreQuestionList: View {
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
                             .strokeBorder(
-                                LinearGradient(
-                                    colors: [category.startColor, category.endColor],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                ),
+                                category.color,
                                 lineWidth: 1
                             )
                     )
