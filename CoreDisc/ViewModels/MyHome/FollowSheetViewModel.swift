@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Moya
 
 class FollowSheetViewModel: ObservableObject {
     // MARK: - Properties
@@ -143,7 +144,7 @@ class FollowSheetViewModel: ObservableObject {
     // MARK: - Functions - API
     func fetchFollowers(
         cursorId: Int? = nil,
-        size: Int? = 10
+        size: Int? = 20
     ) {
         followProvider.request(.getFollowers(cursorId: cursorId, size: size)) { result in
             switch result {
@@ -180,7 +181,7 @@ class FollowSheetViewModel: ObservableObject {
     
     func fetchFollowings(
         cursorId: Int? = nil,
-        size: Int? = 10
+        size: Int? = 20
     ) {
         followProvider.request(.getFollowings(cursorId: cursorId, size: size)) { result in
             switch result {
@@ -218,7 +219,7 @@ class FollowSheetViewModel: ObservableObject {
     func fetchUserFollowers(
         targetUsername: String,
         cursorId: Int? = nil,
-        size: Int? = 10
+        size: Int? = 20
     ) {
         followProvider.request(.getFollowersTarget(
             targetUsername: targetUsername,
@@ -260,7 +261,7 @@ class FollowSheetViewModel: ObservableObject {
     func fetchUserFollowings(
         targetUsername: String,
         cursorId: Int? = nil,
-        size: Int? = 10
+        size: Int? = 20
     ) {
         followProvider.request(.getFollowingsTarget(
             targetUsername: targetUsername,
@@ -327,7 +328,7 @@ class FollowSheetViewModel: ObservableObject {
     
     func fetchCircleList(
         cursorId: Int? = nil,
-        size: Int? = 10
+        size: Int? = 20
     ) {
         circleProvier.request(.getCircle(cursorId: cursorId, size: size)) { result in
             switch result {
