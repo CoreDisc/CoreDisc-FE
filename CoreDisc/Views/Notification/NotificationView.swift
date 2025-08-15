@@ -45,7 +45,7 @@ struct NotificationView: View {
             case "COMMEND", "COMMENT_REPLY", "LIKE":
                 PostDetailView(postId: item.targetId)
             case "TEMP_POSTS":
-                EmptyView() // 임시
+                PostWriteView()
             case "DAILY_REMINDER", "UNANSWERED_REMINDER":
                 QuestionMainView()
             case "DAILY_REMINDER_ANSWER", "UNANSWERED_REMINDER_ANSWER":
@@ -98,7 +98,9 @@ struct NotificationView: View {
                     }
                 }
             }
+            .padding(.bottom, 75)
         }
+        .scrollIndicators(.hidden)
     }
 }
 
