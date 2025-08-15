@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum Tab {
-    case home, disk, write, report, mypage
+    case home, write, disk, report, mypage
 }
 
 enum TabBarStyle {
@@ -16,17 +16,17 @@ enum TabBarStyle {
 }
 
 struct TabBar: View {
-    @State private var selectedTab: Tab = .home
-    @State private var tabBarStyle: TabBarStyle = .dark
+    @State private var selectedTab: Tab = .disk
+    @State private var tabBarStyle: TabBarStyle = .light
     @StateObject private var tabBarVisibility = TabBarVisibility()
     
-    init(startTab: Tab = .home) {
+    init(startTab: Tab = .disk) {
         _selectedTab = State(initialValue: startTab)
         _tabBarStyle = State(initialValue: {
             switch startTab {
             case .home: return .dark
-            case .disk: return .light
             case .write: return .dark
+            case .disk: return .light
             case .report: return .light
             case .mypage: return .light
             }
@@ -39,10 +39,10 @@ struct TabBar: View {
                 switch selectedTab {
                 case .home:
                     PostMainView()
-                case .disk:
-                    QuestionMainView()
                 case .write:
                     PostWriteView()
+                case .disk:
+                    QuestionMainView()
                 case .report:
                     ReportMainView()
                 case .mypage:
@@ -71,8 +71,8 @@ struct TabBar: View {
     private func tabBarStyle(for tab: Tab) -> TabBarStyle {
         switch tab {
         case .home: .dark
-        case .disk: .light
         case .write: .dark
+        case .disk: .light
         case .report: .light
         case .mypage: .light
         }
@@ -95,8 +95,8 @@ struct CustomTabBar: View {
                 
                 HStack(spacing: 19) {
                     TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .home, icon: "icon_home")
-                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .disk, icon: "icon_disk")
                     TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .write, icon: "icon_pencil")
+                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .disk, icon: "icon_disk")
                     TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .report, icon: "icon_museum")
                     TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .mypage, icon: "icon_mypage")
                 }
