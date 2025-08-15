@@ -8,6 +8,7 @@
 import Foundation
 import Moya
 
+@MainActor
 class SharedQuestionViewModel: ObservableObject {
     @Published var mySharedQuestionCnt: Int = 0
     @Published var mySharedQuestions: [SharedQuestion] = []
@@ -19,58 +20,53 @@ class SharedQuestionViewModel: ObservableObject {
     private var lastCursorId: Int? = nil
     
     // 공유 질문 목록 가져오기
-    func fetchMySharedQuestions(cursorId: Int? = nil, size: Int = 10) {
-        guard !isLoading else { return }
-        isLoading = true
-        
-        provider.request(.getOfficialMine(cursorId: cursorId, size: size)) { [weak self] result in
-            guard let self = self else { return }
-            self.isLoading = false
-            
-            switch result {
-            case .success(let response):
-                do {
-                    let decoded = try JSONDecoder().decode(SharedQuestionResponse.self, from: response.data)
-                    
-                    DispatchQueue.main.async {
-                        // ✅ 먼저 배열 세팅
-                        if let list = decoded.result.mySharedQuestionList {
-                            if cursorId == nil {
-                                self.mySharedQuestions = list.values
-                            } else {
-                                self.mySharedQuestions.append(contentsOf: list.values)
-                            }
-                            self.hasNext = list.hasNext
-                        } else if let values = decoded.result.values {
-                            if cursorId == nil {
-                                self.mySharedQuestions = values
-                            } else {
-                                self.mySharedQuestions.append(contentsOf: values)
-                            }
-                            self.hasNext = decoded.result.hasNext ?? false
-                        }
-                        
-                        // ✅ 배열 세팅 후 개수 갱신 (즉시 반영)
-                        self.mySharedQuestionCnt = decoded.result.mySharedQuestionCnt ?? self.mySharedQuestions.count
-                        
-                        // 마지막 커서 ID 저장
-                        self.lastCursorId = self.mySharedQuestions.last?.id
+    func fetchMySharedQuestions(cursorId: Int? = nil, size: Int = 10) async {
+            guard !isLoading else { return }
+            isLoading = true
+            defer { isLoading = false }
+
+            await withCheckedContinuation { continuation in
+                provider.request(.getOfficialMine(cursorId: cursorId, size: size)) { [weak self] result in
+                    guard let self = self else {
+                        continuation.resume()
+                        return
                     }
-                } catch {
-                    DispatchQueue.main.async {
+                    switch result {
+                    case .success(let response):
+                        do {
+                            let decoded = try JSONDecoder().decode(SharedQuestionResponse.self, from: response.data)
+
+                            if let list = decoded.result.mySharedQuestionList {
+                                if cursorId == nil {
+                                    self.mySharedQuestions = list.values
+                                } else {
+                                    self.mySharedQuestions.append(contentsOf: list.values)
+                                }
+                                self.hasNext = list.hasNext
+                            } else if let values = decoded.result.values {
+                                if cursorId == nil {
+                                    self.mySharedQuestions = values
+                                } else {
+                                    self.mySharedQuestions.append(contentsOf: values)
+                                }
+                                self.hasNext = decoded.result.hasNext ?? false
+                            }
+
+                            self.mySharedQuestionCnt = decoded.result.mySharedQuestionCnt ?? self.mySharedQuestions.count
+                            self.lastCursorId = self.mySharedQuestions.last?.id
+                        } catch {
+                            self.errorMessage = "데이터를 불러오는 중 오류가 발생했습니다."
+                            ToastManager.shared.show("데이터를 불러오는 중 오류가 발생했습니다.")
+                        }
+                        continuation.resume()
+                    case .failure(_):
                         self.errorMessage = "데이터를 불러오는 중 오류가 발생했습니다."
                         ToastManager.shared.show("데이터를 불러오는 중 오류가 발생했습니다.")
+                        continuation.resume()
                     }
-                }
-                
-            case .failure(_):
-                DispatchQueue.main.async {
-                    self.errorMessage = "데이터를 불러오는 중 오류가 발생했습니다."
-                    ToastManager.shared.show("데이터를 불러오는 중 오류가 발생했습니다.")
                 }
             }
         }
-    }
     
     // 공유 질문 작성
     func shareOfficialQuestion(categoryIds: [Int], question: String, completion: @escaping (Bool) -> Void) {
