@@ -10,7 +10,18 @@ import SwiftUI
 
 struct QuestionTrendingView: View {
     @Environment(\.dismiss) var dismiss
+    @State var goToMain: Bool = false
+    
     @StateObject private var viewModel = PopularQuestionViewModel()
+    @StateObject private var basicviewModel = QuestionBasicViewModel()
+    @ObservedObject var mainViewModel: QuestionMainViewModel
+    
+    let selectedQuestionType: String
+    
+    // 질문 선택/저장 용도
+    let order: Int
+    @State private var selectedQuestionId: Int? = nil
+    @State var showSelectModal: Bool = false
     
     var body: some View {
         
@@ -28,12 +39,26 @@ struct QuestionTrendingView: View {
                 
                 Spacer()
             }
+            
+            // 선택 확인 모달
+            if showSelectModal {
+                QuestionSelectModalView(
+                    isMonth: selectedQuestionType,
+                    selectedQuestionId: $selectedQuestionId,
+                    order: order,
+                    selectedQuestionType: .OFFICIAL,
+                    viewModel: basicviewModel,
+                    mainViewModel: mainViewModel,
+                    showSelectModal: $showSelectModal,
+                    goToMain: $goToMain
+                )
+            }
         }
         .navigationBarBackButtonHidden()
         .task {
             viewModel.fetchPopularQuestions()
         }
-        
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
     }
     
     
@@ -86,7 +111,11 @@ struct QuestionTrendingView: View {
                         nickname: question.username,
                         sharing: question.sharedCount,
                         isChecked: question.isSelected,
-                        isFavorite: false
+                        isFavorite: false,
+                        onTap: {
+                            showSelectModal = true
+                            selectedQuestionId = question.id
+                        }
                     )
                     .padding(.leading, 43)
                     .padding(.trailing, 47)
@@ -109,6 +138,7 @@ struct TrendingQuestionItem: View {
     var sharing: Int
     @State var isChecked: Bool
     @State var isFavorite: Bool
+    var onTap: (() -> Void)
     
     var body: some View {
         VStack {
@@ -147,7 +177,7 @@ struct TrendingQuestionItem: View {
                 Spacer()
                 
                 Button(action:{
-                    isChecked.toggle()
+                    onTap()
                 }){
                     Image(isChecked ? .iconChecked : .iconCheck)
                         .resizable()
@@ -155,10 +185,9 @@ struct TrendingQuestionItem: View {
                 }
             }
         }
-        
     }
 }
 
-#Preview {
-    QuestionTrendingView()
-}
+//#Preview {
+//    QuestionTrendingView()
+//}
