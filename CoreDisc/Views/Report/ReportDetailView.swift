@@ -29,6 +29,22 @@ struct ReportDetailView: View {
     let year: Int
     let month: Int
     
+    var beforeDiscMonth: Int {
+        (month == 12) ? 1 : month + 1
+    }
+    
+    var beforeDiscYear: Int {
+        (month == 1) ? year + 1 : year
+    }
+    
+    var nextDiscMonth: Int {
+        (month == 1) ? 12 : month - 1
+    }
+    
+    var nextDiscYear: Int {
+        (month == 12) ? year - 1 : year
+    }
+    
     let sixItemPositions: [CGPoint] = [
         CGPoint(x: 213, y: 55),
         CGPoint(x: 250, y: 103),
@@ -336,19 +352,18 @@ struct ReportDetailView: View {
                 Spacer()
                 
                 HStack {
-                    Button(action: {}, label: {
+                    NavigationLink(destination: ReportDetailView(year: beforeDiscYear, month: beforeDiscMonth)){
                         Image(.iconBefore)
-                    })
+                    }
                     Spacer().frame(width: 19)
                     
-                    Button(action: {}, label: {
-                        Image(.iconPlay)
-                    })
+                    
+                    Image(.iconPlay)
                     Spacer().frame(width: 19)
                     
-                    Button(action: {}, label: {
+                    NavigationLink(destination: ReportDetailView(year: nextDiscYear, month: nextDiscMonth)){
                         Image(.iconNext)
-                    })
+                    }
                 }
             }
             .padding(.horizontal, 24)
