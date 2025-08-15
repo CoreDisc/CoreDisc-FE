@@ -24,6 +24,10 @@ struct CommentSheetView: View {
     @State private var currentCommentId: Int = 0
     @State private var isReply: Bool = false
     
+    @Binding var showUserHome: Bool
+    @Binding var isOwner: Bool
+    @Binding var commentUsername: String
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             RoundedRectangle(cornerRadius: 12)
@@ -58,7 +62,13 @@ struct CommentSheetView: View {
         List {
             ForEach(viewModel.commentList, id: \.commentId) { item in
                 VStack(alignment: .leading, spacing: 3) {
-                    CommentItem(item: item)
+                    CommentItem(item: item, onTap: {
+                        self.isOwner = item.isOwner ?? false
+                        self.commentUsername = item.member.username
+                        
+                        self.showSheet = false
+                        self.showUserHome = true
+                    })
                     
                     VStack(alignment: .leading, spacing: 0) {
                         Button(action: {
@@ -73,7 +83,7 @@ struct CommentSheetView: View {
                         }
                         .buttonStyle(.plain)
                         
-                        if item.hasReplies {
+                        if item.hasReplies ?? false {
                             Button(action: {
                                 withAnimation {
                                     toggleExpanded(for: item.commentId)
@@ -100,7 +110,13 @@ struct CommentSheetView: View {
                 // 댓글 더보기
                 if expandedCommentIDs.contains(item.commentId) {
                     ForEach(viewModel.replyList[item.commentId] ?? [], id: \.commentId) { reply in
-                        CommentItem(item: reply)
+                        CommentItem(item: reply, onTap: {
+                            self.isOwner = item.isOwner ?? false
+                            self.commentUsername = item.member.username
+                            
+                            self.showSheet = false
+                            self.showUserHome = true
+                        })
                             .padding(.leading, 29)
                     }
                 }
@@ -167,6 +183,7 @@ struct CommentSheetView: View {
 
 struct CommentItem: View {
     var item: Comment
+    var onTap: (() -> Void)
     
     var body: some View {
         VStack {
@@ -202,6 +219,10 @@ struct CommentItem: View {
                     .textStyle(.Small_Text_12)
                 }
             }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onTap()
         }
     }
 }

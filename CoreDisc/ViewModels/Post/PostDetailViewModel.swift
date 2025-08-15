@@ -199,7 +199,7 @@ class PostDetailViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    let decodedData = try JSONDecoder().decode(CommentWriteResponse.self, from: response.data)
+                    _ = try JSONDecoder().decode(CommentWriteResponse.self, from: response.data)
                     
                     self.fetchReplyList(commentId: commentId)
                     
