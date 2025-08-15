@@ -15,7 +15,6 @@ struct CardContent {
 }
 
 struct PostWriteView: View {
-    //@Environment(\.dismiss) private var dismiss
     @State private var isCorelist: Bool = false
     
     private let questions = [
@@ -43,8 +42,6 @@ struct PostWriteView: View {
                     .ignoresSafeArea()
                 
                 VStack {
-                    //BackButtonGroup
-                    
                     Spacer().frame(height: 22)
                     
                     UserGroup
@@ -81,23 +78,6 @@ struct PostWriteView: View {
         }
     }
     
-    /*
-     // 뒤로가기 버튼 섹션
-     private var BackButtonGroup: some View {
-     HStack{
-     Button(action: {
-     dismiss()
-     }){
-     Image(.iconBack)
-     .resizable()
-     .frame(width: 42, height: 42)
-     }
-     
-     Spacer()
-     }
-     .padding(.leading, 17)
-     }
-     */
     
     // 사용자 정보 및 저장버튼 섹션
     private var UserGroup: some View {
@@ -176,7 +156,6 @@ struct PostWriteView: View {
     }
     
     
-    
     // 질문 섹션
     private var QuestionGroup: some View {
         VStack (alignment: .center){
@@ -189,6 +168,7 @@ struct PostWriteView: View {
                 .cornerRadius(12)
         }
     }
+    
     
     // 하단섹션
     private var BottomGroup: some View {
@@ -285,6 +265,7 @@ struct PostWriteView: View {
     private var currentQuestion: String {
         (0..<questions.count).contains(pageIndex) ? questions[pageIndex] : (questions.first ?? "")
     }
+    
     
     // 게시글 작성 답변 카드
     private struct CardPageView: View {
