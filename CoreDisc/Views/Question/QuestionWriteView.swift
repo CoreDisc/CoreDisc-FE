@@ -210,7 +210,7 @@ struct QuestionWriteView: View {
                             .padding(20)
                             .background(Color.white)
                             .textStyle(.Texting_Q)
-                            .cornerRadius(12)
+                            .clipShape( RoundedRectangle(cornerRadius: 12) )
                             .focused($isFocused)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled(true)

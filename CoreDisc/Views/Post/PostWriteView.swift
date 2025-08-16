@@ -168,7 +168,7 @@ struct PostWriteView: View {
                 .multilineTextAlignment(.center)
                 .frame(width: 348, height: 68)
                 .background(.black000)
-                .cornerRadius(12)
+                .clipShape( RoundedRectangle(cornerRadius: 12) )
         }
     }
     
@@ -286,10 +286,9 @@ struct PostWriteView: View {
         var body: some View {
             ZStack {
                 // 배경 카드
-                Rectangle()
+                RoundedRectangle(cornerRadius: 20.83)
                     .fill(Color.gray400)
                     .frame(width: 308, height: 409)
-                    .cornerRadius(20.83)
                 
                 // 사진 표시
                 if let image = card.image {
@@ -298,7 +297,7 @@ struct PostWriteView: View {
                         .scaledToFill()
                         .frame(width: 308, height: 409)
                         .clipped()
-                        .cornerRadius(20.83)
+                        .clipShape( RoundedRectangle(cornerRadius: 20.83) )
                 }
                 
                 // 텍스트 표시

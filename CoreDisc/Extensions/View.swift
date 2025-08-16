@@ -139,7 +139,7 @@ extension View {
         modifier(HorizontalLinearGradientModifier(startColor: startColor, endColor: endColor))
     }
     
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+    func specificCornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
         clipShape(RoundedCorner(radius: radius, corners: corners))
     }
     

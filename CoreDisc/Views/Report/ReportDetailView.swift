@@ -217,7 +217,7 @@ struct ReportDetailView: View {
                                         }
                                     }
                                 )
-                                .cornerRadius(12)
+                                .clipShape( RoundedRectangle(cornerRadius: 12) )
                             
                             VStack{
                                 if !viewModel.MostQuestionItem[index].questionContent.isEmpty {
@@ -289,8 +289,7 @@ struct ReportDetailView: View {
         VStack {
             NavigationLink(destination: ReportSummaryView(SummaryYear: year, SummaryMonth: month)){
                 ZStack {
-                    Rectangle()
-                        .cornerRadius(16)
+                    RoundedRectangle(cornerRadius: 16)
                         .foregroundStyle(.white)
                     
                     HStack {
@@ -329,13 +328,16 @@ struct ReportDetailView: View {
         ZStack {
             Rectangle()
                 .frame(height: 107)
-                .cornerRadius(24, corners: [.topLeft, .topRight])
+                .specificCornerRadius(24, corners: [.topLeft, .topRight])
                 .foregroundStyle(.white)
                 .shadow(color: .black.opacity(0.25), radius: 4.2, x: 0, y: 1)
             
             HStack {
                 Image(.imgProfile)
-                    .cornerRadius(100)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 60, height: 60)
+                    .clipShape(Circle())
                 
                 Spacer().frame(width: 21)
                 

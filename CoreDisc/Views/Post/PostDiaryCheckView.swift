@@ -65,7 +65,7 @@ struct PostDiaryCheckView: View {
                             .init(color: .white, location: 0.8125)
                         ], center: .center, startRadiusFraction: 0, endRadiusFraction: 0.7431)
                         .frame(width: 152, height: 152)
-                        .cornerRadius(152)
+                        .clipShape( Circle() )
                         .scaleEffect(isWriteButtonTapped ? 1.2 : 1.0)
                     }
                     .simultaneousGesture(TapGesture().onEnded {
@@ -86,7 +86,7 @@ struct PostDiaryCheckView: View {
                             .init(color: .white, location: 0.8125)
                         ], center: .center, startRadiusFraction: 0, endRadiusFraction: 0.7431)
                         .frame(width: 152, height: 152)
-                        .cornerRadius(152)
+                        .clipShape( Circle() )
                         .scaleEffect(isShareButtonTapped ? 1.2 : 1.0)
                     }
                     .simultaneousGesture(TapGesture().onEnded {
@@ -143,7 +143,7 @@ struct PostDiaryCheckView: View {
                     .multilineTextAlignment(.center)
                     .frame(width: 297, height: 38)
                     .background(.gray100)
-                    .cornerRadius(30)
+                    .clipShape( RoundedRectangle(cornerRadius: 30) )
                 
                 Text("어디에 있었나요??")
                     .textStyle(.Q_Main)
@@ -155,7 +155,7 @@ struct PostDiaryCheckView: View {
                     .multilineTextAlignment(.center)
                     .frame(width: 297, height: 38)
                     .background(.gray100)
-                    .cornerRadius(30)
+                    .clipShape( RoundedRectangle(cornerRadius: 30) )
                 
                 Text("무엇을 했나요?")
                     .textStyle(.Q_Main)
@@ -167,7 +167,7 @@ struct PostDiaryCheckView: View {
                     .multilineTextAlignment(.center)
                     .frame(width: 297, height: 38)
                     .background(.gray100)
-                    .cornerRadius(30)
+                    .clipShape( RoundedRectangle(cornerRadius: 30) )
                 
                 Text("더 기록하고 싶은 내용이 있나요?")
                     .textStyle(.Q_Main)
@@ -180,7 +180,7 @@ struct PostDiaryCheckView: View {
                     .padding(.horizontal, 14.5)
                     .frame(width: 297, height: 83)
                     .background(.gray100)
-                    .cornerRadius(12)
+                    .clipShape( RoundedRectangle(cornerRadius: 12) )
                 
                 Spacer()
             }
