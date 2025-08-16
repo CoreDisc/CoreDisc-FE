@@ -25,7 +25,7 @@ struct QuestionBasicCategoryModel: Identifiable {
             "전체": .all,
             "취향": .taste,
             "라이프스타일": .lifeStyle,
-            "관계": .relationship,
+            "인간관계": .relationship,
             "자기계발": .selfImprovement,
             "건강": .health,
             "문화": .culture,
