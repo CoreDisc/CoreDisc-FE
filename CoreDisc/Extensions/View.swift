@@ -73,10 +73,10 @@ struct ToastModifier: ViewModifier {
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
                         .foregroundColor(.white)
-                        .clipShape(
+                        .background(
                             RoundedRectangle(cornerRadius: 30)
+                                .fill(.gray700.opacity(0.8))
                         )
-                        .background(.gray700.opacity(0.8))
                         .shadow(radius: 4)
                         .padding(.bottom, 40)
                 }
