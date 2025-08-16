@@ -219,9 +219,8 @@ struct QuestionText: View {
     
     var body: some View {
         ZStack {
-            Rectangle()
+            RoundedRectangle(cornerRadius: 32)
                 .foregroundStyle(.white)
-                .cornerRadius(32)
                 .frame(width: 300, height:48)
             
             Text("\(question)")
@@ -276,7 +275,6 @@ struct SelectiveDiary: View {
                 ZStack {
                     Circle()
                         .frame(width: 270,height: 270)
-                        .cornerRadius(270)
                         .foregroundStyle(.white)
                     
                     VStack {

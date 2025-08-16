@@ -140,6 +140,64 @@ enum CategoryType: CaseIterable {
         }
     }
     
+    var startColor: Color {
+        switch self {
+        case .taste: return .yellow1
+        case .lifeStyle: return .blue1
+        case .relationship: return .purple1
+        case .selfImprovement: return .pink1
+        case .health: return .lavender1
+        case .culture: return .mint1
+        case .feeling: return .orange1
+        case .hobby: return .red1
+        case .dream: return .navy1
+        case .other: return .gray1
+        case .all: return .clear
+        }
+    }
+    
+    var endColor: Color {
+        switch self {
+        case .taste: return .yellow2
+        case .lifeStyle: return .blue2
+        case .relationship: return .purple2
+        case .selfImprovement: return .pink2
+        case .health: return .lavender2
+        case .culture: return .mint2
+        case .feeling: return .orange2
+        case .hobby: return .red2
+        case .dream: return .navy2
+        case .other: return .gray2
+        case .all: return .clear
+        }
+    }
+    
+    var cdImage: UIImage {
+        switch self {
+        case .taste:
+            return .imgCoreYellow
+        case .lifeStyle:
+            return .imgCoreBlue
+        case .relationship:
+            return .imgCorePurple
+        case .selfImprovement:
+            return .imgCorePink
+        case .health:
+            return .imgCoreLavender
+        case .culture:
+            return .imgCoreMint
+        case .feeling:
+            return .imgCoreOrange
+        case .hobby:
+            return .imgCoreRed
+        case .dream:
+            return .imgCoreViolet
+        case .other:
+            return .imgCoreGray
+        case .all:
+            return .imgCoreGray
+        }
+    }
 }
 
 enum CategoryStyle {

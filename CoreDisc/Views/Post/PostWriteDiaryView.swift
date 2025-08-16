@@ -111,7 +111,7 @@ struct PostWriteDiaryView: View {
                                    endRadiusFraction: 0.7431)
                 
                 .frame(width: 282, height: 181)
-                .cornerRadius(12, corners: [.topRight, .bottomRight])
+                .specificCornerRadius(12, corners: [.topRight, .bottomRight])
                 
                 VStack(alignment: .leading, spacing: 10){
                     Spacer().frame(height: 18)
@@ -140,7 +140,7 @@ struct PostWriteDiaryView: View {
                                     .multilineTextAlignment(.center)
                                     .frame(width: 57, height: 28 )
                                     .background(isSelected ? .key : Color(red: 0.949, green: 0.949, blue: 0.949))
-                                    .cornerRadius(30)
+                                    .clipShape( RoundedRectangle(cornerRadius: 30) )
                             }
                         }
                     }
@@ -154,7 +154,7 @@ struct PostWriteDiaryView: View {
             ZStack {
                 Rectangle()
                     .frame(width: 105, height: 181)
-                    .cornerRadius(12, corners: [.topLeft, .bottomLeft])
+                    .specificCornerRadius(12, corners: [.topLeft, .bottomLeft])
                     .linearGradient(startColor: Color(startColor), endColor: Color(endColor))
                 
                 VStack {
@@ -177,7 +177,7 @@ struct PostWriteDiaryView: View {
             ZStack {
                 Rectangle()
                     .frame(width: 105, height: 181)
-                    .cornerRadius(12, corners: [.topRight, .bottomRight])
+                    .specificCornerRadius(12, corners: [.topRight, .bottomRight])
                     .linearGradient(startColor: Color(startColor), endColor: Color(endColor))
                 
                 VStack {
@@ -201,7 +201,7 @@ struct PostWriteDiaryView: View {
                                    endRadiusFraction: 0.7431)
                 
                 .frame(width: 282, height: 181)
-                .cornerRadius(12, corners: [.topLeft, .bottomLeft])
+                .specificCornerRadius(12, corners: [.topLeft, .bottomLeft])
                 
                 VStack(alignment: .leading, spacing: 10){
                     Spacer().frame(height: 18)
@@ -229,7 +229,7 @@ struct PostWriteDiaryView: View {
                                     .multilineTextAlignment(.center)
                                     .frame(width: 57, height: 28 )
                                     .background(isSelected ?.key : Color(red: 0.949, green: 0.949, blue: 0.949))
-                                    .cornerRadius(30)
+                                    .clipShape( RoundedRectangle(cornerRadius: 30) )
                             }
                         }
                     }
@@ -248,7 +248,7 @@ struct PostWriteDiaryView: View {
             ZStack {
                 Rectangle()
                     .frame(width: 105, height: 204)
-                    .cornerRadius(12, corners: [.topRight, .bottomRight])
+                    .specificCornerRadius(12, corners: [.topRight, .bottomRight])
                     .linearGradient(startColor: Color(startColor), endColor: Color(endColor))
                 
                 VStack {
@@ -272,7 +272,7 @@ struct PostWriteDiaryView: View {
                                    endRadiusFraction: 0.7431)
                 
                 .frame(width: 282, height: 204)
-                .cornerRadius(12, corners: [.topLeft, .bottomLeft])
+                .specificCornerRadius(12, corners: [.topLeft, .bottomLeft])
                 
                 VStack(alignment: .center){
                     Spacer().frame(height: 28)
@@ -300,7 +300,7 @@ struct PostWriteDiaryView: View {
                                 .multilineTextAlignment(.center)
                                 .frame(width: 106, height: 28 )
                                 .background(isSelected ? .key : Color(red: 0.949, green: 0.949, blue: 0.949))
-                                .cornerRadius(30)
+                                .clipShape( RoundedRectangle(cornerRadius: 30) )
                         }
                         
                         Button {
@@ -315,7 +315,7 @@ struct PostWriteDiaryView: View {
                                 .multilineTextAlignment(.center)
                                 .frame(width: 57, height: 28 )
                                 .background(isSelected ? .key : Color(red: 0.949, green: 0.949, blue: 0.949))
-                                .cornerRadius(30)
+                                .clipShape( RoundedRectangle(cornerRadius: 30) )
                         }
                     }
                     
@@ -332,7 +332,7 @@ struct PostWriteDiaryView: View {
                             .multilineTextAlignment(.leading)
                             .frame(width: 212, height: 88, alignment: .topLeading)
                             .background(.white)
-                            .cornerRadius(12)
+                            .clipShape( RoundedRectangle(cornerRadius: 12) )
                         
                         Spacer().frame(width: 8)
                         

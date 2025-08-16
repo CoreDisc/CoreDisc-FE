@@ -73,10 +73,10 @@ struct ToastModifier: ViewModifier {
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
                         .foregroundColor(.white)
-                        .clipShape(
+                        .background(
                             RoundedRectangle(cornerRadius: 30)
+                                .fill(.gray700.opacity(0.8))
                         )
-                        .background(.gray700.opacity(0.8))
                         .shadow(radius: 4)
                         .padding(.bottom, 40)
                 }
@@ -139,7 +139,7 @@ extension View {
         modifier(HorizontalLinearGradientModifier(startColor: startColor, endColor: endColor))
     }
     
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+    func specificCornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
         clipShape(RoundedCorner(radius: radius, corners: corners))
     }
     
