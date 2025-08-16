@@ -14,6 +14,8 @@ struct FollowSheetView: View {
     
     @State private var currentFollowType: FollowType = .follower
     
+    @Binding var showMutualModal: Bool
+    
     var followType: FollowType
     var targetUsrname: String
     
@@ -113,6 +115,7 @@ struct FollowSheetView: View {
                         FollowListItem(
                             item: item,
                             followType: currentFollowType,
+                            showMutualModal: $showMutualModal,
                             isCoreList: item.isCore,
                             viewModel: viewModel
                         )
@@ -137,6 +140,7 @@ struct FollowSheetView: View {
 struct FollowListItem: View {
     let item: FollowDisplayModel
     var followType: FollowType
+    @Binding var showMutualModal: Bool
     
     @State var isCoreList: Bool
     @State var showLabel: Bool = false
@@ -173,16 +177,20 @@ struct FollowListItem: View {
             if followType == .follower || followType == .coreList {
                 VStack(spacing: 4) {
                     Button(action: {
-                        viewModel.fetchCircle(targetId: item.id, isCircle: !isCoreList) {
-                            isCoreList.toggle()
-                            showLabel = true
-                            
-                            // 시간 지나면 자동으로 label 없애기
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                withAnimation {
-                                    showLabel = false
+                        if item.isMutual == true {
+                            viewModel.fetchCircle(targetId: item.id, isCircle: !isCoreList) {
+                                isCoreList.toggle()
+                                showLabel = true
+                                
+                                // 시간 지나면 자동으로 label 없애기
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    withAnimation {
+                                        showLabel = false
+                                    }
                                 }
                             }
+                        } else {
+                            showMutualModal = true
                         }
                     }) {
                         Image(.iconCore)
@@ -246,6 +254,6 @@ struct CorelistToggle: View {
     }
 }
 
-#Preview {
-    FollowSheetView(showSheet: .constant(true), followType: .following, targetUsrname: "")
-}
+//#Preview {
+//    FollowSheetView(showSheet: .constant(true), followType: .following, targetUsrname: "")
+//}
