@@ -34,11 +34,8 @@ struct CoreQuestionsView: View {
         }
         .navigationBarBackButtonHidden()
         .task {
-            await withTaskGroup(of: Void.self) { group in
-                for id in 1...10 {
-                    group.addTask { await viewModel.fetchCoreQuestions(categoryId: id) }
-                }
-                await group.waitForAll()
+            for id in 1...10 {
+                viewModel.fetchCoreQuestions(categoryId: id)
             }
         }
         // 하위에서 viewModel 접근할 수 있게
