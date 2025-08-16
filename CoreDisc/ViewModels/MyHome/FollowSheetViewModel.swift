@@ -50,7 +50,8 @@ class FollowSheetViewModel: ObservableObject {
                     nickname: $0.nickname,
                     username: $0.username,
                     profileImgUrl: $0.profileImgDTO?.imageUrl,
-                    isCore: $0.isCircle
+                    isCore: $0.isCircle,
+                    isMutual: $0.isMutual
                 )
             }
         case .userFollower:
@@ -60,7 +61,8 @@ class FollowSheetViewModel: ObservableObject {
                     nickname: $0.nickname,
                     username: $0.username,
                     profileImgUrl: $0.profileImgDTO?.imageUrl,
-                    isCore: false
+                    isCore: false,
+                    isMutual: nil
                 )
             }
         case .following:
@@ -70,7 +72,8 @@ class FollowSheetViewModel: ObservableObject {
                     nickname: $0.nickname,
                     username: $0.username,
                     profileImgUrl: $0.profileImgDTO?.imageUrl,
-                    isCore: false
+                    isCore: false,
+                    isMutual: nil
                 )
             }
         case .userFollowing:
@@ -80,7 +83,8 @@ class FollowSheetViewModel: ObservableObject {
                     nickname: $0.nickname,
                     username: $0.username,
                     profileImgUrl: $0.profileImgDTO?.imageUrl,
-                    isCore: false
+                    isCore: false,
+                    isMutual: nil
                 )
             }
         case .coreList:
@@ -90,7 +94,8 @@ class FollowSheetViewModel: ObservableObject {
                     nickname: $0.nickname,
                     username: $0.username,
                     profileImgUrl: $0.profileImgDTO?.imageUrl,
-                    isCore: false
+                    isCore: false,
+                    isMutual: $0.isMutual
                 )
             }
         }

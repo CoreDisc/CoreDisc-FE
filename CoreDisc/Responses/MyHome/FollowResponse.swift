@@ -129,4 +129,5 @@ struct FollowDisplayModel: Identifiable, Hashable {
     let username: String
     let profileImgUrl: String?
     let isCore: Bool
+    let isMutual: Bool?
 }
