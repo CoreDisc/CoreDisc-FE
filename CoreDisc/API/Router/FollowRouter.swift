@@ -49,8 +49,20 @@ extension FollowRouter: APITargetType {
     
     var task: Task {
         switch self {
-        case .postFollow, .getFollowers, .getFollowersTarget, .getFollowings, .getFollowingsTarget, .deleteFollowings:
+        case .postFollow, .deleteFollowings:
             return .requestPlain
+        case .getFollowers(let cursorId, let size),
+                .getFollowersTarget(_, let cursorId, let size),
+                .getFollowings(let cursorId, let size),
+                .getFollowingsTarget(_, let cursorId, let size):
+            var parameters: [String: Any] = [:]
+            if let cursorId = cursorId {
+                parameters["cursorId"] = cursorId
+            }
+            if let size = size {
+                parameters["size"] = size
+            }
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
         }
     }
 }
