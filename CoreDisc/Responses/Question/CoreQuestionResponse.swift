@@ -22,6 +22,7 @@ struct CoreQuestionResult: Decodable {
 struct CoreQuestionValue: Decodable {
     let id: Int
     let questionType: String
+    let isShared: Bool
     let question: String
     let createdAt: String
 }

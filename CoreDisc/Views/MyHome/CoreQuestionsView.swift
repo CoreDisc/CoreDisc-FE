@@ -173,6 +173,7 @@ struct CoreQuestionList: View {
                             Image(.iconGlobe)
                                 .resizable()
                                 .frame(width: 24, height: 24)
+                                .foregroundStyle(item.isShared ? .key : .gray600)
                         }
                         
                         ZStack {
@@ -195,9 +196,10 @@ struct CoreQuestionList: View {
                         }
                         
                         if layout == .left {
-                            Image(.iconGlobe) // TODO: 색상 변경
+                            Image(.iconGlobe)
                                 .resizable()
                                 .frame(width: 24, height: 24)
+                                .foregroundStyle(item.isShared ? .key : .gray600)
                         }
                     }
                 }
