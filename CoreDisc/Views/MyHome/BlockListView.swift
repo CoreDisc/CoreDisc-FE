@@ -113,7 +113,7 @@ struct BlockListView: View {
                             item: item,
                             blockedUserId: $blockedUserId,
                             showUnblockModal: $showUnblockModal
-                        )
+                        ) // TODO: API 커서
                     }
                 }
                 .padding(.top, 39)
