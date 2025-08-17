@@ -40,7 +40,7 @@ struct TabBar: View {
                 case .home:
                     PostTabContainer()
                 case .write:
-                    PostWriteView()
+                    WriteTabContainer()
                 case .disk:
                     QuestionMainView()
                 case .report:

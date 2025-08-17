@@ -8,32 +8,37 @@
 import SwiftUI
 
 struct PostDiaryCheckView: View {
+    @Environment(NavigationRouter<WriteRoute>.self) private var router
+    
     @State private var isWriteButtonTapped = false
     @State private var isShareButtonTapped = false
     
     @State private var goToWriteDiary = false
     
+    @State private var isDone: Bool = false // 발행 -> 홈
+    
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Image(.imgDiaryCheckBg)
-                    .resizable()
-                    .ignoresSafeArea()
+        ZStack {
+            Image(.imgDiaryCheckBg)
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack {
+                Spacer().frame(height: 65)
                 
-                VStack {
-                    Spacer().frame(height: 65)
-                    
-                    TitleGroup
-                    
-                    Spacer().frame(height: 56)
-                    
-                    ButtonGroup
-                    
-                    DiaryGroup
-                }
+                TitleGroup
+                
+                Spacer().frame(height: 56)
+                
+                ButtonGroup
+                
+                DiaryGroup
             }
         }
         .navigationBarBackButtonHidden()
+        .fullScreenCover(isPresented: $isDone) {
+            TabBar(startTab: .home)
+        }
     }
     
     // 타이틀
@@ -59,7 +64,9 @@ struct PostDiaryCheckView: View {
             HStack (spacing: 165){
                 ZStack {
                     // Write버튼(수정)
-                    NavigationLink(destination: PostWriteDiaryView()) {
+                    Button(action: {
+                        router.pop()
+                    }) {
                         EllipticalGradient(stops: [
                             .init(color: .gray.opacity(0.0), location: 0.2692),
                             .init(color: .white, location: 0.8125)
@@ -80,7 +87,9 @@ struct PostDiaryCheckView: View {
                 
                 // Share버튼
                 ZStack {
-                    NavigationLink(destination: PostMainView()) {
+                    Button(action: {
+                        isDone = true
+                    }) {
                         EllipticalGradient(stops: [
                             .init(color: .gray.opacity(0.0), location: 0.2692),
                             .init(color: .white, location: 0.8125)
@@ -101,7 +110,7 @@ struct PostDiaryCheckView: View {
             }
         }
     }
-
+    
     
     
     // 선택일기 요약
@@ -128,7 +137,7 @@ struct PostDiaryCheckView: View {
                 }
             )
             .offset(y: -20)
-
+            
             
             VStack (alignment: .center, spacing: 13) {
                 Spacer().frame(height: 28)

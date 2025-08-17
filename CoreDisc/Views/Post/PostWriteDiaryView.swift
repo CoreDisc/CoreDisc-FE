@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PostWriteDiaryView: View {
+    @Environment(NavigationRouter<WriteRoute>.self) private var router
+    
     @State private var selectedWho: String = "나혼자"
     @State private var selectedWhere: String = "집"
     @State private var selectedWhat: String = "공부"
@@ -24,25 +26,23 @@ struct PostWriteDiaryView: View {
     @State private var moreChoice: Bool? = nil
     @State private var moreText: String = ""
     
-
+    
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Image(.imgPostDetailMainBg)
-                    .resizable()
-                    .ignoresSafeArea()
-                
-                ScrollView (showsIndicators: false) {
-                    VStack {
-                        Spacer().frame(height: 25)
-                        
-                        TitleGroup
-                        
-                        Spacer().frame(height: 18)
-                        
-                        DiaryGroup
-                    }
+        ZStack {
+            Image(.imgPostDetailMainBg)
+                .resizable()
+                .ignoresSafeArea()
+            
+            ScrollView (showsIndicators: false) {
+                VStack {
+                    Spacer().frame(height: 25)
+                    
+                    TitleGroup
+                    
+                    Spacer().frame(height: 18)
+                    
+                    DiaryGroup
                 }
             }
         }
@@ -131,8 +131,8 @@ struct PostWriteDiaryView: View {
                             
                             Button (action: {
                                 withAnimation(.easeInOut(duration: 0.15)) {
-                                                                selection.wrappedValue = item
-                                                            }
+                                    selection.wrappedValue = item
+                                }
                             }){
                                 Text(item)
                                     .textStyle(.Small_Text)
@@ -220,8 +220,8 @@ struct PostWriteDiaryView: View {
                             
                             Button (action: {
                                 withAnimation(.easeInOut(duration: 0.15)) {
-                                                                selection.wrappedValue = item
-                                                            }
+                                    selection.wrappedValue = item
+                                }
                             }){
                                 Text(item)
                                     .textStyle(.Small_Text)
@@ -336,7 +336,9 @@ struct PostWriteDiaryView: View {
                         
                         Spacer().frame(width: 8)
                         
-                        NavigationLink(destination: PostDiaryCheckView()) {
+                        Button(action: {
+                            router.push(.summary)
+                        }) {
                             ZStack {
                                 Circle()
                                     .frame(width: 32, height: 32)
