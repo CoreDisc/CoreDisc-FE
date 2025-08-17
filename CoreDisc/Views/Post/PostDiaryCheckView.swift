@@ -37,7 +37,7 @@ struct PostDiaryCheckView: View {
         }
         .navigationBarBackButtonHidden()
         .fullScreenCover(isPresented: $isDone) {
-            TabBar(startTab: .home)
+            TabBar(startTab: .post)
         }
     }
     

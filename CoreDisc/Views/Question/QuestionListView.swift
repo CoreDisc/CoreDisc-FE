@@ -72,7 +72,7 @@ struct QuestionListView: View {
             fetchQuestions(reset: true)
         }
         .navigationBarBackButtonHidden()
-        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .question) }
     }
 
     private var TopGroup: some View {

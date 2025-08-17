@@ -105,7 +105,7 @@ struct QuestionBasicView: View {
             let keyword = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
             viewModel.fetchSearchCategories(keyword: keyword)
         }
-        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .question) }
     }
     
     // MARK: - group

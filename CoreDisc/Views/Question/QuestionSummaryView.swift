@@ -143,7 +143,7 @@ struct QuestionSummaryView: View {
             
             // 공유하기
             PrimaryActionButton(title: "작성한 질문 공유하기", isFinished: .constant(true))
-                .fullScreenCover(isPresented: $isShareSuccess) { TabBar(startTab: .disk) }
+                .fullScreenCover(isPresented: $isShareSuccess) { TabBar(startTab: .question) }
                 .simultaneousGesture(
                     TapGesture().onEnded {
                         viewModel.shareOfficialQuestion(

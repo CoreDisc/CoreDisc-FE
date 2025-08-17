@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum Tab {
-    case home, write, disk, report, mypage
+    case post, write, question, report, myhome
 }
 
 enum TabBarStyle {
@@ -16,19 +16,19 @@ enum TabBarStyle {
 }
 
 struct TabBar: View {
-    @State private var selectedTab: Tab = .disk
+    @State private var selectedTab: Tab = .question
     @State private var tabBarStyle: TabBarStyle = .light
     @StateObject private var tabBarVisibility = TabBarVisibility()
     
-    init(startTab: Tab = .disk) {
+    init(startTab: Tab = .question) {
         _selectedTab = State(initialValue: startTab)
         _tabBarStyle = State(initialValue: {
             switch startTab {
-            case .home: return .dark
-            case .write: return .dark
-            case .disk: return .light
+            case .post: return .dark
+            case .write: return .light
+            case .question: return .light
             case .report: return .light
-            case .mypage: return .light
+            case .myhome: return .light
             }
         }())
     }
@@ -37,15 +37,15 @@ struct TabBar: View {
         ZStack(alignment: .bottom) {
             Group {
                 switch selectedTab {
-                case .home:
+                case .post:
                     PostTabContainer()
                 case .write:
                     WriteTabContainer()
-                case .disk:
+                case .question:
                     QuestionTabContainer()
                 case .report:
                     ReportTabContainer()
-                case .mypage:
+                case .myhome:
                     MyhomeTabContainer()
                 }
             }
@@ -70,11 +70,11 @@ struct TabBar: View {
     
     private func tabBarStyle(for tab: Tab) -> TabBarStyle {
         switch tab {
-        case .home: .dark
-        case .write: .dark
-        case .disk: .light
+        case .post: .dark
+        case .write: .light
+        case .question: .light
         case .report: .light
-        case .mypage: .light
+        case .myhome: .light
         }
     }
 }
@@ -94,11 +94,11 @@ struct CustomTabBar: View {
                     .padding(.horizontal, 24)
                 
                 HStack(spacing: 19) {
-                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .home, icon: "icon_home")
+                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .post, icon: "icon_home")
                     TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .write, icon: "icon_pencil")
-                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .disk, icon: "icon_disk")
+                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .question, icon: "icon_disk")
                     TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .report, icon: "icon_museum")
-                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .mypage, icon: "icon_mypage")
+                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .myhome, icon: "icon_mypage")
                 }
             }
         }

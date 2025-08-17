@@ -67,7 +67,7 @@ struct QuestionShareNowView: View {
         .task {
             await viewModel.fetchMySharedQuestions()
         }
-        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .question) }
     }
     
     private var InfoGroup: some View {

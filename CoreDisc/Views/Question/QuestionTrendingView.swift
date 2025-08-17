@@ -57,7 +57,7 @@ struct QuestionTrendingView: View {
         .task {
             viewModel.fetchPopularQuestions()
         }
-        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .question) }
     }
     
     
