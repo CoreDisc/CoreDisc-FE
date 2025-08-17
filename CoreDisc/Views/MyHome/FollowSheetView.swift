@@ -30,7 +30,7 @@ struct FollowSheetView: View {
                 
                 SecondGroup
                 
-                FollowerList
+                FollowList
                 
                 Spacer()
             }
@@ -106,7 +106,7 @@ struct FollowSheetView: View {
     }
     
     // 리스트
-    private var FollowerList: some View {
+    private var FollowList: some View {
         ScrollView {
             LazyVStack(spacing: 16) {
                 let list = viewModel.getDisplayList(for: currentFollowType)
@@ -122,7 +122,7 @@ struct FollowSheetView: View {
                             .task {
                                 if item.id == list.last?.id,
                                    viewModel.hasNextPage(for: currentFollowType) {
-                                    viewModel.fetchMore(for: currentFollowType, cursorId: item.id)
+                                    viewModel.fetchMore(for: currentFollowType, cursorId: item.followId)
                                 }
                             }
                     }
