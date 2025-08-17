@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ReportDetailView: View {
+    @Environment(NavigationRouter<ReportRoute>.self) private var router
     
     @Environment(\.dismiss) var dismiss
     @State private var nowIndex: Int = 1
@@ -63,50 +64,48 @@ struct ReportDetailView: View {
     
     
     var body: some View {
-        NavigationStack{
-            ZStack {
-                Image(.imgLongBackground)
-                    .resizable()
-                    .ignoresSafeArea()
-                
-                VStack {
-                    ScrollView(.vertical) {
-                        LazyVStack {
-                            HeaderGroup
-                            TotalDiscGroup
-                                .highPriorityGesture(
-                                    DragGesture(minimumDistance: 5)
-                                        .onEnded { value in
-                                            if value.translation.height < -5 {
-                                                if DiscQuestionViewModel.hasNextPage {
-                                                    animatePageChange {
-                                                        DiscQuestionViewModel.nextPage()
-                                                    }
-                                                } else {
+        ZStack {
+            Image(.imgLongBackground)
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack {
+                ScrollView(.vertical) {
+                    LazyVStack {
+                        HeaderGroup
+                        TotalDiscGroup
+                            .highPriorityGesture(
+                                DragGesture(minimumDistance: 5)
+                                    .onEnded { value in
+                                        if value.translation.height < -5 {
+                                            if DiscQuestionViewModel.hasNextPage {
+                                                animatePageChange {
                                                     DiscQuestionViewModel.nextPage()
                                                 }
-                                            } else if value.translation.height > 5 {
-                                                if DiscQuestionViewModel.hasPreviousPage {
-                                                    animatePageChange {
-                                                        DiscQuestionViewModel.previousPage()
-                                                    }
-                                                } else {
+                                            } else {
+                                                DiscQuestionViewModel.nextPage()
+                                            }
+                                        } else if value.translation.height > 5 {
+                                            if DiscQuestionViewModel.hasPreviousPage {
+                                                animatePageChange {
                                                     DiscQuestionViewModel.previousPage()
                                                 }
+                                            } else {
+                                                DiscQuestionViewModel.previousPage()
                                             }
                                         }
-                                )
-                            Spacer().frame(height: 64)
-                            RandomGroup
-                            Spacer().frame(height: 64)
-                            TimeReportGroup
-                            Spacer().frame(height: 44)
-                            GoSummaryGroup
-                        }
-                        .padding(.bottom, 107)
+                                    }
+                            )
+                        Spacer().frame(height: 64)
+                        RandomGroup
+                        Spacer().frame(height: 64)
+                        TimeReportGroup
+                        Spacer().frame(height: 44)
+                        GoSummaryGroup
                     }
-                    PresentGroup
+                    .padding(.bottom, 107)
                 }
+                PresentGroup
             }
             .task {
                 viewModel.getReport(year: year, month: month)
@@ -287,7 +286,9 @@ struct ReportDetailView: View {
     
     private var GoSummaryGroup: some View {
         VStack {
-            NavigationLink(destination: ReportSummaryView(SummaryYear: year, SummaryMonth: month)){
+            Button(action: {
+                router.push(.summary(SummaryYear: year, SummaryMonth: month))
+            }){
                 ZStack {
                     RoundedRectangle(cornerRadius: 16)
                         .foregroundStyle(.white)
@@ -354,7 +355,9 @@ struct ReportDetailView: View {
                 Spacer()
                 
                 HStack {
-                    NavigationLink(destination: ReportDetailView(year: beforeDiscYear, month: beforeDiscMonth)){
+                    Button(action: {
+                        router.push(.detail(year: beforeDiscYear, month: beforeDiscMonth))
+                    }){
                         Image(.iconBefore)
                     }
                     Spacer().frame(width: 19)
@@ -363,7 +366,9 @@ struct ReportDetailView: View {
                     Image(.iconPlay)
                     Spacer().frame(width: 19)
                     
-                    NavigationLink(destination: ReportDetailView(year: nextDiscYear, month: nextDiscMonth)){
+                    Button(action: {
+                        router.push(.detail(year: nextDiscYear, month: nextDiscMonth))
+                    }){
                         Image(.iconNext)
                     }
                 }

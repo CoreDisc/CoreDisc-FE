@@ -9,7 +9,7 @@ import Foundation
 
 enum ReportRoute: Hashable {
     case museum
-    case cover
-    case report
-    case detail
+    case cover(discId: Int)
+    case detail(year: Int, month: Int)
+    case summary(SummaryYear: Int, SummaryMonth: Int)
 }

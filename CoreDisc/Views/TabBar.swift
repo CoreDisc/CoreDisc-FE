@@ -44,7 +44,7 @@ struct TabBar: View {
                 case .disk:
                     QuestionTabContainer()
                 case .report:
-                    ReportMainView()
+                    ReportTabContainer()
                 case .mypage:
                     MyHomeView()
                 }

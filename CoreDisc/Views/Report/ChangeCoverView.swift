@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ChangeCoverView: View {
+    @Environment(NavigationRouter<ReportRoute>.self) private var router
+    
     @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = ReportMainViewModel()
     private let columns: [GridItem] = Array(repeating: GridItem(.fixed(80), spacing: 26), count: 3)
