@@ -199,6 +199,7 @@ struct CoreQuestionList: View {
                                 .foregroundStyle(item.isShared ? .key : .gray600)
                         }
                     }
+                    .containerRelativeFrame(.vertical, count: 5, spacing: 8) // 5개씩 보이게
                 }
             }
         }
