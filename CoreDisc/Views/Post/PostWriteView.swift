@@ -181,6 +181,9 @@ struct PostWriteView: View {
         let spacing: CGFloat = 16
         let offsetX: CGFloat = (toggleWidth / 2) + spacing + (nextDiameter / 2)
         
+        let answeredCount = cards.filter { isAnswered($0) }.count
+        let canGoNext = (answeredCount == cards.count)
+        
         return ZStack {
             // 공개범위 버튼
             Button(action: {
@@ -254,11 +257,12 @@ struct PostWriteView: View {
                 ZStack {
                     Circle()
                         .frame(width: nextDiameter, height: nextDiameter)
-                        .foregroundStyle(.gray200)
+                        .foregroundStyle(canGoNext ? .key : .gray200)
                     Image(.iconArrow)
                 }
             }
             .offset(x: offsetX)
+            .disabled(!canGoNext) // 답변 미 작성시 버튼 막기
             .simultaneousGesture(TapGesture().onEnded {
                 viewModel.postPosts(selectedDate: ymd(selectedDate))
             })
@@ -373,6 +377,12 @@ struct PostWriteView: View {
         f.calendar = Calendar(identifier: .gregorian)
         f.dateFormat = "yyyy-MM-dd"
         return f.string(from: date)
+    }
+    
+    // 카드 답변 여부 확인 함수
+    private func isAnswered(_ c: CardContent) -> Bool {
+        if c.image != nil { return true }
+        return !c.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
 
