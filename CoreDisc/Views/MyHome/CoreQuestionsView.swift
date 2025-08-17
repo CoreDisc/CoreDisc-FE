@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CoreQuestionsView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @Environment(\.dismiss) var dismiss
     
     @StateObject private var viewModel = CoreQuestionsViewModel()

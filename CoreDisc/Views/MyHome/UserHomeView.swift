@@ -9,6 +9,8 @@ import SwiftUI
 import Kingfisher
 
 struct UserHomeView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @StateObject var viewModel = UserHomeViewModel()
     
     @Environment(\.dismiss) var dismiss
@@ -286,7 +288,9 @@ struct UserHomeView: View {
         
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(viewModel.postList, id: \.postId) { post in
-                NavigationLink(destination: PostDetailView(postId: post.postId)) {
+                Button(action: {
+                    router.push(.post(postId: post.postId))
+                }) {
                     if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
                        !url.absoluteString.isEmpty { // 이미지
                         KFImage(url)

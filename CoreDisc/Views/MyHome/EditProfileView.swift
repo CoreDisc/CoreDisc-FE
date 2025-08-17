@@ -10,6 +10,8 @@ import PhotosUI
 import Kingfisher
 
 struct EditProfileView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @StateObject private var viewModel = MyHomeViewModel()
 
     @Environment(\.dismiss) var dismiss
@@ -40,6 +42,9 @@ struct EditProfileView: View {
                 
                 Spacer()
             }
+        }
+        .fullScreenCover(isPresented: $viewModel.logoutSuccess) {
+            LoginView()
         }
         .task {
             viewModel.fetchMyHome()
@@ -86,7 +91,6 @@ struct EditProfileView: View {
                             dismiss()
                         }
                     }
-                    .navigationDestination(isPresented: $viewModel.logoutSuccess) {LoginView()}
                 }
                 .padding(.leading, 17)
                 .padding(.trailing, 22)

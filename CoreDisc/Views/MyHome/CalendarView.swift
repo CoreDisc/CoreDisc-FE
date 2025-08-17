@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CalendarView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @StateObject var viewModel: CalendarContentsViewModel
     @Environment(\.dismiss) var dismiss
     

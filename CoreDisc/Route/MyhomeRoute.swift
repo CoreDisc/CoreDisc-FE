@@ -20,5 +20,5 @@ enum MyhomeRoute: Hashable {
     case block
     case notification
     
-    case user(userId: Int)
+    case user(userName: String)
 }

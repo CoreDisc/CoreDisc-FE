@@ -46,7 +46,7 @@ struct TabBar: View {
                 case .report:
                     ReportTabContainer()
                 case .mypage:
-                    MyHomeView()
+                    MyhomeTabContainer()
                 }
             }
             .environmentObject(tabBarVisibility)

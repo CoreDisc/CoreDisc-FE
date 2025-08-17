@@ -9,6 +9,8 @@ import SwiftUI
 import Kingfisher
 
 struct BlockListView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @Environment(\.dismiss) var dismiss
     @StateObject var userViewModel = UserHomeViewModel()
     @StateObject private var viewModel = BlockListViewModel()

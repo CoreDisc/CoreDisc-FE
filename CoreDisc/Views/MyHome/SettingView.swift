@@ -8,53 +8,52 @@
 import SwiftUI
 
 struct SettingView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @Environment(\.dismiss) var dismiss
     @State var LogoutModal = false
     @StateObject private var viewModel = AccountManageViewModel()
     
     var body: some View {
-        NavigationStack{
-            ZStack {
-                Image(.imgShortBackground2)
-                    .resizable()
-                    .ignoresSafeArea()
+        ZStack {
+            Image(.imgShortBackground2)
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                Spacer().frame(height: 3)
                 
-                VStack(spacing: 0) {
-                    Spacer().frame(height: 3)
-                    
-                    TopMenuGroup
-                    
-                    Spacer().frame(height: 34)
-                    
-                    ButtonGroup
-                    
-                    Spacer()
-                }
-                if LogoutModal {
-                    ModalView {
-                        VStack {
-                            Text("로그아웃 하시겠습니까?")
-                                .textStyle(.Button_s)
-                        }
-                    } leftButton: {
-                        Button(action: {
-                            LogoutModal.toggle()
-                        }) {
-                            Text("돌아가기")
-                        }
-                    } rightButton: {
-                        Button(action: {
-                            LogoutModal.toggle()
-                            viewModel.logout()
-                        }) {
-                            Text("로그아웃")
-                                .foregroundStyle(.red)
-                        }
+                TopMenuGroup
+                
+                Spacer().frame(height: 34)
+                
+                ButtonGroup
+                
+                Spacer()
+            }
+            if LogoutModal {
+                ModalView {
+                    VStack {
+                        Text("로그아웃 하시겠습니까?")
+                            .textStyle(.Button_s)
+                    }
+                } leftButton: {
+                    Button(action: {
+                        LogoutModal.toggle()
+                    }) {
+                        Text("돌아가기")
+                    }
+                } rightButton: {
+                    Button(action: {
+                        LogoutModal.toggle()
+                        viewModel.logout()
+                    }) {
+                        Text("로그아웃")
+                            .foregroundStyle(.red)
                     }
                 }
             }
         }
-        .toolbarVisibility(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden()
         .fullScreenCover(isPresented: $viewModel.logoutSuccess) {LoginView()}
     }
@@ -92,9 +91,9 @@ struct SettingView: View {
     // 버튼
     private var ButtonGroup: some View {
         VStack(spacing: 18) {
-            SettingButton(title: "계정 관리", destination: { AnyView(AccountManageView()) })
-            SettingButton(title: "차단 유저 목록", destination: { AnyView(BlockListView()) })
-            SettingButton(title: "알림 설정", destination: { AnyView(NotificationSettingView()) })
+            SettingButton(title: "계정 관리", destination: .account)
+            SettingButton(title: "차단 유저 목록", destination: .block)
+            SettingButton(title: "알림 설정", destination: .notification)
             SettingButton(title: "로그아웃", onClick: { LogoutModal = true })
         }
     }
@@ -102,13 +101,17 @@ struct SettingView: View {
 
 // 설정 페이지 버튼
 struct SettingButton: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     var title: String
-    var destination: (() -> AnyView)?
+    var destination: MyhomeRoute?
     var onClick: (() -> Void)?
     
     var body: some View {
         if let destination = destination {
-            NavigationLink(destination: destination()) {
+            Button(action: {
+                router.push(destination)
+            }) {
                 buttonContent
             }
         } else {

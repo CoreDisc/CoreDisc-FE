@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PostTabContainer: View {
     @State private var router = NavigationRouter<PostRoute>()
+    @State private var homeRouter = NavigationRouter<MyhomeRoute>()
     
     var body: some View {
         NavigationStack(path: $router.path) {
@@ -37,6 +38,7 @@ struct PostTabContainer: View {
                 }
         }
         .environment(router)
+        .environment(homeRouter)
     }
 }
 
