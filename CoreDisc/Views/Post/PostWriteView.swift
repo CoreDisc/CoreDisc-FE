@@ -280,8 +280,9 @@ struct PostWriteView: View {
         let onTapWrite: () -> Void
         
         
-        // 버튼 클릭 전에만 버튼 표시
-        private var showButtons: Bool { card.image == nil && !card.isTextMode && card.text.isEmpty }
+        // 글/그림 선택 버튼 항상 표시
+        private var showButtons: Bool {
+            true }
         
         var body: some View {
             ZStack {
