@@ -17,48 +17,46 @@ struct MyHomeView: View {
     @State var showMutualModal: Bool = false
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Image(.imgShortBackground2)
-                    .resizable()
-                    .ignoresSafeArea()
+        ZStack {
+            Image(.imgShortBackground2)
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                Spacer().frame(height: 3)
                 
-                VStack(spacing: 0) {
-                    Spacer().frame(height: 3)
+                TopMenuGroup
+                
+                ScrollView {
+                    ProfileGroup
                     
-                    TopMenuGroup
+                    Spacer().frame(height: 14)
                     
-                    ScrollView {
-                        ProfileGroup
-                        
-                        Spacer().frame(height: 14)
-                        
-                        CountGroup
-                        
-                        Spacer().frame(height: 16)
-                        
-                        ButtonGroup
-                        
-                        Spacer().frame(height: 31)
-                        
-                        PostGroup
-                    }
-                }
-                
-                sheetView
-                
-                if showMutualModal {
-                    BackModalView(showModal: $showMutualModal, content: "Core List는 서로 팔로우 중일 때만\n설정할 수 있어요.")
+                    CountGroup
+                    
+                    Spacer().frame(height: 16)
+                    
+                    ButtonGroup
+                    
+                    Spacer().frame(height: 31)
+                    
+                    PostGroup
                 }
             }
-            .task {
-                viewModel.fetchMyHome()
-                viewModel.fetchMyPosts()
+            
+            sheetView
+            
+            if showMutualModal {
+                BackModalView(showModal: $showMutualModal, content: "Core List는 서로 팔로우 중일 때만\n설정할 수 있어요.")
             }
-            .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
-            .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
-            .navigationBarBackButtonHidden()
         }
+        .task {
+            viewModel.fetchMyHome()
+            viewModel.fetchMyPosts()
+        }
+        .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
+        .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
+        .navigationBarBackButtonHidden()
     }
     
     // 상단 메뉴
@@ -196,7 +194,7 @@ struct MyHomeView: View {
     // 게시글
     private var PostGroup: some View {
         let columns = Array(repeating: GridItem(.flexible()), count: 3)
-
+        
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(viewModel.postList, id: \.postId) { post in
                 NavigationLink(destination: PostDetailView(postId: post.postId)) {

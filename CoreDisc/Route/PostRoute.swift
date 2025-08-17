@@ -12,4 +12,6 @@ enum PostRoute: Hashable {
     case search
     case notification
     case detail(postId: Int)
+    case user(userName: String)
+    case myHome
 }
