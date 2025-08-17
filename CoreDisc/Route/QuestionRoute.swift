@@ -11,13 +11,12 @@ enum QuestionRoute: Hashable {
     case main
     
     case write
-    case summary
+    case summary(questionId: Int?, selectedCategory: CategoryType, text: String)
     
     case basic
     
-    case popular
+    case trending
     
     case shareNow
     case shareList
-    case saveList
 }

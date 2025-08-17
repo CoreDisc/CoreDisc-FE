@@ -7,11 +7,11 @@
 import SwiftUI
 
 struct QuestionSummaryView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(NavigationRouter<QuestionRoute>.self) private var router
     
-    @Binding var questionId: Int?
-    @Binding var selectedCategory: CategoryType?
-    @Binding var text: String
+    let questionId: Int?
+    let selectedCategory: CategoryType?
+    @State var text: String
     
     @StateObject private var viewModel = QuestionSummaryViewModel()
     @StateObject private var sharedQuestionVM = SharedQuestionViewModel()
@@ -25,7 +25,7 @@ struct QuestionSummaryView: View {
                 .ignoresSafeArea()
             VStack {
                 HStack {
-                    Button(action: { dismiss() }) {
+                    Button(action: { router.pop() }) {
                         Image(.iconBack)
                     }
                     .padding(.leading, 17)
@@ -161,7 +161,7 @@ struct QuestionSummaryView: View {
             
             
             Button {
-                dismiss() // 기존 WriteView로 돌아가기
+                router.pop() // 기존 WriteView로 돌아가기
             } label: {
                 PrimaryActionButton(title: "질문 재작성하기", isFinished: .constant(true))
             }

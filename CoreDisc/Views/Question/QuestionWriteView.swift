@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct QuestionWriteView: View {
+    @Environment(NavigationRouter<QuestionRoute>.self) private var router
     @Environment(\.dismiss) var dismiss
     
     @State var questionId: Int? = nil
@@ -27,29 +28,17 @@ struct QuestionWriteView: View {
                 QuestionCaution
                 Spacer().frame(height: 43)
                 
-                if let selectedCategory = selectedCategory {
-                    NavigationLink(
-                        destination: QuestionSummaryView(
-                            questionId: $questionId,
-                            selectedCategory: $selectedCategory,
-                            text: $text
-                        ),
-                        label: {
-                            PrimaryActionButton(
-                                title: "확인 및 저장",
-                                isFinished: .constant(!text.isEmpty)
-                            )
-                        }
-                    )
-                    .disabled(text.isEmpty)
-                    .padding(.horizontal, 21)
-                } else {
+                Button(action: {
+                    guard let category = selectedCategory, !text.isEmpty else { return }
+                    router.push(.summary(questionId: questionId, selectedCategory: category, text: text))
+                }) {
                     PrimaryActionButton(
                         title: "확인 및 저장",
-                        isFinished: .constant(false)
+                        isFinished: .constant(!(selectedCategory == nil || text.isEmpty))
                     )
-                    .padding(.horizontal, 21)
                 }
+                .disabled(selectedCategory == nil || text.isEmpty)
+                .padding(.horizontal, 21)
             }
             .onTapGesture { isFocused = false }
             Spacer().frame(height: 43)
