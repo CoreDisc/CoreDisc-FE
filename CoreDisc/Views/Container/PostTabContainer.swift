@@ -23,10 +23,16 @@ struct PostTabContainer: View {
                         NotificationView()
                     case .detail(let postId):
                         PostDetailView(postId: postId)
+                        
                     case .user(let userName):
                         UserHomeView(userName: userName)
                     case .myHome:
                         MyHomeView()
+                        
+                    case .write:
+                        PostWriteView()
+                    case .questionMain:
+                        QuestionMainView()
                     }
                 }
         }
