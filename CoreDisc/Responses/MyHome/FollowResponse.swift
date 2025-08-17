@@ -26,6 +26,7 @@ struct FollowerCursor: Decodable {
 }
 
 struct FollowerValues: Decodable {
+    let followId: Int
     let followerId: Int
     let nickname: String
     let username: String
@@ -58,15 +59,11 @@ struct UserFollowerCursor: Decodable {
 }
 
 struct UserFollowerValues: Decodable {
+    let followId: Int
     let followerId: Int
     let nickname: String
     let username: String
     let profileImgDTO: FollowerProfileImgDTO?
-}
-
-struct UserFollowerProfileImgDTO: Decodable {
-    let profileImgId: Int
-    let imageUrl: String
 }
 
 // MARK: - Following
@@ -88,6 +85,7 @@ struct FollowingCursor: Decodable {
 }
 
 struct FollowingValues: Decodable {
+    let followId: Int
     let followingId: Int
     let nickname: String
     let username: String
@@ -124,9 +122,11 @@ struct UnfollowResponse: Decodable {
 
 // MARK: - Common
 struct FollowDisplayModel: Identifiable, Hashable {
+    let followId: Int
     let id: Int
     let nickname: String
     let username: String
     let profileImgUrl: String?
     let isCore: Bool
+    let isMutual: Bool?
 }

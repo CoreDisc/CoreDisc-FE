@@ -46,51 +46,61 @@ class FollowSheetViewModel: ObservableObject {
         case .follower:
             return followerList.map {
                 FollowDisplayModel(
+                    followId: $0.followId,
                     id: $0.followerId,
                     nickname: $0.nickname,
                     username: $0.username,
                     profileImgUrl: $0.profileImgDTO?.imageUrl,
-                    isCore: $0.isCircle
+                    isCore: $0.isCircle,
+                    isMutual: $0.isMutual
                 )
             }
         case .userFollower:
             return userFollowerList.map {
                 FollowDisplayModel(
+                    followId: $0.followId,
                     id: $0.followerId,
                     nickname: $0.nickname,
                     username: $0.username,
                     profileImgUrl: $0.profileImgDTO?.imageUrl,
-                    isCore: false
+                    isCore: false,
+                    isMutual: nil
                 )
             }
         case .following:
             return followingList.map {
                 FollowDisplayModel(
+                    followId: $0.followId,
                     id: $0.followingId,
                     nickname: $0.nickname,
                     username: $0.username,
                     profileImgUrl: $0.profileImgDTO?.imageUrl,
-                    isCore: false
+                    isCore: false,
+                    isMutual: nil
                 )
             }
         case .userFollowing:
             return userFollowingList.map {
                 FollowDisplayModel(
+                    followId: $0.followId,
                     id: $0.followingId,
                     nickname: $0.nickname,
                     username: $0.username,
                     profileImgUrl: $0.profileImgDTO?.imageUrl,
-                    isCore: false
+                    isCore: false,
+                    isMutual: nil
                 )
             }
         case .coreList:
             return coreList.map {
                 FollowDisplayModel(
+                    followId: $0.followId,
                     id: $0.followerId,
                     nickname: $0.nickname,
                     username: $0.username,
                     profileImgUrl: $0.profileImgDTO?.imageUrl,
-                    isCore: false
+                    isCore: false,
+                    isMutual: $0.isMutual
                 )
             }
         }
@@ -144,7 +154,7 @@ class FollowSheetViewModel: ObservableObject {
     // MARK: - Functions - API
     func fetchFollowers(
         cursorId: Int? = nil,
-        size: Int? = 20
+        size: Int? = 10
     ) {
         followProvider.request(.getFollowers(cursorId: cursorId, size: size)) { result in
             switch result {
@@ -181,7 +191,7 @@ class FollowSheetViewModel: ObservableObject {
     
     func fetchFollowings(
         cursorId: Int? = nil,
-        size: Int? = 20
+        size: Int? = 10
     ) {
         followProvider.request(.getFollowings(cursorId: cursorId, size: size)) { result in
             switch result {
@@ -219,7 +229,7 @@ class FollowSheetViewModel: ObservableObject {
     func fetchUserFollowers(
         targetUsername: String,
         cursorId: Int? = nil,
-        size: Int? = 20
+        size: Int? = 10
     ) {
         followProvider.request(.getFollowersTarget(
             targetUsername: targetUsername,
@@ -261,7 +271,7 @@ class FollowSheetViewModel: ObservableObject {
     func fetchUserFollowings(
         targetUsername: String,
         cursorId: Int? = nil,
-        size: Int? = 20
+        size: Int? = 10
     ) {
         followProvider.request(.getFollowingsTarget(
             targetUsername: targetUsername,
@@ -328,7 +338,7 @@ class FollowSheetViewModel: ObservableObject {
     
     func fetchCircleList(
         cursorId: Int? = nil,
-        size: Int? = 20
+        size: Int? = 10
     ) {
         circleProvier.request(.getCircle(cursorId: cursorId, size: size)) { result in
             switch result {

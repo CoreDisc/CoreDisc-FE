@@ -14,6 +14,8 @@ struct MyHomeView: View {
     @State var showFollowerSheet: Bool = false
     @State var showFollowingSheet: Bool = false
     
+    @State var showMutualModal: Bool = false
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -44,6 +46,10 @@ struct MyHomeView: View {
                 }
                 
                 sheetView
+                
+                if showMutualModal {
+                    BackModalView(showModal: $showMutualModal, content: "Core List는 서로 팔로우 중일 때만\n설정할 수 있어요.")
+                }
             }
             .task {
                 viewModel.fetchMyHome()
@@ -231,15 +237,13 @@ struct MyHomeView: View {
     @ViewBuilder
     private var sheetView: some View {
         if showFollowerSheet {
-            FollowSheetView(showSheet: $showFollowerSheet, followType: .follower, targetUsrname: "")
+            FollowSheetView(showSheet: $showFollowerSheet, showMutualModal: $showMutualModal, followType: .follower, targetUsrname: "")
                 .transition(.move(edge: .bottom))
-                .zIndex(1)
         }
         
         if showFollowingSheet {
-            FollowSheetView(showSheet: $showFollowingSheet, followType: .following, targetUsrname: "")
+            FollowSheetView(showSheet: $showFollowingSheet, showMutualModal: .constant(false), followType: .following, targetUsrname: "")
                 .transition(.move(edge: .bottom))
-                .zIndex(1)
         }
     }
 }

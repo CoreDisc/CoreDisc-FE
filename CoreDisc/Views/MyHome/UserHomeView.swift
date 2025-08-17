@@ -324,13 +324,13 @@ struct UserHomeView: View {
     @ViewBuilder
     private var sheetView: some View {
         if showFollowerSheet {
-            FollowSheetView(showSheet: $showFollowerSheet, followType: .userFollower, targetUsrname: userName)
+            FollowSheetView(showSheet: $showFollowerSheet, showMutualModal: .constant(false), followType: .userFollower, targetUsrname: userName)
                 .transition(.move(edge: .bottom))
                 .zIndex(1)
         }
         
         if showFollowingSheet {
-            FollowSheetView(showSheet: $showFollowingSheet, followType: .userFollowing, targetUsrname: userName)
+            FollowSheetView(showSheet: $showFollowingSheet, showMutualModal: .constant(false), followType: .userFollowing, targetUsrname: userName)
                 .transition(.move(edge: .bottom))
                 .zIndex(1)
         }
