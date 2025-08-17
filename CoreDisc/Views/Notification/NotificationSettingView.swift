@@ -11,7 +11,6 @@ struct NotificationSettingView: View {
     @Environment(NavigationRouter<MyhomeRoute>.self) private var router
     
     @StateObject var viewModel = NotificationSettingViewModel()
-    @Environment(\.dismiss) var dismiss
     
     // 시간
     @State var showSheet: Bool = false
@@ -70,7 +69,7 @@ struct NotificationSettingView: View {
                 
                 HStack {
                     Button(action: {
-                        dismiss()
+                        router.pop()
                     }) {
                         Image(.iconBack)
                     }

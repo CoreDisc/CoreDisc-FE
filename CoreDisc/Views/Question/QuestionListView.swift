@@ -13,7 +13,6 @@ struct QuestionListView: View {
     @StateObject private var viewModel = QuestionListViewModel()
     @StateObject private var selectViewModel = QuestionBasicViewModel()
     
-    @Environment(\.dismiss) var dismiss
     @State var isSaveMode: Bool
     @State private var selectedCategoryId: Int? = 0 // 0 = All
     @State private var categoryUUID = UUID()
@@ -78,7 +77,9 @@ struct QuestionListView: View {
 
     private var TopGroup: some View {
         VStack(alignment: .leading, spacing: 7) {
-            Button(action: { dismiss() }) {
+            Button(action: {
+                router.pop()
+            }) {
                 Image(.iconBack)
             }
 

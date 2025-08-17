@@ -9,7 +9,6 @@ import SwiftUI
 
 struct QuestionWriteView: View {
     @Environment(NavigationRouter<QuestionRoute>.self) private var router
-    @Environment(\.dismiss) var dismiss
     
     @State var questionId: Int? = nil
     @State var selectedCategory: CategoryType? = nil
@@ -60,7 +59,7 @@ struct QuestionWriteView: View {
         VStack{
             HStack {
                 Button(action: {
-                    dismiss()
+                    router.pop()
                 }){
                     Image(.iconBack)
                 }

@@ -15,7 +15,6 @@ struct QuestionShareNowView: View {
     
     private let spacingAngle: Double = 19
     @State private var hiddenCount = 0
-    @Environment(\.dismiss) var dismiss
     @State private var goToMain = false
     
     let selectedQuestionType: String
@@ -75,7 +74,7 @@ struct QuestionShareNowView: View {
         VStack(alignment: .leading, spacing: 7) {
             HStack {
                 Button(action: {
-                    dismiss()
+                    router.pop()
                 }) {
                     Image(.iconBack)
                 }

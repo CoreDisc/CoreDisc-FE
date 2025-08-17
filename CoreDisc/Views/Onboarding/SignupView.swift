@@ -10,7 +10,6 @@ import SwiftUI
 struct SignupView: View {
     @Environment(NavigationRouter<OnboardingRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = SignupViewModel()
     @FocusState private var isFocused: Bool
     
@@ -30,7 +29,7 @@ struct SignupView: View {
                 LazyVStack{
                     HStack{
                         Button(action: {
-                            dismiss()
+                            router.pop()
                         }){
                             Image(.imgGoback)
                                 .padding()

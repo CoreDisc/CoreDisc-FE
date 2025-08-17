@@ -10,7 +10,6 @@ import SwiftUI
 struct FindPwView: View {
     @Environment(NavigationRouter<OnboardingRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = FindPwViewModel()
     @FocusState private var isFocused: Bool
     

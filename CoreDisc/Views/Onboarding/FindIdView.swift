@@ -10,7 +10,6 @@ import SwiftUI
 struct FindIdView: View {
     @Environment(NavigationRouter<OnboardingRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = FindIdViewModel()
     @FocusState private var isFocused: Bool
     

@@ -10,7 +10,6 @@ import SwiftUI
 struct AccountManageView: View {
     @Environment(NavigationRouter<MyhomeRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = AccountManageViewModel()
     @FocusState private var isFocused: Bool
     
@@ -84,7 +83,7 @@ struct AccountManageView: View {
                 
                 HStack {
                     Button(action: {
-                        dismiss()
+                        router.pop()
                     }) {
                         Image(.iconBack)
                     }
@@ -232,7 +231,7 @@ struct AccountManageView: View {
             .disabled(viewModel.pwd.isEmpty || viewModel.newPwd.isEmpty || viewModel.rePwd.isEmpty)
             .onChange(of: viewModel.changeSuccess, {
                 if viewModel.changeSuccess {
-                    dismiss()
+                    router.pop()
                 }
             })
             

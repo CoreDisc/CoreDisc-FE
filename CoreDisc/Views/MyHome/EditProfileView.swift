@@ -14,7 +14,6 @@ struct EditProfileView: View {
     
     @StateObject private var viewModel = MyHomeViewModel()
 
-    @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused: Bool
     
     @State private var showEditButton: Bool = false
@@ -71,7 +70,7 @@ struct EditProfileView: View {
                 
                 HStack {
                     Button(action: {
-                        dismiss()
+                        router.pop()
                     }) {
                         Image(.iconBack)
                     }
@@ -88,7 +87,7 @@ struct EditProfileView: View {
                     }
                     .onChange(of: viewModel.changeSuccess) { oldValue, newValue in
                         if newValue {
-                            dismiss()
+                            router.pop()
                         }
                     }
                 }

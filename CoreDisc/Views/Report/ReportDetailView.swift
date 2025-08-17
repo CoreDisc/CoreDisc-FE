@@ -10,7 +10,6 @@ import SwiftUI
 struct ReportDetailView: View {
     @Environment(NavigationRouter<ReportRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
     @State private var nowIndex: Int = 1
     
     @StateObject private var viewModel = ReportDetailViewModel()
@@ -134,7 +133,7 @@ struct ReportDetailView: View {
             Image(.imgReportHeaderIcon)
             
             Button(action: {
-                dismiss()
+                router.pop()
             }){
                 Image(.imgGoback)
             }

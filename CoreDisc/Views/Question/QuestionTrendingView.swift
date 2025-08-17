@@ -11,7 +11,6 @@ import SwiftUI
 struct QuestionTrendingView: View {
     @Environment(NavigationRouter<QuestionRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
     @State var goToMain: Bool = false
     
     @StateObject private var viewModel = PopularQuestionViewModel()
@@ -66,7 +65,7 @@ struct QuestionTrendingView: View {
         VStack(alignment: .leading) {
             HStack {
                 Button(action:{
-                    dismiss()
+                    router.pop()
                 }) {
                     Image(.iconBack)
                         .resizable()

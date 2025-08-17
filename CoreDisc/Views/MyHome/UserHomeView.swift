@@ -13,8 +13,6 @@ struct UserHomeView: View {
     
     @StateObject var viewModel = UserHomeViewModel()
     
-    @Environment(\.dismiss) var dismiss
-    
     @State var showBlockButton: Bool = false
     @State var showBlockModal: Bool = false
     @State var showUnblockModal: Bool = false
@@ -139,7 +137,7 @@ struct UserHomeView: View {
             
             HStack(alignment: .top) {
                 Button(action: {
-                    dismiss()
+                    router.pop()
                 }) {
                     Image(.iconBack)
                 }

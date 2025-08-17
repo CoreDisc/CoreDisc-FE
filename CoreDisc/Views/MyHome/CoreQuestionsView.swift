@@ -10,8 +10,6 @@ import SwiftUI
 struct CoreQuestionsView: View {
     @Environment(NavigationRouter<MyhomeRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
-    
     @StateObject private var viewModel = CoreQuestionsViewModel()
     
     var body: some View {
@@ -58,7 +56,7 @@ struct CoreQuestionsView: View {
                     
                 
                 Button(action: {
-                    dismiss()
+                    router.pop()
                 }) {
                     Image(.iconBack)
                 }

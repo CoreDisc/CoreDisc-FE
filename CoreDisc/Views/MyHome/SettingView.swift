@@ -10,7 +10,6 @@ import SwiftUI
 struct SettingView: View {
     @Environment(NavigationRouter<MyhomeRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
     @State var LogoutModal = false
     @StateObject private var viewModel = AccountManageViewModel()
     
@@ -76,7 +75,7 @@ struct SettingView: View {
                 
                 HStack {
                     Button(action: {
-                        dismiss()
+                        router.pop()
                     }) {
                         Image(.iconBack)
                     }
