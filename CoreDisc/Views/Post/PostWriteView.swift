@@ -135,26 +135,37 @@ struct PostWriteView: View {
     private var PostGroup: some View {
         VStack (alignment: .center){
             // 게시물 작성란
-            TabView(selection: $pageIndex) {
-                ForEach(0..<4, id: \.self) { idx in
-                    CardPageView(
-                        card: $cards[idx],
-                        onTapPhoto: {
-                            pageIndex = idx
-                            showPhotoPicker = true
-                        },
-                        onTapWrite: {
-                            pageIndex = idx
-                            cards[idx].isTextMode = true
-                            cards[idx].image = nil
-                        }
-                    )
-                    .tag(idx)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    ForEach(questions.indices, id: \.self) { idx in
+                        CardPageView(
+                            card: $cards[idx],
+                            onTapPhoto: {
+                                pageIndex = idx
+                                showPhotoPicker = true
+                            },
+                            onTapWrite: {
+                                pageIndex = idx
+                                cards[idx].isTextMode = true
+                                cards[idx].image = nil
+                            }
+                        )
+                        .frame(width: 308, height: 409)
+                        .id(idx)
+                    }
                 }
+                .frame(height: 409)
+                .scrollTargetLayout()
+                //.padding(.horizontal, 47)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .frame(height: 409)
-            //.padding(.horizontal, 47)
+            .contentMargins(.horizontal, 47)
+            .scrollTargetBehavior(.paging)
+            .scrollPosition(
+                id: Binding(
+                    get: { Optional(pageIndex) },
+                    set: { pageIndex = $0 ?? 0 }
+                )
+            )
         }
     }
     
