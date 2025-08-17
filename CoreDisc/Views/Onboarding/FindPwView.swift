@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct FindPwView: View {
+    @Environment(NavigationRouter<OnboardingRoute>.self) private var router
     
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = FindPwViewModel()
@@ -17,7 +18,6 @@ struct FindPwView: View {
     @State private var rePwdShown = false
     
     var body: some View {
-        NavigationStack{
             ZStack {
                 Image(.imgOnboardingBackground)
                     .resizable()
@@ -50,8 +50,10 @@ struct FindPwView: View {
                     Spacer()
                 }
             }
-        }
         .navigationBarBackButtonHidden()
+        .fullScreenCover(isPresented: $viewModel.changeSuccess) {
+            LoginView()
+        }
     }
     private var InputGroup : some View{
         VStack{
@@ -91,7 +93,9 @@ struct FindPwView: View {
             
             Spacer().frame(height: 12)
             
-            NavigationLink(destination: LoginView()) {
+            Button(action: {
+                router.reset()
+            }) {
                 ZStack{
                     Rectangle()
                         .frame(height: 40)
@@ -146,7 +150,9 @@ struct FindPwView: View {
 
             Spacer().frame(height: 12)
             
-            NavigationLink(destination: LoginView()) {
+            Button(action: {
+                router.reset()
+            }) {
                 ZStack{
                     Rectangle()
                         .frame(height: 40)
@@ -268,11 +274,12 @@ struct FindPwView: View {
                 Text("변경하기")
             }, boxColor: (viewModel.pwd.isEmpty || viewModel.rePwd.isEmpty) ? .gray400 : .key)
             .disabled(viewModel.pwd.isEmpty || viewModel.rePwd.isEmpty)
-            .navigationDestination(isPresented: $viewModel.changeSuccess) {LoginView()}
             
             Spacer().frame(height: 12)
             
-            NavigationLink(destination: LoginView()) {
+            Button(action: {
+                router.reset()
+            }) {
                 ZStack{
                     Rectangle()
                         .frame(height: 40)
