@@ -21,7 +21,7 @@ struct CoreDiscApp: App {
     
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            OnboardingTabContainer()
                 .onOpenURL { url in
                     if (AuthApi.isKakaoTalkLoginUrl(url)) {
                         _ = AuthController.handleOpenUrl(url: url)

@@ -15,6 +15,8 @@ struct CardContent {
 }
 
 struct PostWriteView: View {
+    @Environment(NavigationRouter<WriteRoute>.self) private var router
+    
     @StateObject private var viewModel = PostpostsViewModel()
     @State private var selectedDate = Date()
     
@@ -38,31 +40,29 @@ struct PostWriteView: View {
     @State private var selectedPhotoItem: PhotosPickerItem? = nil
     
     var body: some View {
-        NavigationStack{
-            ZStack {
-                Image(.imgShortBackground)
-                    .resizable()
-                    .ignoresSafeArea()
+        ZStack {
+            Image(.imgShortBackground)
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack {
+                Spacer().frame(height: 22)
                 
-                VStack {
-                    Spacer().frame(height: 22)
-                    
-                    UserGroup
-                    
-                    Spacer().frame(height: 33)
-                    
-                    PostGroup
-                    
-                    Spacer().frame(height: 49)
-                    
-                    QuestionGroup
-                    
-                    Spacer().frame(height: 19)
-                    
-                    BottomGroup
-                    
-                    Spacer()
-                }
+                UserGroup
+                
+                Spacer().frame(height: 33)
+                
+                PostGroup
+                
+                Spacer().frame(height: 49)
+                
+                QuestionGroup
+                
+                Spacer().frame(height: 19)
+                
+                BottomGroup
+                
+                Spacer()
             }
         }
         .navigationBarBackButtonHidden()
@@ -250,7 +250,9 @@ struct PostWriteView: View {
             }
             
             // 넘어가기 버튼
-            NavigationLink(destination: PostWriteDiaryView()) {
+            Button(action: {
+                router.push(.select)
+            }) {
                 ZStack {
                     Circle()
                         .frame(width: nextDiameter, height: nextDiameter)
@@ -319,7 +321,7 @@ struct PostWriteView: View {
                                 .foregroundColor(.black)
                                 .scrollContentBackground(.hidden)
                                 .frame(width: 263)
-                                .frame(maxHeight: 356) 
+                                .frame(maxHeight: 356)
                         }
                     }
                     .padding(.all, 18)

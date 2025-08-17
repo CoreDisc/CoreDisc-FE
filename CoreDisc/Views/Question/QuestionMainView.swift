@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct QuestionMainView: View {
+    @Environment(NavigationRouter<QuestionRoute>.self) private var router
+    
     @StateObject var viewModel = QuestionMainViewModel()
     
     @State var isSelectView: Bool = false
     @State var currentOrder: Int = 0
-    
     @State var currentQuestionType: String = ""
     
     // 씨디 돌아가는 애니메이션
@@ -20,21 +21,19 @@ struct QuestionMainView: View {
     let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Image(.imgShortBackground)
-                    .resizable()
-                    .ignoresSafeArea()
-                    
-                VStack {
-                    TitleGroup
-                    
-                    Spacer().frame(height: 36)
-                    
-                    MainCDGroup
-                    
-                    Spacer()
-                }
+        ZStack {
+            Image(.imgShortBackground)
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack {
+                TitleGroup
+                
+                Spacer().frame(height: 36)
+                
+                MainCDGroup
+                
+                Spacer()
             }
         }
         .task {
@@ -112,7 +111,7 @@ struct QuestionMainView: View {
                 startColor: colors(for: question1?.questionType).0,
                 endColor: colors(for: question1?.questionType).1
             )
-                .position(x: 150+79, y: 97)
+            .position(x: 150+79, y: 97)
             
             QuestionSelectItem(
                 moveLeft: $isSelectView,
@@ -123,7 +122,7 @@ struct QuestionMainView: View {
                 startColor: colors(for: question2?.questionType).0,
                 endColor: colors(for: question2?.questionType).1
             )
-                .position(x: 150+34, y: 196)
+            .position(x: 150+34, y: 196)
             
             QuestionSelectItem(
                 moveLeft: $isSelectView,
@@ -134,7 +133,7 @@ struct QuestionMainView: View {
                 startColor: colors(for: question3?.questionType).0,
                 endColor: colors(for: question3?.questionType).1
             )
-                .position(x: 150+42, y: 295)
+            .position(x: 150+42, y: 295)
             
             QuestionSelectItem(
                 moveLeft: $isSelectView,
@@ -145,7 +144,7 @@ struct QuestionMainView: View {
                 startColor: colors(for: question4?.questionType).0,
                 endColor: colors(for: question4?.questionType).1
             )
-                .position(x: 150+79, y: 394)
+            .position(x: 150+79, y: 394)
             
             SelectCDGroup
                 .offset(x: 460)
@@ -156,18 +155,10 @@ struct QuestionMainView: View {
     
     private var SelectCDGroup: some View {
         VStack(spacing: 22) {
-            QuestionSelectButton(title: "질문 작성") {
-                QuestionWriteView()
-            }
-            QuestionSelectButton(title: "기본 질문") {
-                QuestionBasicView(mainViewModel: viewModel, selectedQuestionType: currentQuestionType, order: currentOrder)
-            }
-            QuestionSelectButton(title: "인기 질문") {
-                QuestionTrendingView(mainViewModel: viewModel, selectedQuestionType: currentQuestionType, order: currentOrder)
-            }
-            QuestionSelectButton(title: "공유/저장\n질문") {
-                QuestionShareNowView(mainViewModel: viewModel, selectedQuestionType: currentQuestionType, order: currentOrder)
-            }
+            QuestionSelectButton(title: "질문 작성", destination: .write)
+            QuestionSelectButton(title: "기본 질문", destination: .basic(selectedQuestionType: currentQuestionType, order: currentOrder))
+            QuestionSelectButton(title: "인기 질문", destination: .trending(selectedQuestionType: currentQuestionType, order: currentOrder))
+            QuestionSelectButton(title: "공유/저장\n질문", destination: .shareNow(selectedQuestionType: currentQuestionType, order: currentOrder))
         }
         .offset(x: 0)
     }
@@ -219,33 +210,33 @@ struct QuestionSelectItem: View {
 }
 
 // 질문 선택 버튼 컴포넌트
-struct QuestionSelectButton<Destination: View>: View {
+struct QuestionSelectButton: View {
+    @Environment(NavigationRouter<QuestionRoute>.self) private var router
+    
     var title: String
-    var destination: (() -> Destination)?
+    var destination: QuestionRoute
     
     var body: some View {
-        if let destination = destination {
-            NavigationLink(destination: destination()) {
-                buttonContent
-            }
-        } else {
+        Button(action: {
+            router.push(destination)
+        }) {
             buttonContent
         }
     }
-
+    
     private var buttonContent: some View {
         ZStack(alignment: .top) {
             Image(.imgCd)
                 .resizable()
                 .frame(width: 76, height: 76)
                 .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
-
+            
             ZStack(alignment: .topLeading) {
                 RoundedRectangle(cornerRadius: 4)
                     .horizontalLinearGradient(startColor: .white, endColor: .gray400)
                     .frame(width: 98, height: 68)
                     .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
-
+                
                 Text(title)
                     .textStyle(.Q_Main)
                     .foregroundStyle(.black000)

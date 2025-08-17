@@ -24,11 +24,11 @@ struct NotificationValues: Decodable, Identifiable, Hashable {
     let notificationId: Int
     let type: String
     let content: String
-    let targetId: Int
-    let senderId: Int
-    let senderUsername: String
-    let senderNickname: String
-    let profileImgDTO: NotificationProfileImgDTO
+    let targetId: Int?
+    let senderId: Int?
+    let senderUsername: String?
+    let senderNickname: String?
+    let profileImgDTO: NotificationProfileImgDTO?
     let isRead: Bool
     let createdAt: String
     let timeStamp: String

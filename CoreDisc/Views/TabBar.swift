@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum Tab {
-    case home, write, disk, report, mypage
+    case post, write, question, report, myhome
 }
 
 enum TabBarStyle {
@@ -16,19 +16,25 @@ enum TabBarStyle {
 }
 
 struct TabBar: View {
-    @State private var selectedTab: Tab = .disk
+    @State private var selectedTab: Tab = .question
     @State private var tabBarStyle: TabBarStyle = .light
     @StateObject private var tabBarVisibility = TabBarVisibility()
     
-    init(startTab: Tab = .disk) {
+    @State private var postRouter = NavigationRouter<PostRoute>()
+    @State private var writeRouter = NavigationRouter<WriteRoute>()
+    @State private var questionRouter = NavigationRouter<QuestionRoute>()
+    @State private var reportRouter = NavigationRouter<ReportRoute>()
+    @State private var myhomeRouter = NavigationRouter<MyhomeRoute>()
+    
+    init(startTab: Tab = .question) {
         _selectedTab = State(initialValue: startTab)
         _tabBarStyle = State(initialValue: {
             switch startTab {
-            case .home: return .dark
-            case .write: return .dark
-            case .disk: return .light
+            case .post: return .dark
+            case .write: return .light
+            case .question: return .light
             case .report: return .light
-            case .mypage: return .light
+            case .myhome: return .light
             }
         }())
     }
@@ -37,16 +43,37 @@ struct TabBar: View {
         ZStack(alignment: .bottom) {
             Group {
                 switch selectedTab {
-                case .home:
-                    PostMainView()
+                case .post:
+                    NavigationStack(path: $postRouter.path) {
+                        PostTabContainer()
+                    }
+                    .environment(postRouter)
+                    .environment(myhomeRouter)
+                    
                 case .write:
-                    PostWriteView()
-                case .disk:
-                    QuestionMainView()
+                    NavigationStack(path: $writeRouter.path) {
+                        WriteTabContainer()
+                    }
+                    .environment(writeRouter)
+                    
+                case .question:
+                    NavigationStack(path: $questionRouter.path) {
+                        QuestionTabContainer()
+                    }
+                    .environment(questionRouter)
+                    
                 case .report:
-                    ReportMainView()
-                case .mypage:
-                    MyHomeView()
+                    NavigationStack(path: $reportRouter.path) {
+                        ReportTabContainer()
+                    }
+                    .environment(reportRouter)
+                    
+                case .myhome:
+                    NavigationStack(path: $myhomeRouter.path) {
+                        MyhomeTabContainer()
+                    }
+                    .environment(myhomeRouter)
+                    .environment(postRouter)
                 }
             }
             .environmentObject(tabBarVisibility)
@@ -54,7 +81,20 @@ struct TabBar: View {
             
             // 탭바 숨김
             if !tabBarVisibility.isHidden {
-                CustomTabBar(selectedTab: $selectedTab, tabBarStyle: tabBarStyle)
+                CustomTabBar(
+                    selectedTab: $selectedTab,
+                    tabBarStyle: tabBarStyle,
+                    onReselect: { tab in
+                        // 같은 탭을 다시 탭했을 때 라우터 리셋
+                        switch tab {
+                        case .post: postRouter.reset()
+                        case .write: writeRouter.reset()
+                        case .question: questionRouter.reset()
+                        case .report: reportRouter.reset()
+                        case .myhome: myhomeRouter.reset()
+                        }
+                    }
+                )
             }
         }
         .ignoresSafeArea(.keyboard)
@@ -70,11 +110,11 @@ struct TabBar: View {
     
     private func tabBarStyle(for tab: Tab) -> TabBarStyle {
         switch tab {
-        case .home: .dark
-        case .write: .dark
-        case .disk: .light
+        case .post: .dark
+        case .write: .light
+        case .question: .light
         case .report: .light
-        case .mypage: .light
+        case .myhome: .light
         }
     }
 }
@@ -82,6 +122,7 @@ struct TabBar: View {
 struct CustomTabBar: View {
     @Binding var selectedTab: Tab
     var tabBarStyle: TabBarStyle
+    let onReselect: (Tab) -> Void
     
     var body: some View {
         VStack {
@@ -94,11 +135,11 @@ struct CustomTabBar: View {
                     .padding(.horizontal, 24)
                 
                 HStack(spacing: 19) {
-                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .home, icon: "icon_home")
-                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .write, icon: "icon_pencil")
-                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .disk, icon: "icon_disk")
-                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .report, icon: "icon_museum")
-                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .mypage, icon: "icon_mypage")
+                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .post, icon: "icon_home", onReselect: onReselect)
+                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .write, icon: "icon_pencil", onReselect: onReselect)
+                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .question, icon: "icon_disk", onReselect: onReselect)
+                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .report, icon: "icon_museum", onReselect: onReselect)
+                    TabBarItem(selectedTab: $selectedTab, tabBarStyle: tabBarStyle, tab: .myhome, icon: "icon_mypage", onReselect: onReselect)
                 }
             }
         }
@@ -111,6 +152,7 @@ struct TabBarItem: View {
     let tabBarStyle: TabBarStyle
     let tab: Tab
     let icon: String
+    let onReselect: (Tab) -> Void
     
     var selectedColor: Color {
         switch tabBarStyle {
@@ -128,7 +170,11 @@ struct TabBarItem: View {
     
     var body: some View {
         Button(action: {
-            selectedTab = tab
+            if selectedTab == tab {
+                onReselect(tab)
+            } else {
+                selectedTab = tab
+            }
         }) {
             Image(icon)
                 .resizable()

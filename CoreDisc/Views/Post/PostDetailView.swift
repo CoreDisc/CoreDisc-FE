@@ -9,7 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct PostDetailView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(NavigationRouter<PostRoute>.self) private var router
     @StateObject private var viewModel = PostDetailViewModel()
     
     @State var showCommentSheet: Bool = false
@@ -84,20 +84,23 @@ struct PostDetailView: View {
         .task(id: viewModel.answersList.count) {
             currentQuestion = viewModel.cardItems.first?.question ?? ""
         }
-        .navigationDestination(isPresented: $showUserHome, destination: {
-            if isOwner {
-                MyHomeView()
-            } else {
-                UserHomeView(userName: commentUsername)
+        .onChange(of: showUserHome) {
+            if showUserHome {
+                if isOwner {
+                    router.push(.myHome)
+                } else {
+                    router.push(.user(userName: commentUsername))
+                }
+                showUserHome = false
             }
-        })
+        }
     }
     
     // 뒤로가기 버튼 섹션
     private var BackButtonGroup: some View {
         HStack{
             Button(action: {
-                dismiss()
+                router.pop()
             }){
                 Image(.iconBack)
                     .resizable()

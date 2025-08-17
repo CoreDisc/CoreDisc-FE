@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ReportSummaryView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(NavigationRouter<ReportRoute>.self) private var router
+    
     @State private var currentIndex: Int = 0
     @StateObject private var viewModel = ReportSummaryViewModel()
     
@@ -62,7 +63,7 @@ struct ReportSummaryView: View {
         HStack{
             Image(.imgReportHeaderIcon)
             Button(action: {
-                dismiss()
+                router.pop()
             }){
                 Image(.imgGoback)
             }

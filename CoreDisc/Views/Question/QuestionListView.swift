@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct QuestionListView: View {
+    @Environment(NavigationRouter<QuestionRoute>.self) private var router
+    
     @StateObject private var viewModel = QuestionListViewModel()
     @StateObject private var selectViewModel = QuestionBasicViewModel()
-    @ObservedObject var mainViewModel: QuestionMainViewModel
     
-    @Environment(\.dismiss) var dismiss
     @State var isSaveMode: Bool
     @State private var selectedCategoryId: Int? = 0 // 0 = All
     @State private var categoryUUID = UUID()
@@ -63,7 +63,6 @@ struct QuestionListView: View {
                     order: order,
                     selectedQuestionType: .OFFICIAL,
                     viewModel: selectViewModel,
-                    mainViewModel: mainViewModel,
                     showSelectModal: $showSelectModal,
                     goToMain: $goToMain
                 )
@@ -73,12 +72,14 @@ struct QuestionListView: View {
             fetchQuestions(reset: true)
         }
         .navigationBarBackButtonHidden()
-        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .question) }
     }
 
     private var TopGroup: some View {
         VStack(alignment: .leading, spacing: 7) {
-            Button(action: { dismiss() }) {
+            Button(action: {
+                router.pop()
+            }) {
                 Image(.iconBack)
             }
 

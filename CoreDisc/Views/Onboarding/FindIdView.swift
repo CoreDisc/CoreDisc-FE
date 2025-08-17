@@ -8,43 +8,41 @@
 import SwiftUI
 
 struct FindIdView: View {
+    @Environment(NavigationRouter<OnboardingRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = FindIdViewModel()
     @FocusState private var isFocused: Bool
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Image(.imgOnboardingBackground)
-                    .resizable()
-                    .ignoresSafeArea()
-                    .onTapGesture { // 키보드 내리기 용도
-                        isFocused = false
-                    }
-                
-                VStack{
-                    Spacer().frame(height: 96)
-                    Image(.imgLogo)
-                        .resizable()
-                        .frame(width: 60, height: 36)
-                    Spacer().frame(height: 51)
-                    Text("Shoot Your")
-                        .textStyle(.Title_Text_Ko)
-                        .foregroundStyle(.white)
-                    Text("Core.")
-                        .textStyle(.Title_Text_Ko)
-                        .foregroundStyle(.white)
-                    
-                    Spacer().frame(height: 16)
-                    
-                    if viewModel.findedId {
-                        FindGroup
-                    } else {
-                        InputGroup
-                    }
-                    Spacer()
+        ZStack {
+            Image(.imgOnboardingBackground)
+                .resizable()
+                .ignoresSafeArea()
+                .onTapGesture { // 키보드 내리기 용도
+                    isFocused = false
                 }
+            
+            VStack{
+                Spacer().frame(height: 96)
+                Image(.imgLogo)
+                    .resizable()
+                    .frame(width: 60, height: 36)
+                Spacer().frame(height: 51)
+                Text("Shoot Your")
+                    .textStyle(.Title_Text_Ko)
+                    .foregroundStyle(.white)
+                Text("Core.")
+                    .textStyle(.Title_Text_Ko)
+                    .foregroundStyle(.white)
+                
+                Spacer().frame(height: 16)
+                
+                if viewModel.findedId {
+                    FindGroup
+                } else {
+                    InputGroup
+                }
+                Spacer()
             }
         }
         .navigationBarBackButtonHidden()
@@ -95,7 +93,9 @@ struct FindIdView: View {
             .disabled(viewModel.name.isEmpty || viewModel.email.isEmpty)
             
             Spacer().frame(height: 12)
-            NavigationLink(destination: LoginView()) {
+            Button(action: {
+                router.pop()
+            }) {
                 ZStack{
                     Rectangle()
                         .frame(height: 40)
@@ -110,7 +110,9 @@ struct FindIdView: View {
             Spacer().frame(height: 54)
             
             HStack{
-                NavigationLink(destination: SignupView()) {
+                Button(action: {
+                    router.push(.signup)
+                }) {
                     Text("회원가입")
                         .textStyle(.login_info)
                         .underline()
@@ -119,7 +121,9 @@ struct FindIdView: View {
                 
                 Spacer().frame(width: 32)
                 
-                NavigationLink(destination: FindPwView()) {
+                Button(action: {
+                    router.push(.findPw)
+                }) {
                     Text("비밀번호를 잊으셨나요?")
                         .textStyle(.login_info)
                         .underline()
@@ -161,7 +165,9 @@ struct FindIdView: View {
             Spacer().frame(height: 29)
             
             
-            NavigationLink(destination: FindPwView()) {
+            Button(action: {
+                router.push(.findPw)
+            }) {
                 ZStack{
                     Rectangle()
                         .frame(height: 40)
@@ -173,7 +179,9 @@ struct FindIdView: View {
                 }
             }
             
-            NavigationLink(destination: LoginView()) {
+            Button(action: {
+                router.pop()
+            }) {
                 ZStack{
                     Rectangle()
                         .frame(height: 40)

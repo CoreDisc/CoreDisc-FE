@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct QuestionSelectModalView: View {
+    @Environment(NavigationRouter<QuestionRoute>.self) private var router
+    @EnvironmentObject var mainViewModel: QuestionMainViewModel
+    
     let isMonth: String
     @Binding var selectedQuestionId: Int?
     let order: Int
     let selectedQuestionType: SelectedQuestionType
     
     @ObservedObject var viewModel: QuestionBasicViewModel
-    @ObservedObject var mainViewModel: QuestionMainViewModel
     
     @Binding var showSelectModal: Bool
     

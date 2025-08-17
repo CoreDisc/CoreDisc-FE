@@ -8,14 +8,12 @@
 import SwiftUI
 
 struct NotificationSettingView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @StateObject var viewModel = NotificationSettingViewModel()
-    @Environment(\.dismiss) var dismiss
     
     // 시간
     @State var showSheet: Bool = false
-    
-    // TODO: 토글에 따라 시간 버튼 활성화/비활성화 처리
-    // TODO: 바텀시트 배경 비활성화 처리
 
     var body: some View {
         ZStack {
@@ -46,7 +44,7 @@ struct NotificationSettingView: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showSheet)
-        .toolbarVisibility(.hidden, for: .navigationBar)
+        .navigationBarBackButtonHidden()
         .task {
             viewModel.fetchReminderState()
         }
@@ -71,7 +69,7 @@ struct NotificationSettingView: View {
                 
                 HStack {
                     Button(action: {
-                        dismiss()
+                        router.pop()
                     }) {
                         Image(.iconBack)
                     }

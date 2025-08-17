@@ -9,7 +9,8 @@ import SwiftUI
 import Kingfisher
 
 struct BlockListView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @StateObject var userViewModel = UserHomeViewModel()
     @StateObject private var viewModel = BlockListViewModel()
     
@@ -85,7 +86,7 @@ struct BlockListView: View {
                 
                 HStack {
                     Button(action: {
-                        dismiss()
+                        router.pop()
                     }) {
                         Image(.iconBack)
                     }

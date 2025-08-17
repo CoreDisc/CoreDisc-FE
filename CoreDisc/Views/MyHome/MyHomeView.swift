@@ -9,6 +9,8 @@ import SwiftUI
 import Kingfisher
 
 struct MyHomeView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @StateObject private var viewModel = MyHomeViewModel()
     
     @State var showFollowerSheet: Bool = false
@@ -17,48 +19,46 @@ struct MyHomeView: View {
     @State var showMutualModal: Bool = false
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Image(.imgShortBackground2)
-                    .resizable()
-                    .ignoresSafeArea()
+        ZStack {
+            Image(.imgShortBackground2)
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                Spacer().frame(height: 3)
                 
-                VStack(spacing: 0) {
-                    Spacer().frame(height: 3)
+                TopMenuGroup
+                
+                ScrollView {
+                    ProfileGroup
                     
-                    TopMenuGroup
+                    Spacer().frame(height: 14)
                     
-                    ScrollView {
-                        ProfileGroup
-                        
-                        Spacer().frame(height: 14)
-                        
-                        CountGroup
-                        
-                        Spacer().frame(height: 16)
-                        
-                        ButtonGroup
-                        
-                        Spacer().frame(height: 31)
-                        
-                        PostGroup
-                    }
-                }
-                
-                sheetView
-                
-                if showMutualModal {
-                    BackModalView(showModal: $showMutualModal, content: "Core List는 서로 팔로우 중일 때만\n설정할 수 있어요.")
+                    CountGroup
+                    
+                    Spacer().frame(height: 16)
+                    
+                    ButtonGroup
+                    
+                    Spacer().frame(height: 31)
+                    
+                    PostGroup
                 }
             }
-            .task {
-                viewModel.fetchMyHome()
-                viewModel.fetchMyPosts()
+            
+            sheetView
+            
+            if showMutualModal {
+                BackModalView(showModal: $showMutualModal, content: "Core List는 서로 팔로우 중일 때만\n설정할 수 있어요.")
             }
-            .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
-            .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
-            .navigationBarBackButtonHidden()
         }
+        .task {
+            viewModel.fetchMyHome()
+            viewModel.fetchMyPosts()
+        }
+        .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
+        .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
+        .navigationBarBackButtonHidden()
     }
     
     // 상단 메뉴
@@ -71,12 +71,16 @@ struct MyHomeView: View {
             Spacer()
             
             
-            NavigationLink(destination: CalendarView()) {
+            Button(action: {
+                router.push(.calendar)
+            }) {
                 Image(.iconCalendar)
                     .foregroundStyle(.white)
             }
             
-            NavigationLink(destination: SettingView()) {
+            Button(action: {
+                router.push(.setting)
+            }) {
                 Image(.iconSetting)
                     .foregroundStyle(.white)
             }
@@ -163,7 +167,9 @@ struct MyHomeView: View {
     // 버튼
     private var ButtonGroup: some View {
         VStack(spacing: 12) {
-            NavigationLink(destination: CoreQuestionsView()) {
+            Button(action: {
+                router.push(.core)
+            }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
                         .fill(.key)
@@ -177,7 +183,9 @@ struct MyHomeView: View {
             }
             .buttonStyle(.plain)
             
-            NavigationLink(destination: EditProfileView()) {
+            Button(action: {
+                router.push(.edit)
+            }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
                         .fill(.gray400)
@@ -196,10 +204,12 @@ struct MyHomeView: View {
     // 게시글
     private var PostGroup: some View {
         let columns = Array(repeating: GridItem(.flexible()), count: 3)
-
+        
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(viewModel.postList, id: \.postId) { post in
-                NavigationLink(destination: PostDetailView(postId: post.postId)) {
+                Button(action: {
+                    router.push(.post(postId: post.postId))
+                }) {
                     if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
                        !url.absoluteString.isEmpty { // 이미지
                         KFImage(url)

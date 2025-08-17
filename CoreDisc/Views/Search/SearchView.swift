@@ -8,30 +8,25 @@
 import SwiftUI
 
 struct SearchView: View {
-    @Binding var query:String
-    @Binding var isSearch: Bool
+    @State var query: String = ""
+    @State var isSearch: Bool = false
     @State private var path = NavigationPath()
     @StateObject private var viewModel = SearchHistoryViewModel()
     
     var body: some View {
-        NavigationStack(path: $path) {
-            ZStack {
-                Image(.imgSearchBackground)
-                    .resizable()
-                    .ignoresSafeArea()
-                
-                VStack {
-                    Spacer().frame(height: 11)
-                    SearchBarGroup(query: $query, isSearch: $isSearch, onSearch: {
-                        path.append(UUID())
-                    })
-                    Spacer().frame(height: isSearch ? 18 : 21)
-                    SearchGroup
-                    Spacer()
-                }
-            }
-            .navigationDestination(for: UUID.self) { _ in
-                SearchResultView(query: $query, isSearch: $isSearch, path: $path)
+        ZStack {
+            Image(.imgSearchBackground)
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack {
+                Spacer().frame(height: 11)
+                SearchBarGroup(query: $query, isSearch: $isSearch, onSearch: {
+                    path.append(UUID())
+                })
+                Spacer().frame(height: isSearch ? 18 : 21)
+                SearchGroup
+                Spacer()
             }
         }
         .task {
@@ -87,16 +82,16 @@ struct RecentItem: View {
     let text: String
     var isDeleting: Bool = false
     var onDelete: () -> Void = {}
-
+    
     var body: some View {
         HStack {
             Text(text)
                 .textStyle(.Q_Main)
                 .foregroundStyle(.white)
                 .padding(.leading, 30)
-
+            
             Spacer()
-
+            
             if isDeleting {
                 ProgressView()
                     .frame(width: 24, height: 24)
@@ -107,7 +102,7 @@ struct RecentItem: View {
                         .padding(.trailing, 36)
                         .frame(width: 24, height: 24)
                         .foregroundStyle(.white)
-                        
+                    
                 }
             }
         }
@@ -116,16 +111,6 @@ struct RecentItem: View {
     }
 }
 
-
-private struct SearchViewPreviewWrapper: View {
-    @State var tempQuery = ""
-    @State var tempSearch = false
-    
-    var body: some View {
-        SearchView(query: $tempQuery, isSearch: $tempSearch)
-    }
-}
-
-#Preview {
-    SearchViewPreviewWrapper()
-}
+//#Preview {
+//    SearchView()
+//}
