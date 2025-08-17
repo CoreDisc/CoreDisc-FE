@@ -8,37 +8,30 @@
 import SwiftUI
 
 struct PostTabContainer: View {
-    @State private var router = NavigationRouter<PostRoute>()
-    @State private var homeRouter = NavigationRouter<MyhomeRoute>()
-    
     var body: some View {
-        NavigationStack(path: $router.path) {
-            PostMainView()
-                .navigationDestination(for: PostRoute.self) { route in
-                    switch route {
-                    case .home:
-                        PostMainView()
-                    case .search:
-                        SearchView()
-                    case .notification:
-                        NotificationView()
-                    case .detail(let postId):
-                        PostDetailView(postId: postId)
-                        
-                    case .user(let userName):
-                        UserHomeView(userName: userName)
-                    case .myHome:
-                        MyHomeView()
-                        
-                    case .write:
-                        PostWriteView()
-                    case .questionMain:
-                        QuestionMainView()
-                    }
+        PostMainView()
+            .navigationDestination(for: PostRoute.self) { route in
+                switch route {
+                case .home:
+                    PostMainView()
+                case .search:
+                    SearchView()
+                case .notification:
+                    NotificationView()
+                case .detail(let postId):
+                    PostDetailView(postId: postId)
+                    
+                case .user(let userName):
+                    UserHomeView(userName: userName)
+                case .myHome:
+                    MyHomeView()
+                    
+                case .write:
+                    PostWriteView()
+                case .questionMain:
+                    QuestionMainView()
                 }
-        }
-        .environment(router)
-        .environment(homeRouter)
+            }
     }
 }
 

@@ -8,25 +8,20 @@
 import SwiftUI
 
 struct ReportTabContainer: View {
-    @State private var router = NavigationRouter<ReportRoute>()
-    
     var body: some View {
-        NavigationStack(path: $router.path) {
-            ReportMainView()
-                .navigationDestination(for: ReportRoute.self) { route in
-                    switch route {
-                    case .museum:
-                        ReportMainView()
-                    case .cover(let discId):
-                        ChangeCoverView(discId: discId)
-                    case .detail(let year, let month):
-                        ReportDetailView(year: year, month: month)
-                    case .summary(let SummaryYear, let SummaryMonth):
-                        ReportSummaryView(SummaryYear: SummaryYear, SummaryMonth: SummaryMonth)
-                    }
+        ReportMainView()
+            .navigationDestination(for: ReportRoute.self) { route in
+                switch route {
+                case .museum:
+                    ReportMainView()
+                case .cover(let discId):
+                    ChangeCoverView(discId: discId)
+                case .detail(let year, let month):
+                    ReportDetailView(year: year, month: month)
+                case .summary(let SummaryYear, let SummaryMonth):
+                    ReportSummaryView(SummaryYear: SummaryYear, SummaryMonth: SummaryMonth)
                 }
-        }
-        .environment(router)
+            }
     }
 }
 
