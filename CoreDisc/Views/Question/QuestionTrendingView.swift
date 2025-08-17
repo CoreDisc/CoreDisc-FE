@@ -9,12 +9,13 @@ import SwiftUI
 
 
 struct QuestionTrendingView: View {
+    @Environment(NavigationRouter<QuestionRoute>.self) private var router
+    
     @Environment(\.dismiss) var dismiss
     @State var goToMain: Bool = false
     
     @StateObject private var viewModel = PopularQuestionViewModel()
     @StateObject private var basicviewModel = QuestionBasicViewModel()
-    @ObservedObject var mainViewModel: QuestionMainViewModel
     
     let selectedQuestionType: String
     
@@ -48,7 +49,6 @@ struct QuestionTrendingView: View {
                     order: order,
                     selectedQuestionType: .OFFICIAL,
                     viewModel: basicviewModel,
-                    mainViewModel: mainViewModel,
                     showSelectModal: $showSelectModal,
                     goToMain: $goToMain
                 )

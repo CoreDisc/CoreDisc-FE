@@ -9,6 +9,7 @@ import SwiftUI
 
 struct QuestionTabContainer: View {
     @State private var router = NavigationRouter<QuestionRoute>()
+    @StateObject private var mainViewModel = QuestionMainViewModel()
     
     var body: some View {
         NavigationStack(path: $router.path) {
@@ -27,24 +28,34 @@ struct QuestionTabContainer: View {
                             text: text
                         )
                         
-                    case .basic:
-//                        QuestionBasicView()
-                        EmptyView()
+                    case .basic(let selectedQuestionType, let order):
+                        QuestionBasicView(
+                            selectedQuestionType: selectedQuestionType,
+                            order: order
+                        )
                     
-                    case .trending:
-//                        QuestionTrendingView()
-                        EmptyView()
+                    case .trending(let selectedQuestionType, let order):
+                        QuestionTrendingView(
+                            selectedQuestionType: selectedQuestionType,
+                            order: order
+                        )
 
-                    case .shareNow:
-//                        QuestionShareNowView()
-                        EmptyView()
-                    case .shareList:
-//                        QuestionListView()
-                        EmptyView()
+                    case .shareNow(let selectedQuestionType, let order):
+                        QuestionShareNowView(
+                            selectedQuestionType: selectedQuestionType,
+                            order: order
+                        )
+                    case .shareList(let isSaveMode, let selectedQuestionType, let order):
+                        QuestionListView(
+                            isSaveMode: isSaveMode,
+                            selectedQuestionType: selectedQuestionType,
+                            order: order
+                        )
                     }
                 }
         }
         .environment(router)
+        .environmentObject(mainViewModel)
     }
 }
 

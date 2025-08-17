@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct QuestionListView: View {
+    @Environment(NavigationRouter<QuestionRoute>.self) private var router
+    
     @StateObject private var viewModel = QuestionListViewModel()
     @StateObject private var selectViewModel = QuestionBasicViewModel()
-    @ObservedObject var mainViewModel: QuestionMainViewModel
     
     @Environment(\.dismiss) var dismiss
     @State var isSaveMode: Bool
@@ -63,7 +64,6 @@ struct QuestionListView: View {
                     order: order,
                     selectedQuestionType: .OFFICIAL,
                     viewModel: selectViewModel,
-                    mainViewModel: mainViewModel,
                     showSelectModal: $showSelectModal,
                     goToMain: $goToMain
                 )

@@ -14,7 +14,6 @@ struct QuestionMainView: View {
     
     @State var isSelectView: Bool = false
     @State var currentOrder: Int = 0
-    
     @State var currentQuestionType: String = ""
     
     // 씨디 돌아가는 애니메이션
@@ -157,9 +156,9 @@ struct QuestionMainView: View {
     private var SelectCDGroup: some View {
         VStack(spacing: 22) {
             QuestionSelectButton(title: "질문 작성", destination: .write)
-            QuestionSelectButton(title: "기본 질문", destination: .basic)
-            QuestionSelectButton(title: "인기 질문", destination: .trending)
-            QuestionSelectButton(title: "공유/저장\n질문", destination: .shareNow)
+            QuestionSelectButton(title: "기본 질문", destination: .basic(selectedQuestionType: currentQuestionType, order: currentOrder))
+            QuestionSelectButton(title: "인기 질문", destination: .trending(selectedQuestionType: currentQuestionType, order: currentOrder))
+            QuestionSelectButton(title: "공유/저장\n질문", destination: .shareNow(selectedQuestionType: currentQuestionType, order: currentOrder))
         }
         .offset(x: 0)
     }
