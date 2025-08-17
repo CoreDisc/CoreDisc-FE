@@ -38,12 +38,12 @@ struct NotificationView: View {
         .navigationDestination(item: $selectedItem) { item in
             switch item.type {
             case "FOLLOW":
-                UserHomeView(userName: item.senderUsername)
+                UserHomeView(userName: item.senderUsername ?? "")
             case "SHARED_SAVED":
                 EmptyView()
 //                QuestionShareNowView()
             case "COMMEND", "COMMENT_REPLY", "LIKE":
-                PostDetailView(postId: item.targetId)
+                PostDetailView(postId: item.targetId ?? 0)
             case "TEMP_POSTS":
                 PostWriteView()
             case "DAILY_REMINDER", "UNANSWERED_REMINDER":
@@ -146,7 +146,7 @@ struct NotificationListItem: View {
                     .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 2)
                 
                 HStack(spacing: 18) {
-                    if let imageUrl = item.profileImgDTO.imageUrl,
+                    if let imageUrl = item.profileImgDTO?.imageUrl,
                        let url = URL(string: imageUrl) {
                         KFImage(url)
                             .resizable()
