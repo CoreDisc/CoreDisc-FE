@@ -14,13 +14,13 @@ enum PostCategoryTap : String, CaseIterable {
 }
 
 struct PostMainView: View {
+    @Environment(NavigationRouter<PostRoute>.self) private var router
+    
     @StateObject private var viewModel = PostMainViewModel()
     @StateObject private var notiViewModel = NotificationViewModel()
     
     @State private var selectedTab: PostCategoryTap = .all
     @Namespace private var animation
-    @State private var searchQuery: String = ""
-    @State private var isSearch: Bool = false
     
     private var selectedPosts: [PostMain] {
         switch selectedTab {
@@ -32,19 +32,17 @@ struct PostMainView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            ZStack{
-                Image(.imgPostDetailMainBg)
-                    .resizable()
-                    .ignoresSafeArea()
+        ZStack{
+            Image(.imgPostDetailMainBg)
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                TitleGroup
                 
-                VStack(spacing: 0) {
-                    TitleGroup
-                    
-                    CategoryGroup
-                    
-                    PostGroup
-                }
+                CategoryGroup
+                
+                PostGroup
             }
         }
         .onAppear {
@@ -65,7 +63,9 @@ struct PostMainView: View {
             
             Spacer()
             
-            NavigationLink(destination: SearchView(query: $searchQuery, isSearch: $isSearch)) {
+            Button(action: {
+                router.push(.search)
+            }) {
                 ZStack {
                     Color.clear
                         .frame(width: 48, height: 48)
@@ -77,7 +77,9 @@ struct PostMainView: View {
                 }
             }
             
-            NavigationLink(destination: NotificationView()) {
+            Button(action: {
+                router.push(.notification)
+            }) {
                 ZStack(alignment: .topTrailing) {
                     Image(.iconAlert)
                         .resizable()
@@ -129,10 +131,14 @@ struct PostMainView: View {
 
 // 게시물 카드
 struct PostCard: View {
+    @Environment(NavigationRouter<PostRoute>.self) private var router
+    
     var item: PostMain
     
     var body: some View {
-        NavigationLink(destination: PostDetailView(postId: item.postId)) {
+        Button(action: {
+            router.push(.detail(postId: item.postId))
+        }) {
             ZStack(alignment: .top) {
                 Rectangle()
                     .frame(width: 164)
@@ -232,7 +238,6 @@ struct PostCard: View {
 }
 
 // 카테고리 메뉴바 커스텀
-// TODO: 메뉴바 디자인 완료시 수정 예정
 struct PostTopTabView: View {
     @Binding var selectedTab: PostCategoryTap
     var animation: Namespace.ID
@@ -268,8 +273,6 @@ struct PostTopTabView: View {
     }
 }
 
-
-#Preview {
-    PostMainView()
-}
-
+//#Preview {
+//    PostMainView()
+//}

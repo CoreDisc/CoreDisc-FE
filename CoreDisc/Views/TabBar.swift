@@ -38,7 +38,7 @@ struct TabBar: View {
             Group {
                 switch selectedTab {
                 case .home:
-                    PostMainView()
+                    PostTabContainer()
                 case .write:
                     PostWriteView()
                 case .disk:
