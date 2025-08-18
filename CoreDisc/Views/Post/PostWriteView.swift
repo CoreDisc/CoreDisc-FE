@@ -110,6 +110,7 @@ struct PostWriteView: View {
                 
                 // 저장버튼
                 Button(action: {
+                    // 텍스트 답변 저장
                     for (idx, card) in cards.enumerated() {
                         viewModel.putTextAnswer(postId: postId, questionId: idx + 1, content: card.text)
                     }
