@@ -68,9 +68,9 @@ struct PostWriteView: View {
         .navigationBarBackButtonHidden()
         
         .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
-        .simultaneousGesture(TapGesture().onEnded {
+        .task {
             viewModel.postPosts(selectedDate: ymd(selectedDate))
-        })
+        }
         .onChange(of: selectedPhotoItem) { newItem in
             guard let newItem else { return }
             Task {
@@ -110,7 +110,9 @@ struct PostWriteView: View {
                 
                 // 저장버튼
                 Button(action: {
-                    // TODO: 추가 예정
+                    for (idx, card) in cards.enumerated() {
+                        viewModel.putTextAnswer(postId: postId, questionId: idx + 1, content: card.text)
+                    }
                 }){
                     Text("저장")
                         .textStyle(.Q_Main)

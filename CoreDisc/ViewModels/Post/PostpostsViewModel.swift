@@ -23,7 +23,7 @@ class PostpostsViewModel: ObservableObject {
                 do {
                     let decoded = try JSONDecoder().decode(PostpostsResponse.self, from: response.data)
                     if decoded.isSuccess {
-                        self.lastResult = decoded.result
+                        self.postId = decoded.result.postId
                         print("POST 성공: postId=\(decoded.result.postId)")
                     } else {
                         print("POST 실패: \(decoded.message)")

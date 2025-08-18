@@ -7,13 +7,13 @@
 
 import Foundation
 
-// 텍스트 답변
+// 텍스트 요청
 struct AnswerTextRequest: Codable {
     let answerType: String
     let content: String
 }
 
-// 이미지 답변
+// 이미지 요청
 
 struct PutAnswerResponse: Decodable {
     let isSuccess: Bool
