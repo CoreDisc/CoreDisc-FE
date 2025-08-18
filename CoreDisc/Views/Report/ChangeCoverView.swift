@@ -54,6 +54,7 @@ struct ChangeCoverView: View {
                 ForEach(viewModel.colors, id: \.self){ color in
                     Button(action:{
                         cover = color
+                        selectedImageData = nil
                     }, label:{
                         
                         let image = Image(viewModel.imageNameForColor(color))
@@ -94,6 +95,7 @@ struct ChangeCoverView: View {
                         Task {
                             if let data = try? await newValue?.loadTransferable(type: Data.self) {
                                 selectedImageData = data
+                                cover = ""
                             }
                         }
                     }
@@ -103,7 +105,11 @@ struct ChangeCoverView: View {
             Spacer().frame(height: 43)
             
             Button(action:{
-                viewModel.ChangeCover(discId: discId, coverColor: cover)
+                if let data = selectedImageData {
+                    viewModel.ChangeCoverImg(discId: discId, coverImageUrl: data)
+                } else {
+                    viewModel.ChangeCover(discId: discId, coverColor: cover)
+                }
             }, label:{
                 ZStack{
                     RoundedRectangle(cornerRadius: 12)
