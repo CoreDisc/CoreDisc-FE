@@ -143,7 +143,7 @@ struct LoginView: View {
                     Image(.imgKakao)
                 }
                 
-                Image(.imgGoogle)
+                Image(.imgApple)
             }
         }
         .padding(.horizontal, 41)
