@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ReportSummaryView: View {
     @Environment(NavigationRouter<ReportRoute>.self) private var router
     
     @State private var currentIndex: Int = 0
     @StateObject private var viewModel = ReportSummaryViewModel()
+    @StateObject private var myHomeViewModel = MyHomeViewModel()
     
     let SummaryYear: Int
     let SummaryMonth: Int
@@ -55,6 +57,7 @@ struct ReportSummaryView: View {
         .task {
             viewModel.getSummaryTop(year: SummaryYear, month: SummaryMonth)
             viewModel.getSummaryDetails(year: SummaryYear, month: SummaryMonth)
+            myHomeViewModel.fetchMyHome()
         }
         .tabBarHidden(true) // 커스텀 탭바 숨기기
     }
@@ -100,17 +103,19 @@ struct ReportSummaryView: View {
                 .foregroundStyle(.white)
                 .shadow(color: .black.opacity(0.25), radius: 4.2, x: 0, y: 1)
             HStack{
-                Image(.imgProfile)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 60, height: 60)
-                    .clipShape(Circle())
+                if let url = URL(string: myHomeViewModel.profileImageURL) {
+                    KFImage(url)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 60, height: 60)
+                        .clipShape(Circle())
+                }
                 Spacer().frame(width: 21)
                 VStack(alignment: .leading){
                     Text("\(String(SummaryYear)) - \(String(format: "%02d", SummaryMonth))")
                         .textStyle(.Button)
                         .foregroundStyle(.black)
-                    Text("뮤직사마")
+                    Text(myHomeViewModel.nickname)
                         .textStyle(.Button)
                         .foregroundStyle(.black)
                 }

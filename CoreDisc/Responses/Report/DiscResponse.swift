@@ -51,4 +51,19 @@ struct ColorChangeResult: Decodable {
     let coverImageUrl: String?
 }
 
+struct ChangeDiscImgResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: ChangeDiscImgResult?
+}
+
+struct ChangeDiscImgResult: Decodable {
+    let id: Int
+    let year: Int
+    let month: Int
+    let coverColor: String
+    let hasCoverImage: Bool
+    let coverImageUrl: String?
+}
 

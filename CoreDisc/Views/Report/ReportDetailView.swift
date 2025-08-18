@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ReportDetailView: View {
     @Environment(NavigationRouter<ReportRoute>.self) private var router
     
     @State private var nowIndex: Int = 1
-    
+    @StateObject private var myHomeViewModel = MyHomeViewModel()
     @StateObject private var viewModel = ReportDetailViewModel()
     @StateObject private var DiscQuestionViewModel: DiscViewModel
     
@@ -108,6 +109,7 @@ struct ReportDetailView: View {
             }
             .task {
                 viewModel.getReport(year: year, month: month)
+                myHomeViewModel.fetchMyHome()
             }
         }
         .navigationBarBackButtonHidden()
@@ -133,7 +135,7 @@ struct ReportDetailView: View {
             Image(.imgReportHeaderIcon)
             
             Button(action: {
-                router.pop()
+                router.push(.museum)
             }){
                 Image(.imgGoback)
             }
@@ -333,11 +335,13 @@ struct ReportDetailView: View {
                 .shadow(color: .black.opacity(0.25), radius: 4.2, x: 0, y: 1)
             
             HStack {
-                Image(.imgProfile)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 60, height: 60)
-                    .clipShape(Circle())
+                if let url = URL(string: myHomeViewModel.profileImageURL) {
+                    KFImage(url)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 60, height: 60)
+                        .clipShape(Circle())
+                }
                 
                 Spacer().frame(width: 21)
                 
@@ -346,7 +350,7 @@ struct ReportDetailView: View {
                         .textStyle(.Button)
                         .foregroundStyle(.black)
                     
-                    Text("뮤직사마")
+                    Text(myHomeViewModel.nickname)
                         .textStyle(.Button)
                         .foregroundStyle(.black)
                 }

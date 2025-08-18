@@ -58,6 +58,7 @@ struct ReportMainView: View {
         .task {
             viewModel.getDiscs()
         }
+        .navigationBarBackButtonHidden()
     }
     
     private var DiscGroup : some View{
