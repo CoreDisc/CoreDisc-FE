@@ -135,7 +135,7 @@ struct ReportDetailView: View {
             Image(.imgReportHeaderIcon)
             
             Button(action: {
-                router.pop()
+                router.push(.museum)
             }){
                 Image(.imgGoback)
             }
