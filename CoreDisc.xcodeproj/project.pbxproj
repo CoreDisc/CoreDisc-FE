@@ -17,6 +17,7 @@
 		23271B4D2E4FE5050013A072 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 23271B4C2E4FE5050013A072 /* FirebaseMessaging */; };
 		238BB8142E16CEA100E7C5B8 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 238BB8132E16CEA100E7C5B8 /* Alamofire */; };
 		238BB8172E16CEBE00E7C5B8 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 238BB8162E16CEBE00E7C5B8 /* Kingfisher */; };
+		4415F1D12E53A04000479D9B /* NidThirdPartyLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 4415F1D02E53A04000479D9B /* NidThirdPartyLogin */; };
 		441919C72E538CDE00176EB3 /* Secret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 441919C62E538CDE00176EB3 /* Secret.xcconfig */; };
 		441FBD832E3CD8C800B45DD0 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 441FBD822E3CD8C800B45DD0 /* FirebaseAnalytics */; };
 /* End PBXBuildFile section */
@@ -57,6 +58,7 @@
 				238BB8172E16CEBE00E7C5B8 /* Kingfisher in Frameworks */,
 				200939EF2E3BE2500005A541 /* KakaoSDK in Frameworks */,
 				238BB8142E16CEA100E7C5B8 /* Alamofire in Frameworks */,
+				4415F1D12E53A04000479D9B /* NidThirdPartyLogin in Frameworks */,
 				200939EC2E3BE20A0005A541 /* Moya in Frameworks */,
 				23271B4B2E4FE5050013A072 /* FirebaseCore in Frameworks */,
 				200939F32E3BE2500005A541 /* KakaoSDKCommon in Frameworks */,
@@ -117,6 +119,7 @@
 				20CCA2622E3C66FA00F87128 /* KakaoSDKCertCore */,
 				23271B4A2E4FE5050013A072 /* FirebaseCore */,
 				23271B4C2E4FE5050013A072 /* FirebaseMessaging */,
+				4415F1D02E53A04000479D9B /* NidThirdPartyLogin */,
 			);
 			productName = CoreDisc;
 			productReference = 238562CE2E0F0E2E008F25B1 /* CoreDisc.app */;
@@ -152,6 +155,7 @@
 				441FBD812E3CD8C800B45DD0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				200939EA2E3BE20A0005A541 /* XCRemoteSwiftPackageReference "Moya" */,
 				200939ED2E3BE2500005A541 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
+				4415F1CF2E53A04000479D9B /* XCRemoteSwiftPackageReference "naveridlogin-sdk-ios-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 238562CF2E0F0E2E008F25B1 /* Products */;
@@ -444,6 +448,14 @@
 				minimumVersion = 8.4.0;
 			};
 		};
+		4415F1CF2E53A04000479D9B /* XCRemoteSwiftPackageReference "naveridlogin-sdk-ios-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/naver/naveridlogin-sdk-ios-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
+			};
+		};
 		441FBD812E3CD8C800B45DD0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -504,6 +516,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 238BB8152E16CEBE00E7C5B8 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		4415F1D02E53A04000479D9B /* NidThirdPartyLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4415F1CF2E53A04000479D9B /* XCRemoteSwiftPackageReference "naveridlogin-sdk-ios-swift" */;
+			productName = NidThirdPartyLogin;
 		};
 		441FBD822E3CD8C800B45DD0 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
