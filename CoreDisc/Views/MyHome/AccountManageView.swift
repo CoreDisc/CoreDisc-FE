@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct AccountManageView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = AccountManageViewModel()
     @FocusState private var isFocused: Bool
     
@@ -19,51 +19,51 @@ struct AccountManageView: View {
     @State var WithdrawModal = false
     
     var body: some View {
-        NavigationStack{
-            ZStack {
-                Image(.imgShortBackground2)
-                    .resizable()
-                    .ignoresSafeArea()
-                    .onTapGesture { // 키보드 내리기 용도
-                        isFocused = false
-                    }
-                
-                VStack{
-                    TopMenuGroup
-                    Spacer().frame(height: 13)
-                    MainGroup
-                    Spacer()
+        ZStack {
+            Image(.imgShortBackground2)
+                .resizable()
+                .ignoresSafeArea()
+                .onTapGesture { // 키보드 내리기 용도
+                    isFocused = false
                 }
-                
-                if WithdrawModal {
-                    ModalView {
-                        VStack(spacing: 10) {
-                            Text("계정 탈퇴시 지금까지의 모든 데이터가 삭제됩니다.")
-                                .textStyle(.Button_s)
-                            
-                            Text("탈퇴하시겠습니까?")
-                                .textStyle(.Button_s)
-                        }
-                    } leftButton: {
-                        Button(action: {
-                            WithdrawModal.toggle()
-                        }) {
-                            Text("취소하기")
-                        }
-                    } rightButton: {
-                        Button(action: {
-                            WithdrawModal.toggle()
-                            viewModel.resign()
-                        }) {
-                            Text("탈퇴하기")
-                                .foregroundStyle(.red)
-                        }
+            
+            VStack{
+                TopMenuGroup
+                Spacer().frame(height: 13)
+                MainGroup
+                Spacer()
+            }
+            
+            if WithdrawModal {
+                ModalView {
+                    VStack(spacing: 10) {
+                        Text("계정 탈퇴시 지금까지의 모든 데이터가 삭제됩니다.")
+                            .textStyle(.Button_s)
+                        
+                        Text("탈퇴하시겠습니까?")
+                            .textStyle(.Button_s)
+                    }
+                } leftButton: {
+                    Button(action: {
+                        WithdrawModal.toggle()
+                    }) {
+                        Text("취소하기")
+                    }
+                } rightButton: {
+                    Button(action: {
+                        WithdrawModal.toggle()
+                        viewModel.resign()
+                    }) {
+                        Text("탈퇴하기")
+                            .foregroundStyle(.red)
                     }
                 }
             }
         }
         .navigationBarBackButtonHidden()
-        .navigationDestination(isPresented: $viewModel.resignSuccess) {LoginView()}
+        .fullScreenCover(isPresented: $viewModel.resignSuccess) {
+            LoginView()
+        }
     }
     
     private var TopMenuGroup: some View {
@@ -83,7 +83,7 @@ struct AccountManageView: View {
                 
                 HStack {
                     Button(action: {
-                        dismiss()
+                        router.pop()
                     }) {
                         Image(.iconBack)
                     }
@@ -231,7 +231,7 @@ struct AccountManageView: View {
             .disabled(viewModel.pwd.isEmpty || viewModel.newPwd.isEmpty || viewModel.rePwd.isEmpty)
             .onChange(of: viewModel.changeSuccess, {
                 if viewModel.changeSuccess {
-                    dismiss()
+                    router.pop()
                 }
             })
             

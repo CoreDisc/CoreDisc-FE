@@ -8,12 +8,11 @@
 import SwiftUI
 
 struct QuestionBasicView: View {
+    @Environment(NavigationRouter<QuestionRoute>.self) private var router
+    
     @StateObject private var viewModel = QuestionBasicViewModel()
-    @ObservedObject var mainViewModel: QuestionMainViewModel
     
     let selectedQuestionType: String
-    
-    @Environment(\.dismiss) var dismiss
     @State var goToMain: Bool = false
     
     @FocusState private var isFocused: Bool
@@ -64,7 +63,6 @@ struct QuestionBasicView: View {
                     order: order,
                     selectedQuestionType: .DEFAULT,
                     viewModel: viewModel,
-                    mainViewModel: mainViewModel,
                     showSelectModal: $showSelectModal,
                     goToMain: $goToMain
                 )
@@ -107,7 +105,7 @@ struct QuestionBasicView: View {
             let keyword = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
             viewModel.fetchSearchCategories(keyword: keyword)
         }
-        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .question) }
     }
     
     // MARK: - group
@@ -121,7 +119,7 @@ struct QuestionBasicView: View {
             
             VStack(alignment: .leading, spacing: 9) {
                 Button(action: {
-                    dismiss()
+                    router.pop()
                 }) {
                     Image(.iconBack)
                 }

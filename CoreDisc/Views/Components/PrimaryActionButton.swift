@@ -15,8 +15,7 @@ struct PrimaryActionButton: View {
         //TODO: 버튼 action 추가 필요
         
             ZStack{
-                Rectangle()
-                    .cornerRadius(12)
+                RoundedRectangle(cornerRadius: 12)
                     .foregroundStyle(isFinished ? .key : .gray400)
                 Text(title)
                     .textStyle(.Q_Main)

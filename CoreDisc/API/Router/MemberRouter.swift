@@ -20,6 +20,7 @@ enum MemberRouter {
     case getMyhome // 마이홈 본인 정보 조회
     case getMyhomeTargetUsername(targetUsername: String) // 마이홈 타사용자 정보 조회
     case getMyhomePosts(cursorId: Int?, size: Int?) // 마이홈 본인 게시글 리스트 조회
+    case getMyhomeQuestion(categoryId: Int, cursorCreatedAt: String?, cursorQuestionType: String?, cursorId: Int?, size: Int?) // 코어퀘스천
     case getMyhomePostsTargetUsername(targetUsername: String, cursorId: Int?, size: Int?) // 마이홈 타사용자 게시글 리스트 조회
     
     case patchProfileImage(image: Data) // 프로필 사진 변경
@@ -51,6 +52,8 @@ extension MemberRouter: APITargetType {
             return "\(Self.myhomePath)/\(targetUsername)"
         case .getMyhomePosts:
             return "\(Self.myhomePath)/posts"
+        case .getMyhomeQuestion:
+            return "\(Self.myhomePath)/questions"
         case .getMyhomePostsTargetUsername(let targetUsername, _, _):
             return "\(Self.myhomePath)/posts/\(targetUsername)"
             
@@ -65,7 +68,7 @@ extension MemberRouter: APITargetType {
         switch self {
         case .patchResign, .patchProfile, .patchPassword, .patchMyhomeUsername, .patchMyhomePassword, .patchMyhomeEmail, .patchProfileImage, .patchDefaultImage:
                 .patch
-        case .getMyhome, .getMyhomeTargetUsername, .getMyhomePosts, .getMyhomePostsTargetUsername:
+        case .getMyhome, .getMyhomeTargetUsername, .getMyhomePosts, .getMyhomeQuestion, .getMyhomePostsTargetUsername:
                 .get
         }
     }
@@ -95,6 +98,23 @@ extension MemberRouter: APITargetType {
             var parameters: [String: Any] = [:]
             if let cursorId = cursorId {
                 parameters["cursorId"] = cursorId
+            }
+            if let size = size {
+                parameters["size"] = size
+            }
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
+        case .getMyhomeQuestion(let categoryId, let cursorCreatedAt, let cursorQuestionType, let cursorId, let size):
+            var parameters: [String: Any] = [
+                "categoryId": categoryId
+            ]
+            if let createdAt = cursorCreatedAt {
+                parameters["cursorCreatedAt"] = createdAt
+            }
+            if let type = cursorQuestionType {
+                parameters["cursorQuestionType"] = type
+            }
+            if let id = cursorId {
+                parameters["cursorId"] = id
             }
             if let size = size {
                 parameters["size"] = size

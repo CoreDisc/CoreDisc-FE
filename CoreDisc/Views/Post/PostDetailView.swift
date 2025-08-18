@@ -9,11 +9,15 @@ import SwiftUI
 import Kingfisher
 
 struct PostDetailView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(NavigationRouter<PostRoute>.self) private var router
     @StateObject private var viewModel = PostDetailViewModel()
     
     @State var showCommentSheet: Bool = false
     @State private var currentQuestion: String = ""
+    
+    @State var showUserHome: Bool = false
+    @State var isOwner: Bool = false
+    @State var commentUsername: String = ""
     
     let postId: Int
     
@@ -62,7 +66,14 @@ struct PostDetailView: View {
         }
         .navigationBarBackButtonHidden() // 기본 뒤로가기 버튼 제거
         .sheet(isPresented: $showCommentSheet) {
-            CommentSheetView(showSheet: $showCommentSheet, postId: postId, viewModel: viewModel)
+            CommentSheetView(
+                showSheet: $showCommentSheet,
+                postId: postId,
+                viewModel: viewModel,
+                showUserHome: $showUserHome,
+                isOwner: $isOwner,
+                commentUsername: $commentUsername
+            )
                 .presentationBackground(.clear)
                 .presentationDetents([.height(600)])
                 .presentationDragIndicator(.hidden)
@@ -73,13 +84,23 @@ struct PostDetailView: View {
         .task(id: viewModel.answersList.count) {
             currentQuestion = viewModel.cardItems.first?.question ?? ""
         }
+        .onChange(of: showUserHome) {
+            if showUserHome {
+                if isOwner {
+                    router.push(.myHome)
+                } else {
+                    router.push(.user(userName: commentUsername))
+                }
+                showUserHome = false
+            }
+        }
     }
     
     // 뒤로가기 버튼 섹션
     private var BackButtonGroup: some View {
         HStack{
             Button(action: {
-                dismiss()
+                router.pop()
             }){
                 Image(.iconBack)
                     .resizable()
@@ -201,9 +222,8 @@ struct QuestionText: View {
     
     var body: some View {
         ZStack {
-            Rectangle()
+            RoundedRectangle(cornerRadius: 32)
                 .foregroundStyle(.white)
-                .cornerRadius(32)
                 .frame(width: 300, height:48)
             
             Text("\(question)")
@@ -258,7 +278,6 @@ struct SelectiveDiary: View {
                 ZStack {
                     Circle()
                         .frame(width: 270,height: 270)
-                        .cornerRadius(270)
                         .foregroundStyle(.white)
                     
                     VStack {

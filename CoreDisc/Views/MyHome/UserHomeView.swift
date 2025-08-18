@@ -9,9 +9,9 @@ import SwiftUI
 import Kingfisher
 
 struct UserHomeView: View {
-    @StateObject var viewModel = UserHomeViewModel()
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
+    @StateObject var viewModel = UserHomeViewModel()
     
     @State var showBlockButton: Bool = false
     @State var showBlockModal: Bool = false
@@ -137,7 +137,7 @@ struct UserHomeView: View {
             
             HStack(alignment: .top) {
                 Button(action: {
-                    dismiss()
+                    router.pop()
                 }) {
                     Image(.iconBack)
                 }
@@ -179,6 +179,10 @@ struct UserHomeView: View {
         VStack(spacing: 8) {
             if let url = URL(string: viewModel.profileImageURL) {
                 KFImage(url)
+                    .placeholder({
+                        ProgressView()
+                            .controlSize(.mini)
+                    })
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 124, height: 124)
@@ -282,28 +286,36 @@ struct UserHomeView: View {
         
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(viewModel.postList, id: \.postId) { post in
-                if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
-                   !url.absoluteString.isEmpty { // 이미지
-                    KFImage(url)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 154)
-                        .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                } else if let text = post.postTextThumbnailDTO?.content { // 텍스트
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(.gray100)
-                            .stroke(.gray200, lineWidth: 0.3)
+                Button(action: {
+                    router.push(.post(postId: post.postId))
+                }) {
+                    if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
+                       !url.absoluteString.isEmpty { // 이미지
+                        KFImage(url)
+                            .placeholder({
+                                ProgressView()
+                                    .controlSize(.mini)
+                            })
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
                             .frame(height: 154)
-                        
-                        Text(text)
-                            .textStyle(.Q_pick)
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(.black000)
-                            .padding(22)
+                            .frame(maxWidth: .infinity)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    } else if let text = post.postTextThumbnailDTO?.content { // 텍스트
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(.gray100)
+                                .stroke(.gray200, lineWidth: 0.3)
+                                .frame(height: 154)
+                            
+                            Text(text)
+                                .textStyle(.Q_pick)
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.black000)
+                                .padding(22)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
                 }
             }
         }
@@ -314,13 +326,13 @@ struct UserHomeView: View {
     @ViewBuilder
     private var sheetView: some View {
         if showFollowerSheet {
-            FollowSheetView(showSheet: $showFollowerSheet, followType: .userFollower, targetUsrname: userName)
+            FollowSheetView(showSheet: $showFollowerSheet, showMutualModal: .constant(false), followType: .userFollower, targetUsrname: userName)
                 .transition(.move(edge: .bottom))
                 .zIndex(1)
         }
         
         if showFollowingSheet {
-            FollowSheetView(showSheet: $showFollowingSheet, followType: .userFollowing, targetUsrname: userName)
+            FollowSheetView(showSheet: $showFollowingSheet, showMutualModal: .constant(false), followType: .userFollowing, targetUsrname: userName)
                 .transition(.move(edge: .bottom))
                 .zIndex(1)
         }

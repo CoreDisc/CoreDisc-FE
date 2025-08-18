@@ -9,49 +9,56 @@ import SwiftUI
 import Kingfisher
 
 struct MyHomeView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @StateObject private var viewModel = MyHomeViewModel()
     
     @State var showFollowerSheet: Bool = false
     @State var showFollowingSheet: Bool = false
     
+    @State var showMutualModal: Bool = false
+    
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Image(.imgShortBackground2)
-                    .resizable()
-                    .ignoresSafeArea()
+        ZStack {
+            Image(.imgShortBackground2)
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                Spacer().frame(height: 3)
                 
-                VStack(spacing: 0) {
-                    Spacer().frame(height: 3)
+                TopMenuGroup
+                
+                ScrollView {
+                    ProfileGroup
                     
-                    TopMenuGroup
+                    Spacer().frame(height: 14)
                     
-                    ScrollView {
-                        ProfileGroup
-                        
-                        Spacer().frame(height: 14)
-                        
-                        CountGroup
-                        
-                        Spacer().frame(height: 16)
-                        
-                        ButtonGroup
-                        
-                        Spacer().frame(height: 31)
-                        
-                        PostGroup
-                    }
+                    CountGroup
+                    
+                    Spacer().frame(height: 16)
+                    
+                    ButtonGroup
+                    
+                    Spacer().frame(height: 31)
+                    
+                    PostGroup
                 }
-                
-                sheetView
             }
-            .task {
-                viewModel.fetchMyHome()
-                viewModel.fetchMyPosts()
+            
+            sheetView
+            
+            if showMutualModal {
+                BackModalView(showModal: $showMutualModal, content: "Core List는 서로 팔로우 중일 때만\n설정할 수 있어요.")
             }
-            .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
-            .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
         }
+        .task {
+            viewModel.fetchMyHome()
+            viewModel.fetchMyPosts()
+        }
+        .animation(.easeInOut(duration: 0.3), value: showFollowerSheet)
+        .animation(.easeInOut(duration: 0.3), value: showFollowingSheet)
+        .navigationBarBackButtonHidden()
     }
     
     // 상단 메뉴
@@ -64,12 +71,16 @@ struct MyHomeView: View {
             Spacer()
             
             
-            NavigationLink(destination: CalendarView()) {
+            Button(action: {
+                router.push(.calendar)
+            }) {
                 Image(.iconCalendar)
                     .foregroundStyle(.white)
             }
             
-            NavigationLink(destination: SettingView()) {
+            Button(action: {
+                router.push(.setting)
+            }) {
                 Image(.iconSetting)
                     .foregroundStyle(.white)
             }
@@ -82,6 +93,10 @@ struct MyHomeView: View {
         VStack(spacing: 8) {
             if let url = URL(string: viewModel.profileImageURL) {
                 KFImage(url)
+                    .placeholder({
+                        ProgressView()
+                            .controlSize(.mini)
+                    })
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 124, height: 124)
@@ -152,7 +167,9 @@ struct MyHomeView: View {
     // 버튼
     private var ButtonGroup: some View {
         VStack(spacing: 12) {
-            NavigationLink(destination: CoreQuestionsView()) {
+            Button(action: {
+                router.push(.core)
+            }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
                         .fill(.key)
@@ -166,7 +183,9 @@ struct MyHomeView: View {
             }
             .buttonStyle(.plain)
             
-            NavigationLink(destination: EditProfileView()) {
+            Button(action: {
+                router.push(.edit)
+            }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
                         .fill(.gray400)
@@ -185,31 +204,39 @@ struct MyHomeView: View {
     // 게시글
     private var PostGroup: some View {
         let columns = Array(repeating: GridItem(.flexible()), count: 3)
-
+        
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(viewModel.postList, id: \.postId) { post in
-                if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
-                   !url.absoluteString.isEmpty { // 이미지
-                    KFImage(url)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 154)
-                        .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                } else if let text = post.postTextThumbnailDTO?.content { // 텍스트
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(.gray100)
-                            .stroke(.gray200, lineWidth: 0.3)
+                Button(action: {
+                    router.push(.post(postId: post.postId))
+                }) {
+                    if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
+                       !url.absoluteString.isEmpty { // 이미지
+                        KFImage(url)
+                            .placeholder({
+                                ProgressView()
+                                    .controlSize(.mini)
+                            })
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
                             .frame(height: 154)
-                        
-                        Text(text)
-                            .textStyle(.Q_pick)
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(.black000)
-                            .padding(22)
+                            .frame(maxWidth: .infinity)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    } else if let text = post.postTextThumbnailDTO?.content { // 텍스트
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(.gray100)
+                                .stroke(.gray200, lineWidth: 0.3)
+                                .frame(height: 154)
+                            
+                            Text(text)
+                                .textStyle(.Q_pick)
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.black000)
+                                .padding(22)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
                 }
             }
         }
@@ -220,15 +247,13 @@ struct MyHomeView: View {
     @ViewBuilder
     private var sheetView: some View {
         if showFollowerSheet {
-            FollowSheetView(showSheet: $showFollowerSheet, followType: .follower, targetUsrname: "")
+            FollowSheetView(showSheet: $showFollowerSheet, showMutualModal: $showMutualModal, followType: .follower, targetUsrname: "")
                 .transition(.move(edge: .bottom))
-                .zIndex(1)
         }
         
         if showFollowingSheet {
-            FollowSheetView(showSheet: $showFollowingSheet, followType: .following, targetUsrname: "")
+            FollowSheetView(showSheet: $showFollowingSheet, showMutualModal: .constant(false), followType: .following, targetUsrname: "")
                 .transition(.move(edge: .bottom))
-                .zIndex(1)
         }
     }
 }

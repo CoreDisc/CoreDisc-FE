@@ -8,57 +8,58 @@
 import SwiftUI
 
 struct SignupView: View {
+    @Environment(NavigationRouter<OnboardingRoute>.self) private var router
     
-    @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = SignupViewModel()
     @FocusState private var isFocused: Bool
-
+    
     @State private var pwdShown = false
     @State private var rePwdShown = false
     @State private var TermsModal: Int? = 0
     
     var body: some View {
-        NavigationStack{
-            ZStack {
-                Image(.imgOnboardingBackground)
-                    .resizable()
-                    .ignoresSafeArea()
-                    .onTapGesture { // 키보드 내리기 용도
-                        isFocused = false
-                    }
-                ScrollView{
-                    LazyVStack{
-                        HStack{
-                            Button(action: {
-                                dismiss()
-                            }){
-                                Image(.imgGoback)
-                                    .padding()
-                            }
-                            Spacer()
+        ZStack {
+            Image(.imgOnboardingBackground)
+                .resizable()
+                .ignoresSafeArea()
+                .onTapGesture { // 키보드 내리기 용도
+                    isFocused = false
+                }
+            ScrollView{
+                LazyVStack{
+                    HStack{
+                        Button(action: {
+                            router.pop()
+                        }){
+                            Image(.imgGoback)
+                                .padding()
                         }
-                        Image(.imgLogo)
-                            .resizable()
-                            .frame(width: 60, height: 36)
-                        Spacer().frame(height: 31)
-                        MainGroup
                         Spacer()
                     }
-                }
-                if let id = TermsModal,
-                   let term = viewModel.termsList.first(where: { $0.termsId == id }) {
-                    TermsModalView(
-                        essential: term.isRequired,
-                        title: term.title,
-                        action: { TermsModal = nil },
-                        content: term.content
-                    )
+                    Image(.imgLogo)
+                        .resizable()
+                        .frame(width: 60, height: 36)
+                    Spacer().frame(height: 31)
+                    MainGroup
+                    Spacer()
                 }
             }
-            .navigationBarBackButtonHidden()
+            if let id = TermsModal,
+               let term = viewModel.termsList.first(where: { $0.termsId == id }) {
+                TermsModalView(
+                    essential: term.isRequired,
+                    title: term.title,
+                    action: { TermsModal = nil },
+                    content: term.content
+                )
+            }
         }
+        .navigationBarBackButtonHidden()
         .onAppear {
             viewModel.getTerms()
+        }
+        .fullScreenCover(isPresented: $viewModel.isSignedUp) {
+            LoginView()
         }
     }
     
@@ -139,7 +140,7 @@ struct SignupView: View {
             } else {
                 Spacer().frame(height: 28)
             }
-     
+            
             InputView{
                 TextField("인증번호를 입력해주세요.", text: $viewModel.code)
                     .focused($isFocused)
@@ -455,10 +456,6 @@ struct SignupView: View {
                 Text("가입하기")
             }, boxColor: (viewModel.email.isEmpty || viewModel.code.isEmpty || viewModel.password.isEmpty || viewModel.passwordCheck.isEmpty || viewModel.username.isEmpty || viewModel.name.isEmpty) ? .gray400 : .key)
             .disabled(viewModel.email.isEmpty || viewModel.code.isEmpty || viewModel.password.isEmpty || viewModel.passwordCheck.isEmpty || viewModel.username.isEmpty || viewModel.name.isEmpty)
-            
-            .navigationDestination(isPresented: $viewModel.isSignedUp) {
-                LoginView()
-            }
         }
         .padding(.horizontal, 41)
     }

@@ -10,9 +10,10 @@ import PhotosUI
 import Kingfisher
 
 struct EditProfileView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @StateObject private var viewModel = MyHomeViewModel()
 
-    @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused: Bool
     
     @State private var showEditButton: Bool = false
@@ -41,6 +42,9 @@ struct EditProfileView: View {
                 Spacer()
             }
         }
+        .fullScreenCover(isPresented: $viewModel.logoutSuccess) {
+            LoginView()
+        }
         .task {
             viewModel.fetchMyHome()
         }
@@ -66,7 +70,7 @@ struct EditProfileView: View {
                 
                 HStack {
                     Button(action: {
-                        dismiss()
+                        router.pop()
                     }) {
                         Image(.iconBack)
                     }
@@ -83,10 +87,9 @@ struct EditProfileView: View {
                     }
                     .onChange(of: viewModel.changeSuccess) { oldValue, newValue in
                         if newValue {
-                            dismiss()
+                            router.pop()
                         }
                     }
-                    .navigationDestination(isPresented: $viewModel.logoutSuccess) {LoginView()}
                 }
                 .padding(.leading, 17)
                 .padding(.trailing, 22)

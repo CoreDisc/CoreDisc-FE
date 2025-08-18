@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ReportSummaryView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(NavigationRouter<ReportRoute>.self) private var router
+    
     @State private var currentIndex: Int = 0
     @StateObject private var viewModel = ReportSummaryViewModel()
     
@@ -62,7 +63,7 @@ struct ReportSummaryView: View {
         HStack{
             Image(.imgReportHeaderIcon)
             Button(action: {
-                dismiss()
+                router.pop()
             }){
                 Image(.imgGoback)
             }
@@ -95,12 +96,15 @@ struct ReportSummaryView: View {
         ZStack{
             Rectangle()
                 .frame(height: 107)
-                .cornerRadius(24, corners: [.topLeft, .topRight])
+                .specificCornerRadius(24, corners: [.topLeft, .topRight])
                 .foregroundStyle(.white)
                 .shadow(color: .black.opacity(0.25), radius: 4.2, x: 0, y: 1)
             HStack{
                 Image(.imgProfile)
-                    .cornerRadius(100)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 60, height: 60)
+                    .clipShape(Circle())
                 Spacer().frame(width: 21)
                 VStack(alignment: .leading){
                     Text("\(String(SummaryYear)) - \(String(format: "%02d", SummaryMonth))")

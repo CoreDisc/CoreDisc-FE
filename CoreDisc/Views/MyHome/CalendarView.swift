@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct CalendarView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @StateObject var viewModel: CalendarContentsViewModel
-    @Environment(\.dismiss) var dismiss
     
     @State private var dragOffset: CGFloat = 0
     private let swipeThreshold: CGFloat = 50
@@ -85,7 +86,7 @@ struct CalendarView: View {
                 Spacer().frame(width: 3)
                 
                 Button(action: {
-                    dismiss()
+                    router.pop()
                 }) {
                     Image(.iconBack)
                         .resizable()

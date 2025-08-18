@@ -41,7 +41,7 @@ struct SearchBarGroup: View {
                             .padding(.top, 5)
                             .background(.white)
                             .textStyle(.Pick_Q_Eng)
-                            .cornerRadius(32)
+                            .clipShape( RoundedRectangle(cornerRadius: 32) )
                             .shadow(color: .white.opacity(0.5), radius: 4.8, x: 0, y: 0)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled(true)

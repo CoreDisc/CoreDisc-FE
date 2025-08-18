@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct Cell: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     var calendarDay: CalendarDayModel
     var isSelected: Bool
     let viewModel: CalendarContentsViewModel
@@ -19,7 +21,9 @@ struct Cell: View {
 
         Group {
             if let postId = dto?.postId {
-                NavigationLink(destination: PostDetailView(postId: postId)) {
+                Button(action: {
+                    router.push(.post(postId: postId))
+                }) {
                     cellBackground(isRecorded: isRecorded, isToday: isToday)
                 }
                 .buttonStyle(.plain)

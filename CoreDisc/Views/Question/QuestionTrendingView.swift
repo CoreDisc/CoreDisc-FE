@@ -9,12 +9,12 @@ import SwiftUI
 
 
 struct QuestionTrendingView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(NavigationRouter<QuestionRoute>.self) private var router
+    
     @State var goToMain: Bool = false
     
     @StateObject private var viewModel = PopularQuestionViewModel()
     @StateObject private var basicviewModel = QuestionBasicViewModel()
-    @ObservedObject var mainViewModel: QuestionMainViewModel
     
     let selectedQuestionType: String
     
@@ -48,7 +48,6 @@ struct QuestionTrendingView: View {
                     order: order,
                     selectedQuestionType: .OFFICIAL,
                     viewModel: basicviewModel,
-                    mainViewModel: mainViewModel,
                     showSelectModal: $showSelectModal,
                     goToMain: $goToMain
                 )
@@ -58,7 +57,7 @@ struct QuestionTrendingView: View {
         .task {
             viewModel.fetchPopularQuestions()
         }
-        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .question) }
     }
     
     
@@ -66,7 +65,7 @@ struct QuestionTrendingView: View {
         VStack(alignment: .leading) {
             HStack {
                 Button(action:{
-                    dismiss()
+                    router.pop()
                 }) {
                     Image(.iconBack)
                         .resizable()

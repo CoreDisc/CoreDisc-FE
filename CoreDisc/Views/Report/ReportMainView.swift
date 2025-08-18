@@ -9,52 +9,50 @@ import SwiftUI
 import Kingfisher
 
 struct ReportMainView: View {
+    @Environment(NavigationRouter<ReportRoute>.self) private var router
     
     @StateObject private var viewModel = ReportMainViewModel()
     private let columns: [GridItem] = Array(repeating: GridItem(.fixed(91), spacing: 27), count: 3)
     @State private var edit = false
     
     var body: some View {
-        NavigationStack{
+        ZStack {
+            Image(.imgShortBackground2)
+                .resizable()
+                .ignoresSafeArea()
             
-            ZStack {
-                Image(.imgShortBackground2)
-                    .resizable()
-                    .ignoresSafeArea()
-                
-                VStack{
-                    HStack{
-                        Image(.imgReportHeaderIcon)
-                            .resizable()
-                            .frame(width: 14, height: 55)
-
-                        Spacer()
-                    }
+            VStack{
+                HStack{
+                    Image(.imgReportHeaderIcon)
+                        .resizable()
+                        .frame(width: 14, height: 55)
                     
-                    HStack{
-                        Text(" Disc Museum")
-                            .textStyle(.Title_Text_Eng)
-                            .foregroundStyle(.white)
-                            .padding(.leading, 25)
-                        Spacer()
-                        Button(action:{edit.toggle()}, label:{
-                            if edit {
-                                Image(.imgDiscOn)
-                                    .resizable()
-                                    .frame(width: 60, height: 44)
-                            } else {
-                                Image(.imgDiscOff)
-                                    .resizable()
-                                    .frame(width: 60, height: 44)
-                            }
-                        })
-                        
-                        Spacer().frame(width: 14)
-                    }
-                    
-                    Spacer().frame(height: 11)
-                    DiscGroup
+                    Spacer()
                 }
+                
+                HStack{
+                    Text(" Disc Museum")
+                        .textStyle(.Title_Text_Eng)
+                        .foregroundStyle(.white)
+                        .padding(.leading, 25)
+                    Spacer()
+                    Button(action:{edit.toggle()}, label:{
+                        if edit {
+                            Image(.imgDiscOn)
+                                .resizable()
+                                .frame(width: 60, height: 44)
+                        } else {
+                            Image(.imgDiscOff)
+                                .resizable()
+                                .frame(width: 60, height: 44)
+                        }
+                    })
+                    
+                    Spacer().frame(width: 14)
+                }
+                
+                Spacer().frame(height: 11)
+                DiscGroup
             }
         }
         .task {
@@ -67,7 +65,9 @@ struct ReportMainView: View {
             LazyVGrid(columns: columns){
                 ForEach(viewModel.DiscList){ item in
                     if edit {
-                        NavigationLink(destination: ChangeCoverView(discId: item.id)){
+                        Button(action: {
+                            router.push(.cover(discId: item.id))
+                        }){
                             ZStack{
                                 DiscItem(
                                     imageUrl: item.imageUrl,
@@ -79,7 +79,9 @@ struct ReportMainView: View {
                             }
                         }
                     } else {
-                        NavigationLink(destination: ReportDetailView(year: item.year, month: item.month)){
+                        Button(action: {
+                            router.push(.detail(year: item.year, month: item.month))
+                        }){
                             DiscItem(
                                 imageUrl: item.imageUrl,
                                 localImageName: item.localImageName,

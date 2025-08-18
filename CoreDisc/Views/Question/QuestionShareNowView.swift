@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct QuestionShareNowView: View {
+    @Environment(NavigationRouter<QuestionRoute>.self) private var router
+    
     @StateObject private var viewModel = SharedQuestionViewModel()
     @StateObject private var selectViewModel = QuestionBasicViewModel()
     
     private let spacingAngle: Double = 19
     @State private var hiddenCount = 0
-    @Environment(\.dismiss) var dismiss
     @State private var goToMain = false
     
-    @ObservedObject var mainViewModel: QuestionMainViewModel
     let selectedQuestionType: String
     let order: Int
     
@@ -40,7 +40,6 @@ struct QuestionShareNowView: View {
             VStack {
                 Spacer()
                 NavigationLink(destination: QuestionListView(
-                    mainViewModel: mainViewModel,
                     isSaveMode: true,
                     selectedQuestionType: selectedQuestionType,
                     order: order)
@@ -59,7 +58,6 @@ struct QuestionShareNowView: View {
                     order: order,
                     selectedQuestionType: .OFFICIAL,
                     viewModel: selectViewModel,
-                    mainViewModel: mainViewModel,
                     showSelectModal: $showSelectModal,
                     goToMain: $goToMain
                 )
@@ -69,14 +67,14 @@ struct QuestionShareNowView: View {
         .task {
             await viewModel.fetchMySharedQuestions()
         }
-        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .disk) }
+        .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .question) }
     }
     
     private var InfoGroup: some View {
         VStack(alignment: .leading, spacing: 7) {
             HStack {
                 Button(action: {
-                    dismiss()
+                    router.pop()
                 }) {
                     Image(.iconBack)
                 }
@@ -85,7 +83,6 @@ struct QuestionShareNowView: View {
                 Spacer()
                 
                 NavigationLink(destination: QuestionListView(
-                    mainViewModel: mainViewModel,
                     isSaveMode: false,
                     selectedQuestionType: selectedQuestionType,
                     order: order)

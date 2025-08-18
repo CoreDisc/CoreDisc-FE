@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ChangeCoverView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(NavigationRouter<ReportRoute>.self) private var router
+    
     @StateObject var viewModel = ReportMainViewModel()
     private let columns: [GridItem] = Array(repeating: GridItem(.fixed(80), spacing: 26), count: 3)
     @State var cover: String = ""
@@ -23,7 +24,7 @@ struct ChangeCoverView: View {
             VStack{
                 HStack{
                     Button(action: {
-                        dismiss()
+                        router.pop()
                     }){
                         Image(.imgGoback)
                             .padding()
@@ -90,7 +91,7 @@ struct ChangeCoverView: View {
             })
             .onChange(of: viewModel.colorChangeSuccess) { oldValue, newValue in
                 if newValue {
-                    dismiss()
+                    router.pop()
                 }
             }
         }

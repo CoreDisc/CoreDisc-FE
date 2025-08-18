@@ -9,37 +9,36 @@ import SwiftUI
 import Moya
 
 struct LoginView: View {
+    @Environment(NavigationRouter<OnboardingRoute>.self) private var router
     
     @StateObject private var viewModel = LoginViewModel()
     @FocusState private var isFocused: Bool
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Image(.imgOnboardingBackground)
-                    .resizable()
-                    .ignoresSafeArea()
-                    .onTapGesture { // 키보드 내리기 용도
-                        isFocused = false
-                    }
-                
-                VStack{
-                    Image(.imgLogo)
-                        .resizable()
-                        .frame(width: 60, height: 36)
-                    Spacer().frame(height: 51)
-                    Text("Shoot Your")
-                        .textStyle(.Title_Text_Ko)
-                        .foregroundStyle(.white)
-                    Text("Core.")
-                        .textStyle(.Title_Text_Ko)
-                        .foregroundStyle(.white)
-                    
-                    Spacer().frame(height: 16)
-                    MainGroup
-                    Spacer().frame(height: 43)
-                    SocialLoginGroup
+        ZStack {
+            Image(.imgOnboardingBackground)
+                .resizable()
+                .ignoresSafeArea()
+                .onTapGesture { // 키보드 내리기 용도
+                    isFocused = false
                 }
+            
+            VStack{
+                Image(.imgLogo)
+                    .resizable()
+                    .frame(width: 60, height: 36)
+                Spacer().frame(height: 51)
+                Text("Shoot Your")
+                    .textStyle(.Title_Text_Ko)
+                    .foregroundStyle(.white)
+                Text("Core.")
+                    .textStyle(.Title_Text_Ko)
+                    .foregroundStyle(.white)
+                
+                Spacer().frame(height: 16)
+                MainGroup
+                Spacer().frame(height: 43)
+                SocialLoginGroup
             }
         }
         .fullScreenCover(isPresented: $viewModel.isLogin) {
@@ -90,12 +89,13 @@ struct LoginView: View {
                 Text("로그인")
             }, boxColor: (viewModel.username.isEmpty || viewModel.password.isEmpty) ? .gray400 : .key)
             .disabled(viewModel.username.isEmpty || viewModel.password.isEmpty)
-            .navigationDestination(isPresented: $viewModel.isLogin) {TabBar()}
             
             Spacer().frame(height: 37)
             
             HStack{
-                NavigationLink(destination: SignupView()) {
+                Button(action: {
+                    router.push(.signup)
+                }) {
                     Text("회원가입")
                         .textStyle(.login_info)
                         .underline()
@@ -104,7 +104,9 @@ struct LoginView: View {
                 
                 Spacer().frame(width: 32)
                 
-                NavigationLink(destination: FindIdView()) {
+                Button(action: {
+                    router.push(.findId)
+                }) {
                     Text("아이디/비밀번호 찾기")
                         .textStyle(.login_info)
                         .underline()
