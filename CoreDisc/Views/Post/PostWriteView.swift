@@ -68,6 +68,9 @@ struct PostWriteView: View {
         .navigationBarBackButtonHidden()
         
         .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
+        .simultaneousGesture(TapGesture().onEnded {
+            viewModel.postPosts(selectedDate: ymd(selectedDate))
+        })
         .onChange(of: selectedPhotoItem) { newItem in
             guard let newItem else { return }
             Task {
@@ -274,9 +277,6 @@ struct PostWriteView: View {
             }
             .offset(x: offsetX)
             .disabled(!canGoNext) // 답변 미 작성시 버튼 막기
-            .simultaneousGesture(TapGesture().onEnded {
-                viewModel.postPosts(selectedDate: ymd(selectedDate))
-            })
         }
         .frame(maxWidth: .infinity, minHeight: 50)
     }
