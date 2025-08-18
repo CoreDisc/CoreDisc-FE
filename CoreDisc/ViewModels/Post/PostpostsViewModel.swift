@@ -60,4 +60,28 @@ class PostpostsViewModel: ObservableObject {
     }
     
     // 답변 이미지 작성/저장
+    func putImageAnswer(postId: Int, questionId: Int, image: UIImage) {
+        guard let data = image.jpegData(compressionQuality: 0.85) else {
+            print("jpegData 변환 실패")
+            return
+        }
+        
+        postProvider.request(.putAnswerImage(postId: postId, questionId: questionId, imageData: data)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(PutAnswerResponse.self, from: response.data)
+                    if decoded.isSuccess {
+                        print("이미지 답변 업로드 성공: answerId=\(decoded.result.answerId)")
+                    } else {
+                        print("업로드 실패: [\(decoded.code)] \(decoded.message)")
+                    }
+                } catch {
+                    print("디코딩 실패: \(error.localizedDescription)")
+                }
+            case .failure(let error):
+                print("putImageAnswer 연결 오류: \(error.localizedDescription)")
+            }
+        }
+    }
 }
