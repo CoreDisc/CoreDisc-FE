@@ -21,8 +21,8 @@ enum PostRouter {
     case getPostsDetail(postId: Int) // 게시글 상세 조회
     case deletePosts(postId: Int) // 게시글 삭제
     
+    case getTemp // 게시글 조회
     case getTempID(postId: Int) // 임시저장 게시글 ID로 조회
-    case deleteAnswers(postId: Int, questionId: Int) // 답변 삭제
 }
 
 extension PostRouter: APITargetType {
@@ -50,10 +50,10 @@ extension PostRouter: APITargetType {
         case .deletePosts(let postId):
             return "\(Self.postPath)/\(postId)"
         
+        case .getTemp:
+            return "\(Self.postPath)/temp"
         case .getTempID(let postId):
             return "\(Self.postPath)/temp/\(postId)"
-        case .deleteAnswers(let postId, let questionId):
-            return "\(Self.postPath)/\(postId)/answers/\(questionId)"
         }
     }
     
@@ -61,11 +61,11 @@ extension PostRouter: APITargetType {
         switch self {
         case .putPublish, .putAnswerText, .putAnswerImage:
             return .put
-        case .getPosts, .getPostsDetail, .getTempID:
+        case .getPosts, .getPostsDetail, .getTemp, .getTempID:
             return .get
         case .postPosts, .postLikes:
             return .post
-        case .deletePosts, .deleteAnswers, .deleteLikes:
+        case .deletePosts, .deleteLikes:
             return .delete
         }
     }
@@ -115,9 +115,9 @@ extension PostRouter: APITargetType {
         case .deletePosts:
             return .requestPlain
             
-        case .getTempID:
+        case .getTemp:
             return .requestPlain
-        case .deleteAnswers:
+        case .getTempID:
             return .requestPlain
         }
     }

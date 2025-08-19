@@ -7,9 +7,11 @@
 
 import SwiftUI
 import PhotosUI
+import Kingfisher
 
 struct CardContent {
     var image: UIImage? = nil
+    var imageURL: String? = nil
     var text: String = ""
     var isTextMode: Bool = false
 }
@@ -79,8 +81,21 @@ struct PostWriteView: View {
         
         .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
         .task {
-            viewModel.postPosts(selectedDate: selectedDate)
             questionViewModel.fetchSelected()
+            viewModel.getTempPost()
+        }
+        .onReceive(viewModel.$tempIdList) { ids in
+            guard let ids = ids else { return }
+            
+            if let firstId = ids.first {
+                viewModel.postId = firstId
+                viewModel.getTempId(postId: firstId)
+            } else {
+                viewModel.postPosts(selectedDate: selectedDate)
+            }
+        }
+        .onReceive(viewModel.$tempPostAnswers) { answers in
+            applyTempAnswers(answers)
         }
         .onChange(of: selectedPhotoItem) { newItem in
             guard let newItem else { return }
@@ -88,6 +103,7 @@ struct PostWriteView: View {
                 if let data = try? await newItem.loadTransferable(type: Data.self),
                    let uiImage = UIImage(data: data) {
                     cards[pageIndex].image = uiImage
+                    cards[pageIndex].imageURL = nil
                     cards[pageIndex].isTextMode = false
                 }
                 selectedPhotoItem = nil
@@ -258,16 +274,10 @@ struct PostWriteView: View {
         (0..<questions.count).contains(pageIndex) ? questions[pageIndex] : (questions.first ?? "")
     }
     
-    private func ymd(_ date: Date) -> String {
-        let f = DateFormatter()
-        f.calendar = Calendar(identifier: .gregorian)
-        f.dateFormat = "yyyy-MM-dd"
-        return f.string(from: date)
-    }
-    
     // 카드 답변 여부 확인 함수
     private func isAnswered(_ c: CardContent) -> Bool {
         if c.image != nil { return true }
+        if c.imageURL != nil { return true }
         return !c.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
@@ -302,6 +312,45 @@ struct PostWriteView: View {
             }
         }
     }
+    
+    // 임시저장 게시글 불러오기
+    private func applyTempAnswers(_ answers: [PostTempIdAnswer]) {
+        for a in answers {
+            let idx = a.questionOrder - 1
+            guard idx >= 0 && idx < cards.count else { continue }
+            guard a.isAnswered else { continue }
+
+            switch a.answerType?.uppercased() {
+            case "TEXT":
+                if let text = a.textContent {
+                    cards[idx].text = text
+                    cards[idx].isTextMode = true
+                    cards[idx].image = nil
+                    cards[idx].imageURL = nil
+                }
+
+            case "IMAGE":
+                if let urlStr = a.imageUrl {
+                    cards[idx].imageURL = urlStr
+                    cards[idx].image = nil
+                    cards[idx].isTextMode = false
+                }
+
+            default:
+                if let text = a.textContent, !text.isEmpty {
+                    cards[idx].text = text
+                    cards[idx].isTextMode = true
+                    cards[idx].image = nil
+                    cards[idx].imageURL = nil
+                } else if let urlStr = a.imageUrl {
+                    cards[idx].imageURL = urlStr
+                    cards[idx].image = nil
+                    cards[idx].isTextMode = false
+                }
+            }
+        }
+    }
+
 }
 
 // 게시글 작성 답변 카드
@@ -323,13 +372,25 @@ private struct CardPageView: View {
                 .frame(width: 308, height: 409)
             
             // 사진 표시
-            if let image = card.image {
-                Image(uiImage: image)
+            if let local = card.image {
+                Image(uiImage: local)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 308, height: 409)
                     .clipped()
-                    .clipShape( RoundedRectangle(cornerRadius: 20.83) )
+                    .clipShape(RoundedRectangle(cornerRadius: 20.83))
+
+            } else if let url = URL(string: card.imageURL ?? "") {
+                KFImage(url)
+                    .placeholder { ProgressView().controlSize(.mini) }
+                    .setProcessor(DownsamplingImageProcessor(size: CGSize(width: 308, height: 409)))
+                    .cacheOriginalImage()
+                    .fade(duration: 0.15)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 308, height: 409)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 20.83))
             }
             
             // 텍스트 표시

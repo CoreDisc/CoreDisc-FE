@@ -14,6 +14,9 @@ class PostWriteViewModel: ObservableObject {
     
     @Published var postId: Int = 0
     
+    @Published var tempIdList: [Int]? = nil
+    @Published var tempPostAnswers: [PostTempIdAnswer] = []
+    
     // 게시글 생성 (임시)
     func postPosts(selectedDate: Date, completion: (() -> Void)? = nil) {
         let formatter = DateFormatter()
@@ -91,6 +94,51 @@ class PostWriteViewModel: ObservableObject {
                 print("PutAnswerImage API 오류: \(error)")
                 DispatchQueue.main.async {
                     ToastManager.shared.show("이미지 답변을 생성하지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    // 임시저장 게시글 조회
+    func getTempPost() {
+        postProvider.request(.getTemp) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(PostTempResponse.self, from: response.data)
+                    self.tempIdList = decodedData.result?.postIds
+                } catch {
+                    print("getTemp 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("임시저장 게시글을 불러오지 못했습니다.")
+                    }
+                }
+            case .failure(let error):
+                print("getTemp API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("임시저장 게시글을 불러오지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    func getTempId(postId: Int) {
+        postProvider.request(.getTempID(postId: postId)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(PostTempIdResponse.self, from: response.data)
+                    self.tempPostAnswers = decodedData.result.answers
+                } catch {
+                    print("GetTempId 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("임시저장 게시글을 불러오지 못했습니다.")
+                    }
+                }
+            case .failure(let error):
+                print("GetTempId 디코더 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("임시저장 게시글을 불러오지 못했습니다.")
                 }
             }
         }

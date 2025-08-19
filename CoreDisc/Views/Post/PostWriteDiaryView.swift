@@ -44,10 +44,11 @@ struct PostWriteDiaryView: View {
                     
                     DiaryGroup
                 }
+                .padding(.bottom, 75)
             }
         }
         .navigationBarBackButtonHidden()
-        .onAppear {
+        .task {
             for i in 0..<4 {
                 let delay = 0.1 + Double(i) * 0.12
                 DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
@@ -135,7 +136,7 @@ struct PostWriteDiaryView: View {
                                 }
                             }){
                                 Text(item)
-                                    .textStyle(.Small_Text)
+                                    .textStyle(.Button_s)
                                     .foregroundStyle(.black)
                                     .multilineTextAlignment(.center)
                                     .frame(width: 57, height: 28 )
