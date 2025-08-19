@@ -23,6 +23,8 @@ class AccountManageViewModel: ObservableObject {
     @Published var resignSuccess: Bool = false
     @Published var logoutSuccess: Bool = false
     
+    @Published var isSocialUser: Bool = false
+    
     private let memberProvider = APIManager.shared.createProvider(for: MemberRouter.self)
     private let authProvider = APIManager.shared.createProvider(for: AuthRouter.self)
     
@@ -112,6 +114,25 @@ class AccountManageViewModel: ObservableObject {
                 } else {
                     print("네트워크 오류: \(error.localizedDescription)")
                 }
+            }
+        }
+    }
+    
+    func getSocial() {
+        memberProvider.request(.getSocial) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedResponse = try JSONDecoder().decode(socialResponse.self, from: response.data)
+                    let result = decodedResponse.result
+                    
+                    self.isSocialUser = result.socialLogin
+
+                } catch {
+                    print("GetMyHome 디코더 오류: \(error)")
+                }
+            case .failure(let error):
+                print("GetMyHome 오류: \(error)")
             }
         }
     }

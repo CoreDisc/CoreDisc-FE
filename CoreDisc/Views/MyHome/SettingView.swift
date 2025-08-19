@@ -79,6 +79,9 @@ struct SettingView: View {
                 }
             }
         }
+        .task {
+            viewModel.getSocial()
+        }
         .navigationBarBackButtonHidden()
         .fullScreenCover(isPresented: $viewModel.logoutSuccess) {LoginView()}
     }
@@ -116,7 +119,31 @@ struct SettingView: View {
     // 버튼
     private var ButtonGroup: some View {
         VStack(spacing: 18) {
-            SettingButton(title: "비밀번호 변경", destination: .account)
+            Button(action: {
+                if viewModel.isSocialUser {
+                    ToastManager.shared.show("소셜 로그인 시 비밀번호 변경은 불가합니다")
+                } else {
+                    router.push(.account)
+                }
+            }) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(.gray400)
+                        .frame(height: 54)
+                    
+                    HStack {
+                        Spacer().frame(width: 16)
+                        
+                        Text("비밀번호 변경")
+                            .textStyle(.Button_s)
+                            .foregroundStyle(.black000)
+                        
+                        Spacer()
+                        Image(.iconButtonArrow)
+                    }
+                    .padding(.horizontal, 9)
+                }
+            }
             SettingButton(title: "차단 유저 목록", destination: .block)
             SettingButton(title: "알림 설정", destination: .notification)
             SettingButton(title: "로그아웃", onClick: { LogoutModal = true })
@@ -138,6 +165,7 @@ struct SettingView: View {
                 }
             })
         }
+        .padding(.horizontal, 38)
     }
 }
 
@@ -186,7 +214,6 @@ struct SettingButton: View {
             }
             .padding(.horizontal, 9)
         }
-        .padding(.horizontal, 38)
     }
 }
 
