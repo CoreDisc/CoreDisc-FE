@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
-import Moya
+//import Moya
+import AuthenticationServices
 
 struct LoginView: View {
     @Environment(NavigationRouter<OnboardingRoute>.self) private var router
     
     @StateObject private var viewModel = LoginViewModel()
+    @StateObject private var AppleViewModel = AppleLoginViewModel()
+    
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -143,7 +146,18 @@ struct LoginView: View {
                     Image(.imgKakao)
                 }
                 
-                Image(.imgGoogle)
+                
+                Image(.imgApple)
+                .onTapGesture {
+                    Task {
+                        if let window = UIApplication.shared.connectedScenes
+                            .compactMap({ $0 as? UIWindowScene })
+                            .first?.windows.first {
+                            await AppleViewModel.loginWithApple(presentationAnchor: window)
+                        }
+                    }
+                }
+                
             }
         }
         .padding(.horizontal, 41)
