@@ -13,7 +13,7 @@ struct ReportDetailView: View {
     
     @State private var nowIndex: Int = 1
     @StateObject private var myHomeViewModel = MyHomeViewModel()
-    @StateObject private var viewModel = ReportDetailViewModel()
+    @StateObject private var viewModel: ReportDetailViewModel
     @StateObject private var DiscQuestionViewModel: DiscViewModel
     
     init(year: Int, month: Int) {
@@ -359,10 +359,12 @@ struct ReportDetailView: View {
                 
                 HStack {
                     Button(action: {
-                        router.push(.detail(year: beforeDiscYear, month: beforeDiscMonth))
-                    }){
+                        if viewModel.hasNextReport{
+                            router.push(.detail(year: beforeDiscYear, month: beforeDiscMonth))
+                        }
+                    }, label: {
                         Image(.iconBefore)
-                    }
+                    })
                     Spacer().frame(width: 19)
                     
                     
@@ -370,10 +372,12 @@ struct ReportDetailView: View {
                     Spacer().frame(width: 19)
                     
                     Button(action: {
-                        router.push(.detail(year: nextDiscYear, month: nextDiscMonth))
-                    }){
+                        if viewModel.hasPreviousReport{
+                            router.push(.detail(year: nextDiscYear, month: nextDiscMonth))
+                        }
+                    }, label: {
                         Image(.iconNext)
-                    }
+                    })
                 }
             }
             .padding(.horizontal, 24)
