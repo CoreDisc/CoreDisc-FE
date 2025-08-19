@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-//import Moya
 import AuthenticationServices
 
 struct LoginView: View {
@@ -138,14 +137,17 @@ struct LoginView: View {
             Spacer().frame(height: 32)
             
             HStack(spacing: 43){
-                Image(.imgNaver)
+                Button(action: {
+                    viewModel.naverLogin()
+                }) {
+                    Image(.imgNaver)
+                }
                 
                 Button(action: {
                     viewModel.kakaoLogin()
                 }) {
                     Image(.imgKakao)
                 }
-                
                 
                 Image(.imgApple)
                 .onTapGesture {
@@ -157,7 +159,6 @@ struct LoginView: View {
                         }
                     }
                 }
-                
             }
         }
         .padding(.horizontal, 41)
