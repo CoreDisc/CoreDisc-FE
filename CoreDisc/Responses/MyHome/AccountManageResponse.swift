@@ -25,3 +25,14 @@ struct logoutResponse: Decodable {
     let message: String
     let result: String
 }
+
+struct socialResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: socialData
+}
+
+struct socialData: Decodable {
+    let socialLogin: Bool
+}

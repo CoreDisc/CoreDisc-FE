@@ -25,6 +25,7 @@ enum MemberRouter {
     
     case patchProfileImage(image: Data) // 프로필 사진 변경
     case patchDefaultImage // 기본 프로필 사진으로 변경
+    case getSocial // 소셜 로그인 사용자 조회
 }
 
 extension MemberRouter: APITargetType {
@@ -61,6 +62,9 @@ extension MemberRouter: APITargetType {
             return "\(Self.memberPath)/profile-image"
         case .patchDefaultImage:
             return "\(Self.memberPath)/profile-image/default"
+        case .getSocial:
+            return "\(Self.memberPath)/me/social"
+            
         }
     }
     
@@ -68,7 +72,7 @@ extension MemberRouter: APITargetType {
         switch self {
         case .patchResign, .patchProfile, .patchPassword, .patchMyhomeUsername, .patchMyhomePassword, .patchMyhomeEmail, .patchProfileImage, .patchDefaultImage:
                 .patch
-        case .getMyhome, .getMyhomeTargetUsername, .getMyhomePosts, .getMyhomeQuestion, .getMyhomePostsTargetUsername:
+        case .getMyhome,.getSocial, .getMyhomeTargetUsername, .getMyhomePosts, .getMyhomeQuestion, .getMyhomePostsTargetUsername:
                 .get
         }
     }
@@ -90,6 +94,8 @@ extension MemberRouter: APITargetType {
         case .patchMyhomeEmail(let email):
             return .requestParameters(parameters: ["email": email], encoding: JSONEncoding.default)
             
+        case .getSocial:
+            return .requestPlain
         case .getMyhome:
             return .requestPlain // TODO: 수정중
         case .getMyhomeTargetUsername:

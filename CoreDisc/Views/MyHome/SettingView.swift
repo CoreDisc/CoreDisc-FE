@@ -12,6 +12,7 @@ struct SettingView: View {
     
     @State var LogoutModal = false
     @StateObject private var viewModel = AccountManageViewModel()
+    @State var WithdrawModal = false
     
     var body: some View {
         ZStack {
@@ -52,6 +53,34 @@ struct SettingView: View {
                     }
                 }
             }
+            if WithdrawModal {
+                ModalView {
+                    VStack(spacing: 10) {
+                        Text("계정 탈퇴시 지금까지의 모든 데이터가 삭제됩니다.")
+                            .textStyle(.Button_s)
+                        
+                        Text("탈퇴하시겠습니까?")
+                            .textStyle(.Button_s)
+                    }
+                } leftButton: {
+                    Button(action: {
+                        WithdrawModal.toggle()
+                    }) {
+                        Text("취소하기")
+                    }
+                } rightButton: {
+                    Button(action: {
+                        WithdrawModal.toggle()
+                        viewModel.resign()
+                    }) {
+                        Text("탈퇴하기")
+                            .foregroundStyle(.red)
+                    }
+                }
+            }
+        }
+        .task {
+            viewModel.getSocial()
         }
         .navigationBarBackButtonHidden()
         .fullScreenCover(isPresented: $viewModel.logoutSuccess) {LoginView()}
@@ -90,11 +119,53 @@ struct SettingView: View {
     // 버튼
     private var ButtonGroup: some View {
         VStack(spacing: 18) {
-            SettingButton(title: "계정 관리", destination: .account)
+            Button(action: {
+                if viewModel.isSocialUser {
+                    ToastManager.shared.show("소셜 로그인 시 비밀번호 변경은 불가합니다")
+                } else {
+                    router.push(.account)
+                }
+            }) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(.gray400)
+                        .frame(height: 54)
+                    
+                    HStack {
+                        Spacer().frame(width: 16)
+                        
+                        Text("비밀번호 변경")
+                            .textStyle(.Button_s)
+                            .foregroundStyle(.black000)
+                        
+                        Spacer()
+                        Image(.iconButtonArrow)
+                    }
+                    .padding(.horizontal, 9)
+                }
+            }
             SettingButton(title: "차단 유저 목록", destination: .block)
             SettingButton(title: "알림 설정", destination: .notification)
             SettingButton(title: "로그아웃", onClick: { LogoutModal = true })
+            
+            Capsule()
+                .frame(maxWidth: .infinity, maxHeight: 1)
+                .foregroundStyle(.white)
+                .padding(.vertical, 24)
+            
+            Button(action:{WithdrawModal = true}, label: {
+                ZStack{
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.warning, lineWidth: 1)
+                        .frame(height: 40)
+                    Text("계정 삭제")
+                        .frame(maxWidth: .infinity)
+                        .textStyle(.Button_s)
+                        .foregroundStyle(.warning)
+                }
+            })
         }
+        .padding(.horizontal, 38)
     }
 }
 
@@ -143,7 +214,6 @@ struct SettingButton: View {
             }
             .padding(.horizontal, 9)
         }
-        .padding(.horizontal, 38)
     }
 }
 
