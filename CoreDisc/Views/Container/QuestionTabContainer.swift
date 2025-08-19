@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct QuestionTabContainer: View {
-    @StateObject private var mainViewModel = QuestionMainViewModel()
     
     var body: some View {
         QuestionMainView()
@@ -51,7 +50,6 @@ struct QuestionTabContainer: View {
                     )
                 }
             }
-            .environmentObject(mainViewModel)
     }
 }
 

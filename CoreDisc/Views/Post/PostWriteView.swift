@@ -17,17 +17,15 @@ struct CardContent {
 struct PostWriteView: View {
     @Environment(NavigationRouter<WriteRoute>.self) private var router
     
-    @StateObject private var viewModel = PostpostsViewModel()
+    @StateObject private var viewModel = PostWriteViewModel()
+    @StateObject private var questionViewModel = QuestionMainViewModel()
+    
+    private var questions: [String] {
+        questionViewModel.selectedQuestions.map { $0.question ?? "" }
+    }
+    
     @State private var selectedDate = Date()
-    
-    @State private var isCorelist: Bool = false
-    
-    private let questions = [
-        "오늘 아침은 무엇을 먹었나요?",
-        "오늘 가장 행복했던 순간은?",
-        "오늘 만난 사람은?",
-        "오늘의 날씨는 어땠나요?"
-    ]
+    @State private var isCore: Bool = false
     
     // 현재 슬라이드 인덱스
     @State private var pageIndex: Int = 0
@@ -39,11 +37,23 @@ struct PostWriteView: View {
     @State private var showPhotoPicker: Bool = false
     @State private var selectedPhotoItem: PhotosPickerItem? = nil
     
+    // 키보드
+    @FocusState private var isFocused: Bool
+    
+    // 모든 답변 입력됐는지 확인
+    private var allAnswered: Bool {
+        let count = min(cards.count, questions.count)
+        return cards.prefix(count).allSatisfy { isAnswered($0) }
+    }
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground)
                 .resizable()
                 .ignoresSafeArea()
+                .onTapGesture { // 키보드 내리기 용도
+                    isFocused = false
+                }
             
             VStack {
                 Spacer().frame(height: 22)
@@ -69,7 +79,8 @@ struct PostWriteView: View {
         
         .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
         .task {
-            viewModel.postPosts(selectedDate: ymd(selectedDate))
+            viewModel.postPosts(selectedDate: selectedDate)
+            questionViewModel.fetchSelected()
         }
         .onChange(of: selectedPhotoItem) { newItem in
             guard let newItem else { return }
@@ -110,15 +121,9 @@ struct PostWriteView: View {
                 
                 // 저장버튼
                 Button(action: {
-//                    for (idx, card) in cards.enumerated() {
-//                        if let img = card.image {
-//                                    // 이미지 답변 저장
-//                                    viewModel.putImageAnswer(postId: postId, questionId: idx + 1, image: img)
-//                                }
-//                        else { // 텍스트 답변 저장
-//                            viewModel.putTextAnswer(postId: postId, questionId: idx + 1, content: card.text)
-//                        }
-//                    }
+                    uploadAnswers {
+                        ToastManager.shared.show("게시글 임시 저장 완료")
+                    }
                 }){
                     Text("저장")
                         .textStyle(.Q_Main)
@@ -151,6 +156,7 @@ struct PostWriteView: View {
                     ForEach(questions.indices, id: \.self) { idx in
                         CardPageView(
                             card: $cards[idx],
+                            isFocused: $isFocused,
                             onTapPhoto: {
                                 pageIndex = idx
                                 showPhotoPicker = true
@@ -167,7 +173,6 @@ struct PostWriteView: View {
                 }
                 .frame(height: 409)
                 .scrollTargetLayout()
-                //.padding(.horizontal, 47)
             }
             .contentMargins(.horizontal, 47)
             .scrollTargetBehavior(.paging)
@@ -197,199 +202,60 @@ struct PostWriteView: View {
     
     // 하단섹션
     private var BottomGroup: some View {
-        let toggleWidth: CGFloat = 123
-        let toggleHeight: CGFloat = 50
-        let nextDiameter: CGFloat = 50
-        let spacing: CGFloat = 16
-        let offsetX: CGFloat = (toggleWidth / 2) + spacing + (nextDiameter / 2)
-        
-        let answeredCount = cards.filter { isAnswered($0) }.count
-        let canGoNext = (answeredCount == cards.count)
-        
-        return ZStack {
-            // 공개범위 버튼
+        ZStack {
             Button(action: {
                 withAnimation(.easeInOut(duration: 0.2)) {
-                    isCorelist.toggle()
+                    isCore.toggle()
                 }
-            }) {
-                ZStack(alignment: isCorelist ? .trailing : .leading) {
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(.gray800)
-                        .frame(width: 42, height: 42)
-                    
-                    RoundedRectangle(cornerRadius: 30)
-                        .fill(isCorelist ? .gray600 : .black000)
-                        .frame(width: toggleWidth, height: toggleHeight)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(.gray400, lineWidth: 2)
-                        )
-                        .padding(.horizontal, 2)
-                    
-                    HStack(spacing: 17) {
-                        if isCorelist {
-                            // Circle 상태 (오른쪽)
-                            Text("Circle")
-                                .textStyle(.login_info)
-                                .foregroundColor(.white)
-                            ZStack {
-                                Circle()
-                                    .fill(.key)
-                                    .frame(width: 42, height: 42)
-                                
-                                Image(.iconCore)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 23, height: 16)
-                                    .foregroundStyle(.gray600)
-                            }
-                            .padding(.vertical, 6)
-                            .padding(.trailing, -16)
-                            
-                        } else {
-                            // Public 상태 (왼쪽)
-                            ZStack {
-                                Circle()
-                                    .fill(.gray100)
-                                    .frame(width: 42, height: 42)
-                                
-                                Image(systemName: "globe")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 20, height:20)
-                                    .foregroundStyle(.black000)
-                            }
-                            .padding(.vertical, 6)
-                            .padding(.leading, -16)
-                            
-                            Text("Public")
-                                .textStyle(.login_info)
-                                .foregroundColor(.white)
-                        }
-                        
-                    }
-                    .frame(width: toggleWidth, height: toggleHeight)
-                }
-                .buttonStyle(.plain)
-            }
-            
-            // 넘어가기 버튼
-            Button(action: {
-                router.push(.select)
             }) {
                 ZStack {
-                    Circle()
-                        .frame(width: nextDiameter, height: nextDiameter)
-                        .foregroundStyle(canGoNext ? .key : .gray200)
-                    Image(.iconArrow)
+                    ZStack(alignment: isCore ? .trailing : .leading) {
+                        RoundedRectangle(cornerRadius: 27)
+                            .fill(.white)
+                            .frame(width: 127, height: 54)
+                        
+                        RoundedRectangle(cornerRadius: 25)
+                            .fill(isCore ? .gray800 : .black000)
+                            .frame(width: 123, height: 50)
+                            .padding(.horizontal, 2)
+                        
+                        Image(isCore ? .iconToggleCore : .iconToggleGlobe)
+                            .padding(.horizontal, 6)
+                    }
+                
+                    Text(isCore ? "Core" : "Public")
+                        .textStyle(.Pick_Q_Eng)
+                        .foregroundStyle(.white)
+                        .padding(isCore ? .trailing : .leading, 35)
                 }
             }
-            .offset(x: offsetX)
-            .disabled(!canGoNext) // 답변 미 작성시 버튼 막기
+            .buttonStyle(.plain)
+            
+            if allAnswered {
+                Button(action: {
+                    uploadAnswers {
+                        ToastManager.shared.show("게시글 임시 저장 완료")
+                    }
+                    router.push(.select)
+                }) {
+                    ZStack {
+                        Circle()
+                            .fill(.gray200)
+                            .frame(width: 50, height: 50)
+                        Image(.iconArrow)
+                    }
+                }
+                .padding(.leading, 210)
+            }
         }
-        .frame(maxWidth: .infinity, minHeight: 50)
+        .padding(.bottom, 75)
     }
     
     
+    // MARK: - Functions
     // 슬라이딩 시 질문 변경
     private var currentQuestion: String {
         (0..<questions.count).contains(pageIndex) ? questions[pageIndex] : (questions.first ?? "")
-    }
-    
-    
-    // 게시글 작성 답변 카드
-    private struct CardPageView: View {
-        @Binding var card: CardContent
-        let onTapPhoto: () -> Void
-        let onTapWrite: () -> Void
-        
-        
-        // 글/그림 선택 버튼 항상 표시
-        private var showButtons: Bool {
-            true }
-        
-        var body: some View {
-            ZStack {
-                // 배경 카드
-                RoundedRectangle(cornerRadius: 20.83)
-                    .fill(Color.gray400)
-                    .frame(width: 308, height: 409)
-                
-                // 사진 표시
-                if let image = card.image {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 308, height: 409)
-                        .clipped()
-                        .clipShape( RoundedRectangle(cornerRadius: 20.83) )
-                }
-                
-                // 텍스트 표시
-                if card.isTextMode {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color.white)
-                            .frame(width: 308 - 24, height: 409 - 24)
-                        
-                        ZStack (alignment: .top){
-                            if card.text.isEmpty {
-                                Text("내용을 입력하세요")
-                                    .foregroundColor(.gray)
-                                    .padding(.all, 18)
-                            }
-                            TextEditor(text: $card.text)
-                                .multilineTextAlignment(.center)
-                                .padding(.all, 10)
-                                .foregroundColor(.black)
-                                .scrollContentBackground(.hidden)
-                                .frame(width: 263)
-                                .frame(maxHeight: 356)
-                        }
-                    }
-                    .padding(.all, 18)
-                    
-                    
-                } else if !card.text.isEmpty {
-                    // 텍스트 미리보기
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color.white)
-                        .frame(width: 308 - 24, height: 409 - 24)
-                        .overlay(
-                            ScrollView {
-                                Text(card.text)
-                                    .font(.system(size: 12))
-                                    .foregroundColor(.black)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(12)
-                            }
-                        )
-                }
-                
-                // 사진/글 버튼
-                if showButtons {
-                    VStack (alignment: .leading, spacing: 20) {
-                        Button(action: onTapPhoto) {
-                            ZStack {
-                                Circle().fill(Color.white).frame(width: 60, height: 60)
-                                Image(.iconPhoto).renderingMode(.original)
-                            }
-                        }
-                        
-                        Button(action: onTapWrite) {
-                            ZStack {
-                                Circle().fill(Color.white).frame(width: 60, height: 60)
-                                Image(.iconWriting).renderingMode(.original)
-                            }
-                        }
-                    }
-                    .padding(.top, 240)
-                    .padding(.leading, 225)
-                    .transition(.opacity)
-                }
-            }
-        }
     }
     
     private func ymd(_ date: Date) -> String {
@@ -404,9 +270,135 @@ struct PostWriteView: View {
         if c.image != nil { return true }
         return !c.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
+    
+    private func uploadAnswers(index: Int = 0, done: @escaping () -> Void) {
+        guard !questions.isEmpty else {
+            ToastManager.shared.show("질문 불러오는 중 ...")
+            return
+        }
+        
+        guard viewModel.postId != 0 else {
+            ToastManager.shared.show("게시글 ID 준비 중 ...")
+            return
+        }
+        
+        let count = min(cards.count, questions.count)
+        guard index < count else {
+            done()
+            return
+        }
+        
+        let questionId = index + 1
+        let card = cards[index]
+        
+        if let img = card.image {
+            viewModel.putImageAnswer(postId: viewModel.postId, questionId: questionId, image: img) {
+                uploadAnswers(index: index + 1, done: done)
+            }
+        } else {
+            let text = card.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            viewModel.putTextAnswer(postId: viewModel.postId, questionId: questionId, content: text) {
+                uploadAnswers(index: index + 1, done: done)
+            }
+        }
+    }
 }
 
+// 게시글 작성 답변 카드
+private struct CardPageView: View {
+    @Binding var card: CardContent
+    @FocusState.Binding var isFocused: Bool
+    let onTapPhoto: () -> Void
+    let onTapWrite: () -> Void
+    
+    // 글/그림 선택 버튼 항상 표시
+    private var showButtons: Bool {
+        true }
+    
+    var body: some View {
+        ZStack {
+            // 배경 카드
+            RoundedRectangle(cornerRadius: 20.83)
+                .fill(Color.gray400)
+                .frame(width: 308, height: 409)
+            
+            // 사진 표시
+            if let image = card.image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 308, height: 409)
+                    .clipped()
+                    .clipShape( RoundedRectangle(cornerRadius: 20.83) )
+            }
+            
+            // 텍스트 표시
+            if card.isTextMode {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.white)
+                        .frame(width: 308 - 24, height: 409 - 24)
+                    
+                    ZStack (alignment: .top){
+                        if card.text.isEmpty {
+                            Text("내용을 입력하세요")
+                                .foregroundColor(.gray)
+                                .padding(.all, 18)
+                        }
+                        TextEditor(text: $card.text)
+                            .focused($isFocused)
+                            .multilineTextAlignment(.center)
+                            .padding(.all, 10)
+                            .foregroundColor(.black)
+                            .scrollContentBackground(.hidden)
+                            .frame(width: 263)
+                            .frame(maxHeight: 356)
+                    }
+                }
+                .padding(.all, 18)
+                
+                
+            } else if !card.text.isEmpty {
+                // 텍스트 미리보기
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.white)
+                    .frame(width: 308 - 24, height: 409 - 24)
+                    .overlay(
+                        ScrollView {
+                            Text(card.text)
+                                .font(.system(size: 12))
+                                .foregroundColor(.black)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(12)
+                        }
+                    )
+            }
+            
+            // 사진/글 버튼
+            if showButtons {
+                VStack (alignment: .leading, spacing: 20) {
+                    Button(action: onTapPhoto) {
+                        ZStack {
+                            Circle().fill(Color.white).frame(width: 60, height: 60)
+                            Image(.iconPhoto).renderingMode(.original)
+                        }
+                    }
+                    
+                    Button(action: onTapWrite) {
+                        ZStack {
+                            Circle().fill(Color.white).frame(width: 60, height: 60)
+                            Image(.iconWriting).renderingMode(.original)
+                        }
+                    }
+                }
+                .padding(.top, 240)
+                .padding(.leading, 225)
+                .transition(.opacity)
+            }
+        }
+    }
+}
 
 #Preview {
-    PostWriteView()
+    TabBar(startTab: .write)
 }
