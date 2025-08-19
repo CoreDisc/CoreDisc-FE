@@ -53,7 +53,7 @@ struct AccountManageView: View {
             }
             
             ZStack {
-                Text("계정 관리")
+                Text("비밀번호 변경")
                     .textStyle(.Button)
                     .foregroundStyle(.gray200)
                 
