@@ -18,10 +18,13 @@
 		23F157E72E5432170032B5F9 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 23F157E62E5432170032B5F9 /* FirebaseCore */; };
 		23F157E92E5432170032B5F9 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 23F157E82E5432170032B5F9 /* FirebaseMessaging */; };
 		441FBD832E3CD8C800B45DD0 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 441FBD822E3CD8C800B45DD0 /* FirebaseAnalytics */; };
+		446B6B892E54F98600EED169 /* NidThirdPartyLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 446B6B882E54F98600EED169 /* NidThirdPartyLogin */; };
+		4472520F2E54A91400ED5EB8 /* Secret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4472520E2E54A91400ED5EB8 /* Secret.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		238562CE2E0F0E2E008F25B1 /* CoreDisc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDisc.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4472520E2E54A91400ED5EB8 /* Secret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secret.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -55,6 +58,7 @@
 				238BB8172E16CEBE00E7C5B8 /* Kingfisher in Frameworks */,
 				200939EF2E3BE2500005A541 /* KakaoSDK in Frameworks */,
 				238BB8142E16CEA100E7C5B8 /* Alamofire in Frameworks */,
+				446B6B892E54F98600EED169 /* NidThirdPartyLogin in Frameworks */,
 				200939EC2E3BE20A0005A541 /* Moya in Frameworks */,
 				23F157E72E5432170032B5F9 /* FirebaseCore in Frameworks */,
 				200939F32E3BE2500005A541 /* KakaoSDKCommon in Frameworks */,
@@ -70,6 +74,7 @@
 		238562C52E0F0E2E008F25B1 = {
 			isa = PBXGroup;
 			children = (
+				4472520E2E54A91400ED5EB8 /* Secret.xcconfig */,
 				238562D02E0F0E2E008F25B1 /* CoreDisc */,
 				238562CF2E0F0E2E008F25B1 /* Products */,
 			);
@@ -114,6 +119,7 @@
 				20CCA2622E3C66FA00F87128 /* KakaoSDKCertCore */,
 				23F157E62E5432170032B5F9 /* FirebaseCore */,
 				23F157E82E5432170032B5F9 /* FirebaseMessaging */,
+				446B6B882E54F98600EED169 /* NidThirdPartyLogin */,
 			);
 			productName = CoreDisc;
 			productReference = 238562CE2E0F0E2E008F25B1 /* CoreDisc.app */;
@@ -149,6 +155,7 @@
 				441FBD812E3CD8C800B45DD0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				200939EA2E3BE20A0005A541 /* XCRemoteSwiftPackageReference "Moya" */,
 				200939ED2E3BE2500005A541 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
+				446B6B872E54F98600EED169 /* XCRemoteSwiftPackageReference "naveridlogin-sdk-ios-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 238562CF2E0F0E2E008F25B1 /* Products */;
@@ -165,6 +172,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4472520F2E54A91400ED5EB8 /* Secret.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,8 +191,7 @@
 /* Begin XCBuildConfiguration section */
 		238562D72E0F0E2F008F25B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
-			baseConfigurationReferenceRelativePath = Secret.xcconfig;
+			baseConfigurationReference = 4472520E2E54A91400ED5EB8 /* Secret.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -249,8 +256,7 @@
 		};
 		238562D82E0F0E2F008F25B1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
-			baseConfigurationReferenceRelativePath = Secret.xcconfig;
+			baseConfigurationReference = 4472520E2E54A91400ED5EB8 /* Secret.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -308,14 +314,16 @@
 		};
 		238562DA2E0F0E2F008F25B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
-			baseConfigurationReferenceRelativePath = Secret.xcconfig;
+			baseConfigurationReference = 4472520E2E54A91400ED5EB8 /* Secret.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = CoreDisc/CoreDisc.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G8X4BWGTSS;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = G8X4BWGTSS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CoreDisc/Info.plist;
@@ -332,6 +340,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = umc.coredisc.CoreDisc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = CoreDisc;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -344,14 +354,16 @@
 		};
 		238562DB2E0F0E2F008F25B1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 238562D02E0F0E2E008F25B1 /* CoreDisc */;
-			baseConfigurationReferenceRelativePath = Secret.xcconfig;
+			baseConfigurationReference = 4472520E2E54A91400ED5EB8 /* Secret.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = CoreDisc/CoreDisc.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G8X4BWGTSS;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = G8X4BWGTSS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CoreDisc/Info.plist;
@@ -368,6 +380,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = umc.coredisc.CoreDisc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = CoreDisc_Distribution;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -442,6 +456,14 @@
 				minimumVersion = 12.0.0;
 			};
 		};
+		446B6B872E54F98600EED169 /* XCRemoteSwiftPackageReference "naveridlogin-sdk-ios-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/naver/naveridlogin-sdk-ios-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -499,6 +521,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 441FBD812E3CD8C800B45DD0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalytics;
+		};
+		446B6B882E54F98600EED169 /* NidThirdPartyLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 446B6B872E54F98600EED169 /* XCRemoteSwiftPackageReference "naveridlogin-sdk-ios-swift" */;
+			productName = NidThirdPartyLogin;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

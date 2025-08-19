@@ -10,6 +10,7 @@ import KakaoSDKCommon
 import KakaoSDKAuth
 import KakaoSDKUser
 import Moya
+import NidThirdPartyLogin
 
 class LoginViewModel: ObservableObject {
     @Published var username: String = ""
@@ -138,4 +139,51 @@ class LoginViewModel: ObservableObject {
             }
         }
     }
+    
+    
+    
+    func naverLogin() {
+        NidOAuth.shared.requestLogin { result in
+            switch result {
+            case .success(let loginResult):
+                let accessToken = loginResult.accessToken.tokenString
+                print("네이버 로그인 성공: \(accessToken)")
+
+                self.sendNaverTokenToServer(accessToken: accessToken)
+                
+            case .failure(let error):
+                print("네이버 로그인 실패: \(error)")
+            }
+        }
+    }
+    
+    func sendNaverTokenToServer(accessToken: String) {
+        authProvider.request(.postNaver(accessToken: accessToken)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(KakaoResponse.self, from: response.data)
+                    
+                    let userInfo = UserInfo(
+                        accessToken: decodedData.result.accessToken,
+                        refreshToken: decodedData.result.refreshToken
+                    )
+
+                    let saved = KeychainManager.standard.saveSession(userInfo, for: "appNameUser")
+                    if saved {
+                        print("Token 저장 성공: \(String(describing: userInfo.accessToken))")
+                        self.isLogin = true
+                    } else {
+                        print("Token 저장 실패")
+                    }
+                } catch {
+                    print("NaverResponse 디코더 오류: \(error)")
+                }
+            case .failure(let error):
+                print("Naver Login Error: \(error)")
+            }
+        }
+    }
 }
+
+
