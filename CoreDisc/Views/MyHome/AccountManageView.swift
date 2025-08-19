@@ -16,7 +16,7 @@ struct AccountManageView: View {
     @State private var pwdShown = false
     @State private var newPwdShown = false
     @State private var rePwdShown = false
-    @State var WithdrawModal = false
+
     
     var body: some View {
         ZStack {
@@ -34,31 +34,7 @@ struct AccountManageView: View {
                 Spacer()
             }
             
-            if WithdrawModal {
-                ModalView {
-                    VStack(spacing: 10) {
-                        Text("계정 탈퇴시 지금까지의 모든 데이터가 삭제됩니다.")
-                            .textStyle(.Button_s)
-                        
-                        Text("탈퇴하시겠습니까?")
-                            .textStyle(.Button_s)
-                    }
-                } leftButton: {
-                    Button(action: {
-                        WithdrawModal.toggle()
-                    }) {
-                        Text("취소하기")
-                    }
-                } rightButton: {
-                    Button(action: {
-                        WithdrawModal.toggle()
-                        viewModel.resign()
-                    }) {
-                        Text("탈퇴하기")
-                            .foregroundStyle(.red)
-                    }
-                }
-            }
+
         }
         .navigationBarBackButtonHidden()
         .fullScreenCover(isPresented: $viewModel.resignSuccess) {
@@ -235,22 +211,7 @@ struct AccountManageView: View {
                 }
             })
             
-            Capsule()
-                .frame(maxWidth: .infinity, maxHeight: 1)
-                .foregroundStyle(.white)
-                .padding(.vertical, 24)
-            
-            Button(action:{WithdrawModal = true}, label: {
-                ZStack{
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.warning, lineWidth: 1)
-                        .frame(height: 40)
-                    Text("계정 삭제")
-                        .frame(maxWidth: .infinity)
-                        .textStyle(.Button_s)
-                        .foregroundStyle(.warning)
-                }
-            })
+
         }
         .padding(.horizontal,41)
     }

@@ -18,7 +18,6 @@
 		238BB8142E16CEA100E7C5B8 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 238BB8132E16CEA100E7C5B8 /* Alamofire */; };
 		238BB8172E16CEBE00E7C5B8 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 238BB8162E16CEBE00E7C5B8 /* Kingfisher */; };
 		4415F1D12E53A04000479D9B /* NidThirdPartyLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 4415F1D02E53A04000479D9B /* NidThirdPartyLogin */; };
-		441919C72E538CDE00176EB3 /* Secret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 441919C62E538CDE00176EB3 /* Secret.xcconfig */; };
 		441FBD832E3CD8C800B45DD0 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 441FBD822E3CD8C800B45DD0 /* FirebaseAnalytics */; };
 /* End PBXBuildFile section */
 
@@ -172,7 +171,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				441919C72E538CDE00176EB3 /* Secret.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
