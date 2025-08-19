@@ -63,14 +63,21 @@ struct ReportSummaryView: View {
     }
     
     private var HeaderGroup : some View{
-        HStack{
-            Image(.imgReportHeaderIcon)
-            Button(action: {
-                router.pop()
-            }){
-                Image(.imgGoback)
+        ZStack{
+            HStack{
+                Spacer()
+                Image(.imgLogoOneline)
+                Spacer()
             }
-            Spacer()
+            HStack{
+                Image(.imgReportHeaderIcon)
+                Button(action: {
+                    router.pop()
+                }){
+                    Image(.imgGoback)
+                }
+                Spacer()
+            }
         }
     }
     

@@ -131,15 +131,22 @@ struct ReportDetailView: View {
     }
     
     private var HeaderGroup: some View {
-        HStack {
-            Image(.imgReportHeaderIcon)
-            
-            Button(action: {
-                router.push(.museum)
-            }){
-                Image(.imgGoback)
+        ZStack{
+            HStack{
+                Spacer()
+                Image(.imgLogoOneline)
+                Spacer()
             }
-            Spacer()
+            HStack {
+                Image(.imgReportHeaderIcon)
+                
+                Button(action: {
+                    router.push(.museum)
+                }){
+                    Image(.imgGoback)
+                }
+                Spacer()
+            }
         }
     }
     
