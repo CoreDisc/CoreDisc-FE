@@ -110,15 +110,15 @@ struct PostWriteView: View {
                 
                 // 저장버튼
                 Button(action: {
-                    for (idx, card) in cards.enumerated() {
-                        if let img = card.image {
-                                    // 이미지 답변 저장
-                                    viewModel.putImageAnswer(postId: postId, questionId: idx + 1, image: img)
-                                }
-                        else { // 텍스트 답변 저장
-                            viewModel.putTextAnswer(postId: postId, questionId: idx + 1, content: card.text)
-                        }
-                    }
+//                    for (idx, card) in cards.enumerated() {
+//                        if let img = card.image {
+//                                    // 이미지 답변 저장
+//                                    viewModel.putImageAnswer(postId: postId, questionId: idx + 1, image: img)
+//                                }
+//                        else { // 텍스트 답변 저장
+//                            viewModel.putTextAnswer(postId: postId, questionId: idx + 1, content: card.text)
+//                        }
+//                    }
                 }){
                     Text("저장")
                         .textStyle(.Q_Main)

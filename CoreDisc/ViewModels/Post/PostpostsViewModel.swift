@@ -60,13 +60,8 @@ class PostpostsViewModel: ObservableObject {
     }
     
     // 답변 이미지 작성/저장
-    func putImageAnswer(postId: Int, questionId: Int, image: UIImage) {
-        guard let data = image.jpegData(compressionQuality: 0.85) else {
-            print("jpegData 변환 실패")
-            return
-        }
-        
-        postProvider.request(.putAnswerImage(postId: postId, questionId: questionId, imageData: data)) { result in
+    func putImageAnswer(postId: Int, questionId: Int, image: String) {
+        postProvider.request(.putAnswerImage(postId: postId, questionId: questionId, image: image)) { result in
             switch result {
             case .success(let response):
                 do {
