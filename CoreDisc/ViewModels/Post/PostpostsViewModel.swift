@@ -12,9 +12,10 @@ import Moya
 class PostpostsViewModel: ObservableObject {
     private let postProvider = APIManager.shared.createProvider(for: PostRouter.self)
     
-    @Published var lastResult: PostpostsResult?
-    @Published var errorMessage: String?
+    @Published var postId: Int?
     
+    
+    // 게시글 생성 (임시)
     func postPosts(selectedDate: String) {
         postProvider.request(.postPosts(selectedDate: selectedDate)) { result in
             switch result {
@@ -22,20 +23,64 @@ class PostpostsViewModel: ObservableObject {
                 do {
                     let decoded = try JSONDecoder().decode(PostpostsResponse.self, from: response.data)
                     if decoded.isSuccess {
-                        self.lastResult = decoded.result
+                        self.postId = decoded.result.postId
                         print("POST 성공: postId=\(decoded.result.postId)")
                     } else {
-                        self.errorMessage = "[\(decoded.code)] \(decoded.message)"
                         print("POST 실패: \(decoded.message)")
                     }
                 } catch {
-                    self.errorMessage = "디코딩 실패: \(error.localizedDescription)"
                     print("디코딩 실패:", error)
                 }
-
+                
             case .failure(let error):
-                self.errorMessage = error.localizedDescription
                 print("postPosts Api 연결 오류:", error)
+            }
+        }
+    }
+    
+    // 답변 글 수정 및 작성
+    func putTextAnswer(postId: Int, questionId: Int, content: String) {
+        postProvider.request(.putAnswerText(postId: postId, questionId: questionId, content: content)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(PutAnswerResponse.self, from: response.data)
+                    if decoded.isSuccess {
+                        print("텍스트 답변 업로드 성공: answerId=\(decoded.result.answerId)")
+                    } else {
+                        print("업로드 실패: [\(decoded.code)] \(decoded.message)")
+                    }
+                } catch {
+                    print("디코딩 실패: \(error.localizedDescription)")
+                }
+            case .failure(let error):
+                print("putTextAnswer 연결 오류: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    // 답변 이미지 작성/저장
+    func putImageAnswer(postId: Int, questionId: Int, image: UIImage) {
+        guard let data = image.jpegData(compressionQuality: 0.85) else {
+            print("jpegData 변환 실패")
+            return
+        }
+        
+        postProvider.request(.putAnswerImage(postId: postId, questionId: questionId, imageData: data)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(PutAnswerResponse.self, from: response.data)
+                    if decoded.isSuccess {
+                        print("이미지 답변 업로드 성공: answerId=\(decoded.result.answerId)")
+                    } else {
+                        print("업로드 실패: [\(decoded.code)] \(decoded.message)")
+                    }
+                } catch {
+                    print("디코딩 실패: \(error.localizedDescription)")
+                }
+            case .failure(let error):
+                print("putImageAnswer 연결 오류: \(error.localizedDescription)")
             }
         }
     }

@@ -68,6 +68,9 @@ struct PostWriteView: View {
         .navigationBarBackButtonHidden()
         
         .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
+        .task {
+            viewModel.postPosts(selectedDate: ymd(selectedDate))
+        }
         .onChange(of: selectedPhotoItem) { newItem in
             guard let newItem else { return }
             Task {
@@ -107,7 +110,15 @@ struct PostWriteView: View {
                 
                 // 저장버튼
                 Button(action: {
-                    // TODO: 추가 예정
+                    for (idx, card) in cards.enumerated() {
+                        if let img = card.image {
+                                    // 이미지 답변 저장
+                                    viewModel.putImageAnswer(postId: postId, questionId: idx + 1, image: img)
+                                }
+                        else { // 텍스트 답변 저장
+                            viewModel.putTextAnswer(postId: postId, questionId: idx + 1, content: card.text)
+                        }
+                    }
                 }){
                     Text("저장")
                         .textStyle(.Q_Main)
@@ -135,26 +146,37 @@ struct PostWriteView: View {
     private var PostGroup: some View {
         VStack (alignment: .center){
             // 게시물 작성란
-            TabView(selection: $pageIndex) {
-                ForEach(0..<4, id: \.self) { idx in
-                    CardPageView(
-                        card: $cards[idx],
-                        onTapPhoto: {
-                            pageIndex = idx
-                            showPhotoPicker = true
-                        },
-                        onTapWrite: {
-                            pageIndex = idx
-                            cards[idx].isTextMode = true
-                            cards[idx].image = nil
-                        }
-                    )
-                    .tag(idx)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    ForEach(questions.indices, id: \.self) { idx in
+                        CardPageView(
+                            card: $cards[idx],
+                            onTapPhoto: {
+                                pageIndex = idx
+                                showPhotoPicker = true
+                            },
+                            onTapWrite: {
+                                pageIndex = idx
+                                cards[idx].isTextMode = true
+                                cards[idx].image = nil
+                            }
+                        )
+                        .frame(width: 308, height: 409)
+                        .id(idx)
+                    }
                 }
+                .frame(height: 409)
+                .scrollTargetLayout()
+                //.padding(.horizontal, 47)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .frame(height: 409)
-            //.padding(.horizontal, 47)
+            .contentMargins(.horizontal, 47)
+            .scrollTargetBehavior(.paging)
+            .scrollPosition(
+                id: Binding(
+                    get: { Optional(pageIndex) },
+                    set: { pageIndex = $0 ?? 0 }
+                )
+            )
         }
     }
     
@@ -180,6 +202,9 @@ struct PostWriteView: View {
         let nextDiameter: CGFloat = 50
         let spacing: CGFloat = 16
         let offsetX: CGFloat = (toggleWidth / 2) + spacing + (nextDiameter / 2)
+        
+        let answeredCount = cards.filter { isAnswered($0) }.count
+        let canGoNext = (answeredCount == cards.count)
         
         return ZStack {
             // 공개범위 버튼
@@ -256,14 +281,12 @@ struct PostWriteView: View {
                 ZStack {
                     Circle()
                         .frame(width: nextDiameter, height: nextDiameter)
-                        .foregroundStyle(.gray200)
+                        .foregroundStyle(canGoNext ? .key : .gray200)
                     Image(.iconArrow)
                 }
             }
             .offset(x: offsetX)
-            .simultaneousGesture(TapGesture().onEnded {
-                viewModel.postPosts(selectedDate: ymd(selectedDate))
-            })
+            .disabled(!canGoNext) // 답변 미 작성시 버튼 막기
         }
         .frame(maxWidth: .infinity, minHeight: 50)
     }
@@ -282,8 +305,9 @@ struct PostWriteView: View {
         let onTapWrite: () -> Void
         
         
-        // 버튼 클릭 전에만 버튼 표시
-        private var showButtons: Bool { card.image == nil && !card.isTextMode && card.text.isEmpty }
+        // 글/그림 선택 버튼 항상 표시
+        private var showButtons: Bool {
+            true }
         
         var body: some View {
             ZStack {
@@ -373,6 +397,12 @@ struct PostWriteView: View {
         f.calendar = Calendar(identifier: .gregorian)
         f.dateFormat = "yyyy-MM-dd"
         return f.string(from: date)
+    }
+    
+    // 카드 답변 여부 확인 함수
+    private func isAnswered(_ c: CardContent) -> Bool {
+        if c.image != nil { return true }
+        return !c.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
 

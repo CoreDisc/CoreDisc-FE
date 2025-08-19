@@ -78,7 +78,10 @@ extension PostRouter: APITargetType {
         case .putPublish(_, let postPublishData):
             return .requestJSONEncodable(postPublishData)
         case .putAnswerText(_, _, let content):
-            return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
+            return .requestParameters(parameters: [
+                "answerType": "TEXT",
+                "content": content
+            ], encoding: JSONEncoding.default)
         case .putAnswerImage(_, _, let image):
             return .requestParameters(parameters: ["image": image], encoding: JSONEncoding.default)
             
