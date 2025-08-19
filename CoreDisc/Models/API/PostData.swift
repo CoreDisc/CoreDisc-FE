@@ -62,6 +62,11 @@ enum QuestionType: String, Decodable {
     case OFFICIAL
 }
 
+// 게시글 답변 타입(글/그림)
+enum AnswerType: String, Codable {
+    case TEXT
+    case IMAGE
+}
 
 // 게시글 발행
 struct PostPublishData: Codable {
@@ -83,3 +88,4 @@ struct PostFeedData: Codable {
     let cursor: Int
     let size: Int
 }
+

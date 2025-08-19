@@ -9,6 +9,7 @@ import SwiftUI
 import KakaoSDKCommon
 import KakaoSDKAuth
 import FirebaseCore
+import NidThirdPartyLogin
 
 @main
 struct CoreDiscApp: App {
@@ -17,6 +18,8 @@ struct CoreDiscApp: App {
     init() {
         let kakaoNativeAppKey = (Bundle.main.infoDictionary?["KAKAO_NATIVE_APP_KEY"] as? String) ?? ""
         KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
+        NidOAuth.shared.initialize()
+        NidOAuth.shared.setLoginBehavior(.appPreferredWithInAppBrowserFallback)
     }
     
     var body: some Scene {
@@ -25,6 +28,9 @@ struct CoreDiscApp: App {
                 .onOpenURL { url in
                     if (AuthApi.isKakaoTalkLoginUrl(url)) {
                         _ = AuthController.handleOpenUrl(url: url)
+                    }
+                    if (NidOAuth.shared.handleURL(url) == true) {
+                      return
                     }
                 }
                 .overlay(alignment: .bottom) {

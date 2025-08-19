@@ -19,16 +19,21 @@ struct DiscItem: View {
                let url = URL(string: urlString),
                !urlString.isEmpty {
                 KFImage(url)
+                    .resizable()
+                    .scaledToFill()
                     .frame(width: 86, height: 86)
+                    .clipShape(Circle())
                     .padding(.leading, 5)
             } else if let localName = localImageName {
                 Image(localName)
                     .resizable()
                     .frame(width: 86, height: 86)
+                    .clipShape(Circle())
                     .padding(.leading, 5)
             } else {
                 Image(.imgBasicDisc)
                     .frame(width: 86, height: 86)
+                    .clipShape(Circle())
                     .padding(.leading, 5)
             }
             

@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import PhotosUI
+import Kingfisher
 
 struct ChangeCoverView: View {
     @Environment(NavigationRouter<ReportRoute>.self) private var router
@@ -13,6 +15,8 @@ struct ChangeCoverView: View {
     @StateObject var viewModel = ReportMainViewModel()
     private let columns: [GridItem] = Array(repeating: GridItem(.fixed(80), spacing: 26), count: 3)
     @State var cover: String = ""
+    @State private var selectedItem: PhotosPickerItem? = nil
+    @State private var selectedImageData: Data? = nil
     
     let discId: Int
     
@@ -32,9 +36,8 @@ struct ChangeCoverView: View {
                     Spacer()
                 }
                 .frame(width: UIScreen.main.bounds.width)
-                Spacer().frame(height:52)
                 CoverGroup
-                Spacer()
+                Spacer().frame(height:52)
             }
         }
         .navigationBarBackButtonHidden()
@@ -51,6 +54,7 @@ struct ChangeCoverView: View {
                 ForEach(viewModel.colors, id: \.self){ color in
                     Button(action:{
                         cover = color
+                        selectedImageData = nil
                     }, label:{
                         
                         let image = Image(viewModel.imageNameForColor(color))
@@ -67,17 +71,45 @@ struct ChangeCoverView: View {
                     })
                 }
                 
-                Button(action:{cover=""}, label:{
-                    Image(.imgCoverChange)
-                        .resizable()
-                        .frame(width: 76, height: 76)
-                })
+                VStack {
+                    PhotosPicker(
+                        selection: $selectedItem, matching: .images
+                    ) {
+                        if let data = selectedImageData,
+                           let uiImage = UIImage(data: data) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 76, height: 76)
+                                .clipShape(Circle())
+                                .overlay(
+                                    Circle().stroke(Color.white, lineWidth: 3)
+                                )
+                        } else {
+                            Image(.imgCoverChange)
+                                .resizable()
+                                .frame(width: 76, height: 76)
+                        }
+                    }
+                    .onChange(of: selectedItem) { oldValue, newValue in
+                        Task {
+                            if let data = try? await newValue?.loadTransferable(type: Data.self) {
+                                selectedImageData = data
+                                cover = ""
+                            }
+                        }
+                    }
+                }
             }
             
             Spacer().frame(height: 43)
             
             Button(action:{
-                viewModel.ChangeCover(discId: discId, coverColor: cover)
+                if let data = selectedImageData {
+                    viewModel.ChangeCoverImg(discId: discId, coverImageUrl: data)
+                } else {
+                    viewModel.ChangeCover(discId: discId, coverColor: cover)
+                }
             }, label:{
                 ZStack{
                     RoundedRectangle(cornerRadius: 12)
@@ -97,6 +129,7 @@ struct ChangeCoverView: View {
         }
         .padding(.horizontal, 21)
     }
+    
 }
 
 
