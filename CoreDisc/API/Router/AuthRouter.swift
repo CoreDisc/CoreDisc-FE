@@ -17,7 +17,7 @@ enum AuthRouter {
     case postVerifyCode(verifyCodeData: VerifySignupCodeData) // 회원가입 이메일 코드 인증
     case postSendCode(email: String) // 이메일 인증 메일 전송
     case postPasswordVerifyCode(verifyCodeData: VerifyCodeData) // 비밀번호 변경 이메일 코드 인증
-    case postReissue(refreshToken: String) // 토큰 재발급
+    case postReissue // 토큰 재발급
     case postPasswordVerifyUser(verifyUserData: VerifyUserData) // 비밀번호 변경을 위한 사용자 검증
     case postLogout // 로그아웃
     case postLogin(loginData: LoginData) // 일반 로그인
@@ -118,8 +118,6 @@ extension AuthRouter: APITargetType {
     
     var headers: [String: String]? {
         switch self {
-        case .postReissue(let refreshToken):
-            return ["RefreshToken": refreshToken]
             
         case .postLogout:
             if let token = TokenProvider.shared.accessToken {
