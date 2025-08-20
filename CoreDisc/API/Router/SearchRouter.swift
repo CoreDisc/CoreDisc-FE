@@ -18,7 +18,7 @@ extension SearchRouter: APITargetType {
     var path: String {
         switch self {
         case .getRecent:
-            return "/api/searches/recent"
+            return "/api/search/members/history"
         case .deleteHistory(let historyId):
             return "/api/search/members/history/\(historyId)"
         case .searchMembers:

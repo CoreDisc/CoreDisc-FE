@@ -12,6 +12,8 @@ struct SearchBarGroup: View {
     @Binding var isSearch: Bool
     var onSearch: () -> Void
     var path: Binding<NavigationPath>? = nil
+    @FocusState.Binding var isFocused: Bool
+    
     
     var body: some View{
         HStack {
@@ -43,15 +45,25 @@ struct SearchBarGroup: View {
                             .textStyle(.Pick_Q_Eng)
                             .clipShape( RoundedRectangle(cornerRadius: 32) )
                             .shadow(color: .white.opacity(0.5), radius: 4.8, x: 0, y: 0)
+                            .focused($isFocused)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled(true)
                             .frame(height: 45)
+                            .onReceive(NotificationCenter.default.publisher(for: UITextView.textDidChangeNotification)) { _ in
+                                if query.last == "\n" {
+                                    query.removeLast()
+                                    if !query.isEmpty {
+                                        onSearch()
+                                    }
+                                    isFocused = false
+                                }
+                            }
                         
                         HStack(spacing: 11) {
                             Button(action: {
                                 if !query.isEmpty {
-                                                onSearch() 
-                                            }
+                                    onSearch()
+                                }
                             }) {
                                 Image(.iconSearch)
                                     .resizable()

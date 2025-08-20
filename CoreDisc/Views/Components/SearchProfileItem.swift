@@ -11,6 +11,7 @@ struct SearchProfileItem: View {
     var nickname: String
     var username: String
     var imageURL: String? = nil
+    var onTap: () -> Void = {}
     
     var body: some View {
         HStack(spacing: 12) {
@@ -48,6 +49,8 @@ struct SearchProfileItem: View {
             }
             .foregroundStyle(.white)
             .padding(.vertical, 16)
+            .contentShape(Rectangle())
+            .onTapGesture { onTap() }
         }
         .padding(.horizontal, 16)
     }
