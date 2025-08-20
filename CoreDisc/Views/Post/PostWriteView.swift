@@ -21,6 +21,7 @@ struct PostWriteView: View {
     
     @StateObject private var viewModel = PostWriteViewModel()
     @StateObject private var questionViewModel = QuestionMainViewModel()
+    @StateObject private var infoViewModel = MyHomeViewModel()
     
     private var questions: [String] {
         questionViewModel.selectedQuestions.map { $0.question ?? "" }
@@ -94,6 +95,7 @@ struct PostWriteView: View {
         
         .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
         .task {
+            infoViewModel.fetchMyHome()
             questionViewModel.fetchSelected()
             viewModel.postPosts(selectedDate: selectedDate)
         }
@@ -130,21 +132,34 @@ struct PostWriteView: View {
     
     // 사용자 정보 및 저장버튼 섹션
     private var UserGroup: some View {
-        VStack (alignment: .center){
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let dateString = formatter.string(from: selectedDate)
+        
+        return VStack (alignment: .center){
             
             // 개인정보, 저장버튼
             HStack {
-                Circle() // TODO: 추후 프로필 사진으로 변경
-                    .frame(width: 32, height: 32)
+                if let url = URL(string: infoViewModel.profileImageURL) {
+                    KFImage(url)
+                        .placeholder {
+                            ProgressView()
+                                .controlSize(.mini)
+                        }
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 32, height: 32)
+                        .clipShape(Circle())
+                }
                 
                 Spacer().frame(width: 11)
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("@music_sama")
+                    Text("@\(infoViewModel.username)")
                         .textStyle(.Pick_Q_Eng)
                         .foregroundStyle(.gray100)
                     
-                    Text("2025-07-07")
+                    Text(dateString)
                         .textStyle(.Button_s)
                         .foregroundStyle(.gray100)
                 }
@@ -153,6 +168,7 @@ struct PostWriteView: View {
                 
                 // 저장버튼
                 Button(action: {
+                    ToastManager.shared.show("게시글 임시 저장 중 ...")
                     uploadAnswers {
                         ToastManager.shared.show("게시글 임시 저장 완료")
                     }
@@ -299,12 +315,12 @@ struct PostWriteView: View {
     
     private func uploadAnswers(index: Int = 0, done: @escaping () -> Void) {
         guard !questions.isEmpty else {
-            ToastManager.shared.show("질문 불러오는 중 ...")
+            ToastManager.shared.show("게시글 임시 저장 실패: 질문 불러오는 중 ...")
             return
         }
         
         guard viewModel.postId != 0 else {
-            ToastManager.shared.show("게시글 ID 준비 중 ...")
+            ToastManager.shared.show("게시글 임시 저장 실패: 게시글 ID 준비 중 ...")
             return
         }
         
