@@ -18,7 +18,7 @@ struct QuestionListView: View {
     @State private var categoryUUID = UUID()
     
     let selectedQuestionType: String
-
+    
     @State var showSelectModal: Bool = false
     
     @State private var goToMain = false
@@ -26,20 +26,20 @@ struct QuestionListView: View {
     // 질문 선택/저장 용도
     let order: Int
     @State private var selectedQuestionId: Int? = nil
-
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground)
                 .resizable()
                 .ignoresSafeArea()
-
+            
             VStack(spacing: 28) {
                 TopGroup
                 CategoryGroup
                 QuestionListGroup
                 Spacer().frame(height: 90)
             }
-
+            
             VStack {
                 Spacer()
                 Button(action:{
@@ -74,7 +74,7 @@ struct QuestionListView: View {
         .navigationBarBackButtonHidden()
         .fullScreenCover(isPresented: $goToMain) { TabBar(startTab: .question) }
     }
-
+    
     private var TopGroup: some View {
         VStack(alignment: .leading, spacing: 7) {
             Button(action: {
@@ -82,7 +82,7 @@ struct QuestionListView: View {
             }) {
                 Image(.iconBack)
             }
-
+            
             Text(isSaveMode ? "Saved Questions" : "Shared Questions")
                 .textStyle(.Title_Text_Eng)
                 .foregroundStyle(.white)
@@ -90,7 +90,7 @@ struct QuestionListView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 16)
     }
-
+    
     // 카테고리
     private var CategoryGroup: some View {
         ScrollView(.horizontal) {
@@ -110,21 +110,30 @@ struct QuestionListView: View {
         }
         .scrollIndicators(.hidden)
     }
-
+    
     // 질문 목록
     private var QuestionListGroup: some View {
         ScrollView {
             LazyVStack {
                 if let list = viewModel.questionListMap[categoryUUID], !list.isEmpty {
-                    ForEach(list.indices, id: \.self) { index in
-                        let item = list[index]
+                    ForEach(list, id: \.id) { item in
                         QuestionShareItem(
                             type: isSaveMode ? "save" : "share",
                             category: item.categories.map { $0.categoryName }.joined(separator: ", "),
                             content: item.question,
                             date: item.createdAt,
                             sharedCount: item.sharedCount,
-                            index: index + 1,
+                            index: list.firstIndex(where: { $0.id == item.id })! + 1,
+                            onDelete: {
+                                viewModel.deleteOfficialSaved(questionId: item.id) { success in
+                                    if success {
+                                        if var currentList = viewModel.questionListMap[categoryUUID] {
+                                            currentList.removeAll(where: { $0.id == item.id })
+                                            viewModel.questionListMap[categoryUUID] = currentList
+                                        }
+                                    }
+                                }
+                            },
                             onTap: {
                                 showSelectModal = true
                                 selectedQuestionId = item.id
@@ -133,13 +142,16 @@ struct QuestionListView: View {
                             selectViewModel: selectViewModel
                         )
                         .padding(.horizontal, 31)
-                        .onAppear {
-                            if index == list.count - 1 {
+                        .task {
+                            if item.id == list.last?.id {
                                 fetchQuestions(cursorId: item.id)
                             }
                         }
+
                         Spacer().frame(height: 20)
                     }
+
+                    
                 } else {
                     Text("질문이 없습니다.")
                         .foregroundColor(.white)
@@ -148,7 +160,7 @@ struct QuestionListView: View {
             }
         }
     }
-
+    
     private func fetchQuestions(reset: Bool = false, cursorId: Int? = nil) {
         if reset {
             viewModel.questionListMap[categoryUUID] = []
@@ -172,5 +184,5 @@ struct QuestionListView: View {
             )
         }
     }
-
+    
 }
