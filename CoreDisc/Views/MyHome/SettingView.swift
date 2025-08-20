@@ -83,7 +83,7 @@ struct SettingView: View {
             viewModel.getSocial()
         }
         .navigationBarBackButtonHidden()
-        .fullScreenCover(isPresented: $viewModel.logoutSuccess) {LoginView()}
+        .fullScreenCover(isPresented: $viewModel.goLogin) {LoginView()}
     }
     
     // 상단 메뉴
