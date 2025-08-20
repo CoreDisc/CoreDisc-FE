@@ -9,6 +9,16 @@ import SwiftUI
 
 struct PostDiaryCheckView: View {
     @Environment(NavigationRouter<WriteRoute>.self) private var router
+    @StateObject private var viewModel = PostDiaryViewModel()
+    
+    let postId: Int
+    
+    let selectedWho: DiaryWho
+    let selectedWhere: DiaryWhere
+    let selectedWhat: DiaryWhat
+    let selectedMore: DiaryMore?
+    let selectedMoreString: String?
+    let isCore: Bool
     
     @State private var isWriteButtonTapped = false
     @State private var isShareButtonTapped = false
@@ -61,7 +71,6 @@ struct PostDiaryCheckView: View {
     }
     
     // 버튼
-    // TODO: 버튼 화면 연결
     private var ButtonGroup: some View {
         GeometryReader { g in
             HStack (spacing: 165){
@@ -84,6 +93,17 @@ struct PostDiaryCheckView: View {
                 // Share버튼
                 ZStack {
                     Button(action: {
+                        viewModel.fetchPublishPost(
+                            postId: postId,
+                            postData: PostPublishData(
+                                publicity: isCore ? "CIRCLE" : "OFFICIAL",
+                                selectiveDiary: SelectiveDiaryData(
+                                    who: selectedWho.rawValue,
+                                    where: selectedWhere.rawValue,
+                                    what: selectedWhat.rawValue,
+                                    detail: selectedMoreString
+                                )
+                            ))
                         isDone = true
                     }) {
                         EllipticalGradient(stops: [
@@ -137,7 +157,7 @@ struct PostDiaryCheckView: View {
                     .textStyle(.Q_Main)
                     .foregroundStyle(.black000)
                 
-                Text("가족")
+                Text(selectedWho.displayName)
                     .textStyle(.Texting_Q)
                     .foregroundStyle(.black000)
                     .multilineTextAlignment(.center)
@@ -149,7 +169,7 @@ struct PostDiaryCheckView: View {
                     .textStyle(.Q_Main)
                     .foregroundStyle(.black000)
                 
-                Text("집")
+                Text(selectedWhere.displayName)
                     .textStyle(.Texting_Q)
                     .foregroundStyle(.black000)
                     .multilineTextAlignment(.center)
@@ -161,7 +181,7 @@ struct PostDiaryCheckView: View {
                     .textStyle(.Q_Main)
                     .foregroundStyle(.black000)
                 
-                Text("요리")
+                Text(selectedWhat.displayName)
                     .textStyle(.Texting_Q)
                     .foregroundStyle(.black000)
                     .multilineTextAlignment(.center)
@@ -169,18 +189,20 @@ struct PostDiaryCheckView: View {
                     .background(.gray100)
                     .clipShape( RoundedRectangle(cornerRadius: 30) )
                 
-                Text("더 기록하고 싶은 내용이 있나요?")
-                    .textStyle(.Q_Main)
-                    .foregroundStyle(.black000)
-                
-                Text("오늘 오랜만에 친구랑 저녁 먹었는데 진짜 별 얘기 안 했는데도 너무 편하고 좋았어. 같이 웃고, 먹고, 걷고 그런 게 뭐 대단한 건 아닌데 괜히 마음이 따뜻해지더라.")
-                    .textStyle(.Texting_Q)
-                    .foregroundStyle(.black000)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 14.5)
-                    .frame(width: 297, height: 83)
-                    .background(.gray100)
-                    .clipShape( RoundedRectangle(cornerRadius: 12) )
+                if selectedMore == .YES {
+                    Text("더 기록하고 싶은 내용이 있나요?")
+                        .textStyle(.Q_Main)
+                        .foregroundStyle(.black000)
+                    
+                    Text(selectedMoreString!)
+                        .textStyle(.Texting_Q)
+                        .foregroundStyle(.black000)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 14.5)
+                        .frame(width: 297, height: 83)
+                        .background(.gray100)
+                        .clipShape( RoundedRectangle(cornerRadius: 12) )
+                }
                 
                 Spacer()
             }
@@ -199,6 +221,14 @@ private var formattedDate: String {
 }
 
 #Preview {
-    PostDiaryCheckView()
+    PostDiaryCheckView(
+        postId: 0,
+        selectedWho: .ALONE,
+        selectedWhere: .CAFE,
+        selectedWhat: .EXERCISE,
+        selectedMore: .YES,
+        selectedMoreString: "테스트",
+        isCore: false
+    )
         .environment(NavigationRouter<WriteRoute>())
 }

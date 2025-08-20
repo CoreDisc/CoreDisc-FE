@@ -11,7 +11,8 @@ protocol DiaryDisplayable {
     var displayName: String { get }
 }
 
-enum DiaryWhat: String, Codable, DiaryDisplayable {
+enum DiaryWhat: String, Codable, CaseIterable, Identifiable, DiaryDisplayable {
+    var id: Self { self }
     case WORK, STUDY, EXERCISE, REST, SLEEP, HOBBY
     case UNKNOWN
     
@@ -33,7 +34,8 @@ enum DiaryWhat: String, Codable, DiaryDisplayable {
     }
 }
 
-enum DiaryWhere: String, Codable, DiaryDisplayable {
+enum DiaryWhere: String, Codable, CaseIterable, Identifiable, DiaryDisplayable {
+    var id: Self { self }
     case HOME, COMPANY, SCHOOL, CAFE, OUTDOOR, ON_THE_MOVE
     case UNKNOWN
     
@@ -55,7 +57,8 @@ enum DiaryWhere: String, Codable, DiaryDisplayable {
     }
 }
 
-enum DiaryWho: String, Codable, DiaryDisplayable {
+enum DiaryWho: String, Codable, CaseIterable, Identifiable, DiaryDisplayable {
+    var id: Self { self }
     case ALONE, FRIEND, FAMILY, COLLEAGUE, LOVER, PET
     case UNKNOWN
     
@@ -73,6 +76,17 @@ enum DiaryWho: String, Codable, DiaryDisplayable {
         case .LOVER: return "연인"
         case .PET: return "반려동물"
         case .UNKNOWN: return "알 수 없음"
+        }
+    }
+}
+
+enum DiaryMore: String, CaseIterable, Identifiable, DiaryDisplayable {
+    var id: Self { self }
+    case YES, NO
+    var displayName: String {
+        switch self {
+        case .YES: return "네, 직접 넣을래요."
+        case .NO:  return "아니요"
         }
     }
 }

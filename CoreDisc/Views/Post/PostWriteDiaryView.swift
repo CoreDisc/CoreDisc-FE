@@ -10,14 +10,17 @@ import SwiftUI
 struct PostWriteDiaryView: View {
     @Environment(NavigationRouter<WriteRoute>.self) private var router
     
-    @State private var selectedWho: String = "나혼자"
-    @State private var selectedWhere: String = "집"
-    @State private var selectedWhat: String = "공부"
-    @State private var selectedMore: String = "아니요"
+    let postId: Int
     
-    let optionsWho = ["나혼자", "친구", "운동", "직장동료", "연인", "반려동물"]
-    let optionsWhere = ["집", "학교", "회사", "야외", "카페", "이동중"]
-    let optionsWhat = ["일", "공부", "운동", "휴식", "수면", "취미"]
+    @State private var selectedWho: DiaryWho = .ALONE
+    @State private var selectedWhere: DiaryWhere = .HOME
+    @State private var selectedWhat: DiaryWhat = .WORK
+    @State private var selectedMore: DiaryMore = .YES
+    let isCore: Bool
+    
+    let optionsWho: [DiaryWho] = DiaryWho.allCases.filter { $0 != .UNKNOWN }
+    let optionsWhere: [DiaryWhere] = DiaryWhere.allCases.filter { $0 != .UNKNOWN }
+    let optionsWhat: [DiaryWhat] = DiaryWhat.allCases.filter { $0 != .UNKNOWN }
     
     // 슬라이스 상태
     @State private var showSlices = [false, false, false, false]
@@ -107,8 +110,14 @@ struct PostWriteDiaryView: View {
     
     
     // 선택일기 섹션(좌->우)
-    private func diarySectionLeft(title: String, subTitle: String, startColor: UIColor, endColor: UIColor, options: Array<String>, selection: Binding<String>) ->
-    some View {
+    private func diarySectionLeft<T: DiaryDisplayable & Hashable>(
+        title: String,
+        subTitle: String,
+        startColor: UIColor,
+        endColor: UIColor,
+        options: [T],
+        selection: Binding<T>
+    ) -> some View {
         HStack(alignment: .top, spacing: 15) {
             ZStack {
                 EllipticalGradient(stops: [
@@ -121,12 +130,12 @@ struct PostWriteDiaryView: View {
                 .frame(width: 282, height: 181)
                 .specificCornerRadius(12, corners: [.topRight])
                 
-                VStack(alignment: .leading, spacing: 10){
+                VStack(alignment: .leading, spacing: 10) {
                     Spacer().frame(height: 28)
                     
                     Text(title)
                         .textStyle(.Q_Main)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                         .padding(.leading, 36)
                     
                     LazyVGrid(columns: [
@@ -134,7 +143,7 @@ struct PostWriteDiaryView: View {
                         GridItem(.fixed(57), spacing: 20),
                         GridItem(.fixed(57), spacing: 20)
                     ], alignment: .leading, spacing: 8){
-                        ForEach(options, id: \.self) {item in
+                        ForEach(options, id: \.self) { item in
                             let isSelected = selection.wrappedValue == item
                             
                             Button (action: {
@@ -142,12 +151,12 @@ struct PostWriteDiaryView: View {
                                     selection.wrappedValue = item
                                 }
                             }){
-                                Text(item)
+                                Text(item.displayName)
                                     .textStyle(.Button_s)
-                                    .foregroundStyle(.black)
+                                    .foregroundStyle(.black000)
                                     .multilineTextAlignment(.center)
                                     .frame(width: 57, height: 28 )
-                                    .background(isSelected ? .key : Color(red: 0.949, green: 0.949, blue: 0.949))
+                                    .background(isSelected ? .key : .gray100)
                                     .clipShape( RoundedRectangle(cornerRadius: 30) )
                             }
                         }
@@ -180,7 +189,14 @@ struct PostWriteDiaryView: View {
     
     
     // 선택일기 (우->좌)
-    private func diarySectionRight(title: String, subTitle: String, startColor: UIColor, endColor: UIColor, options: Array<String>, selection: Binding<String>) -> some View {
+    private func diarySectionRight<T: DiaryDisplayable & Hashable>(
+        title: String,
+        subTitle: String,
+        startColor: UIColor,
+        endColor: UIColor,
+        options: [T],
+        selection: Binding<T>
+    ) -> some View {
         HStack(alignment: .top, spacing: 15) {
             ZStack {
                 Rectangle()
@@ -211,11 +227,11 @@ struct PostWriteDiaryView: View {
                 .frame(width: 282, height: 181)
                 .specificCornerRadius(12, corners: [.topLeft])
                 
-                VStack(alignment: .leading, spacing: 10){
+                VStack(alignment: .leading, spacing: 10) {
                     Spacer().frame(height: 28)
                     Text(title)
                         .textStyle(.Q_Main)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black000)
                         .padding(.leading, 36)
                     
                     LazyVGrid(columns: [
@@ -223,7 +239,7 @@ struct PostWriteDiaryView: View {
                         GridItem(.fixed(57), spacing: 20),
                         GridItem(.fixed(57), spacing: 20)
                     ], alignment: .leading, spacing: 8){
-                        ForEach(options, id: \.self) {item in
+                        ForEach(options, id: \.self) { item in
                             let isSelected = selection.wrappedValue == item
                             
                             Button (action: {
@@ -231,12 +247,12 @@ struct PostWriteDiaryView: View {
                                     selection.wrappedValue = item
                                 }
                             }){
-                                Text(item)
+                                Text(item.displayName)
                                     .textStyle(.Q_pick)
-                                    .foregroundStyle(.black)
+                                    .foregroundStyle(.black000)
                                     .multilineTextAlignment(.center)
                                     .frame(width: 57, height: 28 )
-                                    .background(isSelected ?.key : Color(red: 0.949, green: 0.949, blue: 0.949))
+                                    .background(isSelected ? .key : .gray100)
                                     .clipShape( RoundedRectangle(cornerRadius: 30) )
                             }
                         }
@@ -251,7 +267,13 @@ struct PostWriteDiaryView: View {
     }
     
     // 선택일기 More
-    private func diarySectionMore(title: String, subTitle: String, startColor: UIColor, endColor: UIColor, selection: Binding<String>) -> some View {
+    private func diarySectionMore(
+        title: String,
+        subTitle: String,
+        startColor: UIColor,
+        endColor: UIColor,
+        selection: Binding<DiaryMore>
+    ) -> some View {
         HStack(alignment: .top, spacing: 15) {
             ZStack {
                 Rectangle()
@@ -287,66 +309,56 @@ struct PostWriteDiaryView: View {
                     
                     Text(title)
                         .textStyle(.Q_Main)
-                        .foregroundStyle(.black)
-                        //.padding(.leading, 36)
+                        .foregroundStyle(.black000)
                     
                     Spacer().frame(height: 10)
                     
                     HStack(spacing: 16) {
-                        let yesLabel = "네, 직접 넣을래요."
-                        let noLabel  = "아니요"
-                        
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.15)) {
-                                selection.wrappedValue = yesLabel
+                        ForEach(DiaryMore.allCases) { item in
+                            let isSelected = (selection.wrappedValue == item)
+                            Button(action: {
+                                withAnimation(.easeInOut(duration: 0.15)) {
+                                    selection.wrappedValue = item
+                                }
+                            }) {
+                                Text(item.displayName)
+                                    .textStyle(.Q_pick)
+                                    .foregroundStyle(.black000)
+                                    .multilineTextAlignment(.center)
+                                    .frame(width: item == .YES ? 115 : 57, height: 28)
+                                    .background(isSelected ? .key : .gray100)
+                                    .clipShape( RoundedRectangle(cornerRadius: 30) )
                             }
-                        } label: {
-                            let isSelected = (selection.wrappedValue == yesLabel)
-                            Text(yesLabel)
-                                .textStyle(.Q_pick)
-                                .foregroundStyle(.black)
-                                .multilineTextAlignment(.center)
-                                .frame(width: 115, height: 28 )
-                                .background(isSelected ? .key : Color(red: 0.949, green: 0.949, blue: 0.949))
-                                .clipShape( RoundedRectangle(cornerRadius: 30) )
-                        }
-                        
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.15)) {
-                                selection.wrappedValue = noLabel
-                            }
-                        } label: {
-                            let isSelected = (selection.wrappedValue == noLabel)
-                            Text(noLabel)
-                                .textStyle(.Q_pick)
-                                .foregroundStyle(.black)
-                                .multilineTextAlignment(.center)
-                                .frame(width: 57, height: 28 )
-                                .background(isSelected ? .key : Color(red: 0.949, green: 0.949, blue: 0.949))
-                                .clipShape( RoundedRectangle(cornerRadius: 30) )
                         }
                     }
-                    
-                    Spacer().frame(height: 12)
                     
                     HStack{
                         Spacer().frame(width: 18)
                         
                         TextField("내용을 입력해 주세요", text: $moreText)
                             .focused($isFocused)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.black000)
                             .textStyle(.A_Main)
                             .lineLimit(4)
-                            .padding(.all, 10)
+                            .padding(10)
                             .multilineTextAlignment(.leading)
                             .frame(width: 212, height: 88, alignment: .topLeading)
-                            .background(.white)
+                            .background(selection.wrappedValue == .NO ? .gray200 : .white)
+                            .disabled(selection.wrappedValue == .NO)
                             .clipShape( RoundedRectangle(cornerRadius: 12) )
                         
                         Spacer().frame(width: 8)
                         
                         Button(action: {
-                            router.push(.summary)
+                            router.push(.summary(
+                                postId: postId,
+                                selectedWho: selectedWho,
+                                selectedWhere: selectedWhere,
+                                selectedWhat: selectedWhat,
+                                selectedMore: selectedMore,
+                                selectedString: moreText,
+                                isCore: isCore
+                            ))
                         }) {
                             ZStack {
                                 Circle()
@@ -359,6 +371,7 @@ struct PostWriteDiaryView: View {
                         
                         Spacer().frame(width: 12)
                     }
+                    
                     Spacer()
                 }
             }
@@ -378,6 +391,6 @@ struct PostWriteDiaryView: View {
 }
 
 #Preview {
-    PostWriteDiaryView()
+    PostWriteDiaryView(postId: 0, isCore: false)
         .environment(NavigationRouter<WriteRoute>())
 }

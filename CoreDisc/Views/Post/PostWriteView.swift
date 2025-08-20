@@ -252,7 +252,7 @@ struct PostWriteView: View {
                     uploadAnswers {
                         ToastManager.shared.show("게시글 임시 저장 완료")
                     }
-                    router.push(.select)
+                    router.push(.select(postId: viewModel.postId, isCore: isCore))
                 }) {
                     ZStack {
                         Circle()
@@ -292,7 +292,7 @@ struct PostWriteView: View {
             return
         }
         
-        let count = min(cards.count, questions.count)
+        let count = 4
         guard index < count else {
             done()
             return

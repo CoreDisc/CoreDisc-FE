@@ -14,10 +14,18 @@ struct WriteTabContainer: View {
                 switch route {
                 case .answer:
                     PostWriteView()
-                case .select:
-                    PostWriteDiaryView()
-                case .summary:
-                    PostDiaryCheckView()
+                case .select(let postId, let isCore):
+                    PostWriteDiaryView(postId: postId, isCore: isCore)
+                case .summary(let postId, let selectedWho, let selectedWhere, let selectedWhat, let selectedMore, let selectedMoreString, let isCore):
+                    PostDiaryCheckView(
+                        postId: postId,
+                        selectedWho: selectedWho,
+                        selectedWhere: selectedWhere,
+                        selectedWhat: selectedWhat,
+                        selectedMore: selectedMore,
+                        selectedMoreString: selectedMoreString,
+                        isCore: isCore
+                    )
                 }
             }
     }
