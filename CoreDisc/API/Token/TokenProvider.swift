@@ -65,9 +65,8 @@ class TokenProvider: TokenProviding {
                 }
 
                 do {
-                    
-                    let tokenData = try JSONDecoder().decode(TokenResponse.self, from: response.data)
-
+                    let TokenResponse = try JSONDecoder().decode(TokenResponse.self, from: response.data)
+                    let tokenData = TokenResponse.result
                     
                     self.accessToken = tokenData.accessToken
                     self.refreshToken = tokenData.refreshToken
