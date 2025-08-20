@@ -26,17 +26,20 @@ struct PostWriteDiaryView: View {
     @State private var moreChoice: Bool? = nil
     @State private var moreText: String = ""
     
-    
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         ZStack {
             Image(.imgPostDetailMainBg)
                 .resizable()
                 .ignoresSafeArea()
+                .onTapGesture { // 키보드 내리기 용도
+                    isFocused = false
+                }
             
-            ScrollView (showsIndicators: false) {
+            ScrollView {
                 VStack {
-                    Spacer().frame(height: 25)
+                    Spacer().frame(height: 31)
                     
                     TitleGroup
                     
@@ -46,6 +49,7 @@ struct PostWriteDiaryView: View {
                 }
                 .padding(.bottom, 75)
             }
+            .scrollIndicators(.hidden)
         }
         .navigationBarBackButtonHidden()
         .task {
@@ -62,17 +66,20 @@ struct PostWriteDiaryView: View {
     
     // 타이틀
     private var TitleGroup: some View {
-        VStack (alignment: .leading, spacing: 6) {
-            Text("Record your Core disc")
-                .textStyle(.Title_Text_Eng)
-                .foregroundStyle(.black000)
+        HStack {
+            VStack (alignment: .leading, spacing: 6) {
+                Text("Record your Core disc")
+                    .textStyle(.Title_Text_Eng)
+                    .foregroundStyle(.black000)
+                
+                Text("오늘의 코어디스크를 기록해보세요.")
+                    .textStyle(.Sub_Text_Ko)
+                    .foregroundStyle(.black000)
+            }
             
-            Text("오늘의 코어디스크를 기록해보세요.")
-                .textStyle(.Sub_Text_Ko)
-                .foregroundStyle(.black000)
+            Spacer()
         }
         .padding(.leading, 18)
-        .padding(.trailing, 47)
     }
     
     // 선택일기
@@ -81,7 +88,7 @@ struct PostWriteDiaryView: View {
             Spacer().frame(height: 12)
             
             slice(index: 0, fromLeft: true) {
-                diarySectionLeft(title: "누구와 함께했나요?", subTitle: "Who?", startColor: .orange1, endColor: .orange2, options: optionsWho, selection: $selectedWho)
+                diarySectionLeft(title: "누구와 함께했나요?", subTitle: "Who?", startColor: .yellow1, endColor: .yellow2, options: optionsWho, selection: $selectedWho)
             }
             
             slice(index: 1, fromLeft: false) {
@@ -89,11 +96,11 @@ struct PostWriteDiaryView: View {
             }
             
             slice(index: 2, fromLeft: true) {
-                diarySectionLeft(title: "무엇을 했나요??", subTitle: "What?",startColor: .purple1, endColor: .purple2, options: optionsWhat, selection: $selectedWhat)
+                diarySectionLeft(title: "무엇을 했나요?", subTitle: "What?",startColor: .purple1, endColor: .purple2, options: optionsWhat, selection: $selectedWhat)
             }
             
             slice(index: 3, fromLeft: false) {
-                diarySectionMore(title: "더 기록하고 싶은 내용이 있나요??", subTitle: "More?", startColor: .pink1, endColor: .pink2, selection: $selectedMore)
+                diarySectionMore(title: "더 기록하고 싶은 내용이 있나요?", subTitle: "More?", startColor: .pink1, endColor: .pink2, selection: $selectedMore)
             }
         }
     }
@@ -112,10 +119,10 @@ struct PostWriteDiaryView: View {
                                    endRadiusFraction: 0.7431)
                 
                 .frame(width: 282, height: 181)
-                .specificCornerRadius(12, corners: [.topRight, .bottomRight])
+                .specificCornerRadius(12, corners: [.topRight])
                 
                 VStack(alignment: .leading, spacing: 10){
-                    Spacer().frame(height: 18)
+                    Spacer().frame(height: 28)
                     
                     Text(title)
                         .textStyle(.Q_Main)
@@ -155,7 +162,7 @@ struct PostWriteDiaryView: View {
             ZStack {
                 Rectangle()
                     .frame(width: 105, height: 181)
-                    .specificCornerRadius(12, corners: [.topLeft, .bottomLeft])
+                    .specificCornerRadius(12, corners: [.topLeft])
                     .linearGradient(startColor: Color(startColor), endColor: Color(endColor))
                 
                 VStack {
@@ -178,7 +185,7 @@ struct PostWriteDiaryView: View {
             ZStack {
                 Rectangle()
                     .frame(width: 105, height: 181)
-                    .specificCornerRadius(12, corners: [.topRight, .bottomRight])
+                    .specificCornerRadius(12, corners: [.topRight])
                     .linearGradient(startColor: Color(startColor), endColor: Color(endColor))
                 
                 VStack {
@@ -202,10 +209,10 @@ struct PostWriteDiaryView: View {
                                    endRadiusFraction: 0.7431)
                 
                 .frame(width: 282, height: 181)
-                .specificCornerRadius(12, corners: [.topLeft, .bottomLeft])
+                .specificCornerRadius(12, corners: [.topLeft])
                 
                 VStack(alignment: .leading, spacing: 10){
-                    Spacer().frame(height: 18)
+                    Spacer().frame(height: 28)
                     Text(title)
                         .textStyle(.Q_Main)
                         .foregroundStyle(.black)
@@ -225,7 +232,7 @@ struct PostWriteDiaryView: View {
                                 }
                             }){
                                 Text(item)
-                                    .textStyle(.Small_Text)
+                                    .textStyle(.Q_pick)
                                     .foregroundStyle(.black)
                                     .multilineTextAlignment(.center)
                                     .frame(width: 57, height: 28 )
@@ -296,10 +303,10 @@ struct PostWriteDiaryView: View {
                         } label: {
                             let isSelected = (selection.wrappedValue == yesLabel)
                             Text(yesLabel)
-                                .textStyle(.Small_Text)
+                                .textStyle(.Q_pick)
                                 .foregroundStyle(.black)
                                 .multilineTextAlignment(.center)
-                                .frame(width: 106, height: 28 )
+                                .frame(width: 115, height: 28 )
                                 .background(isSelected ? .key : Color(red: 0.949, green: 0.949, blue: 0.949))
                                 .clipShape( RoundedRectangle(cornerRadius: 30) )
                         }
@@ -311,7 +318,7 @@ struct PostWriteDiaryView: View {
                         } label: {
                             let isSelected = (selection.wrappedValue == noLabel)
                             Text(noLabel)
-                                .textStyle(.Small_Text)
+                                .textStyle(.Q_pick)
                                 .foregroundStyle(.black)
                                 .multilineTextAlignment(.center)
                                 .frame(width: 57, height: 28 )
@@ -326,8 +333,9 @@ struct PostWriteDiaryView: View {
                         Spacer().frame(width: 18)
                         
                         TextField("내용을 입력해 주세요", text: $moreText)
+                            .focused($isFocused)
                             .foregroundStyle(.black)
-                            .font(.system(size: 12))
+                            .textStyle(.A_Main)
                             .lineLimit(4)
                             .padding(.all, 10)
                             .multilineTextAlignment(.leading)
@@ -371,4 +379,5 @@ struct PostWriteDiaryView: View {
 
 #Preview {
     PostWriteDiaryView()
+        .environment(NavigationRouter<WriteRoute>())
 }

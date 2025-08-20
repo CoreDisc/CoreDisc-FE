@@ -56,9 +56,10 @@ struct PostMainView: View {
         HStack(alignment: .center, spacing: 4){
             Image(.imgLogoOneline)
                 .resizable()
+                .renderingMode(.template)
+                .foregroundStyle(.black)
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 116)
-                .foregroundStyle(.black)
                 .padding(.leading, 6)
             
             Spacer()

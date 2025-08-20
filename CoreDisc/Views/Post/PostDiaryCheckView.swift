@@ -23,12 +23,12 @@ struct PostDiaryCheckView: View {
                 .resizable()
                 .ignoresSafeArea()
             
-            VStack {
-                Spacer().frame(height: 65)
+            VStack(spacing: 0) {
+                Spacer().frame(height: 87)
                 
                 TitleGroup
                 
-                Spacer().frame(height: 56)
+                Spacer().frame(height: 30)
                 
                 ButtonGroup
                 
@@ -43,24 +43,27 @@ struct PostDiaryCheckView: View {
     
     // 타이틀
     private var TitleGroup: some View {
-        VStack (alignment: .leading, spacing: 6) {
-            Text("Today’s Core disc")
-                .textStyle(.Title_Text_Eng)
-                .foregroundStyle(.black000)
+        HStack {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Today’s Core disc")
+                    .textStyle(.Title_Text_Eng)
+                    .foregroundStyle(.black000)
+                
+                Text(formattedDate)
+                    .textStyle(.Sub_Text_Ko)
+                    .foregroundStyle(.black000)
+                    .padding(.leading, 2)
+            }
             
-            Text(formattedDate)
-                .textStyle(.Sub_Text_Ko)
-                .foregroundStyle(.black000)
-                .padding(.leading, 2)
+            Spacer()
         }
-        .padding(.leading, 18)
-        .padding(.trailing, 110)
+        .padding(.leading, 20)
     }
     
     // 버튼
     // TODO: 버튼 화면 연결
     private var ButtonGroup: some View {
-        VStack {
+        GeometryReader { g in
             HStack (spacing: 165){
                 ZStack {
                     // Write버튼(수정)
@@ -73,14 +76,7 @@ struct PostDiaryCheckView: View {
                         ], center: .center, startRadiusFraction: 0, endRadiusFraction: 0.7431)
                         .frame(width: 152, height: 152)
                         .clipShape( Circle() )
-                        .scaleEffect(isWriteButtonTapped ? 1.2 : 1.0)
                     }
-                    .simultaneousGesture(TapGesture().onEnded {
-                        withAnimation(.easeInOut(duration: 0.2)) { isWriteButtonTapped = true }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            withAnimation(.easeInOut(duration: 0.2)) { isWriteButtonTapped = false }
-                        }
-                    })
                     
                     Image(.iconWrite)
                 }
@@ -96,19 +92,14 @@ struct PostDiaryCheckView: View {
                         ], center: .center, startRadiusFraction: 0, endRadiusFraction: 0.7431)
                         .frame(width: 152, height: 152)
                         .clipShape( Circle() )
-                        .scaleEffect(isShareButtonTapped ? 1.2 : 1.0)
                     }
-                    .simultaneousGesture(TapGesture().onEnded {
-                        withAnimation(.easeInOut(duration: 0.2)) { isShareButtonTapped = true }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            withAnimation(.easeInOut(duration: 0.2)) { isShareButtonTapped = false }
-                        }
-                    })
                     
                     Image(.iconShareWhite)
                 }
             }
+            .frame(width: g.size.width)
         }
+        .frame(height: 152)
     }
     
     
@@ -140,7 +131,7 @@ struct PostDiaryCheckView: View {
             
             
             VStack (alignment: .center, spacing: 13) {
-                Spacer().frame(height: 28)
+                Spacer().frame(height: 41)
                 
                 Text("누구랑 있었나요?")
                     .textStyle(.Q_Main)
@@ -154,7 +145,7 @@ struct PostDiaryCheckView: View {
                     .background(.gray100)
                     .clipShape( RoundedRectangle(cornerRadius: 30) )
                 
-                Text("어디에 있었나요??")
+                Text("어디에 있었나요?")
                     .textStyle(.Q_Main)
                     .foregroundStyle(.black000)
                 
@@ -193,6 +184,7 @@ struct PostDiaryCheckView: View {
                 
                 Spacer()
             }
+            .padding(.bottom, 75)
         }
     }
 }
@@ -208,4 +200,5 @@ private var formattedDate: String {
 
 #Preview {
     PostDiaryCheckView()
+        .environment(NavigationRouter<WriteRoute>())
 }
