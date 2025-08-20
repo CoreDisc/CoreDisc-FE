@@ -119,7 +119,7 @@ struct QuestionSummaryView: View {
     var ButtonGroup: some View {
         VStack (spacing: 12) {
             // 저장하기
-            PrimaryActionButton(title: "작성한 질문 저장하기", isFinished: .constant(true))
+            PrimaryActionButton(title: "작성한 질문 추가하기", isFinished: .constant(true))
                 .onTapGesture {
                     if let qId = questionId {
                         // 수정
