@@ -15,6 +15,7 @@ class PostDetailViewModel: ObservableObject {
     @Published var answersList: [PostDetailAnswer] = []
     @Published var selectiveDiary: PostSelectiveDiary = .init(who: .UNKNOWN, where: .UNKNOWN, what: .UNKNOWN, mood: "")
     @Published var isLiked: Bool = false
+    @Published var isOwner: Bool = false
     
     // 댓글
     @Published var commentList: [Comment] = []
@@ -59,6 +60,7 @@ class PostDetailViewModel: ObservableObject {
                     self.answersList = result.answers
                     self.selectiveDiary = result.selectiveDiary
                     self.isLiked = result.isLiked
+                    self.isOwner = result.isOwner
                 } catch {
                     print("GetPostsDetail 디코더 오류: \(error)")
                     DispatchQueue.main.async {
@@ -265,6 +267,29 @@ class PostDetailViewModel: ObservableObject {
                 print("DeleteLikes API 오류: \(error)")
                 DispatchQueue.main.async {
                     ToastManager.shared.show("좋아요를 취소하지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    // 게시글 삭제
+    func fetchDeletePost(postId: Int) {
+        provider.request(.deletePosts(postId: postId)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(CommentDeleteResponse.self, from: response.data)
+                    print("게시글 삭제 성공: \(decodedData.message)")
+                } catch {
+                    print("DeletePosts 디코더 오류: \(error)")
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("게시글을 삭제하지 못했습니다.")
+                    }
+                }
+            case .failure(let error):
+                print("DeletePosts API 오류: \(error)")
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("게시글을 삭제하지 못했습니다.")
                 }
             }
         }

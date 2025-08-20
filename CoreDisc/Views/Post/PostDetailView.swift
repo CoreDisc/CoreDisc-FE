@@ -19,6 +19,8 @@ struct PostDetailView: View {
     @State var isOwner: Bool = false
     @State var commentUsername: String = ""
     
+    @State var showDeleteModal: Bool = false
+    
     let postId: Int
     
     var body: some View {
@@ -61,6 +63,34 @@ struct PostDetailView: View {
                         SelectiveDiary(viewModel: viewModel)
                     }
                     .padding(.bottom, 70)
+                }
+            }
+            
+            // 게시글 삭제 모달
+            if showDeleteModal {
+                ModalView {
+                    VStack(spacing: 10) {
+                        Text("게시글은 삭제 후 복구할 수 없습니다.")
+                            .textStyle(.Button_s)
+                        
+                        Text("삭제하시겠습니까?")
+                            .textStyle(.Button_s)
+                    }
+                } leftButton: {
+                    Button(action: {
+                        showDeleteModal.toggle() // 차단해제모달 제거
+                    }) {
+                        Text("취소하기")
+                    }
+                } rightButton: {
+                    Button(action: {
+                        viewModel.fetchDeletePost(postId: postId)
+                        showDeleteModal.toggle() // 차단해제모달 제거
+                        router.pop()
+                    }) {
+                        Text("삭제하기")
+                            .foregroundStyle(.red)
+                    }
                 }
             }
         }
@@ -109,11 +139,13 @@ struct PostDetailView: View {
             
             Spacer()
             
-            Button(action: {
-                // TODO: 게시글 삭제
-            }) {
-                Image(.iconDelete)
-                    .foregroundStyle(.gray800)
+            if viewModel.isOwner {
+                Button(action: {
+                    showDeleteModal = true
+                }) {
+                    Image(.iconDelete)
+                        .foregroundStyle(.gray800)
+                }
             }
         }
         .padding(.horizontal, 17)

@@ -22,6 +22,7 @@ struct PostDetailResult: Decodable {
     let answers: [PostDetailAnswer]
     let selectiveDiary: PostSelectiveDiary
     let isLiked: Bool
+    let isOwner: Bool
     let createdAt: String
     let updatedAt: String?
 }
