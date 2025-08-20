@@ -218,8 +218,7 @@ struct MyHomeView: View {
                                     .controlSize(.mini)
                             })
                             .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 154)
+                            .aspectRatio(3/4, contentMode: .fill)
                             .frame(maxWidth: .infinity)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                     } else if let text = post.postTextThumbnailDTO?.content { // 텍스트
@@ -240,7 +239,7 @@ struct MyHomeView: View {
                 }
             }
         }
-        .padding(.horizontal, 15)
+        .padding(.horizontal, 24)
     }
     
     // MARK: - bottom sheet
