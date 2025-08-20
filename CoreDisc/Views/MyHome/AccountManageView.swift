@@ -37,9 +37,6 @@ struct AccountManageView: View {
 
         }
         .navigationBarBackButtonHidden()
-        .fullScreenCover(isPresented: $viewModel.resignSuccess) {
-            LoginView()
-        }
     }
     
     private var TopMenuGroup: some View {
