@@ -71,7 +71,7 @@ struct PostTempView: View {
     private func addTempList(item: PostTempList) -> some View {
         Button(action: {
             viewModel.getTempId(postId: item.postId)
-            ToastManager.shared.show("임시저장 게시글 불러오는 중...")
+            ToastManager.shared.show("임시저장 게시글을 불러왔습니다.")
             showModal = false
         }) {
             VStack(spacing: 20) {
