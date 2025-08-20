@@ -153,7 +153,7 @@ struct FollowListItem: View {
                let url = URL(string: imageUrl) {
                 KFImage(url)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 32, height: 32)
                     .clipShape(Circle())
             } else {

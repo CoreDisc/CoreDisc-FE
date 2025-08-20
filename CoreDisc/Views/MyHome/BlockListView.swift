@@ -137,7 +137,7 @@ struct BlockListItem: View {
             if let url = URL(string: item.profileImgDTO.imageUrl) {
                 KFImage(url)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 32, height: 32)
                     .clipShape(Circle())
             }

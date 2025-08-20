@@ -50,6 +50,7 @@ struct PostWriteView: View {
     
     // 모달 관리
     @State var showQuestionMoadal: Bool = false
+    @State var showTempPostModal: Bool = false
     
     var body: some View {
         ZStack {
@@ -84,6 +85,10 @@ struct PostWriteView: View {
             if showQuestionMoadal {
                 BackModalView(showModal: $showQuestionMoadal, content: "질문 4개를 먼저 선택해 주세요.")
             }
+            
+            if showTempPostModal {
+                PostTempView(viewModel: viewModel, showModal: $showTempPostModal)
+            }
         }
         .navigationBarBackButtonHidden()
         
@@ -92,10 +97,10 @@ struct PostWriteView: View {
             questionViewModel.fetchSelected()
             viewModel.getTempPost()
         }
-        .onReceive(viewModel.$tempIdList) { ids in
-            guard let ids = ids else { return }
+        .onReceive(viewModel.$tempList) { item in
+            guard let item = item else { return }
             
-            if let firstId = ids.first {
+            if let firstId = item.first?.postId {
                 viewModel.postId = firstId
                 viewModel.getTempId(postId: firstId)
             } else {
@@ -162,7 +167,7 @@ struct PostWriteView: View {
                 
                 // 임시저장버튼
                 Button(action: {
-                    // TODO: 추가 예정
+                    showTempPostModal = true
                 }){
                     Image(.iconSave)
                         .frame(width:42, height: 42)
@@ -303,7 +308,7 @@ struct PostWriteView: View {
             return
         }
         
-        let count = 4
+        let count = min(cards.count, questions.count)
         guard index < count else {
             done()
             return
@@ -312,16 +317,30 @@ struct PostWriteView: View {
         let questionOrder = index + 1
         let card = cards[index]
         
+        // 이미지
         if let img = card.image {
             viewModel.putImageAnswer(postId: viewModel.postId, questionOrder: questionOrder, image: img) {
                 uploadAnswers(index: index + 1, done: done)
             }
-        } else {
-            let text = card.text.trimmingCharacters(in: .whitespacesAndNewlines)
-            viewModel.putTextAnswer(postId: viewModel.postId, questionOrder: questionOrder, content: text) {
+            return
+        }
+        
+        // 텍스트
+        if !card.text.isEmpty {
+            viewModel.putTextAnswer(postId: viewModel.postId, questionOrder: questionOrder, content: card.text) {
                 uploadAnswers(index: index + 1, done: done)
             }
+            return
         }
+        
+        // 임시저장 이미지 그대로 -> 스킵
+        if let url = card.imageURL, !url.isEmpty {
+            uploadAnswers(index: index + 1, done: done)
+            return
+        }
+        
+        // 아무것도 없음 -> 스킵
+        uploadAnswers(index: index + 1, done: done)
     }
     
     // 임시저장 게시글 불러오기

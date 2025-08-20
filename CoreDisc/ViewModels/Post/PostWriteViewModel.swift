@@ -14,7 +14,7 @@ class PostWriteViewModel: ObservableObject {
     
     @Published var postId: Int = 0
     
-    @Published var tempIdList: [Int]? = nil
+    @Published var tempList: [PostTempList]? = nil
     @Published var tempPostAnswers: [PostTempIdAnswer] = []
     
     // 게시글 생성 (임시)
@@ -106,7 +106,7 @@ class PostWriteViewModel: ObservableObject {
             case .success(let response):
                 do {
                     let decodedData = try JSONDecoder().decode(PostTempResponse.self, from: response.data)
-                    self.tempIdList = decodedData.result?.postIds
+                    self.tempList = decodedData.result.tempPosts
                 } catch {
                     print("getTemp 디코더 오류: \(error)")
                     DispatchQueue.main.async {

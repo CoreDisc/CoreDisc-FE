@@ -11,11 +11,16 @@ struct PostTempResponse: Decodable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: PostTempResult?
+    let result: PostTempResult
 }
 
 struct PostTempResult: Decodable {
-    let postIds: [Int]
+    let tempPosts: [PostTempList]
+}
+
+struct PostTempList: Decodable {
+    let postId: Int
+    let lastModified: String
 }
 
 // id로 조회

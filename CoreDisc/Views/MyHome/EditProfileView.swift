@@ -107,7 +107,7 @@ struct EditProfileView: View {
             if let uiImage = viewModel.profileUIImage {
                 Image(uiImage: uiImage)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 124, height: 124)
                     .clipShape(Circle())
             } else if useDefaultImage {
@@ -118,7 +118,7 @@ struct EditProfileView: View {
             } else if let url = URL(string: viewModel.profileImageURL) {
                 KFImage(url)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 124, height: 124)
                     .clipShape(Circle())
             }

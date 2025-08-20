@@ -98,7 +98,7 @@ struct MyHomeView: View {
                             .controlSize(.mini)
                     })
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 124, height: 124)
                     .clipShape(Circle())
             }

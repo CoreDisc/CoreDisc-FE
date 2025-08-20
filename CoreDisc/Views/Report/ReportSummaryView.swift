@@ -113,7 +113,7 @@ struct ReportSummaryView: View {
                 if let url = URL(string: myHomeViewModel.profileImageURL) {
                     KFImage(url)
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .aspectRatio(contentMode: .fill)
                         .frame(width: 60, height: 60)
                         .clipShape(Circle())
                 }
@@ -123,6 +123,7 @@ struct ReportSummaryView: View {
                         .textStyle(.Button)
                         .foregroundStyle(.black)
                     Text(myHomeViewModel.nickname)
+                        .lineLimit(1)
                         .textStyle(.Button)
                         .foregroundStyle(.black)
                 }
