@@ -25,7 +25,7 @@ struct QuestionShareItem: View {
                 .fill(.white)
                 .shadow(color: .key, radius: 2, x: 0, y: 0)
                 .frame(height: 115)
-                
+            
             
             VStack(alignment: .leading, spacing: 5) {
                 HStack {
@@ -46,16 +46,15 @@ struct QuestionShareItem: View {
                         .frame(width: 18, height: 18)
                         .padding(.top, 11)
                     
-                        
+                    
                     
                     Spacer()
                     if type == "share" {
-                        Button(action: {}) {
-                            Image(.iconShare)
-                                .resizable()
-                                .frame(width: 18, height: 18)
-                        }
-                        .padding(.top, 11)
+                        Image(.iconShare)
+                            .resizable()
+                            .frame(width: 18, height: 18)
+                        
+                            .padding(.top, 11)
                         
                         Spacer().frame(width: 5)
                         
@@ -67,10 +66,10 @@ struct QuestionShareItem: View {
                     } else {
                         Button(action: {
                             onDelete?()
-                        }) { // TODO: action
+                        }) {
                             Image(.iconClose)
                                 .renderingMode(.original)
-        
+                            
                         }
                         .padding(.trailing, 17)
                         .padding(.top, 11)
@@ -96,7 +95,7 @@ struct QuestionShareItem: View {
                         .kerning(-0.7)
                         .foregroundStyle(.black000)
                         .padding(.bottom, 5)
-        
+                    
                     
                     Text(formatDate(date)) // 디자인 시스템 없음
                         .font(.pretendard(type: .regular, size: 8))
@@ -130,7 +129,7 @@ struct QuestionShareItem: View {
             if let date = inputFormatter.date(from: trimmed) {
                 let outputFormatter = DateFormatter()
                 outputFormatter.locale = Locale(identifier: "ko_KR")
-                outputFormatter.timeZone = TimeZone(identifier: "Asia/Seoul") 
+                outputFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
                 outputFormatter.dateFormat = "yy년 M월 d일"
                 return outputFormatter.string(from: date)
             }
@@ -138,9 +137,9 @@ struct QuestionShareItem: View {
         
         return isoDate // 실패하면 원본 반환
     }
-
-
-
-
+    
+    
+    
+    
 }
 

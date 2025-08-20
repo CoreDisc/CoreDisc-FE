@@ -24,7 +24,7 @@ class QuestionListViewModel: ObservableObject {
         if cursorId != nil, hasNextPageMap[categoryUUID] == false {
             return
         }
-
+        
         let target: QuestionRouter
         if let categoryId = categoryId, categoryId != 0 {
             // 카테고리 필터 버전 API 호출
@@ -33,7 +33,7 @@ class QuestionListViewModel: ObservableObject {
             // 전체 API 호출
             target = .getOfficialMine(cursorId: cursorId, size: size)
         }
-
+        
         provider.request(target) { result in
             switch result {
             case .success(let response):
@@ -77,7 +77,7 @@ class QuestionListViewModel: ObservableObject {
         if cursorId != nil, hasNextPageMap[categoryUUID] == false {
             return
         }
-
+        
         let target: QuestionRouter
         // categoryId == 0이면 전체로 처리
         target = .getOfficialSavedMine(
@@ -85,7 +85,7 @@ class QuestionListViewModel: ObservableObject {
             cursorId: cursorId,
             size: size
         )
-
+        
         provider.request(target) { result in
             switch result {
             case .success(let response):
@@ -119,5 +119,40 @@ class QuestionListViewModel: ObservableObject {
             }
         }
     }
+    
+    
+    func deleteOfficialSaved(questionId: Int, completion: @escaping (Bool) -> Void) {
+        provider.request(.deleteOfficial(questionId: questionId)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(DeleteQuestionResponse.self, from: response.data)
+                    if decoded.isSuccess {
+                        DispatchQueue.main.async {
+                            ToastManager.shared.show(decoded.result ?? "삭제되었습니다.")
+                            completion(true)
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            ToastManager.shared.show(decoded.message)
+                            completion(false)
+                        }
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("삭제 처리에 실패했습니다.")
+                        completion(false)
+                    }
+                }
+            case .failure:
+                DispatchQueue.main.async {
+                    ToastManager.shared.show("네트워크 오류가 발생했습니다.")
+                    completion(false)
+                }
+            }
+        }
+    }
 
+    
+    
 }
