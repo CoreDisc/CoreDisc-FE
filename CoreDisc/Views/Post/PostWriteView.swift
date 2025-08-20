@@ -95,18 +95,18 @@ struct PostWriteView: View {
         .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
         .task {
             questionViewModel.fetchSelected()
-            viewModel.getTempPost()
+            viewModel.postPosts(selectedDate: selectedDate)
         }
-        .onReceive(viewModel.$tempList) { item in
-            guard let item = item else { return }
-            
-            if let firstId = item.first?.postId {
-                viewModel.postId = firstId
-                viewModel.getTempId(postId: firstId)
-            } else {
-                viewModel.postPosts(selectedDate: selectedDate)
-            }
-        }
+//        .onReceive(viewModel.$tempList) { item in
+//            guard let item = item else { return }
+//            
+//            if let firstId = item.first?.postId {
+//                viewModel.postId = firstId
+//                viewModel.getTempId(postId: firstId)
+//            } else {
+//                viewModel.postPosts(selectedDate: selectedDate)
+//            }
+//        }
         .onReceive(viewModel.$tempPostAnswers) { answers in
             applyTempAnswers(answers)
         }

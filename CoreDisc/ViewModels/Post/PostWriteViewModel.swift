@@ -21,7 +21,8 @@ class PostWriteViewModel: ObservableObject {
     func postPosts(selectedDate: Date, completion: (() -> Void)? = nil) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
         let dateString = formatter.string(from: selectedDate)
         
         postProvider.request(.postPosts(selectedDate: dateString)) { result in
