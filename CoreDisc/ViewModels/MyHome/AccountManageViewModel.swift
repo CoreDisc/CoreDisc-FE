@@ -20,8 +20,7 @@ class AccountManageViewModel: ObservableObject {
     @Published var rePwdError: Bool = false
     
     @Published var changeSuccess: Bool = false
-    @Published var resignSuccess: Bool = false
-    @Published var logoutSuccess: Bool = false
+    @Published var goLogin: Bool = false
     
     @Published var isSocialUser: Bool = false
     
@@ -75,7 +74,7 @@ class AccountManageViewModel: ObservableObject {
                     print("탈퇴 성공: \(decodedResponse.message)")
                 }
                 DispatchQueue.main.async {
-                    self.resignSuccess = true
+                    self.goLogin = true
                 }
             case .failure(let error):
                 if let response = error.response {
@@ -101,7 +100,7 @@ class AccountManageViewModel: ObservableObject {
                     KeychainManager.standard.deleteSession(for: "appNameUser")
                 }
                 DispatchQueue.main.async {
-                    self.logoutSuccess = true
+                    self.goLogin = true
                 }
             case .failure(let error):
                 if let response = error.response {

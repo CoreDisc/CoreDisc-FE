@@ -7,15 +7,8 @@
 
 import Foundation
 
-struct TokenResponse: Decodable {
-    let isSuccess: Bool
-    let code: String
-    let message: String
-    let result: TokenResult
-}
-
 // reissue 응답 받을 때 사용
-struct TokenResult: Decodable {
+struct TokenResponse: Codable {
     var accessToken: String
     var refreshToken: String
 }
