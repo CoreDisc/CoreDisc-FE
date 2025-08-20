@@ -36,7 +36,7 @@ struct QuestionSummaryView: View {
                         QuestionSummaryGroup
                         Spacer().frame(height: 14)
                         ButtonGroup
-                        Spacer().frame(height: 60)
+                        Spacer().frame(height: 65)
                     }
                 }
                 .scrollIndicators(.hidden)
@@ -130,6 +130,7 @@ struct QuestionSummaryView: View {
                         ) { success in
                             if success {
                                 ToastManager.shared.show("질문이 수정되었습니다.")
+                                router.reset()
                             }
                         }
                     } else {
@@ -137,27 +138,33 @@ struct QuestionSummaryView: View {
                         viewModel.savePersonalQuestion(
                             categoryIds: [selectedCategory?.id ?? 0],
                             question: text
-                        )
+                        ) { success in
+                            if success {
+                                router.reset()
+                            }
+                        }
                     }
                 }
             
             // 공유하기
             PrimaryActionButton(title: "작성한 질문 공유하기", isFinished: .constant(true))
-                .fullScreenCover(isPresented: $isShareSuccess) { TabBar(startTab: .question) }
-                .simultaneousGesture(
-                    TapGesture().onEnded {
-                        viewModel.shareOfficialQuestion(
-                            categoryIds: [selectedCategory?.id ?? 0],
-                            question: text
-                        ) { success in
-                            if !success {
-                                ToastManager.shared.show("질문 공유에 실패했습니다. 다시 시도해주세요.")
-                            } else {
-                                self.isShareSuccess = true
-                            }
+                .onTapGesture {
+                    viewModel.shareOfficialQuestion(
+                        categoryIds: [selectedCategory?.id ?? 0],
+                        question: text
+                    ) { success in
+                        if success {
+                            router.reset()
+                            router.push(.shareNow(
+                                selectedQuestionType: "official",
+                                order: 0
+                            ))
+                        } else {
+                            ToastManager.shared.show("질문 공유에 실패했습니다. 다시 시도해주세요.")
                         }
                     }
-                )
+                }
+
             
             
             Button {
