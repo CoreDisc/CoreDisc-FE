@@ -298,16 +298,16 @@ struct PostWriteView: View {
             return
         }
         
-        let questionId = index + 1
+        let questionOrder = index + 1
         let card = cards[index]
         
         if let img = card.image {
-            viewModel.putImageAnswer(postId: viewModel.postId, questionId: questionId, image: img) {
+            viewModel.putImageAnswer(postId: viewModel.postId, questionOrder: questionOrder, image: img) {
                 uploadAnswers(index: index + 1, done: done)
             }
         } else {
             let text = card.text.trimmingCharacters(in: .whitespacesAndNewlines)
-            viewModel.putTextAnswer(postId: viewModel.postId, questionId: questionId, content: text) {
+            viewModel.putTextAnswer(postId: viewModel.postId, questionOrder: questionOrder, content: text) {
                 uploadAnswers(index: index + 1, done: done)
             }
         }

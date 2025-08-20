@@ -11,8 +11,8 @@ import Moya
 // /api/posts API 연결
 enum PostRouter {
     case putPublish(postId: Int, postPublishData: PostPublishData) // 게시글 발행
-    case putAnswerText(postId: Int, questionId: Int, content: String) // 글 답변 작성/수정
-    case putAnswerImage(postId: Int, questionId: Int, image: Data) // 이미지 답변 등록 또는 수정
+    case putAnswerText(postId: Int, questionOrder: Int, content: String) // 글 답변 작성/수정
+    case putAnswerImage(postId: Int, questionOrder: Int, image: Data) // 이미지 답변 등록 또는 수정
     
     case getPosts(feedType: String?, cursorId: Int?, size: Int?) // 게시글 피드 조회 (Pull 모델)
     case postPosts(selectedDate: String) // 게시글 생성 (임시저장)
@@ -32,10 +32,10 @@ extension PostRouter: APITargetType {
         switch self {
         case .putPublish(let postId, _):
             return "\(Self.postPath)/\(postId)/publish"
-        case .putAnswerText(let postId, let questionId, _):
-            return "\(Self.postPath)/\(postId)/answers/\(questionId)/text"
-        case .putAnswerImage(let postId, let questionId, _):
-            return "\(Self.postPath)/\(postId)/answers/\(questionId)/image"
+        case .putAnswerText(let postId, let questionOrder, _):
+            return "\(Self.postPath)/\(postId)/answers/\(questionOrder)/text"
+        case .putAnswerImage(let postId, let questionOrder, _):
+            return "\(Self.postPath)/\(postId)/answers/\(questionOrder)/image"
             
         case .getPosts:
             return "\(Self.postPath)"

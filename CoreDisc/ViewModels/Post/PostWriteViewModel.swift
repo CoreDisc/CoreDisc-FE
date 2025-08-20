@@ -49,8 +49,8 @@ class PostWriteViewModel: ObservableObject {
     }
     
     // 답변 글 수정 및 작성
-    func putTextAnswer(postId: Int, questionId: Int, content: String, completion: (() -> Void)? = nil) {
-        postProvider.request(.putAnswerText(postId: postId, questionId: questionId, content: content)) { result in
+    func putTextAnswer(postId: Int, questionOrder: Int, content: String, completion: (() -> Void)? = nil) {
+        postProvider.request(.putAnswerText(postId: postId, questionOrder: questionOrder, content: content)) { result in
             switch result {
             case .success(let response):
                 do {
@@ -74,9 +74,9 @@ class PostWriteViewModel: ObservableObject {
     }
     
     // 답변 이미지 작성/저장
-    func putImageAnswer(postId: Int, questionId: Int, image: UIImage, completion: (() -> Void)? = nil) {
+    func putImageAnswer(postId: Int, questionOrder: Int, image: UIImage, completion: (() -> Void)? = nil) {
         guard let data = image.jpegData(compressionQuality: 0.85) else { return }
-        postProvider.request(.putAnswerImage(postId: postId, questionId: questionId, image: data)) { result in
+        postProvider.request(.putAnswerImage(postId: postId, questionOrder: questionOrder, image: data)) { result in
             switch result {
             case .success(let response):
                 do {
