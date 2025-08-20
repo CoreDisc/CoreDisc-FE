@@ -55,7 +55,7 @@ class TokenProvider: TokenProviding {
         }
         
         
-        provider.request(.postReissue) { result in
+        provider.request(.postReissue(refreshToken: refreshToken)) { result in
             switch result {
             case .success(let response):
                 if let jsonString = String(data: response.data, encoding: .utf8) {
