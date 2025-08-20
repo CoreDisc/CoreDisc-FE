@@ -56,9 +56,9 @@ struct SearchRelatedView: View {
         }
         .padding(.horizontal, 25)
         .frame(height: 274)
-        .onAppear {
+        .task {
             if !keyword.isEmpty {
-                viewModel.startSearch(keyword: keyword)
+                viewModel.startSearch(keyword: keyword, record: false)
             }
         }
         .onChange(of: keyword) { _, newValue in

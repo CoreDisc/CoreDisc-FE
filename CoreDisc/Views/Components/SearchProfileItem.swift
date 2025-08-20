@@ -49,9 +49,9 @@ struct SearchProfileItem: View {
             }
             .foregroundStyle(.white)
             .padding(.vertical, 16)
-            .contentShape(Rectangle())
-            .onTapGesture { onTap() }
         }
+        .contentShape(Rectangle())
+        .onTapGesture { onTap() }
         .padding(.horizontal, 16)
     }
 }
