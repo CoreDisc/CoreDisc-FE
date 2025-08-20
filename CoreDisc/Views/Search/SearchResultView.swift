@@ -4,15 +4,25 @@
 //
 //  Created by 이채은 on 7/22/25.
 //
-
 import SwiftUI
 
 struct SearchResultView: View {
-    @Binding var query:String
+    @State private var query: String
     @Binding var isSearch: Bool
-    var path: Binding<NavigationPath>? = nil
+    
+    @State private var isTyping: Bool = false
+    @State private var isSubmitted: Bool = false
     
     @StateObject private var viewModel = SearchMemberViewModel()
+    
+    @Environment(NavigationRouter<PostRoute>.self) var router
+    
+    @FocusState private var isFocused: Bool
+    
+    init(initialQuery: String, isSearch: Binding<Bool> = .constant(false)) {
+        _query = State(initialValue: initialQuery)
+        self._isSearch = isSearch
+    }
     
     var body: some View {
         ZStack {
@@ -27,38 +37,46 @@ struct SearchResultView: View {
                     query: $query,
                     isSearch: $isSearch,
                     onSearch: {
-                        if let path {
-                            path.wrappedValue = NavigationPath()
-                            path.wrappedValue.append(UUID())
+                        if !query.isEmpty {
+                            isSubmitted = true
+                            isTyping = false
+                            viewModel.startSearch(keyword: query, record: true)
                         }
                     },
-                    path: path
+                    isFocused: $isFocused
                 )
                 
-                Spacer().frame(height: isSearch ? 18 : 21)
+                Spacer().frame(height: (isTyping || isSearch) ? 18 : 21)
                 ResultGroup
-                Spacer()
+                Spacer().frame(height: 75)
             }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            isFocused = false
         }
         .navigationBarBackButtonHidden()
         .task {
-            isSearch = false
             if !query.isEmpty {
+                isSubmitted = true
                 viewModel.startSearch(keyword: query, record: true)
             }
         }
         .onChange(of: query) { _, newValue in
-            if !newValue.isEmpty, isSearch == false {
-                viewModel.startSearch(keyword: newValue, record: true)
+            if newValue.isEmpty {
+                isTyping = false
+            } else {
+                isTyping = true
+                isSubmitted = false
             }
         }
     }
     
     private var ResultGroup: some View {
         VStack {
-            if isSearch {
-                SearchRelatedView()
-            } else {
+            if isTyping {
+                SearchRelatedView(viewModel: viewModel, keyword: query)
+            } else if isSubmitted {
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Accounts")
                         .textStyle(.Pick_Q_Eng)
@@ -72,16 +90,19 @@ struct SearchResultView: View {
                                 SearchProfileItem(
                                     nickname: user.nickname,
                                     username: "@\(user.username)",
-                                    imageURL: user.profileImgDTO?.imageUrl
+                                    imageURL: user.profileImgDTO?.imageUrl,
+                                    onTap: {
+                                        let targetUsername = user.username
+                                        router.push(.user(userName: targetUsername))
+                                    }
                                 )
-                                .onAppear {
+                                .task {
                                     viewModel.loadMoreIfNeeded(current: user)
                                 }
                                 
                                 Rectangle()
                                     .frame(height: 0.5)
                                     .foregroundStyle(.gray600)
-                                    .padding(.horizontal, 24)
                             }
                             
                             if viewModel.isLoading {
@@ -97,21 +118,25 @@ struct SearchResultView: View {
                         .padding(.horizontal, 24)
                     }
                 }
+            } else {
+                EmptyView()
             }
         }
     }
 }
 
 
-private struct SearchResultViewPreviewWrapper: View {
-    @State var tempQuery = ""
-    @State var tempSearch = false
-    
-    var body: some View {
-        SearchResultView(query: $tempQuery, isSearch: $tempSearch)
-    }
-}
 
-#Preview {
-    SearchResultViewPreviewWrapper()
-}
+
+//private struct SearchResultViewPreviewWrapper: View {
+//    @State var tempQuery = ""
+//    @State var tempSearch = false
+//
+//    var body: some View {
+//        SearchResultView(query: $tempQuery, isSearch: $tempSearch)
+//    }
+//}
+//
+//#Preview {
+//    SearchResultViewPreviewWrapper()
+//}
