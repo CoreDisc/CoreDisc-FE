@@ -15,25 +15,46 @@ class QuestionSummaryViewModel: ObservableObject {
     private let provider = APIManager.shared.createProvider(for: QuestionRouter.self)
     
     // 신규 저장
-        func savePersonalQuestion(categoryIds: [Int], question: String, completion: (() -> Void)? = nil) {
-            let data = OfficialPersonalData(categoryIdList: categoryIds, question: question)
-            isLoading = true
+    func savePersonalQuestion(categoryIds: [Int], question: String, completion: @escaping (Bool) -> Void) {
+        let data = OfficialPersonalData(categoryIdList: categoryIds, question: question)
+        isLoading = true
+        
+        provider.request(.postPersonal(personalData: data)) { [weak self] result in
+            guard let self = self else { return }
+            self.isLoading = false
             
-            provider.request(.postPersonal(personalData: data)) { [weak self] result in
-                guard let self = self else { return }
-                self.isLoading = false
-                
-                switch result {
-                case .success:
-                    completion?()
-                case .failure:
-                    DispatchQueue.main.async {
-                        self.errorMessage = "질문 저장에 실패했습니다."
-                        ToastManager.shared.show("질문 저장에 실패했습니다.")
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(SaveQuestionResponse.self, from: response.data)
+                    if decoded.isSuccess {
+                        DispatchQueue.main.async {
+                            ToastManager.shared.show("질문이 저장되었습니다.")
+                            completion(true)
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            ToastManager.shared.show(decoded.message)
+                            completion(false)
+                        }
                     }
+                } catch {
+                    DispatchQueue.main.async {
+                        ToastManager.shared.show("데이터 처리 중 오류가 발생했습니다.")
+                        completion(false)
+                    }
+                }
+                
+            case .failure:
+                DispatchQueue.main.async {
+                    self.errorMessage = "질문 저장에 실패했습니다."
+                    ToastManager.shared.show("질문 저장에 실패했습니다.")
+                    completion(false)
                 }
             }
         }
+    }
+
         
         // 수정
     func rewritePersonalQuestion(

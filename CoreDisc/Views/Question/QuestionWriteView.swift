@@ -40,7 +40,7 @@ struct QuestionWriteView: View {
                 .padding(.horizontal, 21)
             }
             .onTapGesture { isFocused = false }
-            Spacer().frame(height: 43)
+            Spacer().frame(height: 75)
         }
         .background(
             Image(.imgLongBackground)
