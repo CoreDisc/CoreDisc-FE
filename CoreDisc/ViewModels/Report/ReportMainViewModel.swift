@@ -104,4 +104,23 @@ class ReportMainViewModel: ObservableObject {
             }
         }
     }
+    
+    func ChangeCoverImg(discId: Int, coverImageUrl: Data) {
+        DiscProvider.request(.patchCoverImage(discId: discId, coverImageUrl: coverImageUrl)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedResponse = try JSONDecoder().decode(ChangeDiscImgResponse.self, from: response.data)
+                    print("성공: \(decodedResponse)")
+                    DispatchQueue.main.async {
+                        self.colorChangeSuccess = true
+                    }
+                } catch {
+                    print("디코딩 실패 : \(error)")
+                }
+            case .failure(let error):
+                print("네트워크 오류 : \(error)")
+            }
+        }
+    }
 }

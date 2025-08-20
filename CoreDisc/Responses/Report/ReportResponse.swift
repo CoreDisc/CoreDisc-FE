@@ -22,6 +22,8 @@ struct ReportResult: Decodable {
     let allOneCount: Bool
     let mostSelectedQuestions: [MostSelectedQuestion]?
     let peakTimeZone: String
+    let hasPreviousReport: Bool
+    let hasNextReport: Bool
 }
 
 struct Question: Decodable {

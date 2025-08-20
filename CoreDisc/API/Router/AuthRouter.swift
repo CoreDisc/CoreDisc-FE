@@ -12,11 +12,12 @@ import Moya
 enum AuthRouter {
     case postUsername(usernameData: UsernameData) // 아이디 찾기
     case postKakao(accessToken: String) // 카카오 소셜 로그인
+    case postNaver(accessToken: String) // 네이버 소셜 로그인
     case postSignup(signupData: SignupData) // 회원가입
     case postVerifyCode(verifyCodeData: VerifySignupCodeData) // 회원가입 이메일 코드 인증
     case postSendCode(email: String) // 이메일 인증 메일 전송
     case postPasswordVerifyCode(verifyCodeData: VerifyCodeData) // 비밀번호 변경 이메일 코드 인증
-    case postReissue // 토큰 재발급
+    case postReissue(refreshToken: String) // 토큰 재발급
     case postPasswordVerifyUser(verifyUserData: VerifyUserData) // 비밀번호 변경을 위한 사용자 검증
     case postLogout // 로그아웃
     case postLogin(loginData: LoginData) // 일반 로그인
@@ -38,6 +39,8 @@ extension AuthRouter: APITargetType {
             return "\(Self.authPath)/username"
         case .postKakao:
             return "\(Self.authPath)/social/kakao"
+        case .postNaver:
+            return "\(Self.authPath)/social/naver"
         case .postSignup:
             return "\(Self.authPath)/signup"
         case .postVerifyCode:
@@ -69,7 +72,7 @@ extension AuthRouter: APITargetType {
     
     var method: Moya.Method {
         switch self {
-        case .postUsername, .postKakao, .postSignup, .postVerifyCode, .postSendCode, .postPasswordVerifyCode, .postReissue, .postPasswordVerifyUser, .postLogout, .postLogin:
+        case .postUsername, .postKakao, .postNaver, .postSignup, .postVerifyCode, .postSendCode, .postPasswordVerifyCode, .postReissue, .postPasswordVerifyUser, .postLogout, .postLogin:
             return .post
         case .getCheckUsername, .getCheckNickname, .getCheckEmail, .getTerms:
             return .get
@@ -81,6 +84,8 @@ extension AuthRouter: APITargetType {
         case .postUsername(let usernameData):
             return .requestJSONEncodable(usernameData)
         case .postKakao(let accessToken):
+            return .requestParameters(parameters: ["accessToken": accessToken], encoding: JSONEncoding.default)
+        case .postNaver(let accessToken):
             return .requestParameters(parameters: ["accessToken": accessToken], encoding: JSONEncoding.default)
         case .postSignup(let signupData):
             return .requestJSONEncodable(signupData)
@@ -113,11 +118,15 @@ extension AuthRouter: APITargetType {
     
     var headers: [String: String]? {
         switch self {
+        case .postReissue(let refreshToken):
+            return ["RefreshToken": refreshToken]
+            
         case .postLogout:
             if let token = TokenProvider.shared.accessToken {
                 return ["accessToken": token]
             }
             return nil
+            
         default:
             return nil
         }

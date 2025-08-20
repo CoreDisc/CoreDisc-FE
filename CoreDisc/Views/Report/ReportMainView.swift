@@ -22,12 +22,19 @@ struct ReportMainView: View {
                 .ignoresSafeArea()
             
             VStack{
-                HStack{
-                    Image(.imgReportHeaderIcon)
-                        .resizable()
-                        .frame(width: 14, height: 55)
-                    
-                    Spacer()
+                ZStack{
+                    HStack{
+                        Spacer()
+                        Image(.imgLogoOneline)
+                        Spacer()
+                    }
+                    HStack{
+                        Image(.imgReportHeaderIcon)
+                            .resizable()
+                            .frame(width: 14, height: 55)
+                        
+                        Spacer()
+                    }
                 }
                 
                 HStack{
@@ -58,6 +65,7 @@ struct ReportMainView: View {
         .task {
             viewModel.getDiscs()
         }
+        .navigationBarBackButtonHidden()
     }
     
     private var DiscGroup : some View{

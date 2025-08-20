@@ -20,4 +20,7 @@ enum PostRoute: Hashable {
     // 알림
     case write
     case questionMain
+    
+    //검색 결과
+    case searchResult(query: String)
 }

@@ -6,13 +6,14 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ReportDetailView: View {
     @Environment(NavigationRouter<ReportRoute>.self) private var router
     
     @State private var nowIndex: Int = 1
-    
-    @StateObject private var viewModel = ReportDetailViewModel()
+    @StateObject private var myHomeViewModel = MyHomeViewModel()
+    @StateObject private var viewModel: ReportDetailViewModel
     @StateObject private var DiscQuestionViewModel: DiscViewModel
     
     init(year: Int, month: Int) {
@@ -108,6 +109,7 @@ struct ReportDetailView: View {
             }
             .task {
                 viewModel.getReport(year: year, month: month)
+                myHomeViewModel.fetchMyHome()
             }
         }
         .navigationBarBackButtonHidden()
@@ -129,15 +131,22 @@ struct ReportDetailView: View {
     }
     
     private var HeaderGroup: some View {
-        HStack {
-            Image(.imgReportHeaderIcon)
-            
-            Button(action: {
-                router.pop()
-            }){
-                Image(.imgGoback)
+        ZStack{
+            HStack{
+                Spacer()
+                Image(.imgLogoOneline)
+                Spacer()
             }
-            Spacer()
+            HStack {
+                Image(.imgReportHeaderIcon)
+                
+                Button(action: {
+                    router.push(.museum)
+                }){
+                    Image(.imgGoback)
+                }
+                Spacer()
+            }
         }
     }
     
@@ -333,11 +342,13 @@ struct ReportDetailView: View {
                 .shadow(color: .black.opacity(0.25), radius: 4.2, x: 0, y: 1)
             
             HStack {
-                Image(.imgProfile)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 60, height: 60)
-                    .clipShape(Circle())
+                if let url = URL(string: myHomeViewModel.profileImageURL) {
+                    KFImage(url)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 60, height: 60)
+                        .clipShape(Circle())
+                }
                 
                 Spacer().frame(width: 21)
                 
@@ -346,7 +357,7 @@ struct ReportDetailView: View {
                         .textStyle(.Button)
                         .foregroundStyle(.black)
                     
-                    Text("뮤직사마")
+                    Text(myHomeViewModel.nickname)
                         .textStyle(.Button)
                         .foregroundStyle(.black)
                 }
@@ -355,10 +366,12 @@ struct ReportDetailView: View {
                 
                 HStack {
                     Button(action: {
-                        router.push(.detail(year: beforeDiscYear, month: beforeDiscMonth))
-                    }){
+                        if viewModel.hasNextReport{
+                            router.push(.detail(year: beforeDiscYear, month: beforeDiscMonth))
+                        }
+                    }, label: {
                         Image(.iconBefore)
-                    }
+                    })
                     Spacer().frame(width: 19)
                     
                     
@@ -366,10 +379,12 @@ struct ReportDetailView: View {
                     Spacer().frame(width: 19)
                     
                     Button(action: {
-                        router.push(.detail(year: nextDiscYear, month: nextDiscMonth))
-                    }){
+                        if viewModel.hasPreviousReport{
+                            router.push(.detail(year: nextDiscYear, month: nextDiscMonth))
+                        }
+                    }, label: {
                         Image(.iconNext)
-                    }
+                    })
                 }
             }
             .padding(.horizontal, 24)

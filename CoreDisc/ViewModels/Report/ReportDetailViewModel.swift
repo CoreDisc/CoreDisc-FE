@@ -18,7 +18,9 @@ class ReportDetailViewModel: ObservableObject {
     @Published var DiscCount: Int = 0
     @Published var MostQuestionItem: [MostSelectedQuestion] = []
     @Published var PeakTimeImage: String = ""
-    
+    @Published var hasPreviousReport: Bool = false
+    @Published var hasNextReport: Bool = false
+
     private let ReportProvider = APIManager.shared.createProvider(for: ReportRouter.self)
     
     func getReport(year: Int, month: Int) {
@@ -39,6 +41,8 @@ class ReportDetailViewModel: ObservableObject {
                         }
                         
                         DispatchQueue.main.async {
+                            self.hasNextReport = resultData.hasNextReport
+                            self.hasPreviousReport = resultData.hasPreviousReport
                             self.TotalDiscItem = (fixedModels + randomModels).shuffled()
                             
                             if !resultData.allOneCount {
