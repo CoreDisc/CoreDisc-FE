@@ -44,6 +44,8 @@ struct PostMainView: View {
                 
                 PostGroup
             }
+            
+            
         }
         .onAppear {
             viewModel.fetchPosts()

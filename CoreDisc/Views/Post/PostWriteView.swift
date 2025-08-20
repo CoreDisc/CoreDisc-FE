@@ -48,6 +48,9 @@ struct PostWriteView: View {
         return cards.prefix(count).allSatisfy { isAnswered($0) }
     }
     
+    // 모달 관리
+    @State var showQuestionMoadal: Bool = false
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground)
@@ -76,6 +79,11 @@ struct PostWriteView: View {
                 
                 Spacer()
             }
+            
+            // 모달
+            if showQuestionMoadal {
+                BackModalView(showModal: $showQuestionMoadal, content: "질문 4개를 먼저 선택해 주세요.")
+            }
         }
         .navigationBarBackButtonHidden()
         
@@ -97,8 +105,11 @@ struct PostWriteView: View {
         .onReceive(viewModel.$tempPostAnswers) { answers in
             applyTempAnswers(answers)
         }
-        .onChange(of: selectedPhotoItem) { newItem in
-            guard let newItem else { return }
+        .onReceive(questionViewModel.$selectedQuestions) { list in
+            showQuestionMoadal = list.contains { $0.id == nil }
+        }
+        .onChange(of: selectedPhotoItem) {
+            guard let newItem = selectedPhotoItem else { return }
             Task {
                 if let data = try? await newItem.loadTransferable(type: Data.self),
                    let uiImage = UIImage(data: data) {
@@ -461,5 +472,6 @@ private struct CardPageView: View {
 }
 
 #Preview {
-    TabBar(startTab: .write)
+    PostWriteView()
+        .environment(NavigationRouter<WriteRoute>())
 }
