@@ -9,8 +9,10 @@ import SwiftUI
 struct SearchRelatedView: View {
     @ObservedObject var viewModel: SearchMemberViewModel
     var keyword: String
+    var myUsername: String
     
     @Environment(NavigationRouter<PostRoute>.self) var router
+    @EnvironmentObject var myHomeVM: MyHomeViewModel
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -27,8 +29,11 @@ struct SearchRelatedView: View {
                             username: "@\(user.username)",
                             imageURL: user.profileImgDTO?.imageUrl,
                             onTap: {
-                                let targetUsername = user.username
-                                router.push(.user(userName: targetUsername))
+                                if user.username == myUsername {
+                                    router.push(.myHome)
+                                } else {
+                                    router.push(.user(userName: user.username))
+                                }
                             }
                         )
                         .task {
