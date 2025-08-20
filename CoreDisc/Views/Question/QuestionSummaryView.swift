@@ -135,8 +135,12 @@ struct QuestionSummaryView: View {
                         }
                     } else {
                         // 신규 저장
+                        guard let categoryId = selectedCategory?.id else {
+                            ToastManager.shared.show("카테고리를 선택해주세요.")
+                            return
+                        }
                         viewModel.savePersonalQuestion(
-                            categoryIds: [selectedCategory?.id ?? 0],
+                            categoryIds: [categoryId],
                             question: text
                         ) { success in
                             if success {
