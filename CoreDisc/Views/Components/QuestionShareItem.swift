@@ -118,16 +118,29 @@ struct QuestionShareItem: View {
         
         let inputFormatter = DateFormatter()
         inputFormatter.locale = Locale(identifier: "en_US_POSIX")
-        inputFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+        inputFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         
-        if let date = inputFormatter.date(from: trimmed) {
-            let outputFormatter = DateFormatter()
-            outputFormatter.locale = Locale(identifier: "ko_KR")
-            outputFormatter.dateFormat = "yy년 M월 d일"
-            return outputFormatter.string(from: date)
+        let formats = [
+            "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
+            "yyyy-MM-dd'T'HH:mm:ss"
+        ]
+        
+        for format in formats {
+            inputFormatter.dateFormat = format
+            if let date = inputFormatter.date(from: trimmed) {
+                let outputFormatter = DateFormatter()
+                outputFormatter.locale = Locale(identifier: "ko_KR")
+                outputFormatter.timeZone = TimeZone(identifier: "Asia/Seoul") 
+                outputFormatter.dateFormat = "yy년 M월 d일"
+                return outputFormatter.string(from: date)
+            }
         }
-        return isoDate
+        
+        return isoDate // 실패하면 원본 반환
     }
+
+
+
 
 }
 
