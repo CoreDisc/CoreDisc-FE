@@ -22,15 +22,6 @@ struct PostMainView: View {
     @State private var selectedTab: PostCategoryTap = .all
     @Namespace private var animation
     
-    private var selectedPosts: [PostMain] {
-        switch selectedTab {
-        case .all:
-            return viewModel.postList
-        case .core:
-            return viewModel.postList.filter { $0.publicity == "CORE" }
-        }
-    }
-    
     var body: some View {
         ZStack{
             Image(.imgPostDetailMainBg)
@@ -105,7 +96,7 @@ struct PostMainView: View {
     // 카테고리 메뉴바 섹션
     private var CategoryGroup: some View {
         HStack {
-            PostTopTabView(selectedTab: $selectedTab, animation: animation)
+            PostTopTabView(viewModel: viewModel, selectedTab: $selectedTab, animation: animation)
         }
     }
     
@@ -115,7 +106,7 @@ struct PostMainView: View {
         
         return ScrollView {
             LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(selectedPosts, id: \.postId) { item in
+                ForEach(viewModel.postList, id: \.postId) { item in
                     PostCard(item: item)
                         .task {
                             if item.postId == viewModel.postList.last?.postId {
@@ -243,6 +234,7 @@ struct PostCard: View {
 
 // 카테고리 메뉴바 커스텀
 struct PostTopTabView: View {
+    @ObservedObject var viewModel: PostMainViewModel
     @Binding var selectedTab: PostCategoryTap
     var animation: Namespace.ID
     
@@ -267,6 +259,7 @@ struct PostTopTabView: View {
                     .onTapGesture {
                         withAnimation(.easeInOut) {
                             selectedTab = item
+                            viewModel.fetchPosts(feedType: item.rawValue.uppercased())
                         }
                     }
             }

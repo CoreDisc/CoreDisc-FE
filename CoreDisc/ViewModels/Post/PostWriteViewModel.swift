@@ -17,6 +17,8 @@ class PostWriteViewModel: ObservableObject {
     @Published var tempList: [PostTempList]? = nil
     @Published var tempPostAnswers: [PostTempIdAnswer] = []
     
+    @Published var isAlreadyPosted: Bool? = nil
+    
     // 게시글 생성 (임시)
     func postPosts(selectedDate: Date, completion: (() -> Void)? = nil) {
         let formatter = DateFormatter()
@@ -31,6 +33,7 @@ class PostWriteViewModel: ObservableObject {
                 do {
                     let decoded = try JSONDecoder().decode(PostPostsResponse.self, from: response.data)
                     self.postId = decoded.result.postId
+                    self.isAlreadyPosted = false
                     
                     completion?()
                     print("POST 성공: postId=\(decoded.result.postId)")
@@ -41,6 +44,14 @@ class PostWriteViewModel: ObservableObject {
                     }
                 }
             case .failure(let error):
+                if error.response?.statusCode == 409 {
+                    DispatchQueue.main.async {
+                        self.isAlreadyPosted = true
+                        ToastManager.shared.show("오늘은 이미 게시글을 작성했어요.")
+                    }
+                    return
+                }
+                
                 print("PostPosts API 오류: \(error)")
                 DispatchQueue.main.async {
                     ToastManager.shared.show("게시글을 생성하지 못했습니다.")

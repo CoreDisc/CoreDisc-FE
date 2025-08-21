@@ -23,13 +23,16 @@ class PostDetailViewModel: ObservableObject {
     @Published var replyList: [Int: [Comment]] = [:]
     @Published var replyHasNext: [Int: Bool] = [:]
     
+    // 삭제
+    @Published var isDelete = false
+    
     private let provider = APIManager.shared.createProvider(for: PostRouter.self)
     private let commentProvider = APIManager.shared.createProvider(for: CommentRouter.self)
     
     var whoText: String { selectiveDiary.who.displayName }
     var whereText: String { selectiveDiary.where.displayName }
     var whatText: String { selectiveDiary.what.displayName }
-    var moodText: String { selectiveDiary.mood }
+    var moodText: String { selectiveDiary.mood ?? "" }
     
     // MARK: - Functions
     func getDateString(date: String) -> String {
@@ -279,6 +282,7 @@ class PostDetailViewModel: ObservableObject {
             case .success(let response):
                 do {
                     let decodedData = try JSONDecoder().decode(CommentDeleteResponse.self, from: response.data)
+                    self.isDelete = true
                     print("게시글 삭제 성공: \(decodedData.message)")
                 } catch {
                     print("DeletePosts 디코더 오류: \(error)")

@@ -36,9 +36,6 @@ struct PostWriteDiaryView: View {
             Image(.imgPostDetailMainBg)
                 .resizable()
                 .ignoresSafeArea()
-                .onTapGesture { // 키보드 내리기 용도
-                    isFocused = false
-                }
             
             ScrollView {
                 VStack {
@@ -49,6 +46,9 @@ struct PostWriteDiaryView: View {
                     Spacer().frame(height: 18)
                     
                     DiaryGroup
+                        .onTapGesture { // 키보드 내리기 용도
+                            isFocused = false
+                        }
                 }
                 .padding(.bottom, 75)
             }

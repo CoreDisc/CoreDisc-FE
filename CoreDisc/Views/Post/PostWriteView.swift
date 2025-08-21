@@ -8,6 +8,7 @@
 import SwiftUI
 import PhotosUI
 import Kingfisher
+import Combine
 
 struct CardContent {
     var image: UIImage? = nil
@@ -51,6 +52,8 @@ struct PostWriteView: View {
     
     // 모달 관리
     @State var showQuestionMoadal: Bool = false
+    @State var showOnePostModal: Bool = false
+    @State var showAlreadyPostModal: Bool = false
     @State var showTempPostModal: Bool = false
     
     var body: some View {
@@ -87,6 +90,14 @@ struct PostWriteView: View {
                 BackModalView(showModal: $showQuestionMoadal, content: "질문 4개를 먼저 선택해 주세요.", buttonTitle: "확인")
             }
             
+            if showOnePostModal {
+                BackModalView(showModal: $showOnePostModal, content: "하루에 하나의 게시글만 작성할 수 있어요.\n작성한 게시글은 수정이 불가능합니다.", buttonTitle: "확인")
+            }
+            
+            if showAlreadyPostModal {
+                BackModalView(showModal: $showAlreadyPostModal, content: "하루에 하나의 게시글만 작성할 수 있어요.\n오늘은 이미 게시글을 작성했어요.", buttonTitle: "뒤로가기")
+            }
+            
             if showTempPostModal {
                 PostTempView(viewModel: viewModel, showModal: $showTempPostModal)
             }
@@ -99,21 +110,32 @@ struct PostWriteView: View {
             questionViewModel.fetchSelected()
             viewModel.postPosts(selectedDate: selectedDate)
         }
-//        .onReceive(viewModel.$tempList) { item in
-//            guard let item = item else { return }
-//            
-//            if let firstId = item.first?.postId {
-//                viewModel.postId = firstId
-//                viewModel.getTempId(postId: firstId)
-//            } else {
-//                viewModel.postPosts(selectedDate: selectedDate)
-//            }
-//        }
+        //        .onReceive(viewModel.$tempList) { item in
+        //            guard let item = item else { return }
+        //
+        //            if let firstId = item.first?.postId {
+        //                viewModel.postId = firstId
+        //                viewModel.getTempId(postId: firstId)
+        //            } else {
+        //                viewModel.postPosts(selectedDate: selectedDate)
+        //            }
+        //        }
         .onReceive(viewModel.$tempPostAnswers) { answers in
             applyTempAnswers(answers)
         }
         .onReceive(questionViewModel.$selectedQuestions) { list in
             showQuestionMoadal = list.contains { $0.id == nil }
+        }
+        .onReceive(viewModel.$isAlreadyPosted
+            .compactMap { $0 }
+        ) { isPosted in
+            if isPosted {
+                showAlreadyPostModal = true
+                showOnePostModal = false
+            } else {
+                showOnePostModal = true
+                showAlreadyPostModal = false
+            }
         }
         .onChange(of: selectedPhotoItem) {
             guard let newItem = selectedPhotoItem else { return }

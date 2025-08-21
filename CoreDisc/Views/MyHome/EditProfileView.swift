@@ -11,7 +11,8 @@ import Kingfisher
 
 struct EditProfileView: View {
     @Environment(NavigationRouter<MyhomeRoute>.self) private var router
-    @StateObject private var viewModel = MyHomeViewModel()
+    @EnvironmentObject private var viewModel: MyHomeViewModel
+    
     @FocusState private var isFocused: Bool
     @State private var showEditButton: Bool = false
     @State private var selectedItem: PhotosPickerItem? = nil
@@ -95,6 +96,7 @@ struct EditProfileView: View {
                 
                 HStack {
                     Button(action: {
+                        viewModel.profileUIImage = nil
                         router.pop()
                     }) {
                         Image(.iconBack)
@@ -123,6 +125,9 @@ struct EditProfileView: View {
                         if newValue {
                             router.pop()
                         }
+                    }
+                    .onChange(of: viewModel.imageChangeSuccess) {
+                        router.pop()
                     }
                 }
                 .padding(.leading, 17)

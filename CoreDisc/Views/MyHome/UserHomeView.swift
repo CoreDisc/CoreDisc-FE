@@ -10,6 +10,7 @@ import Kingfisher
 
 struct UserHomeView: View {
     @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    @Environment(NavigationRouter<PostRoute>.self) private var postRouter
     
     @StateObject var viewModel = UserHomeViewModel()
     
@@ -47,7 +48,9 @@ struct UserHomeView: View {
                     Spacer().frame(height: 25)
                     
                     PostGroup
+                        .padding(.bottom, 75)
                 }
+                .scrollIndicators(.hidden)
             }
             
             // 차단 모달
@@ -138,6 +141,7 @@ struct UserHomeView: View {
             HStack(alignment: .top) {
                 Button(action: {
                     router.pop()
+                    postRouter.pop()
                 }) {
                     Image(.iconBack)
                 }
@@ -316,9 +320,15 @@ struct UserHomeView: View {
                         .frame(maxWidth: .infinity)
                     }
                 }
+                .task {
+                    if post.postId == viewModel.postList.last?.postId,
+                       viewModel.hasNextPage {
+                        viewModel.fetchUserPosts(targetUsername: userName, cursorId: post.postId)
+                    }
+                }
             }
         }
-        .padding(.horizontal, 15)
+        .padding(.horizontal, 24)
     }
     
     // MARK: - bottom sheet

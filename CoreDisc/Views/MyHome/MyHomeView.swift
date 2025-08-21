@@ -10,8 +10,7 @@ import Kingfisher
 
 struct MyHomeView: View {
     @Environment(NavigationRouter<MyhomeRoute>.self) private var router
-    
-    @StateObject private var viewModel = MyHomeViewModel()
+    @EnvironmentObject private var viewModel: MyHomeViewModel
     
     @State var showFollowerSheet: Bool = false
     @State var showFollowingSheet: Bool = false
@@ -43,7 +42,9 @@ struct MyHomeView: View {
                     Spacer().frame(height: 31)
                     
                     PostGroup
+                        .padding(.bottom, 75)
                 }
+                .scrollIndicators(.hidden)
             }
             
             sheetView
@@ -93,10 +94,9 @@ struct MyHomeView: View {
         VStack(spacing: 8) {
             if let url = URL(string: viewModel.profileImageURL) {
                 KFImage(url)
-                    .placeholder({
-                        ProgressView()
-                            .controlSize(.mini)
-                    })
+                    .placeholder {
+                        ProgressView().controlSize(.mini)
+                    }
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 124, height: 124)
@@ -235,6 +235,12 @@ struct MyHomeView: View {
                                 .padding(22)
                         }
                         .frame(maxWidth: .infinity)
+                    }
+                }
+                .task {
+                    if post.postId == viewModel.postList.last?.postId,
+                       viewModel.hasNextPage {
+                        viewModel.fetchMyPosts(cursorId: post.postId)
                     }
                 }
             }

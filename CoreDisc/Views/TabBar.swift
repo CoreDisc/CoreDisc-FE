@@ -27,6 +27,7 @@ struct TabBar: View {
     @State private var myhomeRouter = NavigationRouter<MyhomeRoute>()
     
     @StateObject private var mainViewModel = QuestionMainViewModel()
+    @StateObject private var homeViewModel = MyHomeViewModel()
     
     init(startTab: Tab = .question) {
         _selectedTab = State(initialValue: startTab)
@@ -49,6 +50,7 @@ struct TabBar: View {
                     NavigationStack(path: $postRouter.path) {
                         PostTabContainer()
                     }
+                    .environment(writeRouter)
                     .environment(postRouter)
                     .environment(myhomeRouter)
                     
@@ -77,6 +79,7 @@ struct TabBar: View {
                     }
                     .environment(myhomeRouter)
                     .environment(postRouter)
+                    .environmentObject(homeViewModel)
                 }
             }
             .environmentObject(tabBarVisibility)

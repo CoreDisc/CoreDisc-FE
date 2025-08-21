@@ -48,6 +48,7 @@ class MyHomeViewModel: ObservableObject {
     @Published var imageUrl: String = ""
     @Published var selectedItems: [PhotosPickerItem] = []
     @Published var profileUIImage: UIImage?
+    @Published var imageChangeSuccess : Bool = false
     
     // MARK: - Functions
     func fetchMyHome() {
@@ -227,13 +228,21 @@ class MyHomeViewModel: ObservableObject {
     }
     
     func fetchProfileImage(imageData: Data) {
+        self.imageChangeSuccess = false
+        
         memberProvider.request(.patchProfileImage(image: imageData)) { result in
             switch result {
             case .success(let response):
                 do {
                     let decoded = try JSONDecoder().decode(ImageResponse.self, from: response.data)
+                    if let newUrl = decoded.result?.imageUrl {
+                        DispatchQueue.main.async {
+                            self.profileImageURL = newUrl
+                            self.profileUIImage = nil
+                            self.imageChangeSuccess = true
+                        }
+                    }
                     print("이미지 성공 : \(decoded)")
-                    self.fetchMyHome()
                 } catch {
                     print("디코딩 실패: \(error)")
                 }
