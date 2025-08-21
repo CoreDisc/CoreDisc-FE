@@ -125,14 +125,15 @@ struct QuestionListView: View {
                             sharedCount: item.sharedCount,
                             index: list.firstIndex(where: { $0.id == item.id })! + 1,
                             onDelete: {
-                                viewModel.deleteOfficialSaved(questionId: item.id) { success in
+                                viewModel.deleteOfficialSaved(savedId: item.savedId) { success in
                                     if success {
                                         if var currentList = viewModel.questionListMap[categoryUUID] {
-                                            currentList.removeAll(where: { $0.id == item.id })
+                                            currentList.removeAll { $0.savedId == item.savedId }
                                             viewModel.questionListMap[categoryUUID] = currentList
                                         }
                                     }
                                 }
+
                             },
                             onTap: {
                                 showSelectModal = true
