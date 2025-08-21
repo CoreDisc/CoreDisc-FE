@@ -13,7 +13,7 @@ enum QuestionRouter {
     case postRandom(randomData: RandomData) // 랜덤 질문 선택
     case postPersonal(personalData: OfficialPersonalData) // 내가 작성한 질문 저장하기
     case postOfficial(officialData: OfficialPersonalData) // 내가 작성한 질문 공유하기
-    case postOfficialSave(questionId: Int) // 타사용자가 작성한 공유질문 저장
+    case postOfficialSave(questionId: Int, selectedQuestionType: String) // 타사용자가 작성한 공유질문 저장
     case postFixed(fixedData: FixedData) // 고정 질문 선택
     
     case getSelected // 선택한 고정&랜덤 질문 조회
@@ -57,7 +57,7 @@ extension QuestionRouter: APITargetType {
             return "\(Self.questionPath)/personal"
         case .postOfficial:
             return "\(Self.questionPath)/official"
-        case .postOfficialSave(let questionId):
+        case .postOfficialSave(let questionId, _):
             return "\(Self.questionPath)/official/\(questionId)"
         case .postFixed:
             return "\(Self.questionPath)/fixed"
@@ -111,8 +111,8 @@ extension QuestionRouter: APITargetType {
             return .requestJSONEncodable(personalData)
         case .postOfficial(let officialData):
             return .requestJSONEncodable(officialData)
-        case .postOfficialSave:
-            return .requestPlain
+        case .postOfficialSave(_, let selectedQuestionType):
+            return .requestParameters(parameters: ["selectedQuestionType": selectedQuestionType], encoding: JSONEncoding.default)
         case .postFixed(let fixedData):
             return .requestJSONEncodable(fixedData)
             
