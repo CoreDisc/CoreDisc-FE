@@ -231,7 +231,7 @@ struct CorelistToggle: View {
             withAnimation(.easeInOut(duration: 0.2)) {
                 if isCorelist {
                     currentFollowType = .follower
-                    viewModel.fetchCircleList()
+                    viewModel.fetchFollowers()
                 } else {
                     currentFollowType = .coreList
                     viewModel.fetchCircleList()

@@ -99,8 +99,8 @@ class FollowSheetViewModel: ObservableObject {
                     nickname: $0.nickname,
                     username: $0.username,
                     profileImgUrl: $0.profileImgDTO?.imageUrl,
-                    isCore: false,
-                    isMutual: $0.isMutual
+                    isCore: $0.isCircle,
+                    isMutual: true
                 )
             }
         }
