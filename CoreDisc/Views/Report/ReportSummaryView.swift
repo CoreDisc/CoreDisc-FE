@@ -129,7 +129,9 @@ struct ReportSummaryView: View {
                 }
                 Spacer()
                 HStack {
-                    NavigationLink(destination: ReportDetailView(year: beforeDiscYear, month: beforeDiscMonth)){
+                    Button(action: {
+                        router.push(.detail(year: beforeDiscYear, month: beforeDiscMonth))
+                    }) {
                         Image(.iconBefore)
                     }
                     Spacer().frame(width: 19)
@@ -137,7 +139,9 @@ struct ReportSummaryView: View {
                     Image(.iconPlay)
                     Spacer().frame(width: 19)
                     
-                    NavigationLink(destination: ReportDetailView(year: nextDiscYear, month: nextDiscMonth)){
+                    Button(action: {
+                        router.push(.detail(year: nextDiscYear, month: nextDiscMonth))
+                    }) {
                         Image(.iconNext)
                     }
                 }

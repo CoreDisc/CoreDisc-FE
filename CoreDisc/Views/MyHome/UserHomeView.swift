@@ -10,6 +10,7 @@ import Kingfisher
 
 struct UserHomeView: View {
     @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    @Environment(NavigationRouter<PostRoute>.self) private var postRouter
     
     @StateObject var viewModel = UserHomeViewModel()
     
@@ -138,6 +139,7 @@ struct UserHomeView: View {
             HStack(alignment: .top) {
                 Button(action: {
                     router.pop()
+                    postRouter.pop()
                 }) {
                     Image(.iconBack)
                 }
@@ -318,7 +320,7 @@ struct UserHomeView: View {
                 }
             }
         }
-        .padding(.horizontal, 15)
+        .padding(.horizontal, 24)
     }
     
     // MARK: - bottom sheet

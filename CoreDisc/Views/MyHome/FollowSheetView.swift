@@ -9,6 +9,8 @@ import SwiftUI
 import Kingfisher
 
 struct FollowSheetView: View {
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var router
+    
     @Binding var showSheet: Bool
     @StateObject private var viewModel = FollowSheetViewModel()
     
@@ -111,7 +113,9 @@ struct FollowSheetView: View {
             LazyVStack(spacing: 16) {
                 let list = viewModel.getDisplayList(for: currentFollowType)
                 ForEach(list, id: \.id) { item in
-                    NavigationLink(destination: UserHomeView(userName: item.username)) {
+                    Button(action: {
+                        router.push(.user(userName: item.username))
+                    }) {
                         FollowListItem(
                             item: item,
                             followType: currentFollowType,
