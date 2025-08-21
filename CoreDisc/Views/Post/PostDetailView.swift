@@ -10,7 +10,7 @@ import Kingfisher
 
 struct PostDetailView: View {
     @Environment(NavigationRouter<PostRoute>.self) private var router
-    @Environment(NavigationRouter<MyhomeRoute>.self) private var honeRouter
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var homeRouter
     @StateObject private var viewModel = PostDetailViewModel()
     
     @State var showCommentSheet: Bool = false
@@ -79,15 +79,14 @@ struct PostDetailView: View {
                     }
                 } leftButton: {
                     Button(action: {
-                        showDeleteModal.toggle() // 차단해제모달 제거
+                        showDeleteModal.toggle()
                     }) {
                         Text("취소하기")
                     }
                 } rightButton: {
                     Button(action: {
                         viewModel.fetchDeletePost(postId: postId)
-                        showDeleteModal.toggle() // 차단해제모달 제거
-                        router.pop()
+                        showDeleteModal.toggle()
                     }) {
                         Text("삭제하기")
                             .foregroundStyle(.red)
@@ -125,6 +124,10 @@ struct PostDetailView: View {
                 showUserHome = false
             }
         }
+        .onChange(of: viewModel.isDelete) {
+            router.pop()
+            homeRouter.pop()
+        }
     }
     
     // 뒤로가기 버튼 섹션
@@ -132,7 +135,7 @@ struct PostDetailView: View {
         HStack{
             Button(action: {
                 router.pop()
-                honeRouter.pop()
+                homeRouter.pop()
             }){
                 Image(.iconBack)
                     .resizable()
@@ -192,24 +195,32 @@ struct PostDetailView: View {
                 }
             }
             
-            HStack(spacing: 4) {
-                // 프로필 이미지
-                if let url = URL(string: viewModel.memberInfo.profileImg) {
-                    KFImage(url)
-                        .placeholder({
-                            ProgressView()
-                                .controlSize(.mini)
-                        })
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 24, height: 24)
-                        .clipShape(Circle())
+            Button(action: {
+                if viewModel.isOwner {
+                    router.push(.myHome)
+                } else {
+                    router.push(.user(userName: viewModel.memberInfo.username))
                 }
-                
-                // 유저 아이디
-                Text("@\(viewModel.memberInfo.username)")
-                    .textStyle(.Post_Id)
-                    .foregroundStyle(.gray800)
+            }) {
+                HStack(spacing: 4) {
+                    // 프로필 이미지
+                    if let url = URL(string: viewModel.memberInfo.profileImg) {
+                        KFImage(url)
+                            .placeholder({
+                                ProgressView()
+                                    .controlSize(.mini)
+                            })
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 24, height: 24)
+                            .clipShape(Circle())
+                    }
+                    
+                    // 유저 아이디
+                    Text("@\(viewModel.memberInfo.username)")
+                        .textStyle(.Post_Id)
+                        .foregroundStyle(.gray800)
+                }
             }
         }
         .padding(.horizontal, 43)
