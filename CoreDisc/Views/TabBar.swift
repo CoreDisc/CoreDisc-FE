@@ -53,6 +53,7 @@ struct TabBar: View {
                     .environment(writeRouter)
                     .environment(postRouter)
                     .environment(myhomeRouter)
+                    .environmentObject(homeViewModel)
                     
                 case .write:
                     NavigationStack(path: $writeRouter.path) {

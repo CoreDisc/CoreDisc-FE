@@ -22,6 +22,7 @@ struct PostDetailView: View {
     
     @State var showDeleteModal: Bool = false
     
+    let hosting: HostingStackType
     let postId: Int
     
     var body: some View {
@@ -125,8 +126,14 @@ struct PostDetailView: View {
             }
         }
         .onChange(of: viewModel.isDelete) {
-            router.pop()
-            homeRouter.pop()
+            switch hosting {
+            case .post:
+                router.pop()
+            case .myhome:
+                homeRouter.pop()
+            case .write, .report, .question:
+                return
+            }
         }
     }
     
@@ -134,8 +141,14 @@ struct PostDetailView: View {
     private var BackButtonGroup: some View {
         HStack{
             Button(action: {
-                router.pop()
-                homeRouter.pop()
+                switch hosting {
+                case .post:
+                    router.pop()
+                case .myhome:
+                    homeRouter.pop()
+                case .write, .report, .question:
+                    return
+                }
             }){
                 Image(.iconBack)
                     .resizable()
@@ -384,6 +397,6 @@ struct SelectiveDiary: View {
     }
 }
 
-#Preview {
-    PostDetailView(postId: 1)
-}
+//#Preview {
+//    PostDetailView(postId: 1)
+//}

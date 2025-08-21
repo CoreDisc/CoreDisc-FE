@@ -91,7 +91,7 @@ struct NotificationView: View {
             
         case "SHARED_SAVED":
             // TODO: 화면 전환
-            break
+            router.push(.questionMain)
             
         case "COMMENT", "COMMENT_REPLY", "LIKE":
             router.push(.detail(postId: item.targetId ?? 0))

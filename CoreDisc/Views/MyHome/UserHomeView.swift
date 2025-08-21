@@ -21,6 +21,7 @@ struct UserHomeView: View {
     @State var showFollowerSheet: Bool = false
     @State var showFollowingSheet: Bool = false
     
+    let hosting: HostingStackType
     var userName: String
     
     var body: some View {
@@ -140,8 +141,14 @@ struct UserHomeView: View {
             
             HStack(alignment: .top) {
                 Button(action: {
-                    router.pop()
-                    postRouter.pop()
+                    switch hosting {
+                    case .post:
+                        postRouter.pop()
+                    case .myhome:
+                        router.pop()
+                    case .write, .report, .question:
+                        return
+                    }
                 }) {
                     Image(.iconBack)
                 }
@@ -291,7 +298,14 @@ struct UserHomeView: View {
         return LazyVGrid(columns: columns, spacing: 12) {
             ForEach(viewModel.postList, id: \.postId) { post in
                 Button(action: {
-                    router.push(.post(postId: post.postId))
+                    switch hosting {
+                    case .post:
+                        postRouter.push(.detail(postId: post.postId))
+                    case .myhome:
+                        router.push(.post(postId: post.postId))
+                    case .write, .report, .question:
+                        return
+                    }
                 }) {
                     if let url = URL(string: post.postImageThumbnailDTO?.thumbnailUrl ?? ""),
                        !url.absoluteString.isEmpty { // 이미지
@@ -347,7 +361,7 @@ struct UserHomeView: View {
         }
     }
 }
-
-#Preview {
-    UserHomeView(userName: "")
-}
+//
+//#Preview {
+//    UserHomeView(userName: "")
+//}

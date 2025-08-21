@@ -96,75 +96,77 @@ struct QuestionMainView: View {
         let question3 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 3 })
         let question4 = viewModel.selectedQuestions.first(where: { $0.questionOrder == 4 })
         
-        return ZStack {
-            Image(.imgCd)
-                .resizable()
-                .frame(width: 529, height: 529)
-                .rotationEffect(.degrees(-rotationAngle))
-                .onReceive(timer) { _ in
-                    withAnimation {
-                        rotationAngle += 1 // 회전 속도 조절
+        return GeometryReader { g in
+            ZStack {
+                Image(.imgCd)
+                    .resizable()
+                    .frame(width: 529, height: 529)
+                    .rotationEffect(.degrees(-rotationAngle))
+                    .onReceive(timer) { _ in
+                        withAnimation {
+                            rotationAngle += 1 // 회전 속도 조절
+                        }
                     }
-                }
-                .offset(x: 172)
-            
-            QuestionSelectItem(
-                viewModel: viewModel,
-                showModal: $showModal,
-                moveLeft: $isSelectView,
-                currentQuestionType: $currentQuestionType,
-                text: question1?.question ?? "한달질문을 선택하세요",
-                order: 1,
-                onTap: { currentOrder = $0 },
-                startColor: colors(for: question1?.questionType).0,
-                endColor: colors(for: question1?.questionType).1
-            )
-            .position(x: 150+79, y: 97)
-            
-            QuestionSelectItem(
-                viewModel: viewModel,
-                showModal: $showModal,
-                moveLeft: $isSelectView,
-                currentQuestionType: $currentQuestionType,
-                text: question2?.question ?? "한달질문을 선택하세요",
-                order: 2,
-                onTap: { currentOrder = $0 },
-                startColor: colors(for: question2?.questionType).0,
-                endColor: colors(for: question2?.questionType).1
-            )
-            .position(x: 150+34, y: 196)
-            
-            QuestionSelectItem(
-                viewModel: viewModel,
-                showModal: $showModal,
-                moveLeft: $isSelectView,
-                currentQuestionType: $currentQuestionType,
-                text: question3?.question ?? "한달질문을 선택하세요",
-                order: 3,
-                onTap: { currentOrder = $0 },
-                startColor: colors(for: question3?.questionType).0,
-                endColor: colors(for: question3?.questionType).1
-            )
-            .position(x: 150+42, y: 295)
-            
-            QuestionSelectItem(
-                viewModel: viewModel,
-                showModal: $showModal,
-                moveLeft: $isSelectView,
-                currentQuestionType: $currentQuestionType,
-                text: question4?.question ?? "하루질문을 선택하세요",
-                order: 4,
-                onTap: { currentOrder = $0 },
-                startColor: colors(for: question4?.questionType).0,
-                endColor: colors(for: question4?.questionType).1
-            )
-            .position(x: 150+79, y: 394)
-            
-            SelectCDGroup
-                .offset(x: 460)
+                    .offset(x: 172)
+                
+                QuestionSelectItem(
+                    viewModel: viewModel,
+                    showModal: $showModal,
+                    moveLeft: $isSelectView,
+                    currentQuestionType: $currentQuestionType,
+                    text: question1?.question ?? "한달질문을 선택하세요",
+                    order: 1,
+                    onTap: { currentOrder = $0 },
+                    startColor: colors(for: question1?.questionType).0,
+                    endColor: colors(for: question1?.questionType).1
+                )
+                .position(x: 150+79, y: 97)
+                
+                QuestionSelectItem(
+                    viewModel: viewModel,
+                    showModal: $showModal,
+                    moveLeft: $isSelectView,
+                    currentQuestionType: $currentQuestionType,
+                    text: question2?.question ?? "한달질문을 선택하세요",
+                    order: 2,
+                    onTap: { currentOrder = $0 },
+                    startColor: colors(for: question2?.questionType).0,
+                    endColor: colors(for: question2?.questionType).1
+                )
+                .position(x: 150+34, y: 196)
+                
+                QuestionSelectItem(
+                    viewModel: viewModel,
+                    showModal: $showModal,
+                    moveLeft: $isSelectView,
+                    currentQuestionType: $currentQuestionType,
+                    text: question3?.question ?? "한달질문을 선택하세요",
+                    order: 3,
+                    onTap: { currentOrder = $0 },
+                    startColor: colors(for: question3?.questionType).0,
+                    endColor: colors(for: question3?.questionType).1
+                )
+                .position(x: 150+42, y: 295)
+                
+                QuestionSelectItem(
+                    viewModel: viewModel,
+                    showModal: $showModal,
+                    moveLeft: $isSelectView,
+                    currentQuestionType: $currentQuestionType,
+                    text: question4?.question ?? "하루질문을 선택하세요",
+                    order: 4,
+                    onTap: { currentOrder = $0 },
+                    startColor: colors(for: question4?.questionType).0,
+                    endColor: colors(for: question4?.questionType).1
+                )
+                .position(x: 150+79, y: 394)
+                
+                SelectCDGroup
+                    .offset(x: 460)
+            }
+            .frame(width: g.size.width, height: 529)
+            .offset(x: isSelectView ? -366 : 0)
         }
-        .frame(width: UIScreen.main.bounds.width, height: 529)
-        .offset(x: isSelectView ? -366 : 0)
     }
     
     private var SelectCDGroup: some View {
