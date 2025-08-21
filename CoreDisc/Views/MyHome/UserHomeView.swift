@@ -320,6 +320,12 @@ struct UserHomeView: View {
                         .frame(maxWidth: .infinity)
                     }
                 }
+                .task {
+                    if post.postId == viewModel.postList.last?.postId,
+                       viewModel.hasNextPage {
+                        viewModel.fetchUserPosts(targetUsername: viewModel.username, cursorId: post.postId)
+                    }
+                }
             }
         }
         .padding(.horizontal, 24)

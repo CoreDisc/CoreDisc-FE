@@ -239,6 +239,12 @@ struct MyHomeView: View {
                         .frame(maxWidth: .infinity)
                     }
                 }
+                .task {
+                    if post.postId == viewModel.postList.last?.postId,
+                       viewModel.hasNextPage {
+                        viewModel.fetchMyPosts(cursorId: post.postId)
+                    }
+                }
             }
         }
         .padding(.horizontal, 24)
