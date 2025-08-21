@@ -35,7 +35,7 @@ struct ReportDetailView: View {
     }
     
     var beforeDiscYear: Int {
-        (month == 1) ? year + 1 : year
+        (month == 12) ? year + 1 : year
     }
     
     var nextDiscMonth: Int {
@@ -43,7 +43,7 @@ struct ReportDetailView: View {
     }
     
     var nextDiscYear: Int {
-        (month == 12) ? year - 1 : year
+        (month == 1) ? year - 1 : year
     }
     
     let sixItemPositions: [CGPoint] = [
@@ -196,7 +196,7 @@ struct ReportDetailView: View {
                 .padding(.bottom, 2)
                 .padding(.trailing, 36)
             
-            Text("가장 많이 선택한 랜덤 질문은")
+            Text("가장 많이 선택한 하루질문은")
                 .textStyle(.Title2_Text_Ko)
                 .foregroundStyle(.white)
                 .padding(.trailing, 36)
