@@ -35,7 +35,7 @@ struct ReportDetailView: View {
     }
     
     var beforeDiscYear: Int {
-        (month == 1) ? year + 1 : year
+        (month == 12) ? year + 1 : year
     }
     
     var nextDiscMonth: Int {
@@ -43,7 +43,7 @@ struct ReportDetailView: View {
     }
     
     var nextDiscYear: Int {
-        (month == 12) ? year - 1 : year
+        (month == 1) ? year - 1 : year
     }
     
     let sixItemPositions: [CGPoint] = [
