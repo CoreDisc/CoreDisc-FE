@@ -220,8 +220,8 @@ class QuestionBasicViewModel: ObservableObject {
         }
     }
     
-    func fetchOfficialSave(questionId: Int) {
-        basicProvider.request(.postOfficialSave(questionId: questionId)) { result in
+    func fetchOfficialSave(questionId: Int, selectedQuestionType: String) {
+        basicProvider.request(.postOfficialSave(questionId: questionId, selectedQuestionType: selectedQuestionType)) { result in
             switch result {
             case .success(let response):
                 do {

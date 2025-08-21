@@ -20,6 +20,8 @@ struct QuestionMainView: View {
     @State private var rotationAngle: Double = 0.0
     let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
     
+    @State var showModal: Bool = false
+    
     var body: some View {
         ZStack {
             Image(.imgShortBackground)
@@ -34,6 +36,10 @@ struct QuestionMainView: View {
                 MainCDGroup
                 
                 Spacer()
+            }
+            
+            if showModal {
+                BackModalView(showModal: $showModal, content: "오늘은 모든 질문을 설정했어요.\n하루질문은 내일 다시 선택할 수 있어요.", buttonTitle: "확인")
             }
         }
         .task {
@@ -103,6 +109,8 @@ struct QuestionMainView: View {
                 .offset(x: 172)
             
             QuestionSelectItem(
+                viewModel: viewModel,
+                showModal: $showModal,
                 moveLeft: $isSelectView,
                 currentQuestionType: $currentQuestionType,
                 text: question1?.question ?? "한달질문을 선택하세요",
@@ -114,6 +122,8 @@ struct QuestionMainView: View {
             .position(x: 150+79, y: 97)
             
             QuestionSelectItem(
+                viewModel: viewModel,
+                showModal: $showModal,
                 moveLeft: $isSelectView,
                 currentQuestionType: $currentQuestionType,
                 text: question2?.question ?? "한달질문을 선택하세요",
@@ -125,6 +135,8 @@ struct QuestionMainView: View {
             .position(x: 150+34, y: 196)
             
             QuestionSelectItem(
+                viewModel: viewModel,
+                showModal: $showModal,
                 moveLeft: $isSelectView,
                 currentQuestionType: $currentQuestionType,
                 text: question3?.question ?? "한달질문을 선택하세요",
@@ -136,6 +148,8 @@ struct QuestionMainView: View {
             .position(x: 150+42, y: 295)
             
             QuestionSelectItem(
+                viewModel: viewModel,
+                showModal: $showModal,
                 moveLeft: $isSelectView,
                 currentQuestionType: $currentQuestionType,
                 text: question4?.question ?? "하루질문을 선택하세요",
@@ -166,6 +180,9 @@ struct QuestionMainView: View {
 
 // 질문 선택 컴포넌트
 struct QuestionSelectItem: View {
+    @ObservedObject var viewModel: QuestionMainViewModel
+    
+    @Binding var showModal: Bool
     @Binding var moveLeft: Bool
     @Binding var currentQuestionType: String
     
@@ -186,6 +203,10 @@ struct QuestionSelectItem: View {
                 }
                 moveLeft = true
                 onTap?(order)
+                
+                if viewModel.selectedQuestions.allSatisfy({ $0.id != nil }) {
+                    showModal = true
+                }
             }
         }) {
             ZStack {

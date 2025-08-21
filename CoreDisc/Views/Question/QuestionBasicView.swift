@@ -12,7 +12,7 @@ struct QuestionBasicView: View {
     
     @StateObject private var viewModel = QuestionBasicViewModel()
     
-    let selectedQuestionType: String
+    let selectedQuestionType: String // 한달, 하루
     @State var goToMain: Bool = false
     
     @FocusState private var isFocused: Bool
@@ -24,6 +24,7 @@ struct QuestionBasicView: View {
     // 질문 선택/저장 용도
     let order: Int
     @State private var selectedQuestionId: Int? = nil
+    @State private var selectedQuestionTypeForSave: String? = nil
     
     // 열려있는 카테고리
     @State private var expandedCategoryIDs: Set<UUID> = []
@@ -81,7 +82,10 @@ struct QuestionBasicView: View {
                     }
                 } leftButton: {
                     Button(action: {
-                        viewModel.fetchOfficialSave(questionId: selectedQuestionId!)
+                        guard let id = selectedQuestionId,
+                              let type = selectedQuestionTypeForSave else { return }
+
+                        viewModel.fetchOfficialSave(questionId: id, selectedQuestionType: type)
                         showSaveModal.toggle() // 모달 제거
                         
                     }) {
@@ -223,8 +227,9 @@ struct QuestionBasicView: View {
                                         question: question,
                                         startColor: item.startColor,
                                         endColor: item.endColor,
-                                        onSelect: { id in
+                                        onSelect: { id, type in
                                             selectedQuestionId = id
+                                            selectedQuestionTypeForSave = type
                                         }
                                     )
                                     .task {
@@ -333,7 +338,7 @@ struct QuestionBasicDetailItem: View {
     var question: QuestionBasicListValue
     var startColor: Color
     var endColor: Color
-    var onSelect: (Int) -> Void
+    var onSelect: (Int, String) -> Void
     
     @State private var isShifted: Bool = false
     
@@ -380,7 +385,7 @@ struct QuestionBasicDetailItem: View {
             HStack(spacing: 3) {
                 Button {
                     showSelectModal.toggle()
-                    onSelect(question.id)
+                    onSelect(question.id, question.questionType)
                 } label: {
                     Image(question.isSelected ? .iconBasicSelected : .iconBasicSelect)
                 }
@@ -389,7 +394,7 @@ struct QuestionBasicDetailItem: View {
                     Button {
                         if question.savedStatus == "NOT_SAVED" {
                             showSaveModal.toggle()
-                            onSelect(question.id)
+                            onSelect(question.id, question.questionType)
                         }
                     } label: {
                         Image(question.savedStatus == "SAVED" ? .iconBasicSaved : .iconBasicSave)

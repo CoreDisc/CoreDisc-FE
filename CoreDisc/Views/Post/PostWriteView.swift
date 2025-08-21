@@ -84,7 +84,7 @@ struct PostWriteView: View {
             
             // 모달
             if showQuestionMoadal {
-                BackModalView(showModal: $showQuestionMoadal, content: "질문 4개를 먼저 선택해 주세요.")
+                BackModalView(showModal: $showQuestionMoadal, content: "질문 4개를 먼저 선택해 주세요.", buttonTitle: "확인")
             }
             
             if showTempPostModal {

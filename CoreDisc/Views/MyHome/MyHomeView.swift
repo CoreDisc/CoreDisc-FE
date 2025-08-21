@@ -49,7 +49,7 @@ struct MyHomeView: View {
             sheetView
             
             if showMutualModal {
-                BackModalView(showModal: $showMutualModal, content: "Core List는 서로 팔로우 중일 때만\n설정할 수 있어요.")
+                BackModalView(showModal: $showMutualModal, content: "Core List는 서로 팔로우 중일 때만\n설정할 수 있어요.", buttonTitle: "뒤로가기")
             }
         }
         .task {
