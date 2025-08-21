@@ -43,6 +43,9 @@ struct LoginView: View {
                 SocialLoginGroup
             }
         }
+        .onChange(of: viewModel.isLogin, {
+            viewModel.fetchFcmToken()
+        })
         .fullScreenCover(isPresented: $viewModel.isLogin) {
             TabBar()
         }

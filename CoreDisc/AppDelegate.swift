@@ -98,6 +98,7 @@ extension AppDelegate: MessagingDelegate {
         
         // 토큰 저장
         KeychainManager.standard.saveString(fcmToken, for: "FCMToken")
+        print("=== FCM 토큰 키체인 저장 성공 ===")
     }
     
 //    /// 서버에 FCM 토큰 전송 (예: 사용자 로그인 후 서버에 등록)
