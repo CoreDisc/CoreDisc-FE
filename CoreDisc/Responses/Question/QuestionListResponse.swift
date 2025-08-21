@@ -7,6 +7,7 @@
 
 import Foundation
 
+// 저장한 질문 조회 응답 모델
 struct QuestionListResponse: Codable {
     let isSuccess: Bool
     let code: String

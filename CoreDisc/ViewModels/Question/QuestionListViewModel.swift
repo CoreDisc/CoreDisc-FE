@@ -27,10 +27,8 @@ class QuestionListViewModel: ObservableObject {
         
         let target: QuestionRouter
         if let categoryId = categoryId, categoryId != 0 {
-            // 카테고리 필터 버전 API 호출
             target = .getOfficialMineByCategory(categoryId: categoryId, cursorId: cursorId, size: size)
         } else {
-            // 전체 API 호출
             target = .getOfficialMine(cursorId: cursorId, size: size)
         }
         
@@ -38,14 +36,36 @@ class QuestionListViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    let decoded = try JSONDecoder().decode(QuestionListResponse.self, from: response.data)
+                    let decoded = try JSONDecoder().decode(ShareOfficialQuestionResponse.self, from: response.data)
                     if decoded.isSuccess {
                         DispatchQueue.main.async {
                             if cursorId == nil {
-                                self.questionListMap[categoryUUID] = decoded.result.values
+                                self.questionListMap[categoryUUID] = decoded.result.values.map { item in
+                                    QuestionListItem(
+                                        savedId: item.id,   // official 은 savedId 대신 id 사용
+                                        questionId: item.id,
+                                        categories: item.categories,
+                                        questionType: "OFFICIAL",
+                                        question: item.question,
+                                        sharedCount: item.sharedCount,
+                                        isSelected: item.isSelected,
+                                        createdAt: item.createdAt
+                                    )
+                                }
                             } else {
                                 var existingList = self.questionListMap[categoryUUID] ?? []
-                                existingList.append(contentsOf: decoded.result.values)
+                                existingList.append(contentsOf: decoded.result.values.map { item in
+                                    QuestionListItem(
+                                        savedId: item.id,
+                                        questionId: item.id,
+                                        categories: item.categories,
+                                        questionType: "OFFICIAL",
+                                        question: item.question,
+                                        sharedCount: item.sharedCount,
+                                        isSelected: item.isSelected,
+                                        createdAt: item.createdAt
+                                    )
+                                })
                                 self.questionListMap[categoryUUID] = existingList
                             }
                             self.hasNextPageMap[categoryUUID] = decoded.result.hasNext
@@ -67,6 +87,7 @@ class QuestionListViewModel: ObservableObject {
             }
         }
     }
+
     
     func fetchOfficialSavedMine(
             categoryUUID: UUID,
