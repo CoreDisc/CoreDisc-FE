@@ -40,7 +40,7 @@ enum QuestionRouter {
     ) // 기본 질문 리스트 조회 (검색)
     
     case deletePersonal(questionId: Int) // 작성하여 저장한 질문 삭제하기 (커스텀 질문 삭제)
-    case deleteOfficial(questionId: Int) // 저장한 공유질문 삭제
+    case deleteOfficial(savedId: Int) // 저장한 공유질문 삭제
     case getPopular(selectedQuestionType: String) // 인기 질문 조회
     case patchPersonal(questionId: Int, categoryIdList: [Int], question: String) // 작성 질문 재작성
     
@@ -79,8 +79,8 @@ extension QuestionRouter: APITargetType {
             
         case .deletePersonal(let questionId):
             return "\(Self.questionPath)/personal/\(questionId)"
-        case .deleteOfficial(let questionId):
-            return "\(Self.questionPath)/official/saved/\(questionId)"
+        case .deleteOfficial(let savedId):
+            return "\(Self.questionPath)/official/saved/\(savedId)"
         case .getPopular:
             return "\(Self.questionPath)/popular"
         case .patchPersonal(let questionId, _, _):
@@ -133,7 +133,7 @@ extension QuestionRouter: APITargetType {
             if let size = size { params["size"] = size }
             return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
         case .getOfficialSavedMine(let categoryId, let cursorId, let size):
-            var params: [String: Any] = ["selectedQuestionType": "OFFICIAL"]
+            var params: [String: Any] = [:]
             if let categoryId = categoryId, categoryId != 0 {
                 params["categoryId"] = categoryId
             }
@@ -144,6 +144,7 @@ extension QuestionRouter: APITargetType {
                 params["size"] = size
             }
             return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
+
         case .getCategories:
             return .requestPlain
         case .getCategoriesSearch(let keyword):
