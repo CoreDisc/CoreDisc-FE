@@ -11,6 +11,7 @@ struct BackModalView: View {
     @Binding var showModal: Bool
     
     let content: String
+    let buttonTitle: String
     
     var body: some View {
         ZStack {
@@ -37,7 +38,7 @@ struct BackModalView: View {
                         Button(action: {
                             showModal = false
                         }) {
-                            Text("취소하기")
+                            Text(buttonTitle)
                                 .frame(width: 296, height: 39)
                                 .textStyle(.Modal_Text)
                                 .foregroundStyle(.black000)
