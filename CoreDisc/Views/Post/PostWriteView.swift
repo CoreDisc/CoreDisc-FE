@@ -281,10 +281,11 @@ struct PostWriteView: View {
             
             if allAnswered {
                 Button(action: {
+                    ToastManager.shared.show("답변 저장 중 ...")
                     uploadAnswers {
-                        ToastManager.shared.show("게시글 임시 저장 완료")
+                        ToastManager.shared.show("답변 저장 완료")
+                        router.push(.select(postId: viewModel.postId, isCore: isCore))
                     }
-                    router.push(.select(postId: viewModel.postId, isCore: isCore))
                 }) {
                     ZStack {
                         Circle()
