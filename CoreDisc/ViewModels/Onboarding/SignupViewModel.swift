@@ -30,8 +30,6 @@ class SignupViewModel: ObservableObject {
     @Published var emailDuplicate: Bool = false
     @Published var emailSuccess: Bool = false
     @Published var emailBoxColor: Bool = false
-    @Published var nameDuplicate: Bool = false
-    @Published var nameSuccess: Bool = false
     @Published var termsList: [TermsData] = []
     @Published var terms1: Bool = false { didSet { updateAgreedTermsIds() } }
     @Published var terms2: Bool = false { didSet { updateAgreedTermsIds() } }
@@ -42,10 +40,10 @@ class SignupViewModel: ObservableObject {
     
     private func updateAgreedTermsIds() {
         var ids: [Int] = []
-        if terms1 { ids.append(5) }
-        if terms2 { ids.append(6) }
-        if terms3 { ids.append(7) }
-        if terms4 { ids.append(8) }
+        if terms1 { ids.append(1) }
+        if terms2 { ids.append(2) }
+        if terms3 { ids.append(3) }
+        if terms4 { ids.append(4) }
         agreedTermsIds = ids
     }
     
@@ -105,25 +103,6 @@ class SignupViewModel: ObservableObject {
                     self.idDuplicate = decodedResponse.result.duplicated
                     if !self.idDuplicate {
                         self.idSuccess = true
-                    }
-                } catch {
-                    print("디코딩 실패 : \(error)")
-                }
-            case .failure(let error):
-                print("네트워크 오류 : \(error)")
-            }
-        }
-    }
-    
-    func CkeckName() {
-        authProvider.request(.getCheckNickname(nickname: name)) { result in
-            switch result {
-            case .success(let response):
-                do {
-                    let decodedResponse = try JSONDecoder().decode(NameCheckResponse.self, from: response.data)
-                    self.nameDuplicate = decodedResponse.result.duplicated
-                    if !self.nameDuplicate {
-                        self.nameSuccess = true
                     }
                 } catch {
                     print("디코딩 실패 : \(error)")

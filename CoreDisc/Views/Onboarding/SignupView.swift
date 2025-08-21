@@ -65,18 +65,25 @@ struct SignupView: View {
     
     private var MainGroup : some View{
         VStack(alignment: .leading){
-            HStack{
-                Divider()
-                    .frame(width: 92, height: 1)
-                    .background(Color.white)
+            HStack(alignment: .center) {
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(height: 1)
+                    .frame(maxWidth: .infinity)
+                
                 Text("회원 가입")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
-                    .padding(.horizontal, 36)
-                Divider()
-                    .frame(width: 92, height: 1)
-                    .background(Color.white)
+                    .padding(.horizontal, 16)
+                    .lineLimit(1)
+                    .layoutPriority(1)
+                
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(height: 1)
+                    .frame(maxWidth: .infinity)
             }
+
             
             Spacer().frame(height: 32)
             
@@ -321,34 +328,12 @@ struct SignupView: View {
                 .foregroundStyle(.white)
                 .padding(.leading, 10)
             
-            ZStack{
-                InputView{
-                    TextField("이름을 입력해주세요.", text: $viewModel.name)
-                        .textInputAutocapitalization(.never)
-                        .focused($isFocused)
-                        .onChange(of: viewModel.name) { oldValue, newValue in
-                            if viewModel.nameSuccess {
-                                viewModel.nameSuccess = false
-                            }
-                        }
-                }
-                HStack{
-                    Spacer()
-                    Button(action: {
-                        viewModel.CkeckName()
-                    }, label: {
-                        ZStack{
-                            Capsule()
-                                .frame(width: 63, height: 25)
-                                .foregroundStyle((viewModel.name.isEmpty || viewModel.nameSuccess) ? .gray400 : .highlight)
-                            Text("중복확인")
-                                .textStyle(.Q_pick)
-                                .foregroundStyle(.black000)
-                        }
-                        .padding(.horizontal)
-                    })
-                }
+            InputView{
+                TextField("이름을 입력해주세요", text: $viewModel.name)
+                    .focused($isFocused)
+                    .textInputAutocapitalization(.never)
             }
+            
             
             if viewModel.nicknameError {
                 Text("16자 이내 영문,한글만 사용 가능합니다.")
@@ -360,21 +345,7 @@ struct SignupView: View {
                     .textStyle(.login_alert)
                     .foregroundStyle(.gray400)
             }
-            if viewModel.nameDuplicate {
-                Text("동일한 이름이 존재합니다.")
-                    .textStyle(.login_alert)
-                    .foregroundStyle(.warning)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer().frame(height: 20)
-            } else if viewModel.nameSuccess {
-                Text("사용 가능한 이름입니다.")
-                    .textStyle(.login_alert)
-                    .foregroundStyle(.gray400)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer().frame(height: 20)
-            } else {
-                Spacer().frame(height: 40)
-            }
+            Spacer().frame(height: 40)
             
             Divider()
                 .frame(maxWidth: .infinity)
@@ -413,28 +384,28 @@ struct SignupView: View {
                     text: "서비스 이용약관",
                     isChecked: viewModel.terms1,
                     toggle: { viewModel.terms1.toggle() },
-                    action: {TermsModal = 5}
+                    action: {TermsModal = 1}
                 )
                 TermsView(
                     essential: true,
                     text: "개인정보 수집 및 이용 동의",
                     isChecked: viewModel.terms2,
                     toggle: { viewModel.terms2.toggle() },
-                    action: {TermsModal = 6}
+                    action: {TermsModal = 2}
                 )
                 TermsView(
                     essential: true,
                     text: "만 14세 이상 여부 확인",
                     isChecked: viewModel.terms3,
                     toggle: { viewModel.terms3.toggle() },
-                    action: {TermsModal = 7}
+                    action: {TermsModal = 3}
                 )
                 TermsView(
                     essential: false,
                     text: "마케팅 활용 및 광고 수신 동의",
                     isChecked: viewModel.terms4,
                     toggle: { viewModel.terms4.toggle() },
-                    action: {TermsModal = 8}
+                    action: {TermsModal = 4}
                 )
             }
             
