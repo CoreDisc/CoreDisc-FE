@@ -321,34 +321,12 @@ struct SignupView: View {
                 .foregroundStyle(.white)
                 .padding(.leading, 10)
             
-            ZStack{
-                InputView{
-                    TextField("이름을 입력해주세요.", text: $viewModel.name)
-                        .textInputAutocapitalization(.never)
-                        .focused($isFocused)
-                        .onChange(of: viewModel.name) { oldValue, newValue in
-                            if viewModel.nameSuccess {
-                                viewModel.nameSuccess = false
-                            }
-                        }
-                }
-                HStack{
-                    Spacer()
-                    Button(action: {
-                        viewModel.CkeckName()
-                    }, label: {
-                        ZStack{
-                            Capsule()
-                                .frame(width: 63, height: 25)
-                                .foregroundStyle((viewModel.name.isEmpty || viewModel.nameSuccess) ? .gray400 : .highlight)
-                            Text("중복확인")
-                                .textStyle(.Q_pick)
-                                .foregroundStyle(.black000)
-                        }
-                        .padding(.horizontal)
-                    })
-                }
+            InputView{
+                TextField("이름을 입력해주세요", text: $viewModel.name)
+                    .focused($isFocused)
+                    .textInputAutocapitalization(.never)
             }
+            
             
             if viewModel.nicknameError {
                 Text("16자 이내 영문,한글만 사용 가능합니다.")
@@ -360,21 +338,7 @@ struct SignupView: View {
                     .textStyle(.login_alert)
                     .foregroundStyle(.gray400)
             }
-            if viewModel.nameDuplicate {
-                Text("동일한 이름이 존재합니다.")
-                    .textStyle(.login_alert)
-                    .foregroundStyle(.warning)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer().frame(height: 20)
-            } else if viewModel.nameSuccess {
-                Text("사용 가능한 이름입니다.")
-                    .textStyle(.login_alert)
-                    .foregroundStyle(.gray400)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer().frame(height: 20)
-            } else {
-                Spacer().frame(height: 40)
-            }
+            Spacer().frame(height: 40)
             
             Divider()
                 .frame(maxWidth: .infinity)
