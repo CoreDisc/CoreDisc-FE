@@ -23,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		238562CE2E0F0E2E008F25B1 /* CoreDisc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDisc.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		20D83D212E578986008A6E2C /* CoreDisc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDisc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -80,7 +81,7 @@
 		238562CF2E0F0E2E008F25B1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				238562CE2E0F0E2E008F25B1 /* CoreDisc.app */,
+				20D83D212E578986008A6E2C /* CoreDisc.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -119,7 +120,7 @@
 				446B6B882E54F98600EED169 /* NidThirdPartyLogin */,
 			);
 			productName = CoreDisc;
-			productReference = 238562CE2E0F0E2E008F25B1 /* CoreDisc.app */;
+			productReference = 20D83D212E578986008A6E2C /* CoreDisc.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
