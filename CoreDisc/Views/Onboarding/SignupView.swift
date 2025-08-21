@@ -377,28 +377,28 @@ struct SignupView: View {
                     text: "서비스 이용약관",
                     isChecked: viewModel.terms1,
                     toggle: { viewModel.terms1.toggle() },
-                    action: {TermsModal = 5}
+                    action: {TermsModal = 1}
                 )
                 TermsView(
                     essential: true,
                     text: "개인정보 수집 및 이용 동의",
                     isChecked: viewModel.terms2,
                     toggle: { viewModel.terms2.toggle() },
-                    action: {TermsModal = 6}
+                    action: {TermsModal = 2}
                 )
                 TermsView(
                     essential: true,
                     text: "만 14세 이상 여부 확인",
                     isChecked: viewModel.terms3,
                     toggle: { viewModel.terms3.toggle() },
-                    action: {TermsModal = 7}
+                    action: {TermsModal = 3}
                 )
                 TermsView(
                     essential: false,
                     text: "마케팅 활용 및 광고 수신 동의",
                     isChecked: viewModel.terms4,
                     toggle: { viewModel.terms4.toggle() },
-                    action: {TermsModal = 8}
+                    action: {TermsModal = 4}
                 )
             }
             
