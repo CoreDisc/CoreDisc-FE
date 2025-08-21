@@ -36,7 +36,7 @@ class MyHomeViewModel: ObservableObject {
     @Published var changeSuccess : Bool = false
     
     // 중복 확인 여부
-    private var originalUsername: String = ""
+    @Published var originalUsername: String = ""
     private var originalNickname: String = ""
     @Published var nextErrorUsername : Bool = false
     @Published var nextErrorNickname : Bool = false
@@ -170,11 +170,15 @@ class MyHomeViewModel: ObservableObject {
     }
     
     func fetchProfile() {
+        guard let FCMToken = KeychainManager.standard.loadString(for: "FCMToken") else {
+            print("FCMToken 없음")
+            return
+        }
         memberProvider.request(.patchProfile(
             profilePatchData: ProfilePatchData(
                 newNickname: nickname,
                 newUsername: username,
-            )
+            ),deviceToken: FCMToken
         )) { result in
             switch result {
             case .success(let response):

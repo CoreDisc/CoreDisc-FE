@@ -92,26 +92,28 @@ class AccountManageViewModel: ObservableObject {
     }
     
     func logout() {
-        authProvider.request(.postLogout){ result in
-            switch result{
-            case .success(let response):
-                if let decodedResponse = try? JSONDecoder().decode(logoutResponse.self, from: response.data) {
-                    print("로그아웃 성공: \(decodedResponse.message)")
-                    KeychainManager.standard.deleteSession(for: "appNameUser")
-                }
-                DispatchQueue.main.async {
-                    self.goLogin = true
-                }
-            case .failure(let error):
-                if let response = error.response {
-                    do {
-                        let decodedResponse = try JSONDecoder().decode(logoutResponse.self, from: response.data)
-                        print("실패 : \(decodedResponse.message)")
-                    } catch {
-                        print("디코딩 실패 : \(error.localizedDescription)")
+        if let FCMToken = KeychainManager.standard.loadString(for: "FCMToken") {
+            authProvider.request(.postLogout(deviceToken: FCMToken)){ result in
+                switch result{
+                case .success(let response):
+                    if let decodedResponse = try? JSONDecoder().decode(logoutResponse.self, from: response.data) {
+                        print("로그아웃 성공: \(decodedResponse.message)")
+                        KeychainManager.standard.deleteSession(for: "appNameUser")
                     }
-                } else {
-                    print("네트워크 오류: \(error.localizedDescription)")
+                    DispatchQueue.main.async {
+                        self.goLogin = true
+                    }
+                case .failure(let error):
+                    if let response = error.response {
+                        do {
+                            let decodedResponse = try JSONDecoder().decode(logoutResponse.self, from: response.data)
+                            print("실패 : \(decodedResponse.message)")
+                        } catch {
+                            print("디코딩 실패 : \(error.localizedDescription)")
+                        }
+                    } else {
+                        print("네트워크 오류: \(error.localizedDescription)")
+                    }
                 }
             }
         }
