@@ -228,6 +228,8 @@ class MyHomeViewModel: ObservableObject {
     }
     
     func fetchProfileImage(imageData: Data) {
+        self.imageChangeSuccess = false
+        
         memberProvider.request(.patchProfileImage(image: imageData)) { result in
             switch result {
             case .success(let response):
@@ -237,10 +239,10 @@ class MyHomeViewModel: ObservableObject {
                         DispatchQueue.main.async {
                             self.profileImageURL = newUrl
                             self.profileUIImage = nil
+                            self.imageChangeSuccess = true
                         }
                     }
                     print("이미지 성공 : \(decoded)")
-                    self.imageChangeSuccess = true
                 } catch {
                     print("디코딩 실패: \(error)")
                 }

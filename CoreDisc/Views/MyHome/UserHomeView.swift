@@ -323,7 +323,7 @@ struct UserHomeView: View {
                 .task {
                     if post.postId == viewModel.postList.last?.postId,
                        viewModel.hasNextPage {
-                        viewModel.fetchUserPosts(targetUsername: viewModel.username, cursorId: post.postId)
+                        viewModel.fetchUserPosts(targetUsername: userName, cursorId: post.postId)
                     }
                 }
             }
