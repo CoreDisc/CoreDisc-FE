@@ -43,7 +43,9 @@ struct MyHomeView: View {
                     Spacer().frame(height: 31)
                     
                     PostGroup
+                        .padding(.bottom, 75)
                 }
+                .scrollIndicators(.hidden)
             }
             
             sheetView

@@ -48,7 +48,9 @@ struct UserHomeView: View {
                     Spacer().frame(height: 25)
                     
                     PostGroup
+                        .padding(.bottom, 75)
                 }
+                .scrollIndicators(.hidden)
             }
             
             // 차단 모달
