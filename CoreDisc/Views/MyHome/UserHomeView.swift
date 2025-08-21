@@ -184,7 +184,7 @@ struct UserHomeView: View {
                             .controlSize(.mini)
                     })
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 124, height: 124)
                     .clipShape(Circle())
             }
@@ -297,8 +297,7 @@ struct UserHomeView: View {
                                     .controlSize(.mini)
                             })
                             .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 154)
+                            .aspectRatio(3/4, contentMode: .fill)
                             .frame(maxWidth: .infinity)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                     } else if let text = post.postTextThumbnailDTO?.content { // 텍스트

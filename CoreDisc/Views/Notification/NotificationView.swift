@@ -148,7 +148,7 @@ struct NotificationListItem: View {
                    let url = URL(string: imageUrl) {
                     KFImage(url)
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .aspectRatio(contentMode: .fill)
                         .frame(width: 36, height: 36)
                         .clipShape(Circle())
                 } else {

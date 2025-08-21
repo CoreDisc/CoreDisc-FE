@@ -141,7 +141,7 @@ struct ReportDetailView: View {
                 Image(.imgReportHeaderIcon)
                 
                 Button(action: {
-                    router.push(.museum)
+                    router.reset()
                 }){
                     Image(.imgGoback)
                 }
@@ -345,7 +345,7 @@ struct ReportDetailView: View {
                 if let url = URL(string: myHomeViewModel.profileImageURL) {
                     KFImage(url)
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .aspectRatio(contentMode: .fill)
                         .frame(width: 60, height: 60)
                         .clipShape(Circle())
                 }
@@ -360,6 +360,7 @@ struct ReportDetailView: View {
                     Text(myHomeViewModel.nickname)
                         .textStyle(.Button)
                         .foregroundStyle(.black)
+                        .lineLimit(1)
                 }
                 
                 Spacer()

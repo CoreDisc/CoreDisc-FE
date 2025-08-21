@@ -68,7 +68,6 @@ class LoginViewModel: ObservableObject {
                             self.isLogin = true
                             self.isError = false
                         }
-                        self.fetchFcmToken()
                     } else{
                         print("로그인 실패 : \(decodedResponse.message)")
                         self.isError = true

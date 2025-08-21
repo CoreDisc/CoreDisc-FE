@@ -7,26 +7,17 @@
 
 import Foundation
 
-struct PostpostsResponse: Decodable {
+struct PostPostsResponse: Decodable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: PostpostsResult
+    let result: PostPostsResult
 }
 
-struct PostpostsResult: Decodable {
+struct PostPostsResult: Decodable {
     let postId : Int
     let memberId : Int
     let selectedDate: String
     let status: String
-    let todayQuestions: [TodayQuestion]
     let createdAt: String
-}
-
-struct TodayQuestion: Decodable {
-    let id : Int
-    let type: Int
-    let questionId: Int
-    let questionType: String
-    let content: String
 }

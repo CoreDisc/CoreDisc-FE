@@ -9,6 +9,6 @@ import Foundation
 
 enum WriteRoute: Hashable {
     case answer
-    case select
-    case summary
+    case select(postId: Int, isCore: Bool)
+    case summary(postId: Int, selectedWho: DiaryWho, selectedWhere: DiaryWhere, selectedWhat: DiaryWhat, selectedMore: DiaryMore, selectedString: String, isCore: Bool)
 }

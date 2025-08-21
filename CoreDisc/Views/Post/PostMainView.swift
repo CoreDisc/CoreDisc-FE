@@ -44,6 +44,8 @@ struct PostMainView: View {
                 
                 PostGroup
             }
+            
+            
         }
         .onAppear {
             viewModel.fetchPosts()
@@ -56,9 +58,10 @@ struct PostMainView: View {
         HStack(alignment: .center, spacing: 4){
             Image(.imgLogoOneline)
                 .resizable()
+                .renderingMode(.template)
+                .foregroundStyle(.black)
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 116)
-                .foregroundStyle(.black)
                 .padding(.leading, 6)
             
             Spacer()
@@ -141,7 +144,7 @@ struct PostCard: View {
         }) {
             ZStack(alignment: .top) {
                 Rectangle()
-                    .frame(width: 164)
+                    .frame(width: 164, height: 284)
                     .foregroundStyle(.white)
                 
                 VStack(spacing: 8){
@@ -156,6 +159,7 @@ struct PostCard: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 164, height: 195)
+                                .clipped()
                         }
                     } else {
                         ZStack {
@@ -210,7 +214,7 @@ struct PostCard: View {
                                 
                                 Spacer()
                                 
-                                if item.publicity == "CORE" {
+                                if item.publicity == "CIRCLE" {
                                     Image(.iconPublicityCore)
                                         .resizable()
                                         .frame(width: 10, height: 10)

@@ -7,14 +7,7 @@
 
 import Foundation
 
-// 텍스트 요청
-struct AnswerTextRequest: Codable {
-    let answerType: String
-    let content: String
-}
-
 // 이미지 요청
-
 struct PutAnswerResponse: Decodable {
     let isSuccess: Bool
     let code: String
@@ -24,10 +17,10 @@ struct PutAnswerResponse: Decodable {
 
 struct PutAnswerResult: Codable {
     let answerId: Int
-    let questionId: Int
-    let answerType: AnswerType
-    let textAnswer: TextAnswer?
+    let questionOrder: Int
+    let answerType: String
     let imageAnswer: ImageAnswer?
+    let textAnswer: TextAnswer?
 }
 
 struct TextAnswer: Codable {
@@ -36,4 +29,6 @@ struct TextAnswer: Codable {
 
 struct ImageAnswer: Codable {
     let imageUrl: String
+    let thumbnailUrl: String
+    let originalFileName: String
 }

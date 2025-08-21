@@ -26,6 +26,8 @@ struct TabBar: View {
     @State private var reportRouter = NavigationRouter<ReportRoute>()
     @State private var myhomeRouter = NavigationRouter<MyhomeRoute>()
     
+    @StateObject private var mainViewModel = QuestionMainViewModel()
+    
     init(startTab: Tab = .question) {
         _selectedTab = State(initialValue: startTab)
         _tabBarStyle = State(initialValue: {
@@ -61,6 +63,7 @@ struct TabBar: View {
                         QuestionTabContainer()
                     }
                     .environment(questionRouter)
+                    .environmentObject(mainViewModel)
                     
                 case .report:
                     NavigationStack(path: $reportRouter.path) {

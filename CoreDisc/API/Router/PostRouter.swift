@@ -11,8 +11,8 @@ import Moya
 // /api/posts API 연결
 enum PostRouter {
     case putPublish(postId: Int, postPublishData: PostPublishData) // 게시글 발행
-    case putAnswerText(postId: Int, questionId: Int, content: String) // 글 답변 작성/수정
-    case putAnswerImage(postId: Int, questionId: Int, image: String) // 이미지 답변 등록 또는 수정
+    case putAnswerText(postId: Int, questionOrder: Int, content: String) // 글 답변 작성/수정
+    case putAnswerImage(postId: Int, questionOrder: Int, image: Data) // 이미지 답변 등록 또는 수정
     
     case getPosts(feedType: String?, cursorId: Int?, size: Int?) // 게시글 피드 조회 (Pull 모델)
     case postPosts(selectedDate: String) // 게시글 생성 (임시저장)
@@ -21,9 +21,8 @@ enum PostRouter {
     case getPostsDetail(postId: Int) // 게시글 상세 조회
     case deletePosts(postId: Int) // 게시글 삭제
     
+    case getTemp // 게시글 조회
     case getTempID(postId: Int) // 임시저장 게시글 ID로 조회
-    case getTempDate(selectedDate: String) // 임시저장 게시글 날짜로 조회
-    case deleteAnswers(postId: Int, questionId: Int) // 답변 삭제
 }
 
 extension PostRouter: APITargetType {
@@ -33,10 +32,10 @@ extension PostRouter: APITargetType {
         switch self {
         case .putPublish(let postId, _):
             return "\(Self.postPath)/\(postId)/publish"
-        case .putAnswerText(let postId, let questionId, _):
-            return "\(Self.postPath)/\(postId)/answers/\(questionId)/text"
-        case .putAnswerImage(let postId, let questionId, _):
-            return "\(Self.postPath)/\(postId)/answers/\(questionId)/image"
+        case .putAnswerText(let postId, let questionOrder, _):
+            return "\(Self.postPath)/\(postId)/answers/\(questionOrder)/text"
+        case .putAnswerImage(let postId, let questionOrder, _):
+            return "\(Self.postPath)/\(postId)/answers/\(questionOrder)/image"
             
         case .getPosts:
             return "\(Self.postPath)"
@@ -51,12 +50,10 @@ extension PostRouter: APITargetType {
         case .deletePosts(let postId):
             return "\(Self.postPath)/\(postId)"
         
+        case .getTemp:
+            return "\(Self.postPath)/temp"
         case .getTempID(let postId):
             return "\(Self.postPath)/temp/\(postId)"
-        case .getTempDate:
-            return "\(Self.postPath)/posts/temp"
-        case .deleteAnswers(let postId, let questionId):
-            return "\(Self.postPath)/\(postId)/answers/\(questionId)"
         }
     }
     
@@ -64,11 +61,11 @@ extension PostRouter: APITargetType {
         switch self {
         case .putPublish, .putAnswerText, .putAnswerImage:
             return .put
-        case .getPosts, .getPostsDetail, .getTempID, .getTempDate:
+        case .getPosts, .getPostsDetail, .getTemp, .getTempID:
             return .get
         case .postPosts, .postLikes:
             return .post
-        case .deletePosts, .deleteAnswers, .deleteLikes:
+        case .deletePosts, .deleteLikes:
             return .delete
         }
     }
@@ -78,12 +75,18 @@ extension PostRouter: APITargetType {
         case .putPublish(_, let postPublishData):
             return .requestJSONEncodable(postPublishData)
         case .putAnswerText(_, _, let content):
-            return .requestParameters(parameters: [
-                "answerType": "TEXT",
-                "content": content
-            ], encoding: JSONEncoding.default)
+            return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
         case .putAnswerImage(_, _, let image):
-            return .requestParameters(parameters: ["image": image], encoding: JSONEncoding.default)
+            var parts: [MultipartFormData] = []
+            parts.append(
+                MultipartFormData(
+                    provider: .data(image),
+                    name: "image",
+                    fileName: "answer.jpg",
+                    mimeType: "image/jpeg"
+                )
+            )
+            return .uploadMultipart(parts)
             
         case .getPosts(
             let feedType,
@@ -112,11 +115,9 @@ extension PostRouter: APITargetType {
         case .deletePosts:
             return .requestPlain
             
-        case .getTempID:
+        case .getTemp:
             return .requestPlain
-        case .getTempDate(let selectedDate):
-            return .requestParameters(parameters: ["selectedDate": selectedDate], encoding: JSONEncoding.default)
-        case .deleteAnswers:
+        case .getTempID:
             return .requestPlain
         }
     }
