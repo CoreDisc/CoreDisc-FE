@@ -26,14 +26,14 @@ struct PostTabContainer: View {
                 case .notification:
                     NotificationView()
                 case .detail(let postId):
-                    PostDetailView(postId: postId)
+                    PostDetailView(hosting: .post, postId: postId)
                 case .searchResult(let query):
                     SearchResultView(initialQuery: query,
                                      isSearch: .constant(false),
                                      myUsername: myHomeVM.username)
                     
                 case .user(let userName):
-                    UserHomeView(userName: userName)
+                    UserHomeView(hosting: .post, userName: userName)
                 case .myHome:
                     MyHomeView()
                     

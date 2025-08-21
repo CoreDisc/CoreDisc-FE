@@ -19,7 +19,7 @@ struct MyhomeTabContainer: View {
                 case .edit:
                     EditProfileView()
                 case .post(let postId):
-                    PostDetailView(postId: postId)
+                    PostDetailView(hosting: .myhome, postId: postId)
                     
                 case .calendar:
                     CalendarView()
@@ -34,7 +34,7 @@ struct MyhomeTabContainer: View {
                     NotificationSettingView()
                     
                 case .user(let userName):
-                    UserHomeView(userName: userName)
+                    UserHomeView(hosting: .myhome, userName: userName)
                 }
             }
     }
