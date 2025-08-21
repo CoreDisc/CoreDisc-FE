@@ -48,7 +48,7 @@ struct EditProfileView: View {
             if UsernameModal {
                 ModalView {
                     VStack {
-                        Text("닉네임 변경시 현재 계정에서 로그아웃 됩니다.")
+                        Text("유저네임 변경시 현재 계정에서 로그아웃 됩니다.")
                             .textStyle(.Button_s)
                         Spacer().frame(height:10)
                         Text("변경하시겠습니까?")
