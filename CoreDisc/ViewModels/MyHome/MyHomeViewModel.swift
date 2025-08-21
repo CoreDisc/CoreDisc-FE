@@ -36,7 +36,7 @@ class MyHomeViewModel: ObservableObject {
     @Published var changeSuccess : Bool = false
     
     // 중복 확인 여부
-    private var originalUsername: String = ""
+    @Published var originalUsername: String = ""
     private var originalNickname: String = ""
     @Published var nextErrorUsername : Bool = false
     @Published var nextErrorNickname : Bool = false
