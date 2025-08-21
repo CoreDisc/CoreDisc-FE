@@ -35,15 +35,18 @@ struct TermsModalView: View {
                     HStack{
                         if(essential){
                             Text("(필수)")
-                                .textStyle(.Title2_Text_Ko)
+                                .textStyle(.Calendar_text)
+                                .fontWeight(.bold)
                                 .foregroundStyle(.warning)
                         } else{
                             Text("(선택)")
-                                .textStyle(.Title2_Text_Ko)
+                                .textStyle(.Calendar_text)
+                                .fontWeight(.bold)
                                 .foregroundStyle(.white)
                         }
                         Text(title)
-                            .textStyle(.Title2_Text_Ko)
+                            .textStyle(.Calendar_text)
+                            .fontWeight(.bold)
                             .foregroundStyle(.white)
                         
                         Spacer()
@@ -54,7 +57,7 @@ struct TermsModalView: View {
                             Image(.iconX)
                         })
                     }
-                    .padding(.vertical, 10)
+                    .padding(.top, 5)
                     
                     ZStack{
                         RoundedRectangle(cornerRadius: 12)
