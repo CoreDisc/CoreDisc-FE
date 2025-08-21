@@ -10,6 +10,7 @@ import Kingfisher
 
 struct PostDetailView: View {
     @Environment(NavigationRouter<PostRoute>.self) private var router
+    @Environment(NavigationRouter<MyhomeRoute>.self) private var honeRouter
     @StateObject private var viewModel = PostDetailViewModel()
     
     @State var showCommentSheet: Bool = false
@@ -131,6 +132,7 @@ struct PostDetailView: View {
         HStack{
             Button(action: {
                 router.pop()
+                honeRouter.pop()
             }){
                 Image(.iconBack)
                     .resizable()
