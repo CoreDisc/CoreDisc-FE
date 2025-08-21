@@ -10,8 +10,7 @@ import Kingfisher
 
 struct MyHomeView: View {
     @Environment(NavigationRouter<MyhomeRoute>.self) private var router
-    
-    @StateObject private var viewModel = MyHomeViewModel()
+    @EnvironmentObject private var viewModel: MyHomeViewModel
     
     @State var showFollowerSheet: Bool = false
     @State var showFollowingSheet: Bool = false
@@ -95,10 +94,9 @@ struct MyHomeView: View {
         VStack(spacing: 8) {
             if let url = URL(string: viewModel.profileImageURL) {
                 KFImage(url)
-                    .placeholder({
-                        ProgressView()
-                            .controlSize(.mini)
-                    })
+                    .placeholder {
+                        ProgressView().controlSize(.mini)
+                    }
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 124, height: 124)
