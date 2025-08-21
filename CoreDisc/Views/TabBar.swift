@@ -49,6 +49,7 @@ struct TabBar: View {
                     NavigationStack(path: $postRouter.path) {
                         PostTabContainer()
                     }
+                    .environment(writeRouter)
                     .environment(postRouter)
                     .environment(myhomeRouter)
                     

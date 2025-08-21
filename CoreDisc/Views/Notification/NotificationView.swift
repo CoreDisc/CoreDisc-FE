@@ -93,7 +93,7 @@ struct NotificationView: View {
             // TODO: 화면 전환
             break
             
-        case "COMMEND", "COMMENT_REPLY", "LIKE":
+        case "COMMENT", "COMMENT_REPLY", "LIKE":
             router.push(.detail(postId: item.targetId ?? 0))
             
         case "TEMP_POSTS":
@@ -144,16 +144,22 @@ struct NotificationListItem: View {
                 .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 2)
             
             HStack(spacing: 18) {
-                if let imageUrl = item.profileImgDTO?.imageUrl,
-                   let url = URL(string: imageUrl) {
-                    KFImage(url)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 36, height: 36)
-                        .clipShape(Circle())
+                if item.type != "TEMP_POSTS" {
+                    if let imageUrl = item.profileImgDTO?.imageUrl,
+                       let url = URL(string: imageUrl) {
+                        KFImage(url)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 36, height: 36)
+                            .clipShape(Circle())
+                    } else {
+                        Circle()
+                            .fill(.gray400)
+                            .frame(width: 36, height: 36)
+                    }
                 } else {
                     Circle()
-                        .fill(.gray400)
+                        .fill(.clear)
                         .frame(width: 36, height: 36)
                 }
                 
