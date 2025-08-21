@@ -126,18 +126,17 @@ struct PostWriteView: View {
         .onReceive(questionViewModel.$selectedQuestions) { list in
             showQuestionMoadal = list.contains { $0.id == nil }
         }
-//        .onReceive(viewModel.$isAlreadyPosted
-//            .compactMap { $0 }
-//            .removeDuplicates()
-//        ) { isPosted in
-//            if isPosted {
-//                showAlreadyPostModal = true
-//                showOnePostModal = false
-//            } else {
-//                showOnePostModal = true
-//                showAlreadyPostModal = false
-//            }
-//        }
+        .onReceive(viewModel.$isAlreadyPosted
+            .compactMap { $0 }
+        ) { isPosted in
+            if isPosted {
+                showAlreadyPostModal = true
+                showOnePostModal = false
+            } else {
+                showOnePostModal = true
+                showAlreadyPostModal = false
+            }
+        }
         .onChange(of: selectedPhotoItem) {
             guard let newItem = selectedPhotoItem else { return }
             Task {
