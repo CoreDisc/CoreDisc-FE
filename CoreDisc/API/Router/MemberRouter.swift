@@ -11,7 +11,7 @@ import Moya
 // /api/members API 연결
 enum MemberRouter {
     case patchResign // 계정 탈퇴
-    case patchProfile(profilePatchData: ProfilePatchData) // 마이홈 닉네임, 아이디 변경
+    case patchProfile(profilePatchData: ProfilePatchData, deviceToken: String) // 마이홈 닉네임, 아이디 변경
     case patchPassword(passwordPatchData: PasswordPatchData) // 비밀번호 변경
     case patchMyhomeUsername(newUsername: String) // 마이홈 계정 관리 아이디 변경
     case patchMyhomePassword(myhomePasswordPatchData: MyhomePasswordPatchData) // 마이홈 계정 관리 비밀번호 변경
@@ -81,10 +81,19 @@ extension MemberRouter: APITargetType {
         switch self {
         case .patchResign:
             return .requestPlain
-        case .patchProfile(let profilePatchData):
-            return .requestJSONEncodable(profilePatchData)
-            
-            
+        case .patchProfile(let profilePatchData, let deviceToken):
+            var params: [String: Any] = [:]
+            if let nickname = profilePatchData.newNickname {
+                params["newNickname"] = nickname
+            }
+            if let username = profilePatchData.newUsername {
+                params["newUsername"] = username
+            }
+            return .requestCompositeParameters(
+                bodyParameters: params,
+                bodyEncoding: JSONEncoding.default,
+                urlParameters: ["deviceToken": deviceToken]
+            )
         case .patchPassword(let passwordPatchData):
             return .requestJSONEncodable(passwordPatchData)
         case .patchMyhomeUsername(let newUsername):
