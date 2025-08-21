@@ -19,7 +19,7 @@ enum AuthRouter {
     case postPasswordVerifyCode(verifyCodeData: VerifyCodeData) // 비밀번호 변경 이메일 코드 인증
     case postReissue // 토큰 재발급
     case postPasswordVerifyUser(verifyUserData: VerifyUserData) // 비밀번호 변경을 위한 사용자 검증
-    case postLogout // 로그아웃
+    case postLogout(deviceToken: String) // 로그아웃
     case postLogin(loginData: LoginData) // 일반 로그인
     
     case getCheckUsername(username: String) // 아이디 중복 확인
@@ -99,8 +99,8 @@ extension AuthRouter: APITargetType {
             return .requestPlain
         case .postPasswordVerifyUser(let verifyUserData):
             return .requestJSONEncodable(verifyUserData)
-        case .postLogout:
-            return .requestPlain
+        case .postLogout(let deviceToken):
+            return .requestParameters(parameters: ["deviceToken": deviceToken], encoding: URLEncoding.queryString)
         case .postLogin(let loginData):
             return .requestJSONEncodable(loginData)
             
