@@ -8,21 +8,30 @@
 import SwiftUI
 
 struct PostTabContainer: View {
+    @StateObject private var myHomeVM = MyHomeViewModel()
+    
     var body: some View {
         PostMainView()
+            .task {
+                    if myHomeVM.username.isEmpty {
+                        myHomeVM.fetchMyHome()
+                    }
+                }
             .navigationDestination(for: PostRoute.self) { route in
                 switch route {
                 case .home:
                     PostMainView()
                 case .search:
-                    SearchView()
+                    SearchView(myHomeVM: myHomeVM)
                 case .notification:
                     NotificationView()
                 case .detail(let postId):
                     PostDetailView(postId: postId)
                 case .searchResult(let query):
-                    SearchResultView(initialQuery: query)
-
+                    SearchResultView(initialQuery: query,
+                                     isSearch: .constant(false),
+                                     myUsername: myHomeVM.username)
+                    
                 case .user(let userName):
                     UserHomeView(userName: userName)
                 case .myHome:

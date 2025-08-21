@@ -19,9 +19,15 @@ struct SearchResultView: View {
     
     @FocusState private var isFocused: Bool
     
-    init(initialQuery: String, isSearch: Binding<Bool> = .constant(false)) {
+    var myUsername: String
+    
+    init(initialQuery: String,
+         isSearch: Binding<Bool> = .constant(false),
+         myUsername: String
+    ) {
         _query = State(initialValue: initialQuery)
         self._isSearch = isSearch
+        self.myUsername = myUsername
     }
     
     var body: some View {
@@ -75,7 +81,9 @@ struct SearchResultView: View {
     private var ResultGroup: some View {
         VStack {
             if isTyping {
-                SearchRelatedView(viewModel: viewModel, keyword: query)
+                SearchRelatedView(viewModel: viewModel,
+                                  keyword: query,
+                                  myUsername: myUsername)
             } else if isSubmitted {
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Accounts")
@@ -92,8 +100,11 @@ struct SearchResultView: View {
                                     username: "@\(user.username)",
                                     imageURL: user.profileImgDTO?.imageUrl,
                                     onTap: {
-                                        let targetUsername = user.username
-                                        router.push(.user(userName: targetUsername))
+                                        if user.username == myUsername {
+                                            router.push(.myHome)
+                                        } else {
+                                            router.push(.user(userName: user.username))
+                                        }
                                     }
                                 )
                                 .task {

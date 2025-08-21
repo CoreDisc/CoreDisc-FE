@@ -12,6 +12,7 @@ struct SearchView: View {
     @State var isSearch: Bool = false
     @State private var path = NavigationPath()
     @StateObject private var viewModel = SearchHistoryViewModel()
+    @ObservedObject var myHomeVM: MyHomeViewModel
     
     @Environment(NavigationRouter<PostRoute>.self) var router
     
@@ -30,7 +31,7 @@ struct SearchView: View {
                         router.push(.searchResult(query: query))
                     }
                 },
-                 isFocused: $isFocused
+                               isFocused: $isFocused
                 )
                 .focused($isFocused)
                 Spacer().frame(height: isSearch ? 18 : 21)
@@ -51,7 +52,7 @@ struct SearchView: View {
     private var SearchGroup: some View {
         VStack {
             if isSearch {
-                SearchRelatedView(viewModel: SearchMemberViewModel(), keyword: query)
+                SearchRelatedView(viewModel: SearchMemberViewModel(), keyword: query, myUsername: myHomeVM.username)
             } else {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Recent Searches")
@@ -69,7 +70,12 @@ struct SearchView: View {
                                     onTap: {
                                         query = item.keyword
                                         isSearch = false
-                                        router.push(.searchResult(query: item.keyword))
+                                        let currentUsername = myHomeVM.username
+                                        if item.keyword == currentUsername {
+                                            router.push(.myHome)
+                                        } else {
+                                            router.push(.searchResult(query: item.keyword))
+                                        }
                                     }
                                 )
                                 .task {
