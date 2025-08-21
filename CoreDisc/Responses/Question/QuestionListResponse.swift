@@ -20,8 +20,13 @@ struct QuestionListResult: Codable {
 }
 
 struct QuestionListItem: Codable, Identifiable {
-    let id: Int
+
+    var id: Int { savedId }
+
+    let savedId: Int        // 커서 용 id
+    let questionId: Int     // 실제 질문 id
     let categories: [QuestionListCategory]
+    let questionType: String  // "DEFAULT", "PERSONAL", "OFFICIAL"
     let question: String
     let sharedCount: Int
     let isSelected: Bool
@@ -32,4 +37,5 @@ struct QuestionListCategory: Codable {
     let categoryId: Int
     let categoryName: String
 }
+
 
