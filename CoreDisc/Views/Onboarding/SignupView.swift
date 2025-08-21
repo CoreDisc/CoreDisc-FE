@@ -65,18 +65,25 @@ struct SignupView: View {
     
     private var MainGroup : some View{
         VStack(alignment: .leading){
-            HStack{
-                Divider()
-                    .frame(width: 92, height: 1)
-                    .background(Color.white)
+            HStack(alignment: .center) {
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(height: 1)
+                    .frame(maxWidth: .infinity)
+                
                 Text("회원 가입")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
-                    .padding(.horizontal, 36)
-                Divider()
-                    .frame(width: 92, height: 1)
-                    .background(Color.white)
+                    .padding(.horizontal, 16)
+                    .lineLimit(1)
+                    .layoutPriority(1)
+                
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(height: 1)
+                    .frame(maxWidth: .infinity)
             }
+
             
             Spacer().frame(height: 32)
             

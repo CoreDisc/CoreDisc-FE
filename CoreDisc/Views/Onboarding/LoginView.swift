@@ -54,17 +54,24 @@ struct LoginView: View {
     
     private var MainGroup : some View{
         VStack{
-            HStack{
-                Divider()
-                    .frame(width: 80, height: 1)
-                    .background(Color.white)
+            HStack(alignment: .center) {
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(height: 1)
+                    .frame(maxWidth: .infinity)
+                
                 Text("로그인 또는 가입")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
-                    .padding(.horizontal, 20)
-                Divider()
-                    .frame(width: 80, height: 1)
-                    .background(Color.white)
+                    .padding(.horizontal, 16)
+                    .lineLimit(1)
+                    .layoutPriority(1)
+                
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(height: 1)
+                    .frame(maxWidth: .infinity)
+
             }
             
             Spacer().frame(height: 24)
@@ -124,17 +131,23 @@ struct LoginView: View {
     
     private var SocialLoginGroup : some View{
         VStack{
-            HStack{
-                Divider()
-                    .frame(width: 80, height: 1)
-                    .background(Color.white)
+            HStack(alignment: .center) {
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(height: 1)
+                    .frame(maxWidth: .infinity)
+                
                 Text("간편 로그인")
                     .textStyle(.login_info)
                     .foregroundStyle(.white)
-                    .padding(.horizontal, 20)
-                Divider()
-                    .frame(width: 80, height: 1)
-                    .background(Color.white)
+                    .padding(.horizontal, 16)
+                    .lineLimit(1)
+                    .layoutPriority(1)
+                
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(height: 1)
+                    .frame(maxWidth: .infinity)
             }
             
             Spacer().frame(height: 32)
