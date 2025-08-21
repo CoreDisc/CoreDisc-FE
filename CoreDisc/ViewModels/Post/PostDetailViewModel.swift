@@ -32,7 +32,7 @@ class PostDetailViewModel: ObservableObject {
     var whoText: String { selectiveDiary.who.displayName }
     var whereText: String { selectiveDiary.where.displayName }
     var whatText: String { selectiveDiary.what.displayName }
-    var moodText: String { selectiveDiary.mood }
+    var moodText: String { selectiveDiary.mood ?? "" }
     
     // MARK: - Functions
     func getDateString(date: String) -> String {

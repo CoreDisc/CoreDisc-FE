@@ -39,5 +39,5 @@ struct PostSelectiveDiary: Decodable {
     let who: DiaryWho
     let `where`: DiaryWhere
     let what: DiaryWhat
-    let mood: String
+    let mood: String?
 }
